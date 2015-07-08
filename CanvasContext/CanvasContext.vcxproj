@@ -36,7 +36,10 @@
     <ClCompile Include="blink\ColorData.cpp" />
     <ClCompile Include="blink\FontFamilyNames.cpp" />
     <ClCompile Include="blink\RuntimeEnabledFeatures.cpp" />
+    <ClCompile Include="Canvas\CanvasGradient.cpp" />
     <ClCompile Include="Canvas\CanvasPathMethods.cpp" />
+    <ClCompile Include="Canvas\CanvasPattern.cpp" />
+    <ClCompile Include="Canvas\CanvasStyle.cpp" />
     <ClCompile Include="platform\CalculationValue.cpp" />
     <ClCompile Include="platform\fonts\Character.cpp" />
     <ClCompile Include="platform\fonts\Font.cpp" />
@@ -137,7 +140,10 @@
     <ClInclude Include="..\third_party\libpng\pngusr.h" />
     <ClInclude Include="blink\FontFamilyNames.h" />
     <ClInclude Include="blink\RuntimeEnabledFeatures.h" />
+    <ClInclude Include="Canvas\CanvasGradient.h" />
     <ClInclude Include="Canvas\CanvasPathMethods.h" />
+    <ClInclude Include="Canvas\CanvasPattern.h" />
+    <ClInclude Include="Canvas\CanvasStyle.h" />
     <ClInclude Include="platform\CalculationValue.h" />
     <ClInclude Include="platform\fonts\Character.h" />
     <ClInclude Include="platform\fonts\Font.h" />

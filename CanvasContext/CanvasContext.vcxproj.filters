@@ -393,6 +393,15 @@
     <ClCompile Include="platform\fonts\FontFamily.cpp">
       <Filter>platform\font</Filter>
     </ClCompile>
+    <ClCompile Include="Canvas\CanvasStyle.cpp">
+      <Filter>Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas\CanvasGradient.cpp">
+      <Filter>Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas\CanvasPattern.cpp">
+      <Filter>Canvas</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -670,6 +679,15 @@
     </ClInclude>
     <ClInclude Include="platform\fonts\FontFamily.h">
       <Filter>platform\font</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas\CanvasStyle.h">
+      <Filter>Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas\CanvasGradient.h">
+      <Filter>Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas\CanvasPattern.h">
+      <Filter>Canvas</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
