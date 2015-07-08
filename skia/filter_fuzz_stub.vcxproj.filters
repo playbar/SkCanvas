@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="tools">
+      <UniqueIdentifier>{A0946190-5491-4D66-7E51-19400E36F078}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tools\filter_fuzz_stub">
+      <UniqueIdentifier>{7BF26DC0-F651-BDD7-1A1C-B760D4B00EAE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="tools\filter_fuzz_stub\filter_fuzz_stub.cc">
+      <Filter>tools\filter_fuzz_stub</Filter>
+    </ClCompile>
+    <None Include="skia.gyp"/>
+  </ItemGroup>
+</Project>

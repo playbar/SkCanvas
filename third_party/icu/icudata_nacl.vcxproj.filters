@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{8A6F5E6E-316F-22D4-1547-253B04CB32E7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\stubdata">
+      <UniqueIdentifier>{EF636139-A619-BA3D-1538-ABE82AB5865A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\stubdata\_excluded_files">
+      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\..\native_client">
+      <UniqueIdentifier>{A9537671-E7FD-2F0E-DE29-6155260B6944}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\..\native_client\build">
+      <UniqueIdentifier>{D5519164-BF26-36DA-740B-76CEFC1827F4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\..\native_client\build\_excluded_files">
+      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="$(OutDir)obj">
+      <UniqueIdentifier>{7BD4F48B-77B4-AB58-9E24-A7302D190D1C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="$(OutDir)obj\global_intermediate">
+      <UniqueIdentifier>{14CEDE64-16A7-96A9-EF19-5C5D6085FF18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="$(OutDir)obj\global_intermediate\sdk">
+      <UniqueIdentifier>{300B0F0A-ACAD-6063-4C44-1B7D00C8E13F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="$(OutDir)obj\global_intermediate\sdk\toolchain">
+      <UniqueIdentifier>{A1380BF2-B2E4-A638-7882-599BD9BAE887}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="$(OutDir)obj\global_intermediate\sdk\toolchain\win_pnacl">
+      <UniqueIdentifier>{2844DAD6-7298-DA8B-1896-19B66AF96598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="$(OutDir)obj\global_intermediate\sdk\toolchain\win_pnacl\_excluded_files">
+      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_excluded_files">
+      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\stubdata\stubdata.c">
+      <Filter>source\stubdata\_excluded_files</Filter>
+    </ClCompile>
+    <None Include="icu_nacl.gyp"/>
+    <None Include="..\..\native_client\build\build_nexe.py">
+      <Filter>..\..\native_client\build\_excluded_files</Filter>
+    </None>
+    <None Include="$(OutDir)obj\global_intermediate\sdk\toolchain\win_pnacl\stamp.prep">
+      <Filter>$(OutDir)obj\global_intermediate\sdk\toolchain\win_pnacl\_excluded_files</Filter>
+    </None>
+    <None Include="pnacl_newlib.icudata_nacl.source_list.gypcmd">
+      <Filter>_excluded_files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

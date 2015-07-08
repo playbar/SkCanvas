@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\build">
+      <UniqueIdentifier>{D5519164-BF26-36DA-740B-76CEFC1827F4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="message_loop">
+      <UniqueIdentifier>{85BB2B48-8131-AA06-DC6D-4CCE2EF5429B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="message_loop">
+      <UniqueIdentifier>{85BB2B48-8131-AA06-DC6D-4CCE2EF5429B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\build\precompile.cc">
+      <Filter>..\build</Filter>
+    </ClCompile>
+    <ClCompile Include="message_loop\message_loop_test.cc">
+      <Filter>message_loop</Filter>
+    </ClCompile>
+    <ClInclude Include="message_loop\message_loop_test.h">
+      <Filter>message_loop</Filter>
+    </ClInclude>
+    <None Include="base.gyp"/>
+  </ItemGroup>
+</Project>
