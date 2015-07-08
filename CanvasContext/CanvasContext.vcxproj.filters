@@ -369,6 +369,30 @@
     <ClCompile Include="platform\fonts\FontDataCache.cpp">
       <Filter>platform\font</Filter>
     </ClCompile>
+    <ClCompile Include="platform\fonts\win\FontCacheSkiaWin.cpp">
+      <Filter>platform\font</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\fonts\win\FontFallbackWin.cpp">
+      <Filter>platform\font</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\fonts\skia\FontCacheSkia.cpp">
+      <Filter>platform\font</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\fonts\FontFallbackList.cpp">
+      <Filter>platform\font</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\fonts\FontData.cpp">
+      <Filter>platform\font</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\fonts\FontFeatureSettings.cpp">
+      <Filter>platform\font</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\fonts\opentype\OpenTypeVerticalData.cpp">
+      <Filter>platform\font\opentype</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\fonts\FontFamily.cpp">
+      <Filter>platform\font</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -630,6 +654,21 @@
       <Filter>platform\font</Filter>
     </ClInclude>
     <ClInclude Include="platform\fonts\FontDataCache.h">
+      <Filter>platform\font</Filter>
+    </ClInclude>
+    <ClInclude Include="platform\fonts\FontFallbackList.h">
+      <Filter>platform\font</Filter>
+    </ClInclude>
+    <ClInclude Include="platform\fonts\FontData.h">
+      <Filter>platform\font</Filter>
+    </ClInclude>
+    <ClInclude Include="platform\fonts\FontFeatureSettings.h">
+      <Filter>platform\font</Filter>
+    </ClInclude>
+    <ClInclude Include="platform\fonts\opentype\OpenTypeVerticalData.h">
+      <Filter>platform\font\opentype</Filter>
+    </ClInclude>
+    <ClInclude Include="platform\fonts\FontFamily.h">
       <Filter>platform\font</Filter>
     </ClInclude>
   </ItemGroup>

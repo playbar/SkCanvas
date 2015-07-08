@@ -41,19 +41,27 @@
     <ClCompile Include="platform\fonts\Character.cpp" />
     <ClCompile Include="platform\fonts\Font.cpp" />
     <ClCompile Include="platform\fonts\FontCache.cpp" />
+    <ClCompile Include="platform\fonts\FontData.cpp" />
     <ClCompile Include="platform\fonts\FontDataCache.cpp" />
     <ClCompile Include="platform\fonts\FontDescription.cpp" />
+    <ClCompile Include="platform\fonts\FontFallbackList.cpp" />
+    <ClCompile Include="platform\fonts\FontFamily.cpp" />
+    <ClCompile Include="platform\fonts\FontFeatureSettings.cpp" />
     <ClCompile Include="platform\fonts\GlyphPageTreeNode.cpp" />
     <ClCompile Include="platform\fonts\harfbuzz\FontHarfBuzz.cpp" />
     <ClCompile Include="platform\fonts\harfbuzz\HarfBuzzFace.cpp" />
     <ClCompile Include="platform\fonts\harfbuzz\HarfBuzzFaceSkia.cpp" />
     <ClCompile Include="platform\fonts\harfbuzz\HarfBuzzShaper.cpp" />
+    <ClCompile Include="platform\fonts\opentype\OpenTypeVerticalData.cpp" />
     <ClCompile Include="platform\fonts\SegmentedFontData.cpp" />
     <ClCompile Include="platform\fonts\SimpleFontData.cpp" />
+    <ClCompile Include="platform\fonts\skia\FontCacheSkia.cpp" />
     <ClCompile Include="platform\fonts\skia\FontPlatformDataSkia.cpp" />
     <ClCompile Include="platform\fonts\skia\GlyphPageTreeNodeSkia.cpp" />
     <ClCompile Include="platform\fonts\skia\SimpleFontDataSkia.cpp" />
     <ClCompile Include="platform\fonts\WidthIterator.cpp" />
+    <ClCompile Include="platform\fonts\win\FontCacheSkiaWin.cpp" />
+    <ClCompile Include="platform\fonts\win\FontFallbackWin.cpp" />
     <ClCompile Include="platform\fonts\win\FontPlatformDataWin.cpp" />
     <ClCompile Include="platform\geometry\FloatPoint.cpp" />
     <ClCompile Include="platform\geometry\FloatQuad.cpp" />
@@ -134,12 +142,17 @@
     <ClInclude Include="platform\fonts\Character.h" />
     <ClInclude Include="platform\fonts\Font.h" />
     <ClInclude Include="platform\fonts\FontCache.h" />
+    <ClInclude Include="platform\fonts\FontData.h" />
     <ClInclude Include="platform\fonts\FontDataCache.h" />
     <ClInclude Include="platform\fonts\FontDescription.h" />
+    <ClInclude Include="platform\fonts\FontFallbackList.h" />
+    <ClInclude Include="platform\fonts\FontFamily.h" />
+    <ClInclude Include="platform\fonts\FontFeatureSettings.h" />
     <ClInclude Include="platform\fonts\FontPlatformData.h" />
     <ClInclude Include="platform\fonts\GlyphPageTreeNode.h" />
     <ClInclude Include="platform\fonts\harfbuzz\HarfBuzzFace.h" />
     <ClInclude Include="platform\fonts\harfbuzz\HarfBuzzShaper.h" />
+    <ClInclude Include="platform\fonts\opentype\OpenTypeVerticalData.h" />
     <ClInclude Include="platform\fonts\SegmentedFontData.h" />
     <ClInclude Include="platform\fonts\SimpleFontData.h" />
     <ClInclude Include="platform\fonts\WidthIterator.h" />
@@ -288,7 +301,7 @@
     </ClCompile>
     <Lib />
     <Link>
-      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib;v8.lib;libjpeg.lib</AdditionalDependencies>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib;v8.lib;libjpeg.lib;Ws2_32.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../v8/lib;../build\Debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/wd"4701"  /wd"4800" %(AdditionalOptions)</AdditionalOptions>
