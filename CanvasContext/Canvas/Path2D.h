@@ -35,8 +35,10 @@
 
 namespace WebCore {
 
-class Path2D FINAL : public RefCounted<Path2D>, public CanvasPathMethods, public ScriptWrappable {
-    WTF_MAKE_NONCOPYABLE(Path2D); WTF_MAKE_FAST_ALLOCATED;
+class Path2D FINAL : public RefCounted<Path2D>, public CanvasPathMethods
+{
+    WTF_MAKE_NONCOPYABLE(Path2D); 
+	WTF_MAKE_FAST_ALLOCATED;
 public:
     static PassRefPtr<Path2D> create() { return adoptRef(new Path2D); }
     static PassRefPtr<Path2D> create(const String& pathData) { return adoptRef(new Path2D(pathData)); }

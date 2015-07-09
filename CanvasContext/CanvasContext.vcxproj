@@ -144,6 +144,7 @@
     <ClInclude Include="blink\RuntimeEnabledFeatures.h" />
     <ClInclude Include="Canvas\Canvas2DContextAttributes.h" />
     <ClInclude Include="Canvas\CanvasGradient.h" />
+    <ClInclude Include="Canvas\CanvasImageSource.h" />
     <ClInclude Include="Canvas\CanvasPathMethods.h" />
     <ClInclude Include="Canvas\CanvasPattern.h" />
     <ClInclude Include="Canvas\CanvasRenderingContext2D.h" />

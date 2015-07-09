@@ -704,5 +704,8 @@
     <ClInclude Include="Canvas\Path2D.h">
       <Filter>Canvas</Filter>
     </ClInclude>
+    <ClInclude Include="Canvas\CanvasImageSource.h">
+      <Filter>Canvas</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
