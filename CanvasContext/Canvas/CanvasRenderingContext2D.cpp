@@ -1240,15 +1240,14 @@ void CanvasRenderingContext2D::drawImage(CanvasImageSource* imageSource,
     float sx, float sy, float sw, float sh,
     float dx, float dy, float dw, float dh)
 {
-    GraphicsContext* c = drawingContext(); // Do not exit yet if !c because we may need to throw exceptions first
-    CompositeOperator op = c ? c->compositeOperation() : CompositeSourceOver;
-    blink::WebBlendMode blendMode = c ? c->blendModeOperation() : blink::WebBlendModeNormal;
-    drawImageInternal(imageSource, sx, sy, sw, sh, dx, dy, dw, dh, exceptionState, op, blendMode);
+    CompositeOperator op = GraphicsContext::compositeOperation();
+    blink::WebBlendMode blendMode = GraphicsContext::blendModeOperation();
+    drawImageInternal(imageSource, sx, sy, sw, sh, dx, dy, dw, dh, op, blendMode);
 }
 
 void CanvasRenderingContext2D::drawImageInternal(CanvasImageSource* imageSource,
     float sx, float sy, float sw, float sh,
-    float dx, float dy, float dw, float dh, ExceptionState& exceptionState,
+    float dx, float dy, float dw, float dh,
     CompositeOperator op, blink::WebBlendMode blendMode)
 {
     if (!checkImageSource(imageSource, exceptionState))
@@ -1341,7 +1340,7 @@ void CanvasRenderingContext2D::drawImageFromRect(HTMLImageElement* image,
     if (!parseCompositeAndBlendOperator(compositeOperation, op, blendOp) || blendOp != blink::WebBlendModeNormal)
         op = CompositeSourceOver;
 
-    drawImageInternal(image, sx, sy, sw, sh, dx, dy, dw, dh, IGNORE_EXCEPTION, op, blendOp);
+    drawImageInternal(image, sx, sy, sw, sh, dx, dy, dw, dh, op, blendOp);
 }
 
 void CanvasRenderingContext2D::setAlpha(float alpha)
