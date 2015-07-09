@@ -32,24 +32,19 @@ private:
 
 void GrFontCache::detachStrikeFromList(GrTextStrike* strike) {
     if (strike->fPrev) {
-        SkASSERT(fHead != strike);
         strike->fPrev->fNext = strike->fNext;
     } else {
-        SkASSERT(fHead == strike);
         fHead = strike->fNext;
     }
 
     if (strike->fNext) {
-        SkASSERT(fTail != strike);
         strike->fNext->fPrev = strike->fPrev;
     } else {
-        SkASSERT(fTail == strike);
         fTail = strike->fPrev;
     }
 }
 
-GrTextStrike* GrFontCache::getStrike(GrFontScaler* scaler, bool useDistanceField) {
-    this->validate();
+GrTextStrike* GrFontCache::getStrike(SkGrFontScaler* scaler) {
 
     const Key key(scaler->getKey());
     GrTextStrike* strike = fCache.find(key);
@@ -65,8 +60,9 @@ GrTextStrike* GrFontCache::getStrike(GrFontScaler* scaler, bool useDistanceField
         strike->fPrev = NULL;
         fHead = strike;
     }
+#if SK_DISTANCEFIELD_FONTS
     strike->fUseDistanceField = useDistanceField;
-    this->validate();
+#endif
     return strike;
 }
 
@@ -94,7 +90,7 @@ private:
 };
 
 GrGlyph* GrTextStrike::getGlyph(GrGlyph::PackedID packed,
-                                GrFontScaler* scaler) {
+                                SkGrFontScaler* scaler) {
     GrGlyph* glyph = fCache.find(packed);
     if (NULL == glyph) {
         glyph = this->generateGlyph(packed, scaler);

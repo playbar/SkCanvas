@@ -39,12 +39,12 @@ public:
     virtual void endContext() SK_OVERRIDE;
     virtual void shadeSpan(int x, int y, SkPMColor[], int count) SK_OVERRIDE;
 
-    SK_TO_STRING_OVERRIDE()
+    SK_DEVELOPER_TO_STRING()
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkComposeShader)
 
 protected:
-    SkComposeShader(SkReadBuffer& );
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
+    SkComposeShader(SkFlattenableReadBuffer& );
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
 
 private:
 

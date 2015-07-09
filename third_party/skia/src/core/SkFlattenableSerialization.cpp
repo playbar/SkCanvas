@@ -9,12 +9,13 @@
 
 #include "SkData.h"
 #include "SkValidatingReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkOrderedWriteBuffer.h"
 
 SkData* SkValidatingSerializeFlattenable(SkFlattenable* flattenable) {
-    SkWriteBuffer writer(SkWriteBuffer::kValidation_Flag);
+    SkOrderedWriteBuffer writer(1024);
+    writer.setFlags(SkOrderedWriteBuffer::kValidation_Flag);
     writer.writeFlattenable(flattenable);
-    size_t size = writer.bytesWritten();
+    uint32_t size = writer.bytesWritten();
     void* data = sk_malloc_throw(size);
     writer.writeToMemory(data);
     return SkData::NewFromMalloc(data, size);

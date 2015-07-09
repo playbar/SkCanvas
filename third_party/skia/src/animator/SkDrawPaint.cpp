@@ -91,7 +91,6 @@ SkDrawPaint::~SkDrawPaint() {
 }
 
 bool SkDrawPaint::add(SkAnimateMaker* maker, SkDisplayable* child) {
-    SkASSERT(child && child->isPaintPart());
     SkPaintPart* part = (SkPaintPart*) child;
     if (part->add() && maker)
         maker->setErrorCode(SkDisplayXMLParserError::kErrorAddingToPaint);
@@ -152,22 +151,18 @@ void SkDrawPaint::executeFunction(SkDisplayable* target, int index,
         SkScriptValue* scriptValue) {
         if (scriptValue == NULL)
             return;
-    SkASSERT(target == this);
     switch (index) {
         case SK_FUNCTION(measureText): {
-            SkASSERT(parameters.count() == 1);
-            SkASSERT(type == SkType_Float);
             SkPaint paint;
             setupPaint(&paint);
             scriptValue->fType = SkType_Float;
-            SkASSERT(parameters[0].fType == SkType_String);
             scriptValue->fOperand.fScalar = paint.measureText(parameters[0].fOperand.fString->c_str(),
                 parameters[0].fOperand.fString->size());
 //          SkDebugf("measureText: %s = %g\n", parameters[0].fOperand.fString->c_str(),
 //              scriptValue->fOperand.fScalar / 65536.0f);
             } break;
         default:
-            SkASSERT(0);
+			break;
     }
 }
 
@@ -189,7 +184,6 @@ bool SkDrawPaint::getProperty(int index, SkScriptValue* value) const {
             break;
         // should consider returning fLeading as well (or roll it into ascent/descent somehow
         default:
-            SkASSERT(0);
             return false;
     }
     value->fType = SkType_Float;
@@ -197,7 +191,6 @@ bool SkDrawPaint::getProperty(int index, SkScriptValue* value) const {
 }
 
 bool SkDrawPaint::resolveIDs(SkAnimateMaker& maker, SkDisplayable* origDisp, SkApply* ) {
-    SkASSERT(origDisp->isPaint());
     SkDrawPaint* original = (SkDrawPaint*) origDisp;
     if (fOwnsColor && maker.resolveID(color, original->color) == false)
         return true;

@@ -11,12 +11,6 @@
 #include "SkTSearch.h"
 #include "GrTexture.h"
 
-#ifdef SK_DEBUG
-    #define VALIDATE this->validate()
-#else
-    #define VALIDATE
-#endif
-
 int32_t GrTextureStripAtlas::gCacheCount = 0;
 
 GrTHashTable<GrTextureStripAtlas::AtlasEntry,
@@ -35,7 +29,6 @@ GrTextureStripAtlas::GetCache() {
 
 // Remove the specified atlas from the cache
 void GrTextureStripAtlas::CleanUp(const GrContext*, void* info) {
-    SkASSERT(NULL != info);
 
     AtlasEntry* entry = static_cast<AtlasEntry*>(info);
 
@@ -78,9 +71,7 @@ GrTextureStripAtlas::GrTextureStripAtlas(GrTextureStripAtlas::Desc desc)
     , fRows(SkNEW_ARRAY(AtlasRow, fNumRows))
     , fLRUFront(NULL)
     , fLRUBack(NULL) {
-    SkASSERT(fNumRows * fDesc.fRowHeight == fDesc.fHeight);
     this->initLRU();
-    VALIDATE;
 }
 
 GrTextureStripAtlas::~GrTextureStripAtlas() {
@@ -88,7 +79,6 @@ GrTextureStripAtlas::~GrTextureStripAtlas() {
 }
 
 int GrTextureStripAtlas::lockRow(const SkBitmap& data) {
-    VALIDATE;
     if (0 == fLockedRows) {
         this->lockTexture();
     }
@@ -164,23 +154,18 @@ int GrTextureStripAtlas::lockRow(const SkBitmap& data) {
                                            GrContext::kDontFlush_PixelOpsFlag);
     }
 
-    SkASSERT(rowNumber >= 0);
-    VALIDATE;
     return rowNumber;
 }
 
 void GrTextureStripAtlas::unlockRow(int row) {
-    VALIDATE;
     --fRows[row].fLocks;
     --fLockedRows;
-    SkASSERT(fRows[row].fLocks >= 0 && fLockedRows >= 0);
     if (0 == fRows[row].fLocks) {
         this->appendLRU(fRows + row);
     }
     if (0 == fLockedRows) {
         this->unlockTexture();
     }
-    VALIDATE;
 }
 
 GrTextureStripAtlas::AtlasRow* GrTextureStripAtlas::getLRU() {
@@ -196,7 +181,7 @@ void GrTextureStripAtlas::lockTexture() {
     texDesc.fHeight = fDesc.fHeight;
     texDesc.fConfig = fDesc.fConfig;
 
-    static const GrCacheID::Domain gTextureStripAtlasDomain = GrCacheID::GenerateDomain();
+    static const uint8_t gTextureStripAtlasDomain = GrCacheID::GenerateDomain();
     GrCacheID::Key key;
     *key.fData32 = fCacheKey;
     memset(key.fData32 + 1, 0, sizeof(key) - sizeof(uint32_t));
@@ -209,11 +194,9 @@ void GrTextureStripAtlas::lockTexture() {
         this->initLRU();
         fKeyTable.rewind();
     }
-    SkASSERT(NULL != fTexture);
 }
 
 void GrTextureStripAtlas::unlockTexture() {
-    SkASSERT(NULL != fTexture && 0 == fLockedRows);
     fTexture->unref();
     fTexture = NULL;
     fDesc.fContext->purgeCache();
@@ -229,12 +212,9 @@ void GrTextureStripAtlas::initLRU() {
         fRows[i].fPrev = NULL;
         this->appendLRU(fRows + i);
     }
-    SkASSERT(NULL == fLRUFront || NULL == fLRUFront->fPrev);
-    SkASSERT(NULL == fLRUBack || NULL == fLRUBack->fNext);
 }
 
 void GrTextureStripAtlas::appendLRU(AtlasRow* row) {
-    SkASSERT(NULL == row->fPrev && NULL == row->fNext);
     if (NULL == fLRUFront && NULL == fLRUBack) {
         fLRUFront = row;
         fLRUBack = row;
@@ -246,20 +226,17 @@ void GrTextureStripAtlas::appendLRU(AtlasRow* row) {
 }
 
 void GrTextureStripAtlas::removeFromLRU(AtlasRow* row) {
-    SkASSERT(NULL != row);
     if (NULL != row->fNext && NULL != row->fPrev) {
         row->fPrev->fNext = row->fNext;
         row->fNext->fPrev = row->fPrev;
     } else {
         if (NULL == row->fNext) {
-            SkASSERT(row == fLRUBack);
             fLRUBack = row->fPrev;
             if (fLRUBack) {
                 fLRUBack->fNext = NULL;
             }
         }
         if (NULL == row->fPrev) {
-            SkASSERT(row == fLRUFront);
             fLRUFront = row->fNext;
             if (fLRUFront) {
                 fLRUFront->fPrev = NULL;
@@ -280,69 +257,3 @@ int GrTextureStripAtlas::searchByKey(uint32_t key) {
                                                    sizeof(AtlasRow*));
 }
 
-#ifdef SK_DEBUG
-void GrTextureStripAtlas::validate() {
-
-    // Our key table should be sorted
-    uint32_t prev = 1 > fKeyTable.count() ? 0 : fKeyTable[0]->fKey;
-    for (int i = 1; i < fKeyTable.count(); ++i) {
-        SkASSERT(prev < fKeyTable[i]->fKey);
-        SkASSERT(fKeyTable[i]->fKey != kEmptyAtlasRowKey);
-        prev = fKeyTable[i]->fKey;
-    }
-
-    int lruCount = 0;
-    // Validate LRU pointers, and count LRU entries
-    SkASSERT(NULL == fLRUFront || NULL == fLRUFront->fPrev);
-    SkASSERT(NULL == fLRUBack  || NULL == fLRUBack->fNext);
-    for (AtlasRow* r = fLRUFront; r != NULL; r = r->fNext) {
-        if (NULL == r->fNext) {
-            SkASSERT(r == fLRUBack);
-        } else {
-            SkASSERT(r->fNext->fPrev == r);
-        }
-        ++lruCount;
-    }
-
-    int rowLocks = 0;
-    int freeRows = 0;
-
-    for (int i = 0; i < fNumRows; ++i) {
-        rowLocks += fRows[i].fLocks;
-        if (0 == fRows[i].fLocks) {
-            ++freeRows;
-            bool inLRU = false;
-            // Step through the LRU and make sure it's present
-            for (AtlasRow* r = fLRUFront; r != NULL; r = r->fNext) {
-                if (r == &fRows[i]) {
-                    inLRU = true;
-                    break;
-                }
-            }
-            SkASSERT(inLRU);
-        } else {
-            // If we are locked, we should have a key
-            SkASSERT(kEmptyAtlasRowKey != fRows[i].fKey);
-        }
-
-        // If we have a key != kEmptyAtlasRowKey, it should be in the key table
-        SkASSERT(fRows[i].fKey == kEmptyAtlasRowKey || this->searchByKey(fRows[i].fKey) >= 0);
-    }
-
-    // Our count of locks should equal the sum of row locks, unless we ran out of rows and flushed,
-    // in which case we'll have one more lock than recorded in the rows (to represent the pending
-    // lock of a row; which ensures we don't unlock the texture prematurely).
-    SkASSERT(rowLocks == fLockedRows || rowLocks + 1 == fLockedRows);
-
-    // We should have one lru entry for each free row
-    SkASSERT(freeRows == lruCount);
-
-    // If we have locked rows, we should have a locked texture, otherwise
-    // it should be unlocked
-    if (fLockedRows == 0) {
-        SkASSERT(NULL == fTexture);
-    } else {
-        SkASSERT(NULL != fTexture);
-    }
-}
-#endif

@@ -258,8 +258,6 @@ SkConvolutionFilter1D::~SkConvolutionFilter1D() {
 void SkConvolutionFilter1D::AddFilter(int filterOffset,
                                       const float* filterValues,
                                       int filterLength) {
-    SkASSERT(filterLength > 0);
-
     SkTArray<ConvolutionFixed> fixedValues;
     fixedValues.reset(filterLength);
 
@@ -292,8 +290,6 @@ void SkConvolutionFilter1D::AddFilter(int filterOffset,
 
         filterOffset += firstNonZero;
         filterLength = lastNonZero + 1 - firstNonZero;
-        SkASSERT(filterLength > 0);
-
         for (int i = firstNonZero; i <= lastNonZero; i++) {
             fFilterValues.push_back(filterValues[i]);
         }
@@ -371,7 +367,6 @@ void BGRAConvolve2D(const unsigned char* sourceData,
 
     // Loop over every possible output row, processing just enough horizontal
     // convolutions to run each subsequent vertical convolution.
-    SkASSERT(outputByteRowStride >= filterX.numValues() * 4);
     int numOutputRows = filterY.numValues();
 
     // We need to check which is the last line to convolve before we advance 4

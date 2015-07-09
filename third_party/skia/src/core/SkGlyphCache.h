@@ -23,17 +23,6 @@ class SkPaint;
 
 class SkGlyphCache_Globals;
 
-/** \class SkGlyphCache
-
-    This class represents a strike: a specific combination of typeface, size,
-    matrix, etc., and holds the glyphs for that strike. Calling any of the
-    getUnichar.../getGlyphID... methods will return the requested glyph,
-    either instantly if it is already cahced, or by first generating it and then
-    adding it to the strike.
-
-    The strikes are held in a global list, available to all threads. To interact
-    with one, call either VisitCache() or DetachCache().
-*/
 class SkGlyphCache {
 public:
     /** Returns a glyph with valid fAdvance and fDevKern fields.
@@ -159,22 +148,14 @@ public:
         return VisitCache(typeface, desc, DetachProc, NULL);
     }
 
-#ifdef SK_DEBUG
-    void validate() const;
-#else
-    void validate() const {}
-#endif
-
     class AutoValidate : SkNoncopyable {
     public:
         AutoValidate(const SkGlyphCache* cache) : fCache(cache) {
             if (fCache) {
-                fCache->validate();
             }
         }
         ~AutoValidate() {
             if (fCache) {
-                fCache->validate();
             }
         }
         void forget() {

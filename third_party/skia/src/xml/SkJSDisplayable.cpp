@@ -229,7 +229,7 @@ JSBool SkJSDisplayable::GetProperty(JSContext *cx, JSObject *obj, jsval id,
     SkASSERT(idIndex >= 0 && idIndex < members);
     info = &info[idIndex];
     SkDisplayTypes infoType = (SkDisplayTypes) info->fType;
-    SkScalar scalar = 0;
+    float scalar = 0;
     S32 s32 = 0;
     SkString* string= NULL;
     JSString *str;
@@ -301,7 +301,7 @@ JSBool SkJSDisplayable::SetProperty(JSContext *cx, JSObject *obj, jsval id, jsva
     SkASSERT(idIndex >= 0 && idIndex < members);
     info = &info[idIndex];
     SkDisplayTypes infoType = info->getType();
-    SkScalar scalar = 0;
+    float scalar = 0;
     S32 s32 = 0;
     SkString string;
     JSString* str;

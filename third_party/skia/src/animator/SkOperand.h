@@ -26,21 +26,23 @@ union SkOperand {
     void* fObject;
     int32_t fS32;
     SkMSec fMSec;
-    SkScalar fScalar;
+    float fScalar;
     SkString* fString;
 };
 
 struct SkScriptValue {
     SkOperand fOperand;
     SkDisplayTypes fType;
-    SkTypedArray* getArray() { SkASSERT(fType == SkType_Array); return fOperand.fArray; }
-    SkDisplayable* getDisplayable() { SkASSERT(fType == SkType_Displayable); return fOperand.fDisplayable; }
-    SkDrawable* getDrawable() { SkASSERT(fType == SkType_Drawable); return fOperand.fDrawable; }
-    int32_t getS32(SkAnimateMaker* maker) { SkASSERT(fType == SkType_Int || fType == SkType_Boolean ||
-        SkDisplayType::IsEnum(maker, fType)); return fOperand.fS32; }
-    SkMSec getMSec() { SkASSERT(fType == SkType_MSec); return fOperand.fMSec; }
-    SkScalar getScalar() { SkASSERT(fType == SkType_Float); return fOperand.fScalar; }
-    SkString* getString() { SkASSERT(fType == SkType_String); return fOperand.fString; }
+    SkTypedArray* getArray() {  return fOperand.fArray; }
+    SkDisplayable* getDisplayable() { return fOperand.fDisplayable; }
+    SkDrawable* getDrawable() { return fOperand.fDrawable; }
+    int32_t getS32(SkAnimateMaker* maker)
+	{
+		return fOperand.fS32;
+	}
+    SkMSec getMSec() { return fOperand.fMSec; }
+    float getScalar() { return fOperand.fScalar; }
+    SkString* getString() { return fOperand.fString; }
 };
 
 #endif // SkOperand_DEFINED

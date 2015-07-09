@@ -58,7 +58,7 @@ public:
     };
 
 protected:
-    virtual const GrGLInterface* createGLContext() SK_OVERRIDE;
+    virtual void createGLContext() SK_OVERRIDE;
     virtual void destroyGLContext() SK_OVERRIDE;
 
 private:

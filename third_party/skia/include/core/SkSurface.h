@@ -52,7 +52,10 @@ public:
      *  pixels in SkPMColor format.
      */
     static SkSurface* NewRasterPMColor(int width, int height) {
-        return NewRaster(SkImageInfo::MakeN32Premul(width, height));
+        SkImageInfo info = {
+            width, height, kPMColor_SkColorType, kPremul_SkAlphaType
+        };
+        return NewRaster(info);
     }
 
     /**
@@ -65,7 +68,7 @@ public:
     /**
      *  Return a new surface using the specified render target.
      */
-    static SkSurface* NewRenderTargetDirect(GrRenderTarget*);
+    static SkSurface* NewRenderTargetDirect(GrContext*, GrRenderTarget*);
 
     /**
      *  Return a new surface whose contents will be drawn to an offscreen
@@ -146,23 +149,10 @@ public:
      *  we'd know that the "snapshot" need only live until we've handed it off
      *  to the canvas.
      */
-    void draw(SkCanvas*, SkScalar x, SkScalar y, const SkPaint*);
-
-    /**
-     *  If the surface has direct access to its pixels (i.e. they are in local
-     *  RAM) return the const-address of those pixels, and if not null, return
-     *  the ImageInfo and rowBytes. The returned address is only valid while
-     *  the surface object is in scope, and no API call is made on the surface
-     *  or its canvas.
-     *
-     *  On failure, returns NULL and the info and rowBytes parameters are
-     *  ignored.
-     */
-    const void* peekPixels(SkImageInfo* info, size_t* rowBytes);
+	void draw(SkCanvas*, float x, float y, const SkPaint*);
 
 protected:
     SkSurface(int width, int height);
-    SkSurface(const SkImageInfo&);
 
     // called by subclass if their contents have changed
     void dirtyGenerationID() {

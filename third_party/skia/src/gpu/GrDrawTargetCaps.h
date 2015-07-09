@@ -15,7 +15,8 @@
 /**
  * Represents the draw target capabilities.
  */
-class GrDrawTargetCaps : public SkRefCnt {
+class GrDrawTargetCaps : public SkRefCnt 
+{
 public:
     SK_DECLARE_INST_COUNT(Caps)
 
@@ -40,7 +41,6 @@ public:
     bool bufferLockSupport() const { return fBufferLockSupport; }
     bool pathRenderingSupport() const { return fPathRenderingSupport; }
     bool dstReadInShaderSupport() const { return fDstReadInShaderSupport; }
-    bool gpuTracingSupport() const { return fGpuTracingSupport; }
 
     // Scratch textures not being reused means that those scratch textures
     // that we upload to (i.e., don't have a render target) will not be
@@ -54,7 +54,6 @@ public:
     int maxSampleCount() const { return fMaxSampleCount; }
 
     bool isConfigRenderable(GrPixelConfig config, bool withMSAA) const {
-        SkASSERT(kGrPixelConfigCnt > config);
         return fConfigRenderSupport[config][withMSAA];
     }
 
@@ -72,7 +71,6 @@ protected:
     bool fPathRenderingSupport      : 1;
     bool fDstReadInShaderSupport    : 1;
     bool fReuseScratchTextures      : 1;
-    bool fGpuTracingSupport         : 1;
 
     int fMaxRenderTargetSize;
     int fMaxTextureSize;

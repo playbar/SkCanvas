@@ -29,12 +29,10 @@ struct GrGpuGL::ProgramCache::Entry {
 
 struct GrGpuGL::ProgramCache::ProgDescLess {
     bool operator() (const GrGLProgramDesc& desc, const Entry* entry) {
-        SkASSERT(NULL != entry->fProgram.get());
         return GrGLProgramDesc::Less(desc, entry->fProgram->getDesc());
     }
 
     bool operator() (const Entry* entry, const GrGLProgramDesc& desc) {
-        SkASSERT(NULL != entry->fProgram.get());
         return GrGLProgramDesc::Less(entry->fProgram->getDesc(), desc);
     }
 };
@@ -76,7 +74,6 @@ GrGpuGL::ProgramCache::~ProgramCache() {
 
 void GrGpuGL::ProgramCache::abandon() {
     for (int i = 0; i < fCount; ++i) {
-        SkASSERT(NULL != fEntries[i]->fProgram.get());
         fEntries[i]->fProgram->abandon();
         fEntries[i]->fProgram.reset(NULL);
     }
@@ -105,7 +102,6 @@ GrGLProgram* GrGpuGL::ProgramCache::getProgram(const GrGLProgramDesc& desc,
     hashIdx &=((1 << kHashBits) - 1);
     Entry* hashedEntry = fHashTable[hashIdx];
     if (NULL != hashedEntry && hashedEntry->fProgram->getDesc() == desc) {
-        SkASSERT(NULL != hashedEntry->fProgram);
         entry = hashedEntry;
     }
 
@@ -135,7 +131,6 @@ GrGLProgram* GrGpuGL::ProgramCache::getProgram(const GrGLProgramDesc& desc,
             purgeIdx = fCount++;
             fEntries[purgeIdx] = entry;
         } else {
-            SkASSERT(fCount == kMaxEntries);
             purgeIdx = 0;
             for (int i = 1; i < kMaxEntries; ++i) {
                 if (fEntries[i]->fLRUStamp < fEntries[purgeIdx]->fLRUStamp) {
@@ -148,7 +143,6 @@ GrGLProgram* GrGpuGL::ProgramCache::getProgram(const GrGLProgramDesc& desc,
                 fHashTable[purgedHashIdx] = NULL;
             }
         }
-        SkASSERT(fEntries[purgeIdx] == entry);
         entry->fProgram.reset(program);
         // We need to shift fEntries around so that the entry currently at purgeIdx is placed
         // just before the entry at ~entryIdx (in order to keep fEntries sorted by descriptor).
@@ -171,16 +165,7 @@ GrGLProgram* GrGpuGL::ProgramCache::getProgram(const GrGLProgramDesc& desc,
             memmove(fEntries + purgeIdx, fEntries + purgeIdx + 1, copySize);
             fEntries[entryIdx - 1] = entry;
         }
-#ifdef SK_DEBUG
-        SkASSERT(NULL != fEntries[0]->fProgram.get());
-        for (int i = 0; i < fCount - 1; ++i) {
-            SkASSERT(NULL != fEntries[i + 1]->fProgram.get());
-            const GrGLProgramDesc& a = fEntries[i]->fProgram->getDesc();
-            const GrGLProgramDesc& b = fEntries[i + 1]->fProgram->getDesc();
-            SkASSERT(GrGLProgramDesc::Less(a, b));
-            SkASSERT(!GrGLProgramDesc::Less(b, a));
-        }
-#endif
+
     }
 
     fHashTable[hashIdx] = entry;
@@ -206,13 +191,10 @@ void GrGpuGL::abandonResources(){
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#define GL_CALL(X) GR_GL_CALL(this->glInterface(), X)
-
 bool GrGpuGL::flushGraphicsState(DrawType type, const GrDeviceCoordTexture* dstCopy) {
     const GrDrawState& drawState = this->getDrawState();
 
     // GrGpu::setupClipAndFlushState should have already checked this and bailed if not true.
-    SkASSERT(NULL != drawState.getRenderTarget());
 
     if (kStencilPath_DrawType == type) {
         const GrRenderTarget* rt = this->getDrawState().getRenderTarget();
@@ -247,17 +229,15 @@ bool GrGpuGL::flushGraphicsState(DrawType type, const GrDeviceCoordTexture* dstC
                                                         colorStages.begin(),
                                                         coverageStages.begin()));
         if (NULL == fCurrentProgram.get()) {
-            SkDEBUGFAIL("Failed to create program!");
             return false;
         }
 
-        SkASSERT(kDrawPath_DrawType != type || !fCurrentProgram->hasVertexShader());
-
         fCurrentProgram.get()->ref();
 
-        GrGLuint programID = fCurrentProgram->programID();
-        if (fHWProgramID != programID) {
-            GL_CALL(UseProgram(programID));
+        GLuint programID = fCurrentProgram->programID();
+        if (fHWProgramID != programID)
+		{
+            glUseProgram(programID);
             fHWProgramID = programID;
         }
 
@@ -289,7 +269,7 @@ bool GrGpuGL::flushGraphicsState(DrawType type, const GrDeviceCoordTexture* dstC
 
 void GrGpuGL::setupGeometry(const DrawInfo& info, size_t* indexOffsetInBytes) {
 
-    GrGLsizei stride = static_cast<GrGLsizei>(this->getDrawState().getVertexSize());
+    GLsizei stride = static_cast<GLsizei>(this->getDrawState().getVertexSize());
 
     size_t vertexOffsetInBytes = stride * info.startVertex();
 
@@ -311,13 +291,10 @@ void GrGpuGL::setupGeometry(const DrawInfo& info, size_t* indexOffsetInBytes) {
             GrCrash("Unknown geometry src type!");
     }
 
-    SkASSERT(NULL != vbuf);
-    SkASSERT(!vbuf->isLocked());
     vertexOffsetInBytes += vbuf->baseOffset();
 
     GrGLIndexBuffer* ibuf = NULL;
     if (info.isIndexed()) {
-        SkASSERT(NULL != indexOffsetInBytes);
 
         switch (this->getGeomSrc().fIndexSrc) {
         case kBuffer_GeometrySrcType:
@@ -327,7 +304,7 @@ void GrGpuGL::setupGeometry(const DrawInfo& info, size_t* indexOffsetInBytes) {
         case kArray_GeometrySrcType:
         case kReserved_GeometrySrcType:
             this->finalizeReservedIndices();
-            *indexOffsetInBytes = geoPoolState.fPoolStartIndex * sizeof(GrGLushort);
+            *indexOffsetInBytes = geoPoolState.fPoolStartIndex * sizeof(GLushort);
             ibuf = (GrGLIndexBuffer*) geoPoolState.fPoolIndexBuffer;
             break;
         default:
@@ -335,8 +312,6 @@ void GrGpuGL::setupGeometry(const DrawInfo& info, size_t* indexOffsetInBytes) {
             GrCrash("Unknown geometry src type!");
         }
 
-        SkASSERT(NULL != ibuf);
-        SkASSERT(!ibuf->isLocked());
         *indexOffsetInBytes += ibuf->baseOffset();
     }
     GrGLAttribArrayState* attribState =
@@ -344,29 +319,20 @@ void GrGpuGL::setupGeometry(const DrawInfo& info, size_t* indexOffsetInBytes) {
 
     if (!fCurrentProgram->hasVertexShader()) {
         int posIdx = this->getDrawState().positionAttributeIndex();
-        const GrVertexAttrib* vertexAttrib = this->getDrawState().getVertexAttribs() + posIdx;
-        GrVertexAttribType attribType = vertexAttrib->fType;
-        SkASSERT(!GrGLAttribTypeToLayout(attribType).fNormalized);
-        SkASSERT(GrGLAttribTypeToLayout(attribType).fCount == 2);
-
-        // Attrib at location 0 is defined to be bound to vertex in fixed-function pipe.  Asserts
-        // above should make sure position attribute goes to location 0 when below code is executed.
-
-        attribState->set(this,
-                         0,
-                         vbuf,
-                         GrGLAttribTypeToLayout(attribType).fCount,
-                         GrGLAttribTypeToLayout(attribType).fType,
-                         GrGLAttribTypeToLayout(attribType).fNormalized,
-                         stride,
-                         reinterpret_cast<GrGLvoid*>(
-                             vertexOffsetInBytes + vertexAttrib->fOffset));
-        attribState->disableUnusedArrays(this, 1);
+        const GrVertexAttrib* vertexArray = this->getDrawState().getVertexAttribs() + posIdx;
+        GrVertexAttribType vertexArrayType = vertexArray->fType;
+        attribState->setFixedFunctionVertexArray(this,
+                                                 vbuf,
+                                                 2,
+                                                 GrGLAttribTypeToLayout(vertexArrayType).fType,
+                                                 stride,
+                                                 reinterpret_cast<GLvoid*>(
+                                                 vertexOffsetInBytes + vertexArray->fOffset));
+        attribState->disableUnusedArrays(this, 0, true);
     } else {
-        int vertexAttribCount = this->getDrawState().getVertexAttribCount();
         uint32_t usedAttribArraysMask = 0;
         const GrVertexAttrib* vertexAttrib = this->getDrawState().getVertexAttribs();
-
+        int vertexAttribCount = this->getDrawState().getVertexAttribCount();
         for (int vertexAttribIndex = 0; vertexAttribIndex < vertexAttribCount;
              ++vertexAttribIndex, ++vertexAttrib) {
 
@@ -379,9 +345,10 @@ void GrGpuGL::setupGeometry(const DrawInfo& info, size_t* indexOffsetInBytes) {
                              GrGLAttribTypeToLayout(attribType).fType,
                              GrGLAttribTypeToLayout(attribType).fNormalized,
                              stride,
-                             reinterpret_cast<GrGLvoid*>(
-                                 vertexOffsetInBytes + vertexAttrib->fOffset));
+                             reinterpret_cast<GLvoid*>(
+                             vertexOffsetInBytes + vertexAttrib->fOffset));
         }
-        attribState->disableUnusedArrays(this, usedAttribArraysMask);
+
+        attribState->disableUnusedArrays(this, usedAttribArraysMask, false);
     }
 }

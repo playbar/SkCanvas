@@ -162,7 +162,6 @@ bool SkDisplayEvent::getProperty(int index, SkScriptValue* value) const {
             value->fOperand.fString->append(scratch, size);
             } break;
         default:
-            SkASSERT(0);
             return false;
     }
     return true;
@@ -174,9 +173,7 @@ void SkDisplayEvent::onEndElement(SkAnimateMaker& maker)
         return;
     maker.fEvents.addEvent(this);
     if (kind == kOnEnd) {
-        SkDEBUGCODE(bool found = ) maker.find(target.c_str(), &fTarget);
-        SkASSERT(found);
-        SkASSERT(fTarget && fTarget->isAnimate());
+        maker.find(target.c_str(), &fTarget);
         SkAnimateBase* animate = (SkAnimateBase*) fTarget;
         animate->setHasEndEvent();
     }
@@ -213,13 +210,12 @@ void SkDisplayEvent::populateInput(SkAnimateMaker& maker, const SkEvent& fEvent)
                 meta.findScalar(name, &input->fFloat);
                 break;
             case SkMetaData::kPtr_Type:
-                SkASSERT(0);
                 break; // !!! not handled for now
             case SkMetaData::kString_Type:
                 input->string.set(meta.findString(name));
                 break;
             default:
-                SkASSERT(0);
+				break;
         }
     }
     // re-evaluate all animators that may have built their values from input strings
@@ -233,20 +229,14 @@ void SkDisplayEvent::populateInput(SkAnimateMaker& maker, const SkEvent& fEvent)
 }
 
 bool SkDisplayEvent::setProperty(int index, SkScriptValue& value) {
-    SkASSERT(index == SK_PROPERTY(key) || index == SK_PROPERTY(keys));
-    SkASSERT(value.fType == SkType_String);
     SkString* string = value.fOperand.fString;
     const char* chars = string->c_str();
     int count = SkUTF8_CountUnichars(chars);
-    SkASSERT(count >= 1);
     code = (SkKey) SkUTF8_NextUnichar(&chars);
     fMax = code;
-    SkASSERT(count == 1 || index == SK_PROPERTY(keys));
     if (--count > 0) {
-        SkASSERT(*chars == '-');
         chars++;
         fMax = (SkKey) SkUTF8_NextUnichar(&chars);
-        SkASSERT(fMax >= code);
     }
     return true;
 }

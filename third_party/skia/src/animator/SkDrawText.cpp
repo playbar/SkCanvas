@@ -48,7 +48,6 @@ void SkText::dump(SkAnimateMaker* maker) {
 #endif
 
 bool SkText::getProperty(int index, SkScriptValue* value) const {
-    SkASSERT(index == SK_PROPERTY(length));
     value->fType = SkType_Int;
     value->fOperand.fS32 = (int32_t) text.size();
     return true;

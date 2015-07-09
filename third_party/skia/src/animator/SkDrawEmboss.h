@@ -18,9 +18,9 @@ class SkDrawEmboss : public SkDrawMaskFilter {
     virtual SkMaskFilter* getMaskFilter() SK_OVERRIDE;
 protected:
     SkTDScalarArray fDirection;
-    SkScalar        fSigma;
-    SkScalar        fAmbient;
-    SkScalar        fSpecular;
+    float        fSigma;
+    float        fAmbient;
+    float        fSpecular;
 
     typedef SkDrawMaskFilter INHERITED;
 };

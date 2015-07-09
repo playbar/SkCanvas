@@ -79,9 +79,7 @@ void SkAnimate::onEndElement(SkAnimateMaker& maker) {
         return;
     SkDisplayTypes outType = fFieldInfo->getType();
     if (fHasValues) {
-        SkASSERT(to.size() > 0);
         fFieldInfo->setValue(maker, &fValues, 0, 0, NULL, outType, to);
-        SkASSERT(0);
         // !!! this needs to set fComponents
         return;
     }

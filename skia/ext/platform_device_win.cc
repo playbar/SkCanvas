@@ -20,35 +20,25 @@ void InitializeDC(HDC context) {
   // and arcs themselves fully respect the device context's world-to-device
   // transformation.
   BOOL res = SetGraphicsMode(context, GM_ADVANCED);
-  SkASSERT(res != 0);
 
   // Enables dithering.
   res = SetStretchBltMode(context, HALFTONE);
-  SkASSERT(res != 0);
   // As per SetStretchBltMode() documentation, SetBrushOrgEx() must be called
   // right after.
   res = SetBrushOrgEx(context, 0, 0, NULL);
-  SkASSERT(res != 0);
 
   // Sets up default orientation.
   res = SetArcDirection(context, AD_CLOCKWISE);
-  SkASSERT(res != 0);
 
   // Sets up default colors.
   res = SetBkColor(context, RGB(255, 255, 255));
-  SkASSERT(res != CLR_INVALID);
   res = SetTextColor(context, RGB(0, 0, 0));
-  SkASSERT(res != CLR_INVALID);
   res = SetDCBrushColor(context, RGB(255, 255, 255));
-  SkASSERT(res != CLR_INVALID);
   res = SetDCPenColor(context, RGB(0, 0, 0));
-  SkASSERT(res != CLR_INVALID);
 
   // Sets up default transparency.
   res = SetBkMode(context, OPAQUE);
-  SkASSERT(res != 0);
   res = SetROP2(context, R2_COPYPEN);
-  SkASSERT(res != 0);
 }
 
 PlatformSurface PlatformDevice::BeginPlatformPaint() {
@@ -69,16 +59,13 @@ bool PlatformDevice::LoadPathToDC(HDC context, const SkPath& path) {
   switch (path.getFillType()) {
     case SkPath::kWinding_FillType: {
       int res = SetPolyFillMode(context, WINDING);
-      SkASSERT(res != 0);
       break;
     }
     case SkPath::kEvenOdd_FillType: {
       int res = SetPolyFillMode(context, ALTERNATE);
-      SkASSERT(res != 0);
       break;
     }
     default: {
-      SkASSERT(false);
       break;
     }
   }
@@ -106,14 +93,12 @@ bool PlatformDevice::LoadPathToDC(HDC context, const SkPath& path) {
       points.push_back(SkPointToPOINT(point->p[2]));
       points.push_back(SkPointToPOINT(point->p[3]));
     }
-    SkASSERT((points.size() - 1) % 3 == 0);
     // This is slightly inefficient since all straight line and quadratic lines
     // are "upgraded" to a cubic line.
     // TODO(maruel):  http://b/1147346 We should use
     // PolyDraw/PolyBezier/Polyline whenever possible.
     res = PolyBezier(context, &points.front(),
                      static_cast<DWORD>(points.size()));
-    SkASSERT(res != 0);
     if (res == 0)
       break;
   }
@@ -122,7 +107,6 @@ bool PlatformDevice::LoadPathToDC(HDC context, const SkPath& path) {
     AbortPath(context);
   } else {
     res = EndPath(context);
-    SkASSERT(res != 0);
   }
   return true;
 }
@@ -191,7 +175,6 @@ bool PlatformDevice::SkPathToCubicPaths(CubicPaths* paths,
         break;
       }
     }
-    SkASSERT(current_path);
     if (!current_path) {
       paths->clear();
       return false;
@@ -229,9 +212,7 @@ void PlatformDevice::LoadClippingRegionToDC(HDC context,
     hrgn = PathToRegion(context);
   }
   int result = SelectClipRgn(context, hrgn);
-  SkASSERT(result != ERROR);
   result = DeleteObject(hrgn);
-  SkASSERT(result != 0);
 }
 
 }  // namespace skia

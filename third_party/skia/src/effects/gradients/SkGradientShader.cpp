@@ -13,16 +13,12 @@
 #include "SkSweepGradient.h"
 
 SkGradientShaderBase::SkGradientShaderBase(const Descriptor& desc) {
-    SkASSERT(desc.fCount > 1);
-
     fCacheAlpha = 256;  // init to a value that paint.getAlpha() can't return
 
     fMapper = desc.fMapper;
     SkSafeRef(fMapper);
     fGradFlags = SkToU8(desc.fFlags);
 
-    SkASSERT((unsigned)desc.fTileMode < SkShader::kTileModeCount);
-    SkASSERT(SkShader::kTileModeCount == SK_ARRAY_COUNT(gTileProcs));
     fTileMode = desc.fTileMode;
     fTileProc = gTileProcs[desc.fTileMode];
 
@@ -130,8 +126,6 @@ SkGradientShaderBase::SkGradientShaderBase(const Descriptor& desc) {
 }
 
 static uint32_t pack_mode_flags(SkShader::TileMode mode, uint32_t flags) {
-    SkASSERT(0 == (flags >> 28));
-    SkASSERT(0 == ((uint32_t)mode >> 4));
     return (flags << 4) | mode;
 }
 
@@ -143,7 +137,7 @@ static uint32_t unpack_flags(uint32_t packed) {
     return packed >> 4;
 }
 
-SkGradientShaderBase::SkGradientShaderBase(SkReadBuffer& buffer) : INHERITED(buffer) {
+SkGradientShaderBase::SkGradientShaderBase(SkFlattenableReadBuffer& buffer) : INHERITED(buffer) {
     fCacheAlpha = 256;
 
     fMapper = buffer.readUnitMapper();
@@ -205,7 +199,7 @@ void SkGradientShaderBase::initCommon() {
     fColorsAreOpaque = colorAlpha == 0xFF;
 }
 
-void SkGradientShaderBase::flatten(SkWriteBuffer& buffer) const {
+void SkGradientShaderBase::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writeFlattenable(fMapper);
     buffer.writeColorArray(fOrigColors, fColorCount);
@@ -282,9 +276,6 @@ void SkGradientShaderBase::setCacheAlpha(U8CPU alpha) const {
 */
 void SkGradientShaderBase::Build16bitCache(uint16_t cache[], SkColor c0, SkColor c1,
                                       int count) {
-    SkASSERT(count > 1);
-    SkASSERT(SkColorGetA(c0) == 0xFF);
-    SkASSERT(SkColorGetA(c1) == 0xFF);
 
     SkFixed r = SkColorGetR(c0);
     SkFixed g = SkColorGetG(c0);
@@ -323,7 +314,6 @@ void SkGradientShaderBase::Build16bitCache(uint16_t cache[], SkColor c0, SkColor
  *         of using |
  *
  *  We chose #1 just because it was more localized.
- *  See http://code.google.com/p/skia/issues/detail?id=1113
  *
  *  The type SkUFixed encapsulate this need for unsigned, but logically Fixed.
  */
@@ -331,8 +321,6 @@ typedef uint32_t SkUFixed;
 
 void SkGradientShaderBase::Build32bitCache(SkPMColor cache[], SkColor c0, SkColor c1,
                                       int count, U8CPU paintAlpha, uint32_t gradFlags) {
-    SkASSERT(count > 1);
-
     // need to apply paintAlpha to our two endpoints
     uint32_t a0 = SkMulDiv255Round(SkColorGetA(c0), paintAlpha);
     uint32_t a1 = SkMulDiv255Round(SkColorGetA(c1), paintAlpha);
@@ -457,19 +445,17 @@ void SkGradientShaderBase::Build32bitCache(SkPMColor cache[], SkColor c0, SkColo
 }
 
 static inline int SkFixedToFFFF(SkFixed x) {
-    SkASSERT((unsigned)x <= SK_Fixed1);
     return x - (x >> 16);
 }
 
 static inline U16CPU bitsTo16(unsigned x, const unsigned bits) {
-    SkASSERT(x < (1U << bits));
     if (6 == bits) {
         return (x << 10) | (x << 4) | (x >> 2);
     }
     if (8 == bits) {
         return (x << 8) | x;
     }
-    sk_throw();
+	abort();
     return 0;
 }
 
@@ -491,7 +477,6 @@ const uint16_t* SkGradientShaderBase::getCache16() const {
             int prevIndex = 0;
             for (int i = 1; i < fColorCount; i++) {
                 int nextIndex = SkFixedToFFFF(rec[i].fPos) >> kCache16Shift;
-                SkASSERT(nextIndex < kCache16Count);
 
                 if (nextIndex > prevIndex)
                     Build16bitCache(fCache16 + prevIndex, fOrigColors[i-1], fOrigColors[i], nextIndex - prevIndex + 1);
@@ -536,7 +521,6 @@ const SkPMColor* SkGradientShaderBase::getCache32() const {
             int prevIndex = 0;
             for (int i = 1; i < fColorCount; i++) {
                 int nextIndex = SkFixedToFFFF(rec[i].fPos) >> kCache32Shift;
-                SkASSERT(nextIndex < kCache32Count);
 
                 if (nextIndex > prevIndex)
                     Build32bitCache(fCache32 + prevIndex, fOrigColors[i-1],
@@ -583,7 +567,7 @@ void SkGradientShaderBase::getGradientTableBitmap(SkBitmap* bitmap) const {
     if (fMapper) {
         // force our cahce32pixelref to be built
         (void)this->getCache32();
-        bitmap->setConfig(SkImageInfo::MakeN32Premul(kCache32Count, 1));
+        bitmap->setConfig(SkBitmap::kARGB_8888_Config, kCache32Count, 1);
         bitmap->setPixelRef(fCache32PixelRef);
         return;
     }
@@ -606,7 +590,6 @@ void SkGradientShaderBase::getGradientTableBitmap(SkBitmap* bitmap) const {
         }
     }
     *buffer++ = fGradFlags;
-    SkASSERT(buffer - storage.get() == count);
 
     ///////////////////////////////////
 
@@ -624,7 +607,7 @@ void SkGradientShaderBase::getGradientTableBitmap(SkBitmap* bitmap) const {
     if (!gCache->find(storage.get(), size, bitmap)) {
         // force our cahce32pixelref to be built
         (void)this->getCache32();
-        bitmap->setConfig(SkImageInfo::MakeN32Premul(kCache32Count, 1));
+        bitmap->setConfig(SkBitmap::kARGB_8888_Config, kCache32Count, 1);
         bitmap->setPixelRef(fCache32PixelRef);
 
         gCache->add(storage.get(), size, *bitmap);
@@ -654,7 +637,7 @@ void SkGradientShaderBase::commonAsAGradient(GradientInfo* info) const {
     }
 }
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkGradientShaderBase::toString(SkString* str) const {
 
     str->appendf("%d colors: ", fColorCount);
@@ -709,7 +692,7 @@ void SkGradientShaderBase::toString(SkString* str) const {
 
 static void desc_init(SkGradientShaderBase::Descriptor* desc,
                       const SkColor colors[],
-                      const SkScalar pos[], int colorCount,
+                      const float pos[], int colorCount,
                       SkShader::TileMode mode,
                       SkUnitMapper* mapper, uint32_t flags) {
     desc->fColors   = colors;
@@ -722,7 +705,7 @@ static void desc_init(SkGradientShaderBase::Descriptor* desc,
 
 SkShader* SkGradientShader::CreateLinear(const SkPoint pts[2],
                                          const SkColor colors[],
-                                         const SkScalar pos[], int colorCount,
+                                         const float pos[], int colorCount,
                                          SkShader::TileMode mode,
                                          SkUnitMapper* mapper,
                                          uint32_t flags) {
@@ -736,9 +719,9 @@ SkShader* SkGradientShader::CreateLinear(const SkPoint pts[2],
     return SkNEW_ARGS(SkLinearGradient, (pts, desc));
 }
 
-SkShader* SkGradientShader::CreateRadial(const SkPoint& center, SkScalar radius,
+SkShader* SkGradientShader::CreateRadial(const SkPoint& center, float radius,
                                          const SkColor colors[],
-                                         const SkScalar pos[], int colorCount,
+                                         const float pos[], int colorCount,
                                          SkShader::TileMode mode,
                                          SkUnitMapper* mapper,
                                          uint32_t flags) {
@@ -753,11 +736,11 @@ SkShader* SkGradientShader::CreateRadial(const SkPoint& center, SkScalar radius,
 }
 
 SkShader* SkGradientShader::CreateTwoPointRadial(const SkPoint& start,
-                                                 SkScalar startRadius,
+                                                 float startRadius,
                                                  const SkPoint& end,
-                                                 SkScalar endRadius,
+                                                 float endRadius,
                                                  const SkColor colors[],
-                                                 const SkScalar pos[],
+                                                 const float pos[],
                                                  int colorCount,
                                                  SkShader::TileMode mode,
                                                  SkUnitMapper* mapper,
@@ -774,11 +757,11 @@ SkShader* SkGradientShader::CreateTwoPointRadial(const SkPoint& start,
 }
 
 SkShader* SkGradientShader::CreateTwoPointConical(const SkPoint& start,
-                                                  SkScalar startRadius,
+                                                  float startRadius,
                                                   const SkPoint& end,
-                                                  SkScalar endRadius,
+                                                  float endRadius,
                                                   const SkColor colors[],
-                                                  const SkScalar pos[],
+                                                  const float pos[],
                                                   int colorCount,
                                                   SkShader::TileMode mode,
                                                   SkUnitMapper* mapper,
@@ -797,9 +780,9 @@ SkShader* SkGradientShader::CreateTwoPointConical(const SkPoint& start,
                       (start, startRadius, end, endRadius, desc));
 }
 
-SkShader* SkGradientShader::CreateSweep(SkScalar cx, SkScalar cy,
+SkShader* SkGradientShader::CreateSweep(float cx, float cy,
                                         const SkColor colors[],
-                                        const SkScalar pos[],
+                                        const float pos[],
                                         int colorCount, SkUnitMapper* mapper,
                                         uint32_t flags) {
     if (NULL == colors || colorCount < 1) {
@@ -908,7 +891,7 @@ void GrGLGradientEffect::setData(const GrGLUniformManager& uman,
         }
     } else {
 
-        SkScalar yCoord = e.getYCoord();
+        float yCoord = e.getYCoord();
         if (yCoord != fCachedYCoord) {
             uman.set1f(fFSYUni, yCoord);
             fCachedYCoord = yCoord;
@@ -962,14 +945,15 @@ void GrGLGradientEffect::emitColor(GrGLShaderBuilder* builder,
                                gradientTValue);
         builder->fsCodeAppendf("\tvec4 colorTemp = clamp(oneMinus2t, 0.0, 1.0) * %s;\n",
                                builder->getUniformVariable(fColorStartUni).c_str());
-        if (kTegra3_GrGLRenderer == builder->ctxInfo().renderer()) {
-            // The Tegra3 compiler will sometimes never return if we have
-            // min(abs(oneMinus2t), 1.0), or do the abs first in a separate expression.
-            builder->fsCodeAppend("\tfloat minAbs = abs(oneMinus2t);\n");
-            builder->fsCodeAppend("\tminAbs = minAbs > 1.0 ? 1.0 : minAbs;\n");
-            builder->fsCodeAppendf("\tcolorTemp += (1.0 - minAbs) * %s;\n",
-                                   builder->getUniformVariable(fColorMidUni).c_str());
-        } else {
+        //if (kTegra3_GrGLRenderer == builder->ctxInfo().renderer()) {
+        //    // The Tegra3 compiler will sometimes never return if we have
+        //    // min(abs(oneMinus2t), 1.0), or do the abs first in a separate expression.
+        //    builder->fsCodeAppend("\tfloat minAbs = abs(oneMinus2t);\n");
+        //    builder->fsCodeAppend("\tminAbs = minAbs > 1.0 ? 1.0 : minAbs;\n");
+        //    builder->fsCodeAppendf("\tcolorTemp += (1.0 - minAbs) * %s;\n",
+        //                           builder->getUniformVariable(fColorMidUni).c_str());
+        //} else 
+		{
             builder->fsCodeAppendf("\tcolorTemp += (1.0 - min(abs(oneMinus2t), 1.0)) * %s;\n",
                                    builder->getUniformVariable(fColorMidUni).c_str());
         }
@@ -1003,7 +987,7 @@ GrGradientEffect::GrGradientEffect(GrContext* ctx,
     fIsOpaque = shader.isOpaque();
 
     SkShader::GradientInfo info;
-    SkScalar pos[3] = {0};
+    float pos[3] = {0};
 
     info.fColorCount = 3;
     info.fColors = &fColors[0];
@@ -1043,9 +1027,8 @@ GrGradientEffect::GrGradientEffect(GrContext* ctx,
         desc.fHeight = 32;
         desc.fRowHeight = bitmap.height();
         desc.fContext = ctx;
-        desc.fConfig = SkImageInfo2GrPixelConfig(bitmap.colorType(), bitmap.alphaType());
+        desc.fConfig = SkBitmapConfig2GrPixelConfig(bitmap.config());
         fAtlas = GrTextureStripAtlas::GetAtlas(desc);
-        SkASSERT(NULL != fAtlas);
 
         // We always filter the gradient table. Each table is one row of a texture, always y-clamp.
         GrTextureParams params;
@@ -1122,7 +1105,7 @@ void GrGradientEffect::getConstantColorComponents(GrColor* color, uint32_t* vali
 
 int GrGradientEffect::RandomGradientParams(SkRandom* random,
                                            SkColor colors[],
-                                           SkScalar** stops,
+                                           float** stops,
                                            SkShader::TileMode* tm) {
     int outColors = random->nextRangeU(1, kMaxRandomGradientColors);
 
@@ -1131,7 +1114,7 @@ int GrGradientEffect::RandomGradientParams(SkRandom* random,
         *stops = NULL;
     }
 
-    SkScalar stop = 0.f;
+    float stop = 0.f;
     for (int i = 0; i < outColors; ++i) {
         colors[i] = random->nextU();
         if (NULL != *stops) {

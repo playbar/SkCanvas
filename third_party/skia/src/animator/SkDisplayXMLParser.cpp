@@ -82,7 +82,6 @@ SkDisplayXMLParser::~SkDisplayXMLParser() {
         SkDisplayable* displayable = parPtr->fDisplayable;
         if (displayable == fCurrDisplayable)
             continue;
-        SkASSERT(fMaker.fChildren.find(displayable) < 0);
         if (fMaker.fHelpers.find(displayable) < 0)
             delete displayable;
     }

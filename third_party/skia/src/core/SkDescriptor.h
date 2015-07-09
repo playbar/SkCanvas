@@ -16,12 +16,10 @@
 class SkDescriptor : SkNoncopyable {
 public:
     static size_t ComputeOverhead(int entryCount) {
-        SkASSERT(entryCount >= 0);
         return sizeof(SkDescriptor) + entryCount * sizeof(Entry);
     }
 
     static SkDescriptor* Alloc(size_t length) {
-        SkASSERT(SkAlign4(length) == length);
         SkDescriptor* desc = (SkDescriptor*)sk_malloc_throw(length);
         return desc;
     }
@@ -38,9 +36,6 @@ public:
     uint32_t getLength() const { return fLength; }
 
     void* addEntry(uint32_t tag, uint32_t length, const void* data = NULL) {
-        SkASSERT(tag);
-        SkASSERT(SkAlign4(length) == length);
-        SkASSERT(this->findEntry(tag, NULL) == NULL);
 
         Entry*  entry = (Entry*)((char*)this + fLength);
         entry->fTag = tag;
@@ -57,12 +52,6 @@ public:
     void computeChecksum() {
         fChecksum = SkDescriptor::ComputeChecksum(this);
     }
-
-#ifdef SK_DEBUG
-    void assertChecksum() const {
-        SkASSERT(SkDescriptor::ComputeChecksum(this) == fChecksum);
-    }
-#endif
 
     const void* findEntry(uint32_t tag, uint32_t* length) const {
         const Entry* entry = (const Entry*)(this + 1);
@@ -88,7 +77,6 @@ public:
 
     bool equals(const SkDescriptor& other) const {
         // probe to see if we have a good checksum algo
-//        SkASSERT(a.fChecksum != b.fChecksum || memcmp(&a, &b, a.fLength) == 0);
 
         // the first value we should look at is the checksum, so this loop
         // should terminate early if they descriptors are different.

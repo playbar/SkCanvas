@@ -13,8 +13,8 @@
 
 class SkTwoPointRadialGradient : public SkGradientShaderBase {
 public:
-    SkTwoPointRadialGradient(const SkPoint& start, SkScalar startRadius,
-                              const SkPoint& end, SkScalar endRadius,
+    SkTwoPointRadialGradient(const SkPoint& start, float startRadius,
+                              const SkPoint& end, float endRadius,
                               const Descriptor&);
 
     virtual BitmapType asABitmap(SkBitmap* bitmap,
@@ -29,25 +29,25 @@ public:
                             const SkPaint& paint,
                             const SkMatrix& matrix) SK_OVERRIDE;
 
-    SkScalar getCenterX1() const { return fDiff.length(); }
-    SkScalar getStartRadius() const { return fStartRadius; }
-    SkScalar getDiffRadius() const { return fDiffRadius; }
+    float getCenterX1() const { return fDiff.length(); }
+    float getStartRadius() const { return fStartRadius; }
+    float getDiffRadius() const { return fDiffRadius; }
 
-    SK_TO_STRING_OVERRIDE()
+    SK_DEVELOPER_TO_STRING()
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkTwoPointRadialGradient)
 
 protected:
-    SkTwoPointRadialGradient(SkReadBuffer& buffer);
-    virtual void flatten(SkWriteBuffer& buffer) const SK_OVERRIDE;
+    SkTwoPointRadialGradient(SkFlattenableReadBuffer& buffer);
+    virtual void flatten(SkFlattenableWriteBuffer& buffer) const SK_OVERRIDE;
 
 private:
     typedef SkGradientShaderBase INHERITED;
     const SkPoint fCenter1;
     const SkPoint fCenter2;
-    const SkScalar fRadius1;
-    const SkScalar fRadius2;
+    const float fRadius1;
+    const float fRadius2;
     SkPoint fDiff;
-    SkScalar fStartRadius, fDiffRadius, fSr2D2, fA, fOneOverTwoA;
+    float fStartRadius, fDiffRadius, fSr2D2, fA, fOneOverTwoA;
 
     void init();
 };

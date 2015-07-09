@@ -67,7 +67,7 @@ public:
         return intersect(aCubic, bCubic);
     }
 
-    int cubicHorizontal(const SkPoint a[4], SkScalar left, SkScalar right, SkScalar y,
+    int cubicHorizontal(const SkPoint a[4], float left, float right, float y,
                         bool flipped) {
         SkDCubic cubic;
         cubic.set(a);
@@ -75,7 +75,7 @@ public:
         return horizontal(cubic, left, right, y, flipped);
     }
 
-    int cubicVertical(const SkPoint a[4], SkScalar top, SkScalar bottom, SkScalar x, bool flipped) {
+    int cubicVertical(const SkPoint a[4], float top, float bottom, float x, bool flipped) {
         SkDCubic cubic;
         cubic.set(a);
         fMax = 3;
@@ -101,7 +101,6 @@ public:
     }
 
     bool hasT(double t) const {
-        SkASSERT(t == 0 || t == 1);
         return fUsed > 0 && (t == 0 ? fT[0][0] == 0 : fT[0][fUsed - 1] == 1);
     }
 
@@ -117,7 +116,7 @@ public:
         return (fIsCoincident[0] & 1 << index) != 0;
     }
 
-    int lineHorizontal(const SkPoint a[2], SkScalar left, SkScalar right, SkScalar y,
+    int lineHorizontal(const SkPoint a[2], float left, float right, float y,
                        bool flipped) {
         SkDLine line;
         line.set(a);
@@ -125,7 +124,7 @@ public:
         return horizontal(line, left, right, y, flipped);
     }
 
-    int lineVertical(const SkPoint a[2], SkScalar top, SkScalar bottom, SkScalar x, bool flipped) {
+    int lineVertical(const SkPoint a[2], float top, float bottom, float x, bool flipped) {
         SkDLine line;
         line.set(a);
         fMax = 2;
@@ -144,7 +143,7 @@ public:
         return fPt[index];
     }
 
-    int quadHorizontal(const SkPoint a[3], SkScalar left, SkScalar right, SkScalar y,
+    int quadHorizontal(const SkPoint a[3], float left, float right, float y,
                        bool flipped) {
         SkDQuad quad;
         quad.set(a);
@@ -152,7 +151,7 @@ public:
         return horizontal(quad, left, right, y, flipped);
     }
 
-    int quadVertical(const SkPoint a[3], SkScalar top, SkScalar bottom, SkScalar x, bool flipped) {
+    int quadVertical(const SkPoint a[3], float top, float bottom, float x, bool flipped) {
         SkDQuad quad;
         quad.set(a);
         fMax = 2;
@@ -202,11 +201,9 @@ public:
     }
 
     void downDepth() {
-        SkASSERT(--fDepth >= 0);
     }
 
     void upDepth() {
-        SkASSERT(++fDepth < 16);
     }
 
     void append(const SkIntersections& );
@@ -248,9 +245,9 @@ public:
     int vertical(const SkDLine&, double top, double bottom, double x, bool flipped);
     int vertical(const SkDQuad&, double top, double bottom, double x, bool flipped);
     int vertical(const SkDCubic&, double top, double bottom, double x, bool flipped);
-    int verticalCubic(const SkPoint a[4], SkScalar top, SkScalar bottom, SkScalar x, bool flipped);
-    int verticalLine(const SkPoint a[2], SkScalar top, SkScalar bottom, SkScalar x, bool flipped);
-    int verticalQuad(const SkPoint a[3], SkScalar top, SkScalar bottom, SkScalar x, bool flipped);
+    int verticalCubic(const SkPoint a[4], float top, float bottom, float x, bool flipped);
+    int verticalLine(const SkPoint a[2], float top, float bottom, float x, bool flipped);
+    int verticalQuad(const SkPoint a[3], float top, float bottom, float x, bool flipped);
 
     int depth() const {
 #ifdef SK_DEBUG
@@ -282,7 +279,7 @@ private:
 };
 
 extern int (SkIntersections::*CurveRay[])(const SkPoint[], const SkDLine& );
-extern int (SkIntersections::*CurveVertical[])(const SkPoint[], SkScalar top, SkScalar bottom,
-            SkScalar x, bool flipped);
+extern int (SkIntersections::*CurveVertical[])(const SkPoint[], float top, float bottom,
+            float x, bool flipped);
 
 #endif

@@ -26,7 +26,7 @@ public:
     void    addAttribute(const char name[], const char value[]);
     void    addAttributeLen(const char name[], const char value[], size_t length);
     void    addHexAttribute(const char name[], uint32_t value, int minDigits = 0);
-    void    addScalarAttribute(const char name[], SkScalar value);
+    void    addScalarAttribute(const char name[], float value);
     void    endElement() { this->onEndElement(); }
     void    startElement(const char elem[]);
     void    startElementLen(const char elem[], size_t length);

@@ -8,37 +8,39 @@
 
 #include "GrGLUtil.h"
 #include "SkMatrix.h"
+#include "gl/glew.h"
+#include "GrConfig.h"
 #include <stdio.h>
 
-void GrGLClearErr(const GrGLInterface* gl) {
-    while (GR_GL_NO_ERROR != gl->fFunctions.fGetError()) {}
+void GrGLClearErr() 
+{
+    while (GL_NO_ERROR != glGetError()) {}
 }
 
 namespace {
 const char *get_error_string(uint32_t err) {
     switch (err) {
-    case GR_GL_NO_ERROR:
+    case GL_NO_ERROR:
         return "";
-    case GR_GL_INVALID_ENUM:
+    case GL_INVALID_ENUM:
         return "Invalid Enum";
-    case GR_GL_INVALID_VALUE:
+    case GL_INVALID_VALUE:
         return "Invalid Value";
-    case GR_GL_INVALID_OPERATION:
+    case GL_INVALID_OPERATION:
         return "Invalid Operation";
-    case GR_GL_OUT_OF_MEMORY:
+    case GL_OUT_OF_MEMORY:
         return "Out of Memory";
-    case GR_GL_CONTEXT_LOST:
+    case GL_CONTEXT_LOST:
         return "Context Lost";
     }
     return "Unknown";
 }
 }
 
-void GrGLCheckErr(const GrGLInterface* gl,
-                  const char* location,
-                  const char* call) {
-    uint32_t err = GR_GL_GET_ERROR(gl);
-    if (GR_GL_NO_ERROR != err) {
+void GrGLCheckErr( const char* location, const char* call)
+{
+    uint32_t err = glGetError( );
+    if (GL_NO_ERROR != err) {
         GrPrintf("---- glGetError 0x%x(%s)", err, get_error_string(err));
         if (NULL != location) {
             GrPrintf(" at\n\t%s", location);
@@ -75,10 +77,6 @@ bool get_gl_version_for_mesa(int mesaMajorVersion, int* major, int* minor) {
             *major = 3;
             *minor = 1;
             return true;
-        case 10:
-            *major = 3;
-            *minor = 3;
-            return true;
         default:
             return false;
     }
@@ -87,44 +85,20 @@ bool get_gl_version_for_mesa(int mesaMajorVersion, int* major, int* minor) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#if GR_GL_LOG_CALLS
-    bool gLogCallsGL = !!(GR_GL_LOG_CALLS_START);
+#if GL_LOG_CALLS
+    bool gLogCallsGL = !!(GL_LOG_CALLS_START);
 #endif
 
-#if GR_GL_CHECK_ERROR
-    bool gCheckErrorGL = !!(GR_GL_CHECK_ERROR_START);
+#if GL_CHECK_ERROR
+    bool gCheckErrorGL = !!(GL_CHECK_ERROR_START);
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
-GrGLStandard GrGLGetStandardInUseFromString(const char* versionString) {
-    if (NULL == versionString) {
-        SkDEBUGFAIL("NULL GL version string.");
-        return kNone_GrGLStandard;
-    }
-
-    int major, minor;
-
-    // check for desktop
-    int n = sscanf(versionString, "%d.%d", &major, &minor);
-    if (2 == n) {
-        return kGL_GrGLStandard;
-    }
-
-    // check for ES 1
-    char profile[2];
-    n = sscanf(versionString, "OpenGL ES-%c%c %d.%d", profile, profile+1, &major, &minor);
-    if (4 == n) {
-        // we no longer support ES1.
-        return kNone_GrGLStandard;
-    }
-
-    // check for ES2
-    n = sscanf(versionString, "OpenGL ES %d.%d", &major, &minor);
-    if (2 == n) {
-        return kGLES_GrGLStandard;
-    }
-    return kNone_GrGLStandard;
+GrGLBinding GrGLGetBindingInUseFromString(const char* versionString)
+{
+	return kDesktop_GrGLBinding;
+	return kES_GrGLBinding;
 }
 
 bool GrGLIsMesaFromVersionString(const char* versionString) {
@@ -137,9 +111,8 @@ bool GrGLIsChromiumFromRendererString(const char* rendererString) {
     return 0 == strcmp(rendererString, "Chromium");
 }
 
-GrGLVersion GrGLGetVersionFromString(const char* versionString) {
+uint32_t GrGLGetVersionFromString(const char* versionString) {
     if (NULL == versionString) {
-        SkDEBUGFAIL("NULL GL version string.");
         return 0;
     }
 
@@ -150,7 +123,7 @@ GrGLVersion GrGLGetVersionFromString(const char* versionString) {
     int n = sscanf(versionString, "%d.%d Mesa %d.%d", &major, &minor, &mesaMajor, &mesaMinor);
     if (4 == n) {
         if (get_gl_version_for_mesa(mesaMajor, &major, &minor)) {
-            return GR_GL_VER(major, minor);
+            return GL_VER(major, minor);
         } else {
             return 0;
         }
@@ -158,27 +131,26 @@ GrGLVersion GrGLGetVersionFromString(const char* versionString) {
 
     n = sscanf(versionString, "%d.%d", &major, &minor);
     if (2 == n) {
-        return GR_GL_VER(major, minor);
+        return GL_VER(major, minor);
     }
 
     char profile[2];
     n = sscanf(versionString, "OpenGL ES-%c%c %d.%d", profile, profile+1,
                &major, &minor);
     if (4 == n) {
-        return GR_GL_VER(major, minor);
+        return GL_VER(major, minor);
     }
 
     n = sscanf(versionString, "OpenGL ES %d.%d", &major, &minor);
     if (2 == n) {
-        return GR_GL_VER(major, minor);
+        return GL_VER(major, minor);
     }
 
     return 0;
 }
 
-GrGLSLVersion GrGLGetGLSLVersionFromString(const char* versionString) {
+uint32_t GrGLGetGLSLVersionFromString(const char* versionString) {
     if (NULL == versionString) {
-        SkDEBUGFAIL("NULL GLSL version string.");
         return 0;
     }
 
@@ -205,60 +177,29 @@ GrGLSLVersion GrGLGetGLSLVersionFromString(const char* versionString) {
     return 0;
 }
 
-GrGLVendor GrGLGetVendorFromString(const char* vendorString) {
-    if (NULL != vendorString) {
-        if (0 == strcmp(vendorString, "ARM")) {
-            return kARM_GrGLVendor;
-        }
-        if (0 == strcmp(vendorString, "Imagination Technologies")) {
-            return kImagination_GrGLVendor;
-        }
-        if (0 == strncmp(vendorString, "Intel ", 6) || 0 == strcmp(vendorString, "Intel")) {
-            return kIntel_GrGLVendor;
-        }
-        if (0 == strcmp(vendorString, "Qualcomm")) {
-            return kQualcomm_GrGLVendor;
-        }
-    }
-    return kOther_GrGLVendor;
+GrGLBinding GrGLGetBindingInUse()
+{
+    const GLubyte* v;
+    v = glGetString(GL_VERSION);
+    return GrGLGetBindingInUseFromString((const char*) v);
 }
 
-GrGLRenderer GrGLGetRendererFromString(const char* rendererString) {
-    if (NULL != rendererString) {
-        if (0 == strcmp(rendererString, "NVIDIA Tegra 3")) {
-            return kTegra3_GrGLRenderer;
-        } else if (0 == strcmp(rendererString, "NVIDIA Tegra")) {
-            return kTegra2_GrGLRenderer;
-        }
-    }
-    return kOther_GrGLRenderer;
-}
-
-GrGLVersion GrGLGetVersion(const GrGLInterface* gl) {
-    const GrGLubyte* v;
-    GR_GL_CALL_RET(gl, v, GetString(GR_GL_VERSION));
+uint32_t GrGLGetVersion()
+{
+    const GLubyte* v;
+    v = glGetString(GL_VERSION);
     return GrGLGetVersionFromString((const char*) v);
 }
 
-GrGLSLVersion GrGLGetGLSLVersion(const GrGLInterface* gl) {
-    const GrGLubyte* v;
-    GR_GL_CALL_RET(gl, v, GetString(GR_GL_SHADING_LANGUAGE_VERSION));
+uint32_t GrGLGetGLSLVersion()
+{
+    const GLubyte* v;
+    v =glGetString(GL_SHADING_LANGUAGE_VERSION);
     return GrGLGetGLSLVersionFromString((const char*) v);
 }
 
-GrGLVendor GrGLGetVendor(const GrGLInterface* gl) {
-    const GrGLubyte* v;
-    GR_GL_CALL_RET(gl, v, GetString(GR_GL_VENDOR));
-    return GrGLGetVendorFromString((const char*) v);
-}
-
-GrGLRenderer GrGLGetRenderer(const GrGLInterface* gl) {
-    const GrGLubyte* v;
-    GR_GL_CALL_RET(gl, v, GetString(GR_GL_RENDERER));
-    return GrGLGetRendererFromString((const char*) v);
-}
-
-template<> void GrGLGetMatrix<3>(GrGLfloat* dest, const SkMatrix& src) {
+template<> void GrGLGetMatrix<3>(GLfloat* dest, const SkMatrix& src)
+{
     // Col 0
     dest[0] = SkScalarToFloat(src[SkMatrix::kMScaleX]);
     dest[1] = SkScalarToFloat(src[SkMatrix::kMSkewY]);
@@ -275,7 +216,7 @@ template<> void GrGLGetMatrix<3>(GrGLfloat* dest, const SkMatrix& src) {
     dest[8] = SkScalarToFloat(src[SkMatrix::kMPersp2]);
 }
 
-template<> void GrGLGetMatrix<4>(GrGLfloat* dest, const SkMatrix& src) {
+template<> void GrGLGetMatrix<4>(GLfloat* dest, const SkMatrix& src) {
     // Col 0
     dest[0]  = SkScalarToFloat(src[SkMatrix::kMScaleX]);
     dest[1]  = SkScalarToFloat(src[SkMatrix::kMSkewY]);

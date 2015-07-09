@@ -50,8 +50,8 @@ protected:
     SkBool disable;
     Kind kind;
     SkString target;
-    SkScalar x;
-    SkScalar y;
+    float x;
+    float y;
     SkTDDisplayableArray fChildren;
     mutable SkString fKeyString;
     SkKey fLastCode; // last key to trigger this event

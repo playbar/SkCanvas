@@ -8,8 +8,7 @@
 #include "SkBitmap.h"
 #include "SkMagnifierImageFilter.h"
 #include "SkColorPriv.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkValidationUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -204,7 +203,6 @@ GrEffectRef* GrMagnifierEffect::TestCreate(SkRandom* random,
         texture->height() / (float) y,
         (float) inset / texture->width(),
         (float) inset / texture->height());
-    SkASSERT(NULL != effect);
     return effect;
 }
 
@@ -232,7 +230,7 @@ void GrMagnifierEffect::getConstantColorComponents(GrColor* color, uint32_t* val
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-SkMagnifierImageFilter::SkMagnifierImageFilter(SkReadBuffer& buffer)
+SkMagnifierImageFilter::SkMagnifierImageFilter(SkFlattenableReadBuffer& buffer)
   : INHERITED(1, buffer) {
     float x = buffer.readScalar();
     float y = buffer.readScalar();
@@ -247,17 +245,16 @@ SkMagnifierImageFilter::SkMagnifierImageFilter(SkReadBuffer& buffer)
 }
 
 // FIXME:  implement single-input semantics
-SkMagnifierImageFilter::SkMagnifierImageFilter(const SkRect& srcRect, SkScalar inset)
+SkMagnifierImageFilter::SkMagnifierImageFilter(SkRect srcRect, float inset)
     : INHERITED(0), fSrcRect(srcRect), fInset(inset) {
-    SkASSERT(srcRect.x() >= 0 && srcRect.y() >= 0 && inset >= 0);
 }
 
 #if SK_SUPPORT_GPU
 bool SkMagnifierImageFilter::asNewEffect(GrEffectRef** effect, GrTexture* texture, const SkMatrix&, const SkIRect&) const {
     if (effect) {
-        SkScalar yOffset = (texture->origin() == kTopLeft_GrSurfaceOrigin) ? fSrcRect.y() :
+        float yOffset = (texture->origin() == kTopLeft_GrSurfaceOrigin) ? fSrcRect.y() :
                            (texture->height() - (fSrcRect.y() + fSrcRect.height()));
-        SkScalar invInset = fInset > 0 ? SkScalarInvert(fInset) : SK_Scalar1;
+        float invInset = fInset > 0 ? SkScalarInvert(fInset) : SK_Scalar1;
         *effect = GrMagnifierEffect::Create(texture,
                                             fSrcRect.x() / texture->width(),
                                             yOffset / texture->height(),
@@ -270,7 +267,7 @@ bool SkMagnifierImageFilter::asNewEffect(GrEffectRef** effect, GrTexture* textur
 }
 #endif
 
-void SkMagnifierImageFilter::flatten(SkWriteBuffer& buffer) const {
+void SkMagnifierImageFilter::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writeScalar(fSrcRect.x());
     buffer.writeScalar(fSrcRect.y());
@@ -281,19 +278,15 @@ void SkMagnifierImageFilter::flatten(SkWriteBuffer& buffer) const {
 
 bool SkMagnifierImageFilter::onFilterImage(Proxy*, const SkBitmap& src,
                                            const SkMatrix&, SkBitmap* dst,
-                                           SkIPoint* offset) const {
-    SkASSERT(src.colorType() == kPMColor_SkColorType);
-    SkASSERT(fSrcRect.width() < src.width());
-    SkASSERT(fSrcRect.height() < src.height());
+                                           SkIPoint* offset) {
 
-    if ((src.colorType() != kPMColor_SkColorType) ||
+    if ((src.config() != SkBitmap::kARGB_8888_Config) ||
         (fSrcRect.width() >= src.width()) ||
         (fSrcRect.height() >= src.height())) {
       return false;
     }
 
     SkAutoLockPixels alp(src);
-    SkASSERT(src.getPixels());
     if (!src.getPixels() || src.width() <= 0 || src.height() <= 0) {
       return false;
     }
@@ -304,21 +297,21 @@ bool SkMagnifierImageFilter::onFilterImage(Proxy*, const SkBitmap& src,
         return false;
     }
 
-    SkScalar inv_inset = fInset > 0 ? SkScalarInvert(fInset) : SK_Scalar1;
+    float inv_inset = fInset > 0 ? SkScalarInvert(fInset) : SK_Scalar1;
 
-    SkScalar inv_x_zoom = fSrcRect.width() / src.width();
-    SkScalar inv_y_zoom = fSrcRect.height() / src.height();
+    float inv_x_zoom = fSrcRect.width() / src.width();
+    float inv_y_zoom = fSrcRect.height() / src.height();
 
     SkColor* sptr = src.getAddr32(0, 0);
     SkColor* dptr = dst->getAddr32(0, 0);
     int width = src.width(), height = src.height();
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            SkScalar x_dist = SkMin32(x, width - x - 1) * inv_inset;
-            SkScalar y_dist = SkMin32(y, height - y - 1) * inv_inset;
-            SkScalar weight = 0;
+            float x_dist = SkMin32(x, width - x - 1) * inv_inset;
+            float y_dist = SkMin32(y, height - y - 1) * inv_inset;
+            float weight = 0;
 
-            static const SkScalar kScalar2 = SkScalar(2);
+            static const float kScalar2 = float(2);
 
             // To create a smooth curve at the corners, we need to work on
             // a square twice the size of the inset.
@@ -326,19 +319,19 @@ bool SkMagnifierImageFilter::onFilterImage(Proxy*, const SkBitmap& src,
                 x_dist = kScalar2 - x_dist;
                 y_dist = kScalar2 - y_dist;
 
-                SkScalar dist = SkScalarSqrt(SkScalarSquare(x_dist) +
+                float dist = SkScalarSqrt(SkScalarSquare(x_dist) +
                                              SkScalarSquare(y_dist));
                 dist = SkMaxScalar(kScalar2 - dist, 0);
                 weight = SkMinScalar(SkScalarSquare(dist), SK_Scalar1);
             } else {
-                SkScalar sqDist = SkMinScalar(SkScalarSquare(x_dist),
+                float sqDist = SkMinScalar(SkScalarSquare(x_dist),
                                               SkScalarSquare(y_dist));
                 weight = SkMinScalar(sqDist, SK_Scalar1);
             }
 
-            SkScalar x_interp = SkScalarMul(weight, (fSrcRect.x() + x * inv_x_zoom)) +
+            float x_interp = SkScalarMul(weight, (fSrcRect.x() + x * inv_x_zoom)) +
                            (SK_Scalar1 - weight) * x;
-            SkScalar y_interp = SkScalarMul(weight, (fSrcRect.y() + y * inv_y_zoom)) +
+            float y_interp = SkScalarMul(weight, (fSrcRect.y() + y * inv_y_zoom)) +
                            (SK_Scalar1 - weight) * y;
 
             int x_val = SkPin32(SkScalarFloorToInt(x_interp), 0, width - 1);

@@ -76,7 +76,6 @@ struct SkGlyph {
 
     unsigned getGlyphID(unsigned baseGlyphCount) const {
         unsigned code = ID2Code(fID);
-        SkASSERT(code >= baseGlyphCount);
         return code - baseGlyphCount;
     }
 
@@ -127,7 +126,6 @@ struct SkGlyph {
     }
 
     static SkFixed SubToFixed(unsigned sub) {
-        SkASSERT(sub <= kSubMask);
         return sub << (16 - kSubBits);
     }
 
@@ -136,7 +134,6 @@ struct SkGlyph {
     }
 
     static uint32_t MakeID(unsigned code, SkFixed x, SkFixed y) {
-        SkASSERT(code <= kCodeMask);
         x = FixedToSub(x);
         y = FixedToSub(y);
         return (x << (kSubShift + kSubShiftX)) |

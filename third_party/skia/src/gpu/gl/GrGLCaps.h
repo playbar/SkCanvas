@@ -21,60 +21,31 @@ class GrGLContextInfo;
  * version and the extensions string. It also tracks formats that have passed
  * the FBO completeness test.
  */
-class GrGLCaps : public GrDrawTargetCaps {
+class GrGLCaps : public GrDrawTargetCaps 
+{
 public:
     SK_DECLARE_INST_COUNT(GrGLCaps)
 
     typedef GrGLStencilBuffer::Format StencilFormat;
 
-    /**
-     * The type of MSAA for FBOs supported. Different extensions have different
-     * semantics of how / when a resolve is performed.
-     */
-    enum MSFBOType {
-        /**
-         * no support for MSAA FBOs
-         */
-        kNone_MSFBOType = 0,
-        /**
-         * GL3.0-style MSAA FBO (GL_ARB_framebuffer_object).
-         */
-        kDesktop_ARB_MSFBOType,
-        /**
-         * earlier GL_EXT_framebuffer* extensions
-         */
-        kDesktop_EXT_MSFBOType,
-        /**
-         * Similar to kDesktop_ARB but with additional restrictions on glBlitFramebuffer.
-         */
-        kES_3_0_MSFBOType,
-        /**
-         * GL_APPLE_framebuffer_multisample ES extension
-         */
-        kES_Apple_MSFBOType,
-        /**
-         * GL_IMG_multisampled_render_to_texture. This variation does not have MSAA renderbuffers.
-         * Instead the texture is multisampled when bound to the FBO and then resolved automatically
-         * when read. It also defines an alternate value for GL_MAX_SAMPLES (which we call
-         * GR_GL_MAX_SAMPLES_IMG).
-         */
-        kES_IMG_MsToTexture_MSFBOType,
-        /**
-         * GL_EXT_multisampled_render_to_texture. Same as the IMG one above but uses the standard
-         * GL_MAX_SAMPLES value.
-         */
-        kES_EXT_MsToTexture_MSFBOType,
 
+    enum MSFBOType 
+	{
+		kNone_MSFBOType = 0,
+        kDesktop_ARB_MSFBOType,
+        kDesktop_EXT_MSFBOType,
+        kES_3_0_MSFBOType,
+        kES_Apple_MSFBOType,
+        kES_IMG_MsToTexture_MSFBOType,
+        kES_EXT_MsToTexture_MSFBOType,
         kLast_MSFBOType = kES_EXT_MsToTexture_MSFBOType
     };
 
-    enum FBFetchType {
+    enum FBFetchType 
+	{
         kNone_FBFetchType,
-        /** GL_EXT_shader_framebuffer_fetch */
         kEXT_FBFetchType,
-        /** GL_NV_shader_framebuffer_fetch */
         kNV_FBFetchType,
-
         kLast_FBFetchType = kNV_FBFetchType,
     };
 
@@ -83,9 +54,7 @@ public:
      * formats, etc. Call init to initialize from a GrGLContextInfo.
      */
     GrGLCaps();
-
     GrGLCaps(const GrGLCaps& caps);
-
     GrGLCaps& operator = (const GrGLCaps& caps);
 
     /**
@@ -97,7 +66,7 @@ public:
      * Initializes the GrGLCaps to the set of features supported in the current
      * OpenGL context accessible via ctxInfo.
      */
-    void init(const GrGLContextInfo& ctxInfo, const GrGLInterface* interface);
+    void init(const GrGLContextInfo& ctxInfo );
 
     /**
      * Call to note that a color config has been verified as a valid color
@@ -237,9 +206,8 @@ public:
     }
 
     /// Does ReadPixels support the provided format/type combo?
-    bool readPixelsSupported(const GrGLInterface* intf,
-                             GrGLenum format,
-                             GrGLenum type) const;
+    bool readPixelsSupported( GLenum format,
+                             GLenum type) const;
 
     bool isCoreProfile() const { return fIsCoreProfile; }
 
@@ -255,13 +223,17 @@ private:
      * Maintains a bit per GrPixelConfig. It is used to avoid redundantly
      * performing glCheckFrameBufferStatus for the same config.
      */
-    struct VerifiedColorConfigs {
-        VerifiedColorConfigs() {
+    struct VerifiedColorConfigs 
+	{
+        VerifiedColorConfigs() 
+		{
             this->reset();
         }
 
-        void reset() {
-            for (int i = 0; i < kNumUints; ++i) {
+        void reset() 
+		{
+            for (int i = 0; i < kNumUints; ++i)
+			{
                 fVerifiedColorConfigs[i] = 0;
             }
         }
@@ -269,8 +241,9 @@ private:
         static const int kNumUints = (kGrPixelConfigCnt  + 31) / 32;
         uint32_t fVerifiedColorConfigs[kNumUints];
 
-        void markVerified(GrPixelConfig config) {
-#if !GR_GL_CHECK_FBO_STATUS_ONCE_PER_FORMAT
+        void markVerified(GrPixelConfig config) 
+		{
+#if !GL_CHECK_FBO_STATUS_ONCE_PER_FORMAT
                 return;
 #endif
             int u32Idx = config / 32;
@@ -278,8 +251,9 @@ private:
             fVerifiedColorConfigs[u32Idx] |= 1 << bitIdx;
         }
 
-        bool isVerified(GrPixelConfig config) const {
-#if !GR_GL_CHECK_FBO_STATUS_ONCE_PER_FORMAT
+        bool isVerified(GrPixelConfig config) const 
+		{
+#if !GL_CHECK_FBO_STATUS_ONCE_PER_FORMAT
             return false;
 #endif
             int u32Idx = config / 32;
@@ -288,7 +262,7 @@ private:
         }
     };
 
-    void initFSAASupport(const GrGLContextInfo&, const GrGLInterface*);
+    void initFSAASupport(const GrGLContextInfo& );
     void initStencilFormats(const GrGLContextInfo&);
     // This must be called after initFSAASupport().
     void initConfigRenderableTable(const GrGLContextInfo&);

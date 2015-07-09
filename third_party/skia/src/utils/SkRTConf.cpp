@@ -44,27 +44,13 @@ SkRTConfRegistry::SkRTConfRegistry(): fConfs(100) {
             continue;
         }
 
-        SkString* key = SkNEW_ARGS(SkString,(keyptr));
-        SkString* val = SkNEW_ARGS(SkString,(valptr));
+        SkString* key = new SkString(keyptr);
+        SkString* val = new SkString(valptr);
 
         fConfigFileKeys.append(1, &key);
         fConfigFileValues.append(1, &val);
     }
     sk_fclose(fp);
-}
-
-SkRTConfRegistry::~SkRTConfRegistry() {
-    ConfMap::Iter iter(fConfs);
-    SkTDArray<SkRTConfBase *> *confArray;
-
-    while (iter.next(&confArray)) {
-        delete confArray;
-    }
-
-    for (int i = 0 ; i < fConfigFileKeys.count() ; i++) {
-        SkDELETE(fConfigFileKeys[i]);
-        SkDELETE(fConfigFileValues[i]);
-    }
 }
 
 const char *SkRTConfRegistry::configFileLocation() const {
@@ -117,17 +103,6 @@ void SkRTConfRegistry::printAll(const char *fname) const {
     }
 
     delete o;
-}
-
-bool SkRTConfRegistry::hasNonDefault() const {
-    ConfMap::Iter iter(fConfs);
-    SkTDArray<SkRTConfBase *> *confArray;
-    while (iter.next(&confArray)) {
-        if (!confArray->getAt(0)->isDefault()) {
-            return true;
-        }
-    }
-    return false;
 }
 
 void SkRTConfRegistry::printNonDefault(const char *fname) const {
@@ -299,7 +274,6 @@ template <typename T> void SkRTConfRegistry::set(const char *name,
         }
         return;
     }
-    SkASSERT(confArray != NULL);
     for (SkRTConfBase **confBase = confArray->begin(); confBase != confArray->end(); confBase++) {
         // static_cast here is okay because there's only one kind of child class.
         SkRTConf<T> *concrete = static_cast<SkRTConf<T> *>(*confBase);
@@ -322,29 +296,3 @@ SkRTConfRegistry &skRTConfRegistry() {
     return r;
 }
 
-
-#ifdef SK_SUPPORT_UNITTEST
-
-#ifdef SK_BUILD_FOR_WIN32
-static void sk_setenv(const char* key, const char* value) {
-    _putenv_s(key, value);
-}
-#else
-static void sk_setenv(const char* key, const char* value) {
-    setenv(key, value, 1);
-}
-#endif
-
-void SkRTConfRegistry::UnitTest() {
-    SkRTConfRegistry registryWithoutContents(true);
-
-    sk_setenv("skia_nonexistent_item", "132");
-    int result = 0;
-    registryWithoutContents.parse("nonexistent.item", &result);
-    SkASSERT(result == 132);
-}
-
-SkRTConfRegistry::SkRTConfRegistry(bool)
-    : fConfs(100) {
-}
-#endif

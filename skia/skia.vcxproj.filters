@@ -7822,9 +7822,6 @@
     <Filter Include="..\third_party\skia\src">
       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\third_party\skia\src\pdf">
-      <UniqueIdentifier>{56480206-DE3F-C823-DE52-8906D4B76BB3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
     </Filter>
@@ -12004,9 +12001,6 @@
     <Filter Include="ext">
       <UniqueIdentifier>{3EE5B703-384C-67C2-8DE0-73108365DC85}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ext\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ext">
       <UniqueIdentifier>{3EE5B703-384C-67C2-8DE0-73108365DC85}</UniqueIdentifier>
     </Filter>
@@ -12142,9 +12136,6 @@
       <Filter>..\third_party\skia\src\utils</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\utils\SkCanvasStateUtils.cpp">
-      <Filter>..\third_party\skia\src\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\utils\SkEventTracer.cpp">
       <Filter>..\third_party\skia\src\utils</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\utils\SkDeferredCanvas.cpp">
@@ -12402,12 +12393,6 @@
     <ClCompile Include="..\third_party\skia\src\lazy\SkDiscardablePixelRef.cpp">
       <Filter>..\third_party\skia\src\lazy</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\core\SkDistanceFieldGen.cpp">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\core\SkDistanceFieldGen.h">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClInclude>
     <ClCompile Include="..\third_party\skia\src\core\SkDither.cpp">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
@@ -12525,12 +12510,6 @@
     <ClCompile Include="..\third_party\skia\src\core\SkMatrix.cpp">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\core\SkMatrixClipStateMgr.cpp">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\core\SkMatrixClipStateMgr.h">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClInclude>
     <ClInclude Include="..\third_party\skia\src\core\SkMessageBus.h">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClInclude>
@@ -12540,9 +12519,6 @@
     <ClCompile Include="..\third_party\skia\src\core\SkMipMap.cpp">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\core\SkOffsetTable.h">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClInclude>
     <ClCompile Include="..\third_party\skia\src\core\SkPackBits.cpp">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
@@ -12618,25 +12594,10 @@
     <ClInclude Include="..\third_party\skia\src\core\SkQuadClipper.h">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\core\SkQuadTree.cpp">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\core\SkQuadTree.h">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\core\SkQuadTreePicture.cpp">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\core\SkQuadTreePicture.h">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClInclude>
     <ClCompile Include="..\third_party\skia\src\core\SkRasterClip.cpp">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\core\SkRasterizer.cpp">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\core\SkReadBuffer.cpp">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\core\SkRect.cpp">
@@ -12756,9 +12717,6 @@
     <ClCompile Include="..\third_party\skia\src\core\SkTLS.cpp">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\core\SkTraceEvent.h">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClInclude>
     <ClCompile Include="..\third_party\skia\src\core\SkTSearch.cpp">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
@@ -12781,9 +12739,6 @@
       <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\core\SkValidatingReadBuffer.cpp">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\core\SkWriteBuffer.cpp">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\core\SkWriter32.cpp">
@@ -13260,9 +13215,6 @@
     <ClCompile Include="..\third_party\skia\src\effects\Sk2DPathEffect.cpp">
       <Filter>..\third_party\skia\src\effects</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\effects\SkAlphaThresholdFilter.cpp">
-      <Filter>..\third_party\skia\src\effects</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\effects\SkArithmeticMode.cpp">
       <Filter>..\third_party\skia\src\effects</Filter>
     </ClCompile>
@@ -13387,9 +13339,6 @@
       <Filter>..\third_party\skia\src\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\effects\SkRectShaderImageFilter.cpp">
-      <Filter>..\third_party\skia\src\effects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\effects\SkResizeImageFilter.cpp">
       <Filter>..\third_party\skia\src\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\effects\SkStippleMaskFilter.cpp">
@@ -13590,130 +13539,10 @@
     <ClInclude Include="..\third_party\skia\include\pdf\SkPDFDocument.h">
       <Filter>..\third_party\skia\include\pdf</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFCatalog.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFCatalog.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFDevice.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFDeviceFlattener.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFDeviceFlattener.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFDocument.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFFont.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFFont.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFFontImpl.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFFormXObject.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFFormXObject.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFGraphicState.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFGraphicState.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFImage.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFImage.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFPage.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFPage.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFResourceDict.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFResourceDict.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFShader.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFShader.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFStream.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFStream.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFTypes.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFTypes.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFUtils.cpp">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFUtils.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClInclude Include="..\third_party\skia\src\pdf\SkTSet.h">
-      <Filter>..\third_party\skia\src\pdf</Filter>
-    </ClInclude>
-    <ClCompile Include="ext\analysis_canvas.cc">
-      <Filter>ext</Filter>
-    </ClCompile>
-    <ClInclude Include="ext\analysis_canvas.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClCompile Include="ext\benchmarking_canvas.cc">
-      <Filter>ext</Filter>
-    </ClCompile>
-    <ClInclude Include="ext\benchmarking_canvas.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\bitmap_platform_device.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\bitmap_platform_device_cairo.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\bitmap_platform_device_mac.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\bitmap_platform_device_skia.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClCompile Include="ext\bitmap_platform_device_win.cc">
-      <Filter>ext</Filter>
-    </ClCompile>
-    <ClInclude Include="ext\bitmap_platform_device_win.h">
-      <Filter>ext</Filter>
-    </ClInclude>
     <ClCompile Include="ext\convolver.cc">
       <Filter>ext</Filter>
     </ClCompile>
     <ClInclude Include="ext\convolver.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClCompile Include="ext\event_tracer_impl.cc">
-      <Filter>ext</Filter>
-    </ClCompile>
-    <ClInclude Include="ext\event_tracer_impl.h">
       <Filter>ext</Filter>
     </ClInclude>
     <ClCompile Include="ext\google_logging.cc">
@@ -13741,12 +13570,6 @@
       <Filter>ext</Filter>
     </ClCompile>
     <ClInclude Include="ext\paint_simplifier.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClCompile Include="ext\pixel_ref_utils.cc">
-      <Filter>ext</Filter>
-    </ClCompile>
-    <ClInclude Include="ext\pixel_ref_utils.h">
       <Filter>ext</Filter>
     </ClInclude>
     <ClCompile Include="ext\platform_canvas.cc">
@@ -13791,42 +13614,15 @@
     <ClInclude Include="ext\skia_utils_base.h">
       <Filter>ext</Filter>
     </ClInclude>
-    <ClInclude Include="ext\skia_utils_ios.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\skia_utils_mac.h">
-      <Filter>ext</Filter>
-    </ClInclude>
     <ClCompile Include="ext\skia_utils_win.cc">
       <Filter>ext</Filter>
     </ClCompile>
     <ClInclude Include="ext\skia_utils_win.h">
       <Filter>ext</Filter>
     </ClInclude>
-    <ClInclude Include="ext\vector_canvas.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClCompile Include="ext\vector_platform_device_emf_win.cc">
-      <Filter>ext</Filter>
-    </ClCompile>
-    <ClInclude Include="ext\vector_platform_device_emf_win.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClCompile Include="ext\vector_platform_device_skia.cc">
-      <Filter>ext</Filter>
-    </ClCompile>
-    <ClInclude Include="ext\vector_platform_device_skia.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLCreateNullInterface.cpp">
-      <Filter>..\third_party\skia\src\gpu\gl</Filter>
-    </ClCompile>
     <ClInclude Include="..\third_party\skia\include\gpu\gl\SkNullGLContext.h">
       <Filter>..\third_party\skia\include\gpu\gl</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\SkNullGLContext.cpp">
-      <Filter>..\third_party\skia\src\gpu\gl</Filter>
-    </ClCompile>
     <ClInclude Include="..\third_party\skia\include\gpu\GrBackendEffectFactory.h">
       <Filter>..\third_party\skia\include\gpu</Filter>
     </ClInclude>
@@ -13986,12 +13782,6 @@
     <ClInclude Include="..\third_party\skia\src\gpu\GrDefaultPathRenderer.h">
       <Filter>..\third_party\skia\src\gpu</Filter>
     </ClInclude>
-    <ClInclude Include="..\third_party\skia\src\gpu\GrDistanceFieldTextContext.h">
-      <Filter>..\third_party\skia\src\gpu</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\gpu\GrDistanceFieldTextContext.cpp">
-      <Filter>..\third_party\skia\src\gpu</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\gpu\GrDrawState.cpp">
       <Filter>..\third_party\skia\src\gpu</Filter>
     </ClCompile>
@@ -14031,9 +13821,6 @@
     <ClInclude Include="..\third_party\skia\src\gpu\GrGpu.h">
       <Filter>..\third_party\skia\src\gpu</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\gpu\GrGpuFactory.cpp">
-      <Filter>..\third_party\skia\src\gpu</Filter>
-    </ClCompile>
     <ClInclude Include="..\third_party\skia\src\gpu\GrIndexBuffer.h">
       <Filter>..\third_party\skia\src\gpu</Filter>
     </ClInclude>
@@ -14047,9 +13834,6 @@
       <Filter>..\third_party\skia\src\gpu</Filter>
     </ClCompile>
     <ClInclude Include="..\third_party\skia\src\gpu\GrMemoryPool.h">
-      <Filter>..\third_party\skia\src\gpu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\third_party\skia\src\gpu\GrOrderedSet.h">
       <Filter>..\third_party\skia\src\gpu</Filter>
     </ClInclude>
     <ClCompile Include="..\third_party\skia\src\gpu\GrOvalRenderer.cpp">
@@ -14202,12 +13986,6 @@
     <ClInclude Include="..\third_party\skia\src\gpu\effects\GrConvolutionEffect.h">
       <Filter>..\third_party\skia\src\gpu\effects</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\gpu\effects\GrConvexPolyEffect.cpp">
-      <Filter>..\third_party\skia\src\gpu\effects</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\gpu\effects\GrConvexPolyEffect.h">
-      <Filter>..\third_party\skia\src\gpu\effects</Filter>
-    </ClInclude>
     <ClCompile Include="..\third_party\skia\src\gpu\effects\GrBicubicEffect.cpp">
       <Filter>..\third_party\skia\src\gpu\effects</Filter>
     </ClCompile>
@@ -14224,12 +14002,6 @@
       <Filter>..\third_party\skia\src\gpu\effects</Filter>
     </ClCompile>
     <ClInclude Include="..\third_party\skia\src\gpu\effects\GrDistanceFieldTextureEffect.h">
-      <Filter>..\third_party\skia\src\gpu\effects</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\gpu\effects\GrRRectEffect.cpp">
-      <Filter>..\third_party\skia\src\gpu\effects</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\gpu\effects\GrRRectEffect.h">
       <Filter>..\third_party\skia\src\gpu\effects</Filter>
     </ClInclude>
     <ClCompile Include="..\third_party\skia\src\gpu\effects\GrSimpleTextureEffect.cpp">
@@ -14274,40 +14046,19 @@
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLContext.h">
       <Filter>..\third_party\skia\src\gpu\gl</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLCreateNativeInterface_none.cpp">
-      <Filter>..\third_party\skia\src\gpu\gl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLDefaultInterface_none.cpp">
-      <Filter>..\third_party\skia\src\gpu\gl</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLDefines.h">
-      <Filter>..\third_party\skia\src\gpu\gl</Filter>
-    </ClInclude>
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLEffect.h">
       <Filter>..\third_party\skia\src\gpu\gl</Filter>
     </ClInclude>
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLVertexEffect.h">
       <Filter>..\third_party\skia\src\gpu\gl</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLExtensions.cpp">
-      <Filter>..\third_party\skia\src\gpu\gl</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLIndexBuffer.cpp">
       <Filter>..\third_party\skia\src\gpu\gl</Filter>
     </ClCompile>
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLIndexBuffer.h">
       <Filter>..\third_party\skia\src\gpu\gl</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLInterface.cpp">
-      <Filter>..\third_party\skia\src\gpu\gl</Filter>
-    </ClCompile>
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLIRect.h">
-      <Filter>..\third_party\skia\src\gpu\gl</Filter>
-    </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLNoOpInterface.cpp">
-      <Filter>..\third_party\skia\src\gpu\gl</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLNoOpInterface.h">
       <Filter>..\third_party\skia\src\gpu\gl</Filter>
     </ClInclude>
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLPath.cpp">
@@ -14433,15 +14184,6 @@
     <ClCompile Include="..\third_party\skia\src\gpu\SkGrPixelRef.cpp">
       <Filter>..\third_party\skia\src\gpu</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\gpu\SkGrTexturePixelRef.cpp">
-      <Filter>..\third_party\skia\src\gpu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\image\SkImage_Gpu.cpp">
-      <Filter>..\third_party\skia\src\image</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\image\SkSurface_Gpu.cpp">
-      <Filter>..\third_party\skia\src\image</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\gpu\gl\SkGLContextHelper.cpp">
       <Filter>..\third_party\skia\src\gpu\gl</Filter>
     </ClCompile>
@@ -14485,26 +14227,8 @@
     <ClCompile Include="..\third_party\skia\src\utils\mac\SkCreateCGImageRef.cpp">
       <Filter>..\third_party\skia\src\utils\mac\_excluded_files</Filter>
     </ClCompile>
-    <ClCompile Include="ext\bitmap_platform_device_cairo.cc">
-      <Filter>ext\_excluded_files</Filter>
+    <ClCompile Include="..\third_party\skia\src\gpu\glew.c">
+      <Filter>..\third_party\skia\src\gpu</Filter>
     </ClCompile>
-    <ClCompile Include="ext\bitmap_platform_device_mac.cc">
-      <Filter>ext\_excluded_files</Filter>
-    </ClCompile>
-    <ClCompile Include="ext\bitmap_platform_device_skia.cc">
-      <Filter>ext\_excluded_files</Filter>
-    </ClCompile>
-    <ClCompile Include="ext\platform_device_linux.cc">
-      <Filter>ext\_excluded_files</Filter>
-    </ClCompile>
-    <ClCompile Include="ext\platform_device_mac.cc">
-      <Filter>ext\_excluded_files</Filter>
-    </ClCompile>
-    <None Include="ext\skia_utils_ios.mm">
-      <Filter>ext\_excluded_files</Filter>
-    </None>
-    <None Include="ext\skia_utils_mac.mm">
-      <Filter>ext\_excluded_files</Filter>
-    </None>
   </ItemGroup>
 </Project>

@@ -30,14 +30,13 @@ enum InitialState {
  * required to process any of the elements in the result.
  *
  * This may become a member function of SkClipStack when its interface is determined to be stable.
- * Marked SK_API so that SkLua can call this in a shared library build.
  */
-SK_API void ReduceClipStack(const SkClipStack& stack,
-                            const SkIRect& queryBounds,
-                            ElementList* result,
-                            int32_t* resultGenID,
-                            InitialState* initialState,
-                            SkIRect* tighterBounds = NULL,
-                            bool* requiresAA = NULL);
+void ReduceClipStack(const SkClipStack& stack,
+                     const SkIRect& queryBounds,
+                     ElementList* result,
+                     int32_t* resultGenID,
+                     InitialState* initialState,
+                     SkIRect* tighterBounds = NULL,
+                     bool* requiresAA = NULL);
 
 } // namespace GrReducedClip

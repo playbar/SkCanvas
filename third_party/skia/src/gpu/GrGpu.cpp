@@ -61,7 +61,6 @@ void GrGpu::abandonResources() {
         fResourceList.head()->abandon();
     }
 
-    SkASSERT(NULL == fQuadIndexBuffer || !fQuadIndexBuffer->isValid());
     SkSafeSetNull(fQuadIndexBuffer);
     delete fVertexPool;
     fVertexPool = NULL;
@@ -77,7 +76,6 @@ void GrGpu::releaseResources() {
         fResourceList.head()->release();
     }
 
-    SkASSERT(NULL == fQuadIndexBuffer || !fQuadIndexBuffer->isValid());
     SkSafeSetNull(fQuadIndexBuffer);
     delete fVertexPool;
     fVertexPool = NULL;
@@ -86,16 +84,10 @@ void GrGpu::releaseResources() {
 }
 
 void GrGpu::insertResource(GrResource* resource) {
-    SkASSERT(NULL != resource);
-    SkASSERT(this == resource->getGpu());
-
     fResourceList.addToHead(resource);
 }
 
 void GrGpu::removeResource(GrResource* resource) {
-    SkASSERT(NULL != resource);
-    SkASSERT(this == resource->getGpu());
-
     fResourceList.remove(resource);
 }
 
@@ -123,7 +115,6 @@ GrTexture* GrGpu::createTexture(const GrTextureDesc& desc,
     if (NULL != tex &&
         (kRenderTarget_GrTextureFlagBit & desc.fFlags) &&
         !(kNoStencil_GrTextureFlagBit & desc.fFlags)) {
-        SkASSERT(NULL != tex->asRenderTarget());
         // TODO: defer this and attach dynamically
         if (!this->attachStencilBufferToRenderTarget(tex->asRenderTarget())) {
             tex->unref();
@@ -134,7 +125,6 @@ GrTexture* GrGpu::createTexture(const GrTextureDesc& desc,
 }
 
 bool GrGpu::attachStencilBufferToRenderTarget(GrRenderTarget* rt) {
-    SkASSERT(NULL == rt->getStencilBuffer());
     GrStencilBuffer* sb =
         this->getContext()->findStencilBuffer(rt->width(),
                                               rt->height(),
@@ -198,7 +188,6 @@ GrIndexBuffer* GrGpu::createIndexBuffer(size_t size, bool dynamic) {
 }
 
 GrPath* GrGpu::createPath(const SkPath& path, const SkStrokeRec& stroke) {
-    SkASSERT(this->caps()->pathRenderingSupport());
     this->handleDirtyContext();
     return this->onCreatePath(path, stroke);
 }
@@ -212,7 +201,6 @@ void GrGpu::clear(const SkIRect* rect,
         art.set(this->drawState(), renderTarget);
     }
     if (NULL == this->getDrawState().getRenderTarget()) {
-        SkASSERT(0);
         return;
     }
     this->handleDirtyContext();
@@ -243,7 +231,6 @@ bool GrGpu::writeTexturePixels(GrTexture* texture,
 }
 
 void GrGpu::resolveRenderTarget(GrRenderTarget* target) {
-    SkASSERT(target);
     this->handleDirtyContext();
     this->onResolveRenderTarget(target);
 }
@@ -331,9 +318,8 @@ const GrIndexBuffer* GrGpu::getQuadIndexBuffer() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 bool GrGpu::setupClipAndFlushState(DrawType type, const GrDeviceCoordTexture* dstCopy,
-                                   GrDrawState::AutoRestoreEffects* are,
-                                   const SkRect* devBounds) {
-    if (!fClipMaskManager.setupClipping(this->getClip(), are, devBounds)) {
+                                   GrDrawState::AutoRestoreEffects* are) {
+    if (!fClipMaskManager.setupClipping(this->getClip(), are)) {
         return false;
     }
 
@@ -369,7 +355,6 @@ void GrGpu::geometrySourceWillPush() {
 
 void GrGpu::geometrySourceWillPop(const GeometrySrcState& restoredState) {
     // if popping last entry then pops are unbalanced with pushes
-    SkASSERT(fGeomPoolStateStack.count() > 1);
     fGeomPoolStateStack.pop_back();
 }
 
@@ -377,7 +362,8 @@ void GrGpu::onDraw(const DrawInfo& info) {
     this->handleDirtyContext();
     GrDrawState::AutoRestoreEffects are;
     if (!this->setupClipAndFlushState(PrimTypeToDrawType(info.primitiveType()),
-                                      info.getDstCopy(), &are, info.getDevBounds())) {
+                                      info.getDstCopy(),
+                                      &are)) {
         return;
     }
     this->onGpuDraw(info);
@@ -387,7 +373,7 @@ void GrGpu::onStencilPath(const GrPath* path, SkPath::FillType fill) {
     this->handleDirtyContext();
 
     GrDrawState::AutoRestoreEffects are;
-    if (!this->setupClipAndFlushState(kStencilPath_DrawType, NULL, &are, NULL)) {
+    if (!this->setupClipAndFlushState(kStencilPath_DrawType, NULL, &are)) {
         return;
     }
 
@@ -402,7 +388,7 @@ void GrGpu::onDrawPath(const GrPath* path, SkPath::FillType fill,
     drawState()->setDefaultVertexAttribs();
 
     GrDrawState::AutoRestoreEffects are;
-    if (!this->setupClipAndFlushState(kDrawPath_DrawType, dstCopy, &are, NULL)) {
+    if (!this->setupClipAndFlushState(kDrawPath_DrawType, dstCopy, &are)) {
         return;
     }
 
@@ -410,18 +396,15 @@ void GrGpu::onDrawPath(const GrPath* path, SkPath::FillType fill,
 }
 
 void GrGpu::finalizeReservedVertices() {
-    SkASSERT(NULL != fVertexPool);
     fVertexPool->unlock();
 }
 
 void GrGpu::finalizeReservedIndices() {
-    SkASSERT(NULL != fIndexPool);
     fIndexPool->unlock();
 }
 
 void GrGpu::prepareVertexPool() {
     if (NULL == fVertexPool) {
-        SkASSERT(0 == fVertexPoolUseCnt);
         fVertexPool = SkNEW_ARGS(GrVertexBufferAllocPool, (this, true,
                                                   VERTEX_POOL_VB_SIZE,
                                                   VERTEX_POOL_VB_COUNT));
@@ -434,7 +417,6 @@ void GrGpu::prepareVertexPool() {
 
 void GrGpu::prepareIndexPool() {
     if (NULL == fIndexPool) {
-        SkASSERT(0 == fIndexPoolUseCnt);
         fIndexPool = SkNEW_ARGS(GrIndexBufferAllocPool, (this, true,
                                                 INDEX_POOL_IB_SIZE,
                                                 INDEX_POOL_IB_COUNT));
@@ -449,9 +431,6 @@ bool GrGpu::onReserveVertexSpace(size_t vertexSize,
                                  int vertexCount,
                                  void** vertices) {
     GeometryPoolState& geomPoolState = fGeomPoolStateStack.back();
-
-    SkASSERT(vertexCount > 0);
-    SkASSERT(NULL != vertices);
 
     this->prepareVertexPool();
 
@@ -469,8 +448,6 @@ bool GrGpu::onReserveVertexSpace(size_t vertexSize,
 bool GrGpu::onReserveIndexSpace(int indexCount, void** indices) {
     GeometryPoolState& geomPoolState = fGeomPoolStateStack.back();
 
-    SkASSERT(indexCount > 0);
-    SkASSERT(NULL != indices);
 
     this->prepareIndexPool();
 
@@ -486,7 +463,6 @@ bool GrGpu::onReserveIndexSpace(int indexCount, void** indices) {
 
 void GrGpu::releaseReservedVertexSpace() {
     const GeometrySrcState& geoSrc = this->getGeomSrc();
-    SkASSERT(kReserved_GeometrySrcType == geoSrc.fVertexSrc);
     size_t bytes = geoSrc.fVertexCount * geoSrc.fVertexSize;
     fVertexPool->putBack(bytes);
     --fVertexPoolUseCnt;
@@ -494,7 +470,6 @@ void GrGpu::releaseReservedVertexSpace() {
 
 void GrGpu::releaseReservedIndexSpace() {
     const GeometrySrcState& geoSrc = this->getGeomSrc();
-    SkASSERT(kReserved_GeometrySrcType == geoSrc.fIndexSrc);
     size_t bytes = geoSrc.fIndexCount * sizeof(uint16_t);
     fIndexPool->putBack(bytes);
     --fIndexPoolUseCnt;
@@ -532,7 +507,6 @@ void GrGpu::onSetIndexSourceToArray(const void* indexArray, int indexCount) {
 void GrGpu::releaseVertexArray() {
     // if vertex source was array, we stowed data in the pool
     const GeometrySrcState& geoSrc = this->getGeomSrc();
-    SkASSERT(kArray_GeometrySrcType == geoSrc.fVertexSrc);
     size_t bytes = geoSrc.fVertexCount * geoSrc.fVertexSize;
     fVertexPool->putBack(bytes);
     --fVertexPoolUseCnt;
@@ -541,7 +515,6 @@ void GrGpu::releaseVertexArray() {
 void GrGpu::releaseIndexArray() {
     // if index source was array, we stowed data in the pool
     const GeometrySrcState& geoSrc = this->getGeomSrc();
-    SkASSERT(kArray_GeometrySrcType == geoSrc.fIndexSrc);
     size_t bytes = geoSrc.fIndexCount * sizeof(uint16_t);
     fIndexPool->putBack(bytes);
     --fIndexPoolUseCnt;

@@ -39,15 +39,14 @@ void SkIRect::sort() {
 
 void SkRect::sort() {
     if (fLeft > fRight) {
-        SkTSwap<SkScalar>(fLeft, fRight);
+        SkTSwap<float>(fLeft, fRight);
     }
     if (fTop > fBottom) {
-        SkTSwap<SkScalar>(fTop, fBottom);
+        SkTSwap<float>(fTop, fBottom);
     }
 }
 
 void SkRect::toQuad(SkPoint quad[4]) const {
-    SkASSERT(quad);
 
     quad[0].set(fLeft, fTop);
     quad[1].set(fRight, fTop);
@@ -56,14 +55,13 @@ void SkRect::toQuad(SkPoint quad[4]) const {
 }
 
 bool SkRect::setBoundsCheck(const SkPoint pts[], int count) {
-    SkASSERT((pts && count > 0) || count == 0);
 
     bool isFinite = true;
 
     if (count <= 0) {
         sk_bzero(this, sizeof(SkRect));
     } else {
-        SkScalar    l, t, r, b;
+        float    l, t, r, b;
 
         l = r = pts[0].fX;
         t = b = pts[0].fY;
@@ -74,8 +72,8 @@ bool SkRect::setBoundsCheck(const SkPoint pts[], int count) {
         accum *= l; accum *= t;
 
         for (int i = 1; i < count; i++) {
-            SkScalar x = pts[i].fX;
-            SkScalar y = pts[i].fY;
+            float x = pts[i].fX;
+            float y = pts[i].fY;
 
             accum *= x; accum *= y;
 
@@ -88,7 +86,6 @@ bool SkRect::setBoundsCheck(const SkPoint pts[], int count) {
             if (y > b) b = y;
         }
 
-        SkASSERT(!accum || !SkScalarIsFinite(accum));
         if (accum) {
             l = t = r = b = 0;
             isFinite = false;
@@ -99,8 +96,8 @@ bool SkRect::setBoundsCheck(const SkPoint pts[], int count) {
     return isFinite;
 }
 
-bool SkRect::intersect(SkScalar left, SkScalar top, SkScalar right,
-                       SkScalar bottom) {
+bool SkRect::intersect(float left, float top, float right,
+                       float bottom) {
     if (left < right && top < bottom && !this->isEmpty() && // check for empties
         fLeft < right && left < fRight && fTop < bottom && top < fBottom)
     {
@@ -114,28 +111,10 @@ bool SkRect::intersect(SkScalar left, SkScalar top, SkScalar right,
 }
 
 bool SkRect::intersect(const SkRect& r) {
-    SkASSERT(&r);
     return this->intersect(r.fLeft, r.fTop, r.fRight, r.fBottom);
 }
 
-bool SkRect::intersect2(const SkRect& r) {
-    SkASSERT(&r);
-    SkScalar L = SkMaxScalar(fLeft, r.fLeft);
-    SkScalar R = SkMinScalar(fRight, r.fRight);
-    if (L >= R) {
-        return false;
-    }
-    SkScalar T = SkMaxScalar(fTop, r.fTop);
-    SkScalar B = SkMinScalar(fBottom, r.fBottom);
-    if (T >= B) {
-        return false;
-    }
-    this->set(L, T, R, B);
-    return true;
-}
-
 bool SkRect::intersect(const SkRect& a, const SkRect& b) {
-    SkASSERT(&a && &b);
 
     if (!a.isEmpty() && !b.isEmpty() &&
         a.fLeft < b.fRight && b.fLeft < a.fRight &&
@@ -149,8 +128,8 @@ bool SkRect::intersect(const SkRect& a, const SkRect& b) {
     return false;
 }
 
-void SkRect::join(SkScalar left, SkScalar top, SkScalar right,
-                  SkScalar bottom) {
+void SkRect::join(float left, float top, float right,
+                  float bottom) {
     // do nothing if the params are empty
     if (left >= right || top >= bottom) {
         return;

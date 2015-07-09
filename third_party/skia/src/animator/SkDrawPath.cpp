@@ -46,7 +46,6 @@ SkDrawPath::~SkDrawPath() {
 }
 
 bool SkDrawPath::addChild(SkAnimateMaker& maker, SkDisplayable* child) {
-    SkASSERT(child && child->isPathPart());
     SkPathPart* part = (SkPathPart*) child;
     *fParts.append() = part;
     if (part->add())
@@ -147,7 +146,6 @@ bool SkDrawPath::getProperty(int index, SkScriptValue* value) const {
             value->fOperand.fS32 = (int) fPath.getFillType();
             break;
         default:
-            SkASSERT(0);
             return false;
     }
     return true;
@@ -166,13 +164,9 @@ bool SkDrawPath::setProperty(int index, SkScriptValue& value)
 {
     switch (index) {
         case SK_PROPERTY(fillType):
-            SkASSERT(value.fType == SkType_FillType);
-            SkASSERT(value.fOperand.fS32 >= SkPath::kWinding_FillType &&
-                value.fOperand.fS32 <= SkPath::kEvenOdd_FillType);
             fPath.setFillType((SkPath::FillType) value.fOperand.fS32);
             break;
         default:
-            SkASSERT(0);
             return false;
     }
     return true;

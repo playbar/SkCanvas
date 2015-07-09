@@ -26,14 +26,10 @@ GrTextureDomain::GrTextureDomain(const SkRect& domain, Mode mode, int index)
         // We don't currently handle domains that are empty or don't intersect the texture.
         // It is OK if the domain rect is a line or point, but it should not be inverted. We do not
         // handle rects that do not intersect the [0..1]x[0..1] rect.
-        SkASSERT(domain.fLeft <= domain.fRight);
-        SkASSERT(domain.fTop <= domain.fBottom);
         fDomain.fLeft = SkMaxScalar(domain.fLeft, kFullRect.fLeft);
         fDomain.fRight = SkMinScalar(domain.fRight, kFullRect.fRight);
         fDomain.fTop = SkMaxScalar(domain.fTop, kFullRect.fTop);
         fDomain.fBottom = SkMinScalar(domain.fBottom, kFullRect.fBottom);
-        SkASSERT(fDomain.fLeft <= fDomain.fRight);
-        SkASSERT(fDomain.fTop <= fDomain.fBottom);
     }
 }
 
@@ -45,7 +41,6 @@ void GrTextureDomain::GLDomain::sampleTexture(GrGLShaderBuilder* builder,
                                               const SkString& inCoords,
                                               const GrGLEffect::TextureSampler sampler,
                                               const char* inModulateColor) {
-    SkASSERT((Mode)-1 == fMode || textureDomain.mode() == fMode);
     SkDEBUGCODE(fMode = textureDomain.mode();)
 
     if (kIgnore_Mode == textureDomain.mode()) {
@@ -75,30 +70,12 @@ void GrTextureDomain::GLDomain::sampleTexture(GrGLShaderBuilder* builder,
         builder->fsAppendTextureLookupAndModulate(inModulateColor, sampler, clampedCoords.c_str());
         builder->fsCodeAppend(";\n");
     } else {
-        SkASSERT(GrTextureDomain::kDecal_Mode == textureDomain.mode());
         // Add a block since we're going to declare variables.
         GrGLShaderBuilder::FSBlock block(builder);
 
         const char* domain = fDomainName.c_str();
-        if (kImagination_GrGLVendor == builder->ctxInfo().vendor()) {
-            // On the NexusS and GalaxyNexus, the other path (with the 'any'
-            // call) causes the compilation error "Calls to any function that
-            // may require a gradient calculation inside a conditional block
-            // may return undefined results". This appears to be an issue with
-            // the 'any' call since even the simple "result=black; if (any())
-            // result=white;" code fails to compile.
-            builder->fsCodeAppend("\tvec4 outside = vec4(0.0, 0.0, 0.0, 0.0);\n");
-            builder->fsCodeAppend("\tvec4 inside = ");
-            builder->fsAppendTextureLookupAndModulate(inModulateColor, sampler, inCoords.c_str());
-            builder->fsCodeAppend(";\n");
 
-            builder->fsCodeAppendf("\tfloat x = abs(2.0*(%s.x - %s.x)/(%s.z - %s.x) - 1.0);\n",
-                                    inCoords.c_str(), domain, domain, domain);
-            builder->fsCodeAppendf("\tfloat y = abs(2.0*(%s.y - %s.y)/(%s.w - %s.y) - 1.0);\n",
-                                    inCoords.c_str(), domain, domain, domain);
-            builder->fsCodeAppend("\tfloat blend = step(1.0, max(x, y));\n");
-            builder->fsCodeAppendf("\t%s = mix(inside, outside, blend);\n", outColor);
-        } else {
+		{
             builder->fsCodeAppend("\tbvec4 outside;\n");
             builder->fsCodeAppendf("\toutside.xy = lessThan(%s, %s.xy);\n", inCoords.c_str(),
                                    domain);
@@ -114,9 +91,8 @@ void GrTextureDomain::GLDomain::sampleTexture(GrGLShaderBuilder* builder,
 void GrTextureDomain::GLDomain::setData(const GrGLUniformManager& uman,
                                         const GrTextureDomain& textureDomain,
                                         GrSurfaceOrigin textureOrigin) {
-    SkASSERT(textureDomain.mode() == fMode);
     if (kIgnore_Mode != textureDomain.mode()) {
-        GrGLfloat values[4] = {
+        GLfloat values[4] = {
             SkScalarToFloat(textureDomain.domain().left()),
             SkScalarToFloat(textureDomain.domain().top()),
             SkScalarToFloat(textureDomain.domain().right()),
@@ -130,9 +106,9 @@ void GrTextureDomain::GLDomain::setData(const GrGLUniformManager& uman,
             // of elements so that values = (l, t, r, b).
             SkTSwap(values[1], values[3]);
         }
-        if (0 != memcmp(values, fPrevDomain, 4 * sizeof(GrGLfloat))) {
+        if (0 != memcmp(values, fPrevDomain, 4 * sizeof(GLfloat))) {
             uman.set4fv(fDomainUni, 1, values);
-            memcpy(fPrevDomain, values, 4 * sizeof(GrGLfloat));
+            memcpy(fPrevDomain, values, 4 * sizeof(GLfloat));
         }
     }
 }

@@ -7,8 +7,7 @@
  */
 #include "SkKernel33MaskFilter.h"
 #include "SkColorPriv.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkString.h"
 
 SkMask::Format SkKernel33ProcMaskFilter::getFormat() const {
@@ -76,17 +75,17 @@ bool SkKernel33ProcMaskFilter::filterMask(SkMask* dst, const SkMask& src,
     return true;
 }
 
-void SkKernel33ProcMaskFilter::flatten(SkWriteBuffer& wb) const {
+void SkKernel33ProcMaskFilter::flatten(SkFlattenableWriteBuffer& wb) const {
     this->INHERITED::flatten(wb);
     wb.writeInt(fPercent256);
 }
 
-SkKernel33ProcMaskFilter::SkKernel33ProcMaskFilter(SkReadBuffer& rb)
+SkKernel33ProcMaskFilter::SkKernel33ProcMaskFilter(SkFlattenableReadBuffer& rb)
         : SkMaskFilter(rb) {
     fPercent256 = rb.readInt();
 }
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkKernel33ProcMaskFilter::toString(SkString* str) const {
     str->appendf("percent256: %d, ", fPercent256);
 }
@@ -113,20 +112,19 @@ uint8_t SkKernel33MaskFilter::computeValue(uint8_t* const* srcRows) const {
     return (uint8_t)value;
 }
 
-void SkKernel33MaskFilter::flatten(SkWriteBuffer& wb) const {
+void SkKernel33MaskFilter::flatten(SkFlattenableWriteBuffer& wb) const {
     this->INHERITED::flatten(wb);
     wb.writeIntArray(&fKernel[0][0], 9);
     wb.writeInt(fShift);
 }
 
-SkKernel33MaskFilter::SkKernel33MaskFilter(SkReadBuffer& rb)
+SkKernel33MaskFilter::SkKernel33MaskFilter(SkFlattenableReadBuffer& rb)
         : SkKernel33ProcMaskFilter(rb) {
-    SkDEBUGCODE(bool success = )rb.readIntArray(&fKernel[0][0], 9);
-    SkASSERT(success);
+	rb.readIntArray(&fKernel[0][0], 9);
     fShift = rb.readInt();
 }
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkKernel33MaskFilter::toString(SkString* str) const {
     str->append("SkKernel33MaskFilter: (");
 

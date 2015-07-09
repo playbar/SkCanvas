@@ -110,7 +110,6 @@ bool GrRectanizerSkyline::rectangleFits(int skylineIndex, int width, int height,
         }
     widthLeft -= fSkyline[i].fWidth;
     ++i;
-    SkASSERT(i < fSkyline.count() || widthLeft <= 0);
     }
 
     *ypos = y;
@@ -124,12 +123,9 @@ void GrRectanizerSkyline::addSkylineLevel(int skylineIndex, int x, int y, int wi
     newSegment.fWidth = width;
     fSkyline.insert(skylineIndex, 1, &newSegment);
 
-    SkASSERT(newSegment.fX + newSegment.fWidth <= this->width());
-    SkASSERT(newSegment.fY <= this->height());
 
     // delete width of this skyline segment from following ones
     for (int i = skylineIndex+1; i < fSkyline.count(); ++i) {
-        SkASSERT(fSkyline[i-1].fX <= fSkyline[i].fX);
 
         if (fSkyline[i].fX < fSkyline[i-1].fX + fSkyline[i-1].fWidth) {
             int shrink = fSkyline[i-1].fX + fSkyline[i-1].fWidth - fSkyline[i].fX;

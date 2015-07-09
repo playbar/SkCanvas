@@ -522,11 +522,6 @@ bool SkMatrix44::invert(SkMatrix44* inverse) const {
         // of arithmetic that would otherwise be spent to compute the inverse
         // of a general matrix.
 
-        SkASSERT(a03 == 0);
-        SkASSERT(a13 == 0);
-        SkASSERT(a23 == 0);
-        SkASSERT(a33 == 1);
-
         double b00 = a00 * a11 - a01 * a10;
         double b01 = a00 * a12 - a02 * a10;
         double b03 = a01 * a12 - a02 * a11;
@@ -660,9 +655,9 @@ void SkMatrix44::transpose() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void SkMatrix44::mapScalars(const SkScalar src[4], SkScalar dst[4]) const {
-    SkScalar storage[4];
-    SkScalar* result = (src == dst) ? storage : dst;
+void SkMatrix44::mapScalars(const float src[4], float dst[4]) const {
+    float storage[4];
+    float* result = (src == dst) ? storage : dst;
 
     for (int i = 0; i < 4; i++) {
         SkMScalar value = 0;

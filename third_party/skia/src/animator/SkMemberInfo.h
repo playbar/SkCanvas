@@ -31,23 +31,15 @@ struct SkMemberInfo {
     //!!! alternative:
     // if fCount == 0, record is member property
     // then fType can be type, so caller doesn't have to check
-#if SK_USE_CONDENSED_INFO == 0
     const char* fName;  // may be NULL for anonymous functions
     size_t fOffset; // if negative, is index into member pointer table (for properties and functions)
     SkDisplayTypes fType;
     int fCount;         // for properties, actual type (count is always assumed to be 1)
-#else
-    unsigned char fName;
-    signed char fOffset;
-    unsigned char fType;
-    signed char fCount;
-#endif
+
     SkDisplayTypes arrayType() const {
-        SkASSERT(fType == SkType_Array);
         return (SkDisplayTypes) fCount;  // hack, but worth it?
     }
     int functionIndex() const {
-        SkASSERT(fType == SkType_MemberFunction);
         return (signed) fOffset > 0 ? -1 + (int) fOffset : -1 - (int) fOffset;
     }
     bool getArrayValue(const SkDisplayable* displayable, int index, SkOperand* value) const;
@@ -66,19 +58,15 @@ struct SkMemberInfo {
     bool isEnum() const;
     const char* mapEnums(const char* match, int* value) const;
     void* memberData(const SkDisplayable* displayable) const {
-        SkASSERT(fType != SkType_MemberProperty &&  fType != SkType_MemberFunction);
         return (void*) ((const char*) displayable + fOffset);
     }
     int propertyIndex() const {
-        SkASSERT(fType == SkType_MemberProperty);
         return (signed) fOffset > 0 ? -1 + (int) fOffset : -1 - (int) fOffset;
     }
     SkDisplayTypes propertyType() const {
-        SkASSERT(fType == SkType_MemberProperty || fType == SkType_Array);
         return (SkDisplayTypes) fCount;  // hack, but worth it?
     }
     void setMemberData(SkDisplayable* displayable, const void* child, size_t size) const {
-        SkASSERT(fType != SkType_MemberProperty &&  fType != SkType_MemberFunction);
         memcpy((char*) displayable + fOffset, child, size);
     }
     void setString(SkDisplayable* , SkString* ) const;
@@ -106,11 +94,11 @@ struct SkMemberInfo {
 
 #define SK_MEMBER(_member, _type) \
     { #_member, SK_OFFSETOF(BASE_CLASS, _member), SkType_##_type, \
-    sizeof(((BASE_CLASS*) 1)->_member) / sizeof(SkScalar) }
+    sizeof(((BASE_CLASS*) 1)->_member) / sizeof(float) }
 
 #define SK_MEMBER_ALIAS(_member, _alias, _type) \
     { #_member, SK_OFFSETOF(BASE_CLASS, _alias), SkType_##_type, \
-    sizeof(((BASE_CLASS*) 1)->_alias) / sizeof(SkScalar) }
+    sizeof(((BASE_CLASS*) 1)->_alias) / sizeof(float) }
 
 #define SK_MEMBER_ARRAY(_member, _type) \
     { #_member, SK_OFFSETOF(BASE_CLASS, _member), SkType_Array, \

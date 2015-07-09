@@ -8,11 +8,8 @@
 #ifndef SkCoreBlitters_DEFINED
 #define SkCoreBlitters_DEFINED
 
-#include "SkBitmapProcShader.h"
 #include "SkBlitter.h"
 #include "SkBlitRow.h"
-#include "SkShader.h"
-#include "SkSmallAllocator.h"
 
 class SkRasterBlitter : public SkBlitter {
 public:
@@ -122,7 +119,7 @@ private:
 class SkARGB32_Opaque_Blitter : public SkARGB32_Blitter {
 public:
     SkARGB32_Opaque_Blitter(const SkBitmap& device, const SkPaint& paint)
-        : INHERITED(device, paint) { SkASSERT(paint.getAlpha() == 0xFF); }
+        : INHERITED(device, paint) {  }
     virtual void blitMask(const SkMask&, const SkIRect&);
 
 private:
@@ -178,7 +175,8 @@ private:
     SkBlitter::Choose(...)
  */
 
-SkBlitter* SkBlitter_ChooseD565(const SkBitmap& device, const SkPaint& paint,
-                                SkTBlitterAllocator* allocator);
+extern SkBlitter* SkBlitter_ChooseD565(const SkBitmap& device,
+                                       const SkPaint& paint,
+                                       void* storage, size_t storageSize);
 
 #endif

@@ -61,7 +61,6 @@ void ReduceClipStack(const SkClipStack& stack,
     SkRect scalarQueryBounds = SkRect::Make(queryBounds);
 
     if (iior) {
-        SkASSERT(SkClipStack::kNormal_BoundsType == stackBoundsType);
         SkRect isectRect;
         if (stackBounds.contains(scalarQueryBounds)) {
             *initialState = kAllIn_InitialState;
@@ -72,8 +71,6 @@ void ReduceClipStack(const SkClipStack& stack,
                *requiresAA = false;
             }
         } else if (isectRect.intersect(stackBounds, scalarQueryBounds)) {
-            // If the caller asked for tighter integer bounds we may be able to
-            // return kAllIn and give the bounds with no elements
             if (NULL != tighterBounds) {
                 isectRect.roundOut(tighterBounds);
                 SkRect scalarTighterBounds = SkRect::Make(*tighterBounds);
@@ -85,14 +82,14 @@ void ReduceClipStack(const SkClipStack& stack,
                     *initialState = kAllIn_InitialState;
                     return;
                 }
-            }
-            *initialState = kAllOut_InitialState;
-            // iior should only be true if aa/non-aa status matches among all elements.
-            SkClipStack::Iter iter(stack, SkClipStack::Iter::kTop_IterStart);
-            bool doAA = iter.prev()->isAA();
-            SkNEW_INSERT_AT_LLIST_HEAD(result, Element, (isectRect, SkRegion::kReplace_Op, doAA));
-            if (NULL != requiresAA) {
-                *requiresAA = doAA;
+                *initialState = kAllOut_InitialState;
+                // iior should only be true if aa/non-aa status matches among all elements.
+                SkClipStack::Iter iter(stack, SkClipStack::Iter::kTop_IterStart);
+                bool doAA = iter.prev()->isAA();
+                SkNEW_INSERT_AT_LLIST_HEAD(result, Element, (isectRect, SkRegion::kReplace_Op, doAA));
+                if (NULL != requiresAA) {
+                    *requiresAA = doAA;
+                }
             }
         } else {
             *initialState = kAllOut_InitialState;
@@ -138,7 +135,6 @@ void ReduceClipStack(const SkClipStack& stack,
 
     // The list that was computed in this function may be cached based on the gen id of the last
     // element.
-    SkASSERT(SkClipStack::kInvalidGenID != *resultGenID);
 }
 
 void reduced_stack_walker(const SkClipStack& stack,
@@ -324,7 +320,6 @@ void reduced_stack_walker(const SkClipStack& stack,
                 }
                 break;
             default:
-                SkDEBUGFAIL("Unexpected op.");
                 break;
         }
         if (!skippable) {
@@ -335,8 +330,6 @@ void reduced_stack_walker(const SkClipStack& stack,
 
             // if it is a flip, change it to a bounds-filling rect
             if (isFlip) {
-                SkASSERT(SkRegion::kXOR_Op == element->getOp() ||
-                         SkRegion::kReverseDifference_Op == element->getOp());
                 SkNEW_INSERT_AT_LLIST_HEAD(result,
                                            Element,
                                            (queryBounds, SkRegion::kReverseDifference_Op, false));
@@ -354,7 +347,6 @@ void reduced_stack_walker(const SkClipStack& stack,
                     newElement->invertShapeFillType();
                     newElement->setOp(SkRegion::kDifference_Op);
                     if (isReplace) {
-                        SkASSERT(kAllOut_InitialState == *initialState);
                         *initialState = kAllIn_InitialState;
                     }
                 }
@@ -421,7 +413,6 @@ void reduced_stack_walker(const SkClipStack& stack,
                                        // could've.
                     break;
                 default:
-                    SkDEBUGFAIL("Unexpected op.");
                     break;
             }
             if (!skippable) {

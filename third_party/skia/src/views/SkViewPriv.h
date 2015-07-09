@@ -17,7 +17,6 @@ struct Layout_SkTagList : SkTagList {
     Layout_SkTagList(SkView::Layout* layout)
         : SkTagList(kViewLayout_SkTagList), fLayout(layout)
     {
-        SkASSERT(layout);
         layout->ref();
     }
     virtual ~Layout_SkTagList()
@@ -32,7 +31,6 @@ struct Artist_SkTagList : SkTagList {
     Artist_SkTagList(SkView::Artist* artist)
         : SkTagList(kViewArtist_SkTagList), fArtist(artist)
     {
-        SkASSERT(artist);
         artist->ref();
     }
     virtual ~Artist_SkTagList()

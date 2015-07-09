@@ -20,16 +20,14 @@ public:
 
     bool isBW() const { return fIsBW; }
     bool isAA() const { return !fIsBW; }
-    const SkRegion& bwRgn() const { SkASSERT(fIsBW); return fBW; }
-    const SkAAClip& aaRgn() const { SkASSERT(!fIsBW); return fAA; }
+    const SkRegion& bwRgn() const { return fBW; }
+    const SkAAClip& aaRgn() const { return fAA; }
 
     bool isEmpty() const {
-        SkASSERT(this->computeIsEmpty() == fIsEmpty);
         return fIsEmpty;
     }
 
     bool isRect() const {
-        SkASSERT(this->computeIsRect() == fIsRect);
         return fIsRect;
     }
 
@@ -70,12 +68,6 @@ public:
     // hack for SkCanvas::getTotalClip
     const SkRegion& forceGetBW();
 
-#ifdef SK_DEBUG
-    void validate() const;
-#else
-    void validate() const {}
-#endif
-
 private:
     SkRegion    fBW;
     SkAAClip    fAA;
@@ -104,10 +96,8 @@ private:
 class SkAutoRasterClipValidate : SkNoncopyable {
 public:
     SkAutoRasterClipValidate(const SkRasterClip& rc) : fRC(rc) {
-        fRC.validate();
     }
     ~SkAutoRasterClipValidate() {
-        fRC.validate();
     }
 private:
     const SkRasterClip& fRC;
@@ -140,15 +130,12 @@ public:
     void init(const SkRasterClip&, SkBlitter*);
 
     const SkIRect& getBounds() const {
-        SkASSERT(fClipRgn);
         return fClipRgn->getBounds();
     }
     const SkRegion& getRgn() const {
-        SkASSERT(fClipRgn);
         return *fClipRgn;
     }
     SkBlitter* getBlitter() {
-        SkASSERT(fBlitter);
         return fBlitter;
     }
 

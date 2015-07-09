@@ -104,7 +104,6 @@ inline uint32_t convert_pixel(uint32_t pixel) {
                                  false,  3,         0,         1,         2>(pixel);
             break;
         default:
-            SkDEBUGFAIL("Unexpected config8888");
             return 0;
             break;
     }
@@ -132,7 +131,6 @@ inline uint32_t convert_pixel(uint32_t pixel) {
             return convert_pixel<false, 3, 0, 1, 2, IN_CFG>(pixel);
             break;
         default:
-            SkDEBUGFAIL("Unexpected config8888");
             return 0;
             break;
     }
@@ -194,7 +192,6 @@ inline void convert_config8888(uint32_t* dstPixels,
             convert_config8888<SkCanvas::kRGBA_Unpremul_Config8888, SRC_CFG>(dstPixels, dstRowBytes, srcPixels, srcRowBytes, width, height);
             break;
         default:
-            SkDEBUGFAIL("Unexpected config8888");
             break;
     }
 }
@@ -250,7 +247,6 @@ void SkConvertConfig8888Pixels(uint32_t* dstPixels,
             convert_config8888<SkCanvas::kRGBA_Unpremul_Config8888>(dstPixels, dstRowBytes, dstConfig, srcPixels, srcRowBytes, width, height);
             break;
         default:
-            SkDEBUGFAIL("Unexpected config8888");
             break;
     }
 }
@@ -274,7 +270,6 @@ uint32_t SkPackConfig8888(SkCanvas::Config8888 config,
         case SkCanvas::kRGBA_Unpremul_Config8888:
             return pack_config8888<3, 0, 1, 2>(a, r, g, b);
         default:
-            SkDEBUGFAIL("Unexpected config8888");
             return 0;
     }
 }

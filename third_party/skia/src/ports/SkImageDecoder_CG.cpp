@@ -50,6 +50,17 @@ protected:
     virtual bool onDecode(SkStream* stream, SkBitmap* bm, Mode);
 };
 
+// Returns an unpremultiplied version of color. It will have the same ordering and size as an
+// SkPMColor, but the alpha will not be premultiplied.
+static SkPMColor unpremultiply_pmcolor(SkPMColor color) {
+    U8CPU a = SkGetPackedA32(color);
+    const SkUnPreMultiply::Scale scale = SkUnPreMultiply::GetScale(a);
+    return SkPackARGB32NoCheck(a,
+                               SkUnPreMultiply::ApplyScale(scale, SkGetPackedR32(color)),
+                               SkUnPreMultiply::ApplyScale(scale, SkGetPackedG32(color)),
+                               SkUnPreMultiply::ApplyScale(scale, SkGetPackedB32(color)));
+}
+
 #define BITMAP_INFO (kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast)
 
 bool SkImageDecoder_CG::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
@@ -66,8 +77,8 @@ bool SkImageDecoder_CG::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
     }
     SkAutoTCallVProc<CGImage, CGImageRelease> arimage(image);
 
-    const int width = SkToInt(CGImageGetWidth(image));
-    const int height = SkToInt(CGImageGetHeight(image));
+    const int width = CGImageGetWidth(image);
+    const int height = CGImageGetHeight(image);
     bm->setConfig(SkBitmap::kARGB_8888_Config, width, height);
     if (SkImageDecoder::kDecodeBounds_Mode == mode) {
         return true;
@@ -107,7 +118,7 @@ bool SkImageDecoder_CG::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
         for (int i = 0; i < width; ++i) {
             for (int j = 0; j < height; ++j) {
                 uint32_t* addr = bm->getAddr32(i, j);
-                *addr = SkUnPreMultiply::UnPreMultiplyPreservingByteOrder(*addr);
+                *addr = unpremultiply_pmcolor(*addr);
             }
         }
         bm->setAlphaType(kUnpremul_SkAlphaType);
@@ -208,8 +219,8 @@ bool SkImageEncoder_CG::onEncode(SkWStream* stream, const SkBitmap& bm,
             // format.
             // <Error>: CGImageDestinationFinalize image destination does not have enough images
             // So instead we copy to 8888.
-            if (bm.colorType() == kARGB_4444_SkColorType) {
-                bm.copyTo(&bitmap8888, kPMColor_SkColorType);
+            if (bm.config() == SkBitmap::kARGB_4444_Config) {
+                bm.copyTo(&bitmap8888, SkBitmap::kARGB_8888_Config);
                 bmPtr = &bitmap8888;
             }
             type = kUTTypePNG;

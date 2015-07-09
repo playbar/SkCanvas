@@ -25,7 +25,6 @@ public:
     }
 
     static Scale GetScale(U8CPU alpha) {
-        SkASSERT(alpha <= 255);
         return gTable[alpha];
     }
 
@@ -43,13 +42,10 @@ public:
         }
     */
     static U8CPU ApplyScale(Scale scale, U8CPU component) {
-        SkASSERT(component <= 255);
         return (scale * component + (1 << 23)) >> 24;
     }
 
     static SkColor PMColorToColor(SkPMColor c);
-
-    static uint32_t UnPreMultiplyPreservingByteOrder(SkPMColor c);
 
 private:
     static const uint32_t gTable[256];

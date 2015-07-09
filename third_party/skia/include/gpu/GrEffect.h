@@ -98,33 +98,10 @@ public:
     /** Will this effect read the source color value? */
     bool willUseInputColor() const { return fWillUseInputColor; }
 
-    /** This object, besides creating back-end-specific helper objects, is used for run-time-type-
-        identification. The factory should be an instance of templated class,
-        GrTBackendEffectFactory. It is templated on the subclass of GrEffect. The subclass must have
-        a nested type (or typedef) named GLEffect which will be the subclass of GrGLEffect created
-        by the factory.
+	virtual const GrBackendEffectFactory& getFactory() const = 0;
 
-        Example:
-        class MyCustomEffect : public GrEffect {
-        ...
-            virtual const GrBackendEffectFactory& getFactory() const SK_OVERRIDE {
-                return GrTBackendEffectFactory<MyCustomEffect>::getInstance();
-            }
-        ...
-        };
-     */
-    virtual const GrBackendEffectFactory& getFactory() const = 0;
-
-    /** Returns true if this and other effect conservatively draw identically. It can only return
-        true when the two effects are of the same subclass (i.e. they return the same object from
-        from getFactory()).
-
-        A return value of true from isEqual() should not be used to test whether the effects would
-        generate the same shader code. To test for identical code generation use the EffectKey
-        computed by the GrBackendEffectFactory:
-            effectA.getFactory().glEffectKey(effectA) == effectB.getFactory().glEffectKey(effectB).
-     */
-    bool isEqual(const GrEffectRef& other) const {
+    bool isEqual(const GrEffectRef& other) const
+	{
         return this->isEqual(*other.get());
     }
 
@@ -158,7 +135,6 @@ public:
     bool hasVertexCode() const { return fHasVertexCode; }
 
     int numVertexAttribs() const {
-        SkASSERT(0 == fVertexAttribTypes.count() || fHasVertexCode);
         return fVertexAttribTypes.count();
     }
 
@@ -169,7 +145,6 @@ public:
     /** Useful for effects that want to insert a texture matrix that is implied by the texture
         dimensions */
     static inline SkMatrix MakeDivByTextureWHMatrix(const GrTexture* texture) {
-        SkASSERT(NULL != texture);
         SkMatrix mat;
         mat.setIDiv(texture->width(), texture->height());
         return mat;
@@ -245,7 +220,6 @@ protected:
 
     /** Used by GR_CREATE_STATIC_EFFECT below */
     static GrEffectRef* CreateStaticEffectRef(void* refStorage, GrEffect* effect) {
-        SkASSERT(NULL == effect->fEffectRef);
         effect->fEffectRef = SkNEW_PLACEMENT_ARGS(refStorage, GrEffectRef, (effect));
         return effect->fEffectRef;
     }
@@ -304,15 +278,8 @@ private:
             return false;
         }
         bool result = this->onIsEqual(other);
-#ifdef SK_DEBUG
-        if (result) {
-            this->assertEquality(other);
-        }
-#endif
         return result;
     }
-
-    SkDEBUGCODE(void assertEquality(const GrEffect& other) const;)
 
     /** Subclass implements this to support isEqual(). It will only be called if it is known that
         the two effects are of the same subclass (i.e. they return the same object from
@@ -340,7 +307,6 @@ private:
 };
 
 inline GrEffectRef::GrEffectRef(GrEffect* effect) {
-    SkASSERT(NULL != effect);
     effect->ref();
     fEffect = effect;
 }

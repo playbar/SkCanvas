@@ -278,7 +278,7 @@ static void set_aa_rect_vertex_attributes(GrDrawState* drawState, bool useCovera
 }
 
 static void set_inset_fan(GrPoint* pts, size_t stride,
-                          const SkRect& r, SkScalar dx, SkScalar dy) {
+                          const SkRect& r, float dx, float dy) {
     pts->setRectFan(r.fLeft + dx, r.fTop + dy,
                     r.fRight - dx, r.fBottom - dy, stride);
 }
@@ -474,12 +474,11 @@ void GrAARectRenderer::geometryFillAARect(GrGpu* gpu,
 
     intptr_t verts = reinterpret_cast<intptr_t>(geo.vertices());
     size_t vsize = drawState->getVertexSize();
-    SkASSERT(sizeof(GrPoint) + sizeof(GrColor) == vsize);
 
     GrPoint* fan0Pos = reinterpret_cast<GrPoint*>(verts);
     GrPoint* fan1Pos = reinterpret_cast<GrPoint*>(verts + 4 * vsize);
 
-    SkScalar inset = SkMinScalar(devRect.width(), SK_Scalar1);
+    float inset = SkMinScalar(devRect.width(), SK_Scalar1);
     inset = SK_ScalarHalf * SkMinScalar(inset, devRect.height());
 
     if (combinedMatrix.rectStaysRect()) {
@@ -539,7 +538,6 @@ void GrAARectRenderer::geometryFillAARect(GrGpu* gpu,
     int scale;
     if (inset < SK_ScalarHalf) {
         scale = SkScalarFloorToInt(512.0f * inset / (inset + SK_ScalarHalf));
-        SkASSERT(scale >= 0 && scale <= 255);
     } else {
         scale = 0xff;
     }
@@ -618,10 +616,9 @@ void GrAARectRenderer::shaderFillAARect(GrGpu* gpu,
       { combinedMatrix[SkMatrix::kMSkewX],  combinedMatrix[SkMatrix::kMScaleY] }
     };
 
-    SkScalar newWidth = SkScalarHalf(rect.width() * vec[0].length()) + SK_ScalarHalf;
-    SkScalar newHeight = SkScalarHalf(rect.height() * vec[1].length()) + SK_ScalarHalf;
+    float newWidth = SkScalarHalf(rect.width() * vec[0].length()) + SK_ScalarHalf;
+    float newHeight = SkScalarHalf(rect.height() * vec[1].length()) + SK_ScalarHalf;
     drawState->setVertexAttribs<gAARectVertexAttribs>(SK_ARRAY_COUNT(gAARectVertexAttribs));
-    SkASSERT(sizeof(RectVertex) == drawState->getVertexSize());
 
     GrDrawTarget::AutoReleaseGeometry geo(target, 4, 0);
     if (!geo.succeeded()) {
@@ -668,10 +665,8 @@ void GrAARectRenderer::shaderFillAlignedAARect(GrGpu* gpu,
                                                const SkRect& rect,
                                                const SkMatrix& combinedMatrix) {
     GrDrawState* drawState = target->drawState();
-    SkASSERT(combinedMatrix.rectStaysRect());
 
     drawState->setVertexAttribs<gAAAARectVertexAttribs>(SK_ARRAY_COUNT(gAAAARectVertexAttribs));
-    SkASSERT(sizeof(AARectVertex) == drawState->getVertexSize());
 
     GrDrawTarget::AutoReleaseGeometry geo(target, 4, 0);
     if (!geo.succeeded()) {
@@ -729,7 +724,7 @@ void GrAARectRenderer::strokeAARect(GrGpu* gpu,
                                     const SkStrokeRec* stroke,
                                     bool useVertexCoverage) {
     GrVec devStrokeSize;
-    SkScalar width = stroke->getWidth();
+    float width = stroke->getWidth();
     if (width > 0) {
         devStrokeSize.set(width, width);
         combinedMatrix.mapVectors(&devStrokeSize, 1);
@@ -738,10 +733,10 @@ void GrAARectRenderer::strokeAARect(GrGpu* gpu,
         devStrokeSize.set(SK_Scalar1, SK_Scalar1);
     }
 
-    const SkScalar dx = devStrokeSize.fX;
-    const SkScalar dy = devStrokeSize.fY;
-    const SkScalar rx = SkScalarMul(dx, SK_ScalarHalf);
-    const SkScalar ry = SkScalarMul(dy, SK_ScalarHalf);
+    const float dx = devStrokeSize.fX;
+    const float dy = devStrokeSize.fY;
+    const float rx = SkScalarMul(dx, SK_ScalarHalf);
+    const float ry = SkScalarMul(dy, SK_ScalarHalf);
 
     // Temporarily #if'ed out. We don't want to pass in the devRect but
     // right now it is computed in GrContext::apply_aa_to_rect and we don't
@@ -751,10 +746,10 @@ void GrAARectRenderer::strokeAARect(GrGpu* gpu,
     combinedMatrix.mapRect(&devRect, rect);
 #endif
 
-    SkScalar spare;
+    float spare;
     {
-        SkScalar w = devRect.width() - dx;
-        SkScalar h = devRect.height() - dy;
+        float w = devRect.width() - dx;
+        float h = devRect.height() - dy;
         spare = GrMin(w, h);
     }
 
@@ -818,7 +813,6 @@ void GrAARectRenderer::geometryStrokeAARect(GrGpu* gpu,
 
     intptr_t verts = reinterpret_cast<intptr_t>(geo.vertices());
     size_t vsize = drawState->getVertexSize();
-    SkASSERT(sizeof(GrPoint) + sizeof(GrColor) == vsize);
 
     // We create vertices for four nested rectangles. There are two ramps from 0 to full
     // coverage, one on the exterior of the stroke and the other on the interior.
@@ -831,7 +825,7 @@ void GrAARectRenderer::geometryStrokeAARect(GrGpu* gpu,
 #ifndef SK_IGNORE_THIN_STROKED_RECT_FIX
     // TODO: this only really works if the X & Y margins are the same all around
     // the rect
-    SkScalar inset = SkMinScalar(SK_Scalar1, devOutside.fRight - devInside.fRight);
+    float inset = SkMinScalar(SK_Scalar1, devOutside.fRight - devInside.fRight);
     inset = SkMinScalar(inset, devInside.fLeft - devOutside.fLeft);
     inset = SkMinScalar(inset, devInside.fTop - devOutside.fTop);
     if (miterStroke) {
@@ -839,9 +833,8 @@ void GrAARectRenderer::geometryStrokeAARect(GrGpu* gpu,
     } else {
         inset = SK_ScalarHalf * SkMinScalar(inset, devOutsideAssist.fBottom - devInside.fBottom);
     }
-    SkASSERT(inset >= 0);
 #else
-    SkScalar inset = SK_ScalarHalf;
+    float inset = SK_ScalarHalf;
 #endif
 
     if (miterStroke) {
@@ -876,7 +869,6 @@ void GrAARectRenderer::geometryStrokeAARect(GrGpu* gpu,
     int scale;
     if (inset < SK_ScalarHalf) {
         scale = SkScalarFloorToInt(512.0f * inset / (inset + SK_ScalarHalf));
-        SkASSERT(scale >= 0 && scale <= 255);
     } else {
         scale = 0xff;
     }
@@ -914,8 +906,6 @@ void GrAARectRenderer::fillAANestedRects(GrGpu* gpu,
                                          const SkRect rects[2],
                                          const SkMatrix& combinedMatrix,
                                          bool useVertexCoverage) {
-    SkASSERT(combinedMatrix.rectStaysRect());
-    SkASSERT(!rects[1].isEmpty());
 
     SkRect devOutside, devOutsideAssist, devInside;
     combinedMatrix.mapRect(&devOutside, rects[0]);

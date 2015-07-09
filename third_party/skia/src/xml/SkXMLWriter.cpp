@@ -16,7 +16,6 @@ SkXMLWriter::SkXMLWriter(bool doEscapeMarkup) : fDoEscapeMarkup(doEscapeMarkup)
 
 SkXMLWriter::~SkXMLWriter()
 {
-    SkASSERT(fElems.count() == 0);
 }
 
 void SkXMLWriter::flush()
@@ -44,7 +43,7 @@ void SkXMLWriter::addHexAttribute(const char name[], uint32_t value, int minDigi
     this->addAttribute(name, tmp.c_str());
 }
 
-void SkXMLWriter::addScalarAttribute(const char name[], SkScalar value)
+void SkXMLWriter::addScalarAttribute(const char name[], float value)
 {
     SkString    tmp;
     tmp.appendScalar(value);
@@ -212,7 +211,6 @@ SkXMLStreamWriter::~SkXMLStreamWriter()
 
 void SkXMLStreamWriter::onAddAttributeLen(const char name[], const char value[], size_t length)
 {
-    SkASSERT(!fElems.top()->fHasChildren);
     fStream.writeText(" ");
     fStream.writeText(name);
     fStream.writeText("=\"");
@@ -274,7 +272,6 @@ SkXMLParserWriter::~SkXMLParserWriter()
 
 void SkXMLParserWriter::onAddAttributeLen(const char name[], const char value[], size_t length)
 {
-    SkASSERT(fElems.count() == 0 || !fElems.top()->fHasChildren);
     SkString str(value, length);
     fParser.addAttribute(name, str.c_str());
 }

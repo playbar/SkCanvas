@@ -307,9 +307,9 @@ public:
                                     //   actual number of colors/offsets on
                                     //   output.
         SkColor*    fColors;        //!< The colors in the gradient.
-        SkScalar*   fColorOffsets;  //!< The unit offset for color transitions.
+        float*   fColorOffsets;  //!< The unit offset for color transitions.
         SkPoint     fPoint[2];      //!< Type specific, see above.
-        SkScalar    fRadius[2];     //!< Type specific, see above.
+        float    fRadius[2];     //!< Type specific, see above.
         TileMode    fTileMode;      //!< The tile mode used.
         uint32_t    fGradientFlags; //!< see SkGradientShader::Flags
     };
@@ -345,7 +345,8 @@ public:
     static SkShader* CreateBitmapShader(const SkBitmap& src,
                                         TileMode tmx, TileMode tmy);
 
-    SK_TO_STRING_VIRT()
+    SkDEVCODE(virtual void toString(SkString* str) const;)
+
     SK_DEFINE_FLATTENABLE_TYPE(SkShader)
 
 protected:
@@ -358,18 +359,24 @@ protected:
 
     // These can be called by your subclass after setContext() has been called
     uint8_t             getPaintAlpha() const { return fPaintAlpha; }
+    SkBitmap::Config    getDeviceConfig() const { return (SkBitmap::Config)fDeviceConfig; }
     const SkMatrix&     getTotalInverse() const { return fTotalInverse; }
     MatrixClass         getInverseClass() const { return (MatrixClass)fTotalInverseClass; }
 
-    SkShader(SkReadBuffer& );
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
+    SkShader(SkFlattenableReadBuffer& );
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
 private:
     SkMatrix            fLocalMatrix;
     SkMatrix            fTotalInverse;
     uint8_t             fPaintAlpha;
+    uint8_t             fDeviceConfig;
     uint8_t             fTotalInverseClass;
     SkDEBUGCODE(SkBool8 fInSetContext;)
 
+    static SkShader* CreateBitmapShader(const SkBitmap& src,
+                                        TileMode, TileMode,
+                                        void* storage, size_t storageSize);
+    friend class SkAutoBitmapShaderInstall;
     typedef SkFlattenable INHERITED;
 };
 

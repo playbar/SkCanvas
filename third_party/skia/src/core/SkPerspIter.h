@@ -20,7 +20,7 @@ public:
         @param y    The initial Y coordinate to be mapped through the matrix
         @param count The number of points (x,y) (x+1,y) (x+2,y) ... we will eventually map
     */
-    SkPerspIter(const SkMatrix& m, SkScalar x, SkScalar y, int count);
+	SkPerspIter(const SkMatrix& m, float x, float y, int count);
 
     /** Return the buffer of [x,y] fixed point values we will be filling.
         This always returns the same value, so it can be saved across calls to
@@ -41,7 +41,7 @@ private:
     const SkMatrix& fMatrix;
     SkFixed         fStorage[kCount * 2];
     SkFixed         fX, fY;
-    SkScalar        fSX, fSY;
+	float          fSX, fSY;
     int             fCount;
 };
 

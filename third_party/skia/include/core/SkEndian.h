@@ -30,7 +30,6 @@
     e.g. 0x1234 -> 0x3412
 */
 static inline uint16_t SkEndianSwap16(U16CPU value) {
-    SkASSERT(value == (uint16_t)value);
     return static_cast<uint16_t>((value >> 8) | (value << 8));
 }
 template<uint16_t N> struct SkTEndianSwap16 {
@@ -41,7 +40,6 @@ template<uint16_t N> struct SkTEndianSwap16 {
     low two bytes of each value in the array.
 */
 static inline void SkEndianSwap16s(uint16_t array[], int count) {
-    SkASSERT(count == 0 || array != NULL);
 
     while (--count >= 0) {
         *array = SkEndianSwap16(*array);
@@ -69,7 +67,6 @@ template<uint32_t N> struct SkTEndianSwap32 {
     bytes of each value in the array.
 */
 static inline void SkEndianSwap32s(uint32_t array[], int count) {
-    SkASSERT(count == 0 || array != NULL);
 
     while (--count >= 0) {
         *array = SkEndianSwap32(*array);
@@ -105,7 +102,6 @@ template<uint64_t N> struct SkTEndianSwap64 {
     bytes of each value in the array.
 */
 static inline void SkEndianSwap64s(uint64_t array[], int count) {
-    SkASSERT(count == 0 || array != NULL);
 
     while (--count >= 0) {
         *array = SkEndianSwap64(*array);

@@ -267,8 +267,6 @@ ConvolutionFilter1D::~ConvolutionFilter1D() {
 void ConvolutionFilter1D::AddFilter(int filter_offset,
                                     const float* filter_values,
                                     int filter_length) {
-  SkASSERT(filter_length > 0);
-
   std::vector<Fixed> fixed_values;
   fixed_values.reserve(filter_length);
 
@@ -298,7 +296,6 @@ void ConvolutionFilter1D::AddFilter(int filter_offset,
 
     filter_offset += first_non_zero;
     filter_length = last_non_zero + 1 - first_non_zero;
-    SkASSERT(filter_length > 0);
 
     for (int i = first_non_zero; i <= last_non_zero; i++)
       filter_values_.push_back(filter_values[i]);
@@ -424,7 +421,6 @@ void BGRAConvolve2D(const unsigned char* source_data,
 
   // Loop over every possible output row, processing just enough horizontal
   // convolutions to run each subsequent vertical convolution.
-  SkASSERT(output_byte_row_stride >= filter_x.num_values() * 4);
   int num_output_rows = filter_y.num_values();
 
   // We need to check which is the last line to convolve before we advance 4

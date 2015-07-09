@@ -18,7 +18,7 @@ TCHAR szTitle[] = _T("SampleApp");          // The title bar text
 TCHAR szWindowClass[] = _T("SAMPLEAPP");    // the main window class name
 
 // Forward declarations of functions included in this code module:
-ATOM                MyRegisterClass(HINSTANCE hInstance);
+WORD                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int, LPTSTR);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);

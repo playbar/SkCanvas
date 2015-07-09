@@ -55,7 +55,7 @@ public:
      * can provide an optional aspect ratio parameter. This allows the bulk-load algorithm to create
      * better proportioned tiles of rectangles.
      */
-    static SkRTree* Create(int minChildren, int maxChildren, SkScalar aspectRatio = 1,
+    static SkRTree* Create(int minChildren, int maxChildren, float aspectRatio = 1,
             bool orderWhenBulkLoading = true);
     virtual ~SkRTree();
 
@@ -67,32 +67,26 @@ public:
      *  @param bounds The corresponding bounding box
      *  @param defer Can this insert be deferred? (this may be ignored)
      */
-    virtual void insert(void* data, const SkIRect& bounds, bool defer = false) SK_OVERRIDE;
+    virtual void insert(void* data, const SkIRect& bounds, bool defer = false);
 
     /**
      * If any inserts have been deferred, this will add them into the tree
      */
-    virtual void flushDeferredInserts() SK_OVERRIDE;
+    virtual void flushDeferredInserts();
 
     /**
      * Given a query rectangle, populates the passed-in array with the elements it intersects
      */
-    virtual void search(const SkIRect& query, SkTDArray<void*>* results) SK_OVERRIDE;
+    virtual void search(const SkIRect& query, SkTDArray<void*>* results);
 
-    virtual void clear() SK_OVERRIDE;
+    virtual void clear();
     bool isEmpty() const { return 0 == fCount; }
-
-    /**
-     * Gets the depth of the tree structure
-     */
-    virtual int getDepth() const SK_OVERRIDE {
-        return this->isEmpty() ? 0 : fRoot.fChild.subtree->fLevel + 1;
-    }
+    int getDepth() const { return this->isEmpty() ? 0 : fRoot.fChild.subtree->fLevel + 1; }
 
     /**
      * This gets the insertion count (rather than the node count)
      */
-    virtual int getCount() const SK_OVERRIDE { return fCount; }
+    virtual int getCount() const { return fCount; }
 
     virtual void rewindInserts() SK_OVERRIDE;
 
@@ -151,7 +145,7 @@ private:
         }
     };
 
-    SkRTree(int minChildren, int maxChildren, SkScalar aspectRatio, bool orderWhenBulkLoading);
+    SkRTree(int minChildren, int maxChildren, float aspectRatio, bool orderWhenBulkLoading);
 
     /**
      * Recursively descend the tree to find an insertion position for 'branch', updates
@@ -190,7 +184,7 @@ private:
     Branch fRoot;
     SkChunkAlloc fNodes;
     SkTDArray<Branch> fDeferredInserts;
-    SkScalar fAspectRatio;
+    float fAspectRatio;
     bool fSortWhenBulkLoading;
 
     Node* allocateNode(uint16_t level);

@@ -32,13 +32,11 @@ public:
         }
         if (dx() == 0) {
             cubicEndPoints(pts, 0, ++endIndex);
-            SkASSERT(endIndex == 2);
             if (dy() != 0) {
                 return;
             }
             if (dx() == 0) {
                 cubicEndPoints(pts, 0, ++endIndex);  // line
-                SkASSERT(endIndex == 3);
                 return;
             }
         }
@@ -56,7 +54,6 @@ public:
         if (endIndex == 3) {
             return;
         }
-        SkASSERT(endIndex == 2);
         if (pts[0].fY > pts[3].fY) {
             a = DBL_EPSILON; // push it from 0 to slightly negative (y() returns -a)
         }
@@ -144,7 +141,6 @@ public:
     }
 
     double controlPtDistance(const SkDCubic& pts, int index) const {
-        SkASSERT(index == 1 || index == 2);
         return a * pts[index].fX + b * pts[index].fY + c;
     }
 

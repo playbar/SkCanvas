@@ -8,12 +8,11 @@
 
 
 #include "SkDiscretePathEffect.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkPathMeasure.h"
 #include "SkRandom.h"
 
-static void Perterb(SkPoint* p, const SkVector& tangent, SkScalar scale) {
+static void Perterb(SkPoint* p, const SkVector& tangent, float scale) {
     SkVector normal = tangent;
     normal.rotateCCW();
     normal.setLength(scale);
@@ -21,7 +20,7 @@ static void Perterb(SkPoint* p, const SkVector& tangent, SkScalar scale) {
 }
 
 
-SkDiscretePathEffect::SkDiscretePathEffect(SkScalar segLength, SkScalar deviation)
+SkDiscretePathEffect::SkDiscretePathEffect(float segLength, float deviation)
     : fSegLength(segLength), fPerterb(deviation)
 {
 }
@@ -33,19 +32,19 @@ bool SkDiscretePathEffect::filterPath(SkPath* dst, const SkPath& src,
     SkPathMeasure   meas(src, doFill);
     uint32_t        seed = SkScalarRoundToInt(meas.getLength());
     SkLCGRandom     rand(seed ^ ((seed << 16) | (seed >> 16)));
-    SkScalar        scale = fPerterb;
+    float        scale = fPerterb;
     SkPoint         p;
     SkVector        v;
 
     do {
-        SkScalar    length = meas.getLength();
+        float    length = meas.getLength();
 
         if (fSegLength * (2 + doFill) > length) {
             meas.getSegment(0, length, dst, true);  // to short for us to mangle
         } else {
             int         n = SkScalarRoundToInt(length / fSegLength);
-            SkScalar    delta = length / n;
-            SkScalar    distance = 0;
+            float    delta = length / n;
+            float    distance = 0;
 
             if (meas.isClosed()) {
                 n -= 1;
@@ -71,13 +70,13 @@ bool SkDiscretePathEffect::filterPath(SkPath* dst, const SkPath& src,
     return true;
 }
 
-void SkDiscretePathEffect::flatten(SkWriteBuffer& buffer) const {
+void SkDiscretePathEffect::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writeScalar(fSegLength);
     buffer.writeScalar(fPerterb);
 }
 
-SkDiscretePathEffect::SkDiscretePathEffect(SkReadBuffer& buffer) {
+SkDiscretePathEffect::SkDiscretePathEffect(SkFlattenableReadBuffer& buffer) {
     fSegLength = buffer.readScalar();
     fPerterb = buffer.readScalar();
 }

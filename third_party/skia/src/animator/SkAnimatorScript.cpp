@@ -121,7 +121,6 @@ bool SkAnimatorScript::Box(void* user, SkScriptValue* scriptValue) {
             scriptValue->fType = SkType_Displayable;
             return true;
         default:
-            SkASSERT(0);
             return false;
     }
     engine->track(displayable);
@@ -231,11 +230,10 @@ bool SkAnimatorScript::EvalMemberCommon(SkScriptEngine* engine, const SkMemberIn
         case SkType_Int:
         case SkType_MSec:
         case SkType_Float:
-            SkASSERT(info->getCount() == 1);
             if (info->fType != SkType_MemberProperty && info->fType != SkType_MemberFunction)
                 value->fOperand.fS32 = *(int32_t*) info->memberData(displayable);   // OK for SkScalar too
             if (type == SkType_MSec) {
-                value->fOperand.fScalar = SkScalarDiv((SkScalar) value->fOperand.fS32, 1000); // dividing two ints is the same as dividing two scalars
+                value->fOperand.fScalar = SkScalarDiv((float) value->fOperand.fS32, 1000); // dividing two ints is the same as dividing two scalars
                 type = SkType_Float;
             }
             break;
@@ -247,13 +245,11 @@ bool SkAnimatorScript::EvalMemberCommon(SkScriptEngine* engine, const SkMemberIn
             }
             } break;
         case SkType_Array: {
-            SkASSERT(info->fType != SkType_MemberProperty); // !!! incomplete
             SkTDOperandArray* displayableArray = (SkTDOperandArray*) info->memberData(displayable);
             if (displayable->getType() == SkType_Array) {
                 SkDisplayArray* typedArray = (SkDisplayArray*) displayable;
                 original = typedArray->values.getType();
             }
-            SkASSERT(original != SkType_Unknown);
             SkTypedArray* array = value->fOperand.fArray = new SkTypedArray(original);
             engine->track(array);
             int count = displayableArray->count();
@@ -263,7 +259,7 @@ bool SkAnimatorScript::EvalMemberCommon(SkScriptEngine* engine, const SkMemberIn
             }
             } break;
         default:
-            SkASSERT(0); // unimplemented
+			break;
     }
     value->fType = type;
     return true;
@@ -285,7 +281,6 @@ bool SkAnimatorScript::EvalMember(const char* member, size_t len, void* object, 
         return false;
     if (info->fType == SkType_MemberProperty) {
         if (displayable->getProperty(info->propertyIndex(), value) == false) {
-            SkASSERT(0);
             return false;
         }
     }
@@ -298,9 +293,7 @@ bool SkAnimatorScript::EvalMemberFunction(const char* member, size_t len, void* 
     SkDisplayable* displayable = (SkDisplayable*) object;
     SkString name(member, len);
     const SkMemberInfo* info = displayable->getMember(name.c_str());
-    SkASSERT(info != NULL); /* !!! error handling unimplemented */
     if (info->fType != SkType_MemberFunction) {
-        SkASSERT(0);
         return false;
     }
     displayable->executeFunction(displayable, info->functionIndex(), params, info->getType(),
@@ -326,7 +319,7 @@ bool SkAnimatorScript::EvaluateInt(SkAnimateMaker& maker, SkDisplayable* display
     return success;
 }
 
-bool SkAnimatorScript::EvaluateFloat(SkAnimateMaker& maker, SkDisplayable* displayable, const char* script, SkScalar* result) {
+bool SkAnimatorScript::EvaluateFloat(SkAnimateMaker& maker, SkDisplayable* displayable, const char* script, float* result) {
     SkAnimatorScript engine(maker, displayable, SkType_Float);
     SkScriptValue value;
     bool success = engine.evaluate(script, &value, SkType_Float);
@@ -357,7 +350,6 @@ bool SkAnimatorScript::EvaluateString(SkAnimateMaker& maker, SkDisplayable* disp
 const SkDisplayEnumMap& SkAnimatorScript::GetEnumValues(SkDisplayTypes type) {
     int index = SkTSearch<SkDisplayTypes>(&gEnumMaps[0].fType, gEnumMapCount, type,
         sizeof(SkDisplayEnumMap));
-    SkASSERT(index >= 0);
     return gEnumMaps[index];
 }
 
@@ -377,7 +369,7 @@ bool SkAnimatorScript::IsFinite(const char* function, size_t len, SkTDArray<SkSc
         return false;
     SkScriptValue* scriptValue = params.begin();
     SkDisplayTypes type = scriptValue->fType;
-    SkScalar scalar = scriptValue->fOperand.fScalar;
+    float scalar = scriptValue->fOperand.fScalar;
     value->fType = SkType_Int;
     value->fOperand.fS32 = type == SkType_Float ? SkScalarIsNaN(scalar) == false &&
         SkScalarAbs(scalar) != SK_ScalarInfinity    : type == SkType_Int;
@@ -440,7 +432,6 @@ bool SkAnimatorScript::ObjectToString(void* object, void* user, SkScriptValue* v
 
 bool SkAnimatorScript::Unbox(void* m, SkScriptValue* scriptValue) {
     SkAnimateMaker* maker = (SkAnimateMaker*) m;
-    SkASSERT((unsigned) scriptValue->fType == (unsigned) SkType_Displayable);
     SkDisplayable* displayable = (SkDisplayable*) scriptValue->fOperand.fObject;
     SkDisplayTypes type = displayable->getType();
     switch (displayable->getType()) {
@@ -466,8 +457,7 @@ bool SkAnimatorScript::Unbox(void* m, SkScriptValue* scriptValue) {
             } break;
         default: {
             const char* id = NULL;
-            SkDEBUGCODE(bool success = ) maker->findKey(displayable, &id);
-            SkASSERT(success);
+            maker->findKey(displayable, &id);
             scriptValue->fOperand.fString = SkNEW_ARGS(SkString, (id));
             type = SkType_String;
         }
@@ -476,119 +466,3 @@ bool SkAnimatorScript::Unbox(void* m, SkScriptValue* scriptValue) {
     return true;
 }
 
-#if defined SK_SUPPORT_UNITTEST
-
-#include "SkAnimator.h"
-
-static const char scriptTestSetup[]  =
-"<screenplay>\n"
-    "<text id='label' text='defg'/>\n"
-    "<add id='addLabel' use='label'/>\n"
-    "<text id='text1' text='test'/>\n"
-    "<apply scope='addLabel'>\n"
-        "<set target='label' field='text' to='#script:text1.text'/>\n"
-    "</apply>\n"
-    "<apply>\n"
-        "<paint id='labelPaint'>\n"
-            "<emboss id='emboss' direction='[1,1,1]'  />\n"
-        "</paint>\n"
-        "<animate id='animation' field='direction' target='emboss' from='[1,1,1]' to='[-1,1,1]' dur='1'/>\n"
-        "<set lval='direction[0]' target='emboss' to='-1' />\n"
-    "</apply>\n"
-    "<color id='testColor' color='0 ? rgb(0,0,0) : rgb(255,255,255)' />\n"
-    "<color id='xColor' color='rgb(12,34,56)' />\n"
-    "<array id='emptyArray' />\n"
-    "<array id='intArray' values='[1, 4, 6]' />\n"
-    "<int id='idx' value='2' />\n"
-    "<int id='idy' value='2' />\n"
-    "<string id='alpha' value='abc' />\n"
-    "<rect id='testRect' left='Math.cos(0)' top='2' right='12' bottom='5' />\n"
-    "<event id='evt'>\n"
-        "<input name='x' />\n"
-        "<apply scope='idy'>\n"
-            "<set field='value' to='evt.x.int' />\n"
-        "</apply>\n"
-    "</event>\n"
-"</screenplay>";
-
-#define DEFAULT_ANSWER   , 0
-
-static const SkScriptNAnswer scriptTests[]  = {
-    { "label.text.length == 4", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-//  { "labelPaint.measureText(label.text) > 0 ? labelPaint.measureText(label.text)+10 : 40", SkType_Float, 0, SkIntToScalar(0x23)  },
-    {   "Number.POSITIVE_INFINITY >= Number.MAX_VALUE ? 1 : 0", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "Infinity >= Number.MAX_VALUE ? 1 : 0", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "Number.NEGATIVE_INFINITY <= -Number.MAX_VALUE ? 1 : 0", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "Number.MIN_VALUE > 0 ? 1 : 0", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "isNaN(Number.NaN)", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "isNaN(NaN)", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "Math.sin(0)", SkType_Float, 0, SkIntToScalar(0) DEFAULT_ANSWER },
-    {   "alpha+alpha", SkType_String, 0, 0, "abcabc" },
-    {   "intArray[4]", SkType_Unknown DEFAULT_ANSWER DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "emptyArray[4]", SkType_Unknown DEFAULT_ANSWER DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "idx", SkType_Int, 2 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "intArray.length", SkType_Int, 3 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "intArray.values[0]", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "intArray[0]", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "idx.value", SkType_Int, 2 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "alpha.value", SkType_String, 0, 0, "abc" },
-    {   "alpha", SkType_String, 0, 0, "abc" },
-    {   "alpha.value+alpha.value", SkType_String, 0, 0, "abcabc" },
-    {   "alpha+idx", SkType_String, 0, 0, "abc2" },
-    {   "idx+alpha", SkType_String, 0, 0, "2abc" },
-    {   "intArray[idx]", SkType_Int, 6 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "alpha.slice(1,2)", SkType_String, 0, 0, "b" },
-    {   "alpha.value.slice(1,2)", SkType_String, 0, 0, "b" },
-    {   "testRect.left+2", SkType_Float, 0, SkIntToScalar(3) DEFAULT_ANSWER },
-    {   "0 ? Math.sin(0) : 1", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "0 ? intArray[0] : 1", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "0 ? intArray.values[0] : 1", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "0 ? idx : 1", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "0 ? idx.value : 1", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "0 ? alpha.slice(1,2) : 1", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    {   "0 ? alpha.value.slice(1,2) : 1", SkType_Int, 1 DEFAULT_ANSWER DEFAULT_ANSWER },
-    { "idy", SkType_Int, 3 DEFAULT_ANSWER DEFAULT_ANSWER }
-};
-
-#define SkScriptNAnswer_testCount   SK_ARRAY_COUNT(scriptTests)
-
-void SkAnimatorScript::UnitTest() {
-#if defined(SK_SUPPORT_UNITTEST)
-    SkAnimator animator;
-    SkASSERT(animator.decodeMemory(scriptTestSetup, sizeof(scriptTestSetup)-1));
-    SkEvent evt;
-    evt.setString("id", "evt");
-    evt.setS32("x", 3);
-    animator.doUserEvent(evt);
-    // set up animator with memory script above, then run value tests
-    for (unsigned index = 0; index < SkScriptNAnswer_testCount; index++) {
-        SkAnimatorScript engine(*animator.fMaker, NULL, scriptTests[index].fType);
-        SkScriptValue value;
-        const char* script = scriptTests[index].fScript;
-        bool success = engine.evaluateScript(&script, &value);
-        if (success == false) {
-            SkDebugf("script failed: %s\n", scriptTests[index].fScript);
-            SkASSERT(scriptTests[index].fType == SkType_Unknown);
-            continue;
-        }
-        SkASSERT(value.fType == scriptTests[index].fType);
-        SkScalar error;
-        switch (value.fType) {
-            case SkType_Int:
-                SkASSERT(value.fOperand.fS32 == scriptTests[index].fIntAnswer);
-                break;
-            case SkType_Float:
-                error = SkScalarAbs(value.fOperand.fScalar - scriptTests[index].fScalarAnswer);
-                SkASSERT(error < SK_Scalar1 / 10000);
-                break;
-            case SkType_String:
-                SkASSERT(strcmp(value.fOperand.fString->c_str(), scriptTests[index].fStringAnswer) == 0);
-                break;
-            default:
-                SkASSERT(0);
-        }
-    }
-#endif
-}
-
-#endif

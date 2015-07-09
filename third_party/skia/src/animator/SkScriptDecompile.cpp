@@ -108,25 +108,19 @@ void SkScriptEngine2::ValidateDecompileTable() {
     SkScriptEngine2::TypeOp op = SkScriptEngine2::kNop;
     size_t index;
     for (index = 0; index < gOpNamesSize; index++) {
-        SkASSERT(gOpNames[index].fOp == op);
         op = (SkScriptEngine2::TypeOp) (op + 1);
     }
     index = 0;
     SkOperand2::OpType type = SkOperand2::kNoType;
-    SkASSERT(gOperandNames[index].fType == type);
     for (; index < gOperandNamesSize - 1; ) {
         type = (SkOperand2::OpType) (1 << index);
-        SkASSERT(gOperandNames[++index].fType == type);
     }
 }
 
 void SkScriptEngine2::decompile(const unsigned char* start, size_t length) {
-    SkASSERT(length > 0);
     const unsigned char* opCode = start;
     do {
-        SkASSERT((size_t)(opCode - start) < length);
         SkScriptEngine2::TypeOp op = (SkScriptEngine2::TypeOp) *opCode++;
-        SkASSERT((size_t)op < gOpNamesSize);
         SkDebugf("%d: %s", opCode - start - 1, gOpNames[op].fName);
         switch (op) {
         case SkScriptEngine2::kCallback: {
@@ -152,9 +146,9 @@ void SkScriptEngine2::decompile(const unsigned char* start, size_t length) {
             } break;
         case SkScriptEngine2::kScalarAccumulator:
         case SkScriptEngine2::kScalarOperand: {
-            SkScalar scalar;
+            float scalar;
             memcpy(&scalar, opCode, sizeof(scalar));
-            opCode += sizeof(SkScalar);
+            opCode += sizeof(float);
             SkDebugf(" scalar: %g", SkScalarToFloat(scalar));
             } break;
         case SkScriptEngine2::kStringAccumulator:
@@ -177,7 +171,6 @@ void SkScriptEngine2::decompile(const unsigned char* start, size_t length) {
                 SkDebugf(" type: %s", gOperandNames[index].fName);
             else {
                 while (type != 0) {
-                    SkASSERT(index + 1 < gOperandNamesSize);
                     if (type & (1 << index)) {
                         type = (SkOperand2::OpType) (type & ~(1 << index));
                         SkDebugf(" type: %s", gOperandNames[index + 1].fName);
@@ -198,7 +191,7 @@ void SkScriptEngine2::decompile(const unsigned char* start, size_t length) {
         case SkScriptEngine2::kEnd:
             goto done;
         case SkScriptEngine2::kNop:
-                SkASSERT(0);
+			break;
         default:
             break;
     }

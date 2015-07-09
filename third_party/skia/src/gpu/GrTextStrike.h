@@ -12,12 +12,12 @@
 #define GrTextStrike_DEFINED
 
 #include "GrAllocPool.h"
-#include "GrFontScaler.h"
 #include "GrTHashTable.h"
 #include "GrPoint.h"
 #include "GrGlyph.h"
 #include "GrDrawTarget.h"
 #include "GrAtlas.h"
+#include "SkGr.h"
 
 class GrFontCache;
 class GrGpu;
@@ -36,10 +36,8 @@ public:
     GrFontCache* getFontCache() const { return fFontCache; }
     GrMaskFormat getMaskFormat() const { return fMaskFormat; }
 
-    inline GrGlyph* getGlyph(GrGlyph::PackedID, GrFontScaler*);
-    bool addGlyphToAtlas(GrGlyph*, GrFontScaler*);
-
-    SkISize getAtlasSize() const { return fAtlas.getSize(); }
+    inline GrGlyph* getGlyph(GrGlyph::PackedID, SkGrFontScaler*);
+    bool getGlyphAtlas(GrGlyph*, SkGrFontScaler*);
 
     // testing
     int countGlyphs() const { return fCache.getArray().count(); }
@@ -47,11 +45,11 @@ public:
         return fCache.getArray()[index];
     }
 
-    // remove any references to this plot
-    void removePlot(const GrPlot* plot);
+    // returns true if a plot was removed
+    bool removeUnusedPlots();
 
 public:
-    // for easy removal from list
+    // for LRU
     GrTextStrike*   fPrev;
     GrTextStrike*   fNext;
 
@@ -64,11 +62,13 @@ private:
     GrFontCache*    fFontCache;
     GrAtlasMgr*     fAtlasMgr;
     GrMaskFormat    fMaskFormat;
+#if SK_DISTANCEFIELD_FONTS
     bool            fUseDistanceField;
+#endif
 
     GrAtlas         fAtlas;
 
-    GrGlyph* generateGlyph(GrGlyph::PackedID packed, GrFontScaler* scaler);
+    GrGlyph* generateGlyph(GrGlyph::PackedID packed, SkGrFontScaler* scaler);
 
     friend class GrFontCache;
 };
@@ -78,12 +78,14 @@ public:
     GrFontCache(GrGpu*);
     ~GrFontCache();
 
-    inline GrTextStrike* getStrike(GrFontScaler*, bool useDistanceField);
+    inline GrTextStrike* getStrike(SkGrFontScaler*);
 
     void freeAll();
 
-    // make an unused plot available
-    bool freeUnusedPlot(GrTextStrike* preserveStrike);
+    void purgeExceptFor(GrTextStrike*);
+
+    // remove an unused plot and its strike (if necessary)
+    void freePlotExceptFor(GrTextStrike*);
 
     // testing
     int countStrikes() const { return fCache.getArray().count(); }
@@ -91,12 +93,6 @@ public:
         return fCache.getArray()[index];
     }
     GrTextStrike* getHeadStrike() const { return fHead; }
-
-#ifdef SK_DEBUG
-    void validate() const;
-#else
-    void validate() const {}
-#endif
 
 #ifdef SK_DEVELOPER
     void dump() const;
@@ -123,7 +119,7 @@ private:
     GrGpu*      fGpu;
     GrAtlasMgr* fAtlasMgr[kAtlasCount];
 
-    GrTextStrike* generateStrike(GrFontScaler*, const Key&);
+    GrTextStrike* generateStrike(SkGrFontScaler*, const Key&);
     inline void detachStrikeFromList(GrTextStrike*);
     void purgeStrike(GrTextStrike* strike);
 };

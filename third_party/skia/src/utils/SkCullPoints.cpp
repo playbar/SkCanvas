@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2006 The Android Open Source Project
  *
@@ -5,13 +6,20 @@
  * found in the LICENSE file.
  */
 
+
 #include "SkCullPoints.h"
+#include "Sk64.h"
 
 static bool cross_product_is_neg(const SkIPoint& v, int dx, int dy) {
 #if 0
     return v.fX * dy - v.fY * dx < 0;
 #else
-    return sk_64_mul(v.fX, dy) < sk_64_mul(dx, v.fY);
+    Sk64   tmp0, tmp1;
+
+    tmp0.setMul(v.fX, dy);
+    tmp1.setMul(dx, v.fY);
+    tmp0.sub(tmp1);
+    return tmp0.isNeg() != 0;
 #endif
 }
 
@@ -45,7 +53,6 @@ bool SkCullPoints::sect_test(int x0, int y0, int x1, int y1) const {
 }
 
 static void toQuad(const SkIRect& r, SkIPoint quad[4]) {
-    SkASSERT(quad);
 
     quad[0].set(r.fLeft, r.fTop);
     quad[1].set(r.fRight, r.fTop);
@@ -76,7 +83,6 @@ void SkCullPoints::moveTo(int x, int y) {
 }
 
 SkCullPoints::LineToResult SkCullPoints::lineTo(int x, int y, SkIPoint line[]) {
-    SkASSERT(line != NULL);
 
     LineToResult result = kNo_Result;
     int x0 = fPrevPt.fX;
@@ -174,7 +180,7 @@ bool SkHitTestPath(const SkPath& path, SkRect& target, bool hires) {
     SkRect        devTarget;
 
     if (hires) {
-        const SkScalar coordLimit = SkIntToScalar(16384);
+        const float coordLimit = SkIntToScalar(16384);
         const SkRect limit = { 0, 0, coordLimit, coordLimit };
 
         SkMatrix matrix;
@@ -203,9 +209,9 @@ bool SkHitTestPath(const SkPath& path, SkRect& target, bool hires) {
     return rgn.setPath(*pathPtr, clip) ^ isInverse;
 }
 
-bool SkHitTestPath(const SkPath& path, SkScalar x, SkScalar y, bool hires) {
-    const SkScalar half = SK_ScalarHalf;
-    const SkScalar one = SK_Scalar1;
+bool SkHitTestPath(const SkPath& path, float x, float y, bool hires) {
+    const float half = SK_ScalarHalf;
+    const float one = SK_Scalar1;
     SkRect r = SkRect::MakeXYWH(x - half, y - half, one, one);
     return SkHitTestPath(path, r, hires);
 }

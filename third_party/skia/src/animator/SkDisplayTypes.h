@@ -64,7 +64,7 @@ class SkDisplayFloat : public SkDisplayDepend {
     virtual void dump(SkAnimateMaker* );
 #endif
 private:
-    SkScalar value;
+    float value;
     friend class SkAnimatorScript;
     friend class SkAnimatorScript_Box;
     friend class SkAnimatorScript_Unbox;

@@ -23,22 +23,18 @@ SkROLockPixelsPixelRef::SkROLockPixelsPixelRef(const SkImageInfo& info)
 
 SkROLockPixelsPixelRef::~SkROLockPixelsPixelRef() {}
 
-bool SkROLockPixelsPixelRef::onNewLockPixels(LockRec* rec) {
+void* SkROLockPixelsPixelRef::onLockPixels(SkColorTable** ctable) {
+    if (ctable) {
+        *ctable = NULL;
+    }
     fBitmap.reset();
 //    SkDebugf("---------- calling readpixels in support of lockpixels\n");
     if (!this->onReadPixels(&fBitmap, NULL)) {
         SkDebugf("SkROLockPixelsPixelRef::onLockPixels failed!\n");
-        return false;
+        return NULL;
     }
     fBitmap.lockPixels();
-    if (NULL == fBitmap.getPixels()) {
-        return false;
-    }
-
-    rec->fPixels = fBitmap.getPixels();
-    rec->fColorTable = NULL;
-    rec->fRowBytes = fBitmap.rowBytes();
-    return true;
+    return fBitmap.getPixels();
 }
 
 void SkROLockPixelsPixelRef::onUnlockPixels() {
@@ -65,7 +61,6 @@ static SkGrPixelRef* copyToTexturePixelRef(GrTexture* texture, SkBitmap::Config 
     SkIPoint pointStorage;
     SkIPoint* topLeft;
     if (subset != NULL) {
-        SkASSERT(SkIRect::MakeWH(texture->width(), texture->height()).contains(*subset));
         // Create a new texture that is the size of subset.
         desc.fWidth = subset->width();
         desc.fHeight = subset->height();
@@ -94,17 +89,7 @@ static SkGrPixelRef* copyToTexturePixelRef(GrTexture* texture, SkBitmap::Config 
 
     context->copyTexture(texture, dst->asRenderTarget(), topLeft);
 
-    // TODO: figure out if this is responsible for Chrome canvas errors
-#if 0
-    // The render texture we have created (to perform the copy) isn't fully
-    // functional (since it doesn't have a stencil buffer). Release it here
-    // so the caller doesn't try to render to it.
-    // TODO: we can undo this release when dynamic stencil buffer attach/
-    // detach has been implemented
-    dst->releaseRenderTarget();
-#endif
-
-    SkGrPixelRef* pixelRef = SkNEW_ARGS(SkGrPixelRef, (info, dst));
+    SkGrPixelRef* pixelRef = new SkGrPixelRef(info, dst);
     SkSafeUnref(dst);
     return pixelRef;
 }
@@ -114,27 +99,19 @@ static SkGrPixelRef* copyToTexturePixelRef(GrTexture* texture, SkBitmap::Config 
 SkGrPixelRef::SkGrPixelRef(const SkImageInfo& info, GrSurface* surface,
                            bool transferCacheLock) : INHERITED(info) {
     // TODO: figure out if this is responsible for Chrome canvas errors
-#if 0
-    // The GrTexture has a ref to the GrRenderTarget but not vice versa.
-    // If the GrTexture exists take a ref to that (rather than the render
-    // target)
-    fSurface = surface->asTexture();
-#else
+
     fSurface = NULL;
-#endif
-    if (NULL == fSurface) {
+
+    if (NULL == fSurface)
+	{
         fSurface = surface;
     }
     fUnlock = transferCacheLock;
     SkSafeRef(surface);
-
-    if (fSurface) {
-        SkASSERT(info.fWidth <= fSurface->width());
-        SkASSERT(info.fHeight <= fSurface->height());
-    }
 }
 
-SkGrPixelRef::~SkGrPixelRef() {
+SkGrPixelRef::~SkGrPixelRef()
+{
     if (fUnlock) {
         GrContext* context = fSurface->getContext();
         GrTexture* texture = fSurface->asTexture();
@@ -179,11 +156,12 @@ bool SkGrPixelRef::onReadPixels(SkBitmap* dst, const SkIRect* subset) {
         height = subset->height();
     } else {
         left = 0;
-        width = this->info().fWidth;
+        width = fSurface->width();
         top = 0;
-        height = this->info().fHeight;
+        height = fSurface->height();
     }
-    if (!dst->allocPixels(SkImageInfo::MakeN32Premul(width, height))) {
+    dst->setConfig(SkBitmap::kARGB_8888_Config, width, height);
+    if (!dst->allocPixels()) {
         SkDebugf("SkGrPixelRef::onReadPixels failed to alloc bitmap for result!\n");
         return false;
     }

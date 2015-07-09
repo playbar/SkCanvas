@@ -47,7 +47,6 @@ public:
     }
 
     bool done() const {
-        SkASSERT(fDoneSpans <= fTs.count());
         return fDoneSpans == fTs.count();
     }
 
@@ -68,7 +67,7 @@ public:
         return (*CurveSlopeAtT[SkPathOpsVerbToPoints(fVerb)])(fPts, fTs[index].fT);
     }
 
-    SkScalar dy(int index) const {
+    float dy(int index) const {
         return dxdy(index).fY;
     }
 
@@ -101,7 +100,6 @@ public:
     }
 
     int oppSign(const SkOpAngle* angle) const {
-        SkASSERT(angle->segment() == this);
         return oppSign(angle->start(), angle->end());
     }
 
@@ -171,7 +169,6 @@ public:
     }
 
     int spanSign(const SkOpAngle* angle) const {
-        SkASSERT(angle->segment() == this);
         return spanSign(angle->start(), angle->end());
     }
 
@@ -212,7 +209,7 @@ public:
     }
 
 #if defined(SK_DEBUG) || DEBUG_WINDING
-    SkScalar xAtT(int index) const {
+    float xAtT(int index) const {
         return xAtT(&fTs[index]);
     }
 #endif
@@ -226,7 +223,7 @@ public:
     }
 
 #if defined(SK_DEBUG) || DEBUG_WINDING
-    SkScalar yAtT(int index) const {
+    float yAtT(int index) const {
         return yAtT(&fTs[index]);
     }
 #endif
@@ -252,7 +249,7 @@ public:
     void checkTiny();
     int computeSum(int startIndex, int endIndex, SkOpAngle::IncludeType includeType,
                     SkTArray<SkOpAngle, true>* angles, SkTArray<SkOpAngle*, true>* sorted);
-    int crossedSpanY(const SkPoint& basePt, SkScalar* bestY, double* hitT, bool* hitSomething,
+    int crossedSpanY(const SkPoint& basePt, float* bestY, double* hitT, bool* hitSomething,
                      double mid, bool opp, bool current) const;
     bool findCoincidentMatch(const SkOpSpan* span, const SkOpSegment* other, int oStart, int oEnd,
                              int step, SkPoint* startPt, SkPoint* endPt, double* endT) const;
@@ -266,8 +263,8 @@ public:
     SkOpSegment* findTop(int* tIndex, int* endIndex, bool* unsortable, bool onlySortable);
     void fixOtherTIndex();
     void initWinding(int start, int end);
-    void initWinding(int start, int end, double tHit, int winding, SkScalar hitDx, int oppWind,
-                     SkScalar hitOppDx);
+    void initWinding(int start, int end, double tHit, int winding, float hitDx, int oppWind,
+                     float hitOppDx);
     bool isMissing(double startT, const SkPoint& pt) const;
     bool isTiny(const SkOpAngle* angle) const;
     bool joinCoincidence(SkOpSegment* other, double otherT, int step, bool cancel);
@@ -298,7 +295,7 @@ public:
     int updateOppWindingReverse(const SkOpAngle* angle) const;
     int updateWindingReverse(const SkOpAngle* angle) const;
     static bool UseInnerWinding(int outerWinding, int innerWinding);
-    int windingAtT(double tHit, int tIndex, bool crossOpp, SkScalar* dx) const;
+    int windingAtT(double tHit, int tIndex, bool crossOpp, float* dx) const;
     int windSum(const SkOpAngle* angle) const;
 
 #ifdef SK_DEBUG
@@ -399,11 +396,11 @@ private:
     SkOpSpan* verifyOneWinding(const char* funName, int tIndex);
     SkOpSpan* verifyOneWindingU(const char* funName, int tIndex);
 
-    SkScalar xAtT(const SkOpSpan* span) const {
+    float xAtT(const SkOpSpan* span) const {
         return xyAtT(span).fX;
     }
 
-    SkScalar yAtT(const SkOpSpan* span) const {
+    float yAtT(const SkOpSpan* span) const {
         return xyAtT(span).fY;
     }
 
@@ -424,7 +421,6 @@ private:
         return value < 0 ? '?' : value <= 9 ? '0' + value : '+';
     }
 #endif
-    void debugValidate() const;
 #ifdef SK_DEBUG
     void dumpPts() const;
     void dumpDPts() const;

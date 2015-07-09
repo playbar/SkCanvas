@@ -34,7 +34,7 @@ typedef SkIntArray(int) SkTDIntArray;
 typedef SkIntArray(SkColor) SkTDColorArray;
 typedef SkIntArray(SkDisplayTypes) SkTDDisplayTypesArray;
 typedef SkIntArray(SkMSec) SkTDMSecArray;
-typedef SkIntArray(SkScalar) SkTDScalarArray;
+typedef SkIntArray(float) SkTDScalarArray;
 
 typedef SkLongArray(SkActive*) SkTDActiveArray;
 typedef SkLongArray(SkAnimateBase*) SkTDAnimateArray;

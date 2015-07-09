@@ -27,10 +27,10 @@ SkPictureStateTree::SkPictureStateTree()
 SkPictureStateTree::~SkPictureStateTree() {
 }
 
-SkPictureStateTree::Draw* SkPictureStateTree::appendDraw(size_t offset) {
+SkPictureStateTree::Draw* SkPictureStateTree::appendDraw(uint32_t offset) {
     Draw* draw = static_cast<Draw*>(fAlloc.allocThrow(sizeof(Draw)));
     *draw = fCurrentState;
-    draw->fOffset = SkToU32(offset);
+    draw->fOffset = offset;
     return draw;
 }
 
@@ -39,17 +39,13 @@ void SkPictureStateTree::appendSave() {
     fCurrentState.fNode->fFlags |= Node::kSave_Flag;
 }
 
-void SkPictureStateTree::appendSaveLayer(size_t offset) {
+void SkPictureStateTree::appendSaveLayer(uint32_t offset) {
     *static_cast<Draw*>(fStateStack.push_back()) = fCurrentState;
     this->appendNode(offset);
     fCurrentState.fNode->fFlags |= Node::kSaveLayer_Flag;
 }
 
 void SkPictureStateTree::saveCollapsed() {
-    SkASSERT(NULL != fLastRestoredNode);
-    SkASSERT(SkToBool(fLastRestoredNode->fFlags & \
-        (Node::kSaveLayer_Flag | Node::kSave_Flag)));
-    SkASSERT(fLastRestoredNode->fParent == fCurrentState.fNode);
     // The structure of the tree is not modified here. We just turn off
     // the save or saveLayer flag to prevent the iterator from making state
     // changing calls on the playback canvas when traversing a save or
@@ -69,7 +65,7 @@ void SkPictureStateTree::appendTransform(const SkMatrix& trans) {
     fCurrentState.fMatrix = m;
 }
 
-void SkPictureStateTree::appendClip(size_t offset) {
+void SkPictureStateTree::appendClip(uint32_t offset) {
     this->appendNode(offset);
 }
 
@@ -78,9 +74,9 @@ SkPictureStateTree::Iterator SkPictureStateTree::getIterator(const SkTDArray<voi
     return Iterator(draws, canvas, &fRoot);
 }
 
-void SkPictureStateTree::appendNode(size_t offset) {
+void SkPictureStateTree::appendNode(uint32_t offset) {
     Node* n = static_cast<Node*>(fAlloc.allocThrow(sizeof(Node)));
-    n->fOffset = SkToU32(offset);
+    n->fOffset = offset;
     n->fFlags = 0;
     n->fParent = fCurrentState.fNode;
     n->fLevel = fCurrentState.fNode->fLevel + 1;
@@ -100,10 +96,8 @@ SkPictureStateTree::Iterator::Iterator(const SkTDArray<void*>& draws, SkCanvas* 
 }
 
 uint32_t SkPictureStateTree::Iterator::draw() {
-    SkASSERT(this->isValid());
     if (fPlaybackIndex >= fDraws->count()) {
         // restore back to where we started
-        fCanvas->setMatrix(fPlaybackMatrix);
         if (fCurrentNode->fFlags & Node::kSaveLayer_Flag) { fCanvas->restore(); }
         fCurrentNode = fCurrentNode->fParent;
         while (NULL != fCurrentNode) {
@@ -111,6 +105,7 @@ uint32_t SkPictureStateTree::Iterator::draw() {
             if (fCurrentNode->fFlags & Node::kSaveLayer_Flag) { fCanvas->restore(); }
             fCurrentNode = fCurrentNode->fParent;
         }
+        fCanvas->setMatrix(fPlaybackMatrix);
         return kDrawComplete;
     }
 

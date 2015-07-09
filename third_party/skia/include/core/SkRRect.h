@@ -14,37 +14,7 @@
 class SkPath;
 class SkMatrix;
 
-// Path forward:
-//   core work
-//      add validate method (all radii positive, all radii sums < rect size, etc.)
-//      add contains(SkRect&)  - for clip stack
-//      add contains(SkRRect&) - for clip stack
-//      add heart rect computation (max rect inside RR)
-//      add 9patch rect computation
-//      add growToInclude(SkPath&)
-//   analysis
-//      use growToInclude to fit skp round rects & generate stats (RRs vs. real paths)
-//      check on # of rectorus's the RRs could handle
-//   rendering work
-//      update SkPath.addRRect() to only use quads
-//      add GM and bench
-//   further out
-//      detect and triangulate RRectorii rather than falling back to SW in Ganesh
-//
 
-/** \class SkRRect
-
-    The SkRRect class represents a rounded rect with a potentially different
-    radii for each corner. It does not have a constructor so must be
-    initialized with one of the initialization functions (e.g., setEmpty,
-    setRectRadii, etc.)
-
-    This class is intended to roughly match CSS' border-*-*-radius capabilities.
-    This means:
-        If either of a corner's radii are 0 the corner will be square.
-        Negative radii are not allowed (they are clamped to zero).
-        If the corner curves overlap they will be proportionally reduced to fit.
-*/
 class SK_API SkRRect {
 public:
     /**
@@ -81,12 +51,10 @@ public:
      * Returns the RR's sub type.
      */
     Type getType() const {
-        SkDEBUGCODE(this->validate();)
 
         if (kUnknown_Type == fType) {
             this->computeType();
         }
-        SkASSERT(kUnknown_Type != fType);
         return fType;
     }
 
@@ -96,26 +64,10 @@ public:
     inline bool isRect() const { return kRect_Type == this->getType(); }
     inline bool isOval() const { return kOval_Type == this->getType(); }
     inline bool isSimple() const { return kSimple_Type == this->getType(); }
-    inline bool isSimpleCircular() const {
-        return this->isSimple() && fRadii[0].fX == fRadii[0].fY;
-    }
     inline bool isComplex() const { return kComplex_Type == this->getType(); }
 
-    bool allCornersCircular() const;
-
-    /**
-     * Are both x-radii the same on the two left corners, and similar for the top, right, and
-     * bottom. When this is the case the four ellipse centers form a rectangle.
-     */
-    bool isNinePatch() const {
-        return fRadii[kUpperLeft_Corner].fX == fRadii[kLowerLeft_Corner].fX &&
-               fRadii[kUpperRight_Corner].fX == fRadii[kLowerRight_Corner].fX &&
-               fRadii[kUpperLeft_Corner].fY == fRadii[kUpperRight_Corner].fY &&
-               fRadii[kLowerLeft_Corner].fY == fRadii[kLowerRight_Corner].fY;
-    }
-
-    SkScalar width() const { return fRect.width(); }
-    SkScalar height() const { return fRect.height(); }
+    float width() const { return fRect.width(); }
+    float height() const { return fRect.height(); }
 
     /**
      * Set this RR to the empty rectangle (0,0,0,0) with 0 x & y radii.
@@ -124,8 +76,6 @@ public:
         fRect.setEmpty();
         memset(fRadii, 0, sizeof(fRadii));
         fType = kEmpty_Type;
-
-        SkDEBUGCODE(this->validate();)
     }
 
     /**
@@ -141,7 +91,6 @@ public:
         memset(fRadii, 0, sizeof(fRadii));
         fType = kRect_Type;
 
-        SkDEBUGCODE(this->validate();)
     }
 
     /**
@@ -154,8 +103,8 @@ public:
             return;
         }
 
-        SkScalar xRad = SkScalarHalf(oval.width());
-        SkScalar yRad = SkScalarHalf(oval.height());
+        float xRad = SkScalarHalf(oval.width());
+        float yRad = SkScalarHalf(oval.height());
 
         fRect = oval;
         for (int i = 0; i < 4; ++i) {
@@ -163,13 +112,12 @@ public:
         }
         fType = kOval_Type;
 
-        SkDEBUGCODE(this->validate();)
     }
 
     /**
      * Initialize the RR with the same radii for all four corners.
      */
-    void setRectXY(const SkRect& rect, SkScalar xRad, SkScalar yRad);
+    void setRectXY(const SkRect& rect, float xRad, float yRad);
 
     /**
      * Initialize the RR with potentially different radii for all four corners.
@@ -193,7 +141,6 @@ public:
      *  of those radii. This call requires the rrect to be non-complex.
      */
     const SkVector& getSimpleRadii() const {
-        SkASSERT(!this->isComplex());
         return fRadii[0];
     }
 
@@ -217,9 +164,9 @@ public:
      *
      *  It is valid for dst == this.
      */
-    void inset(SkScalar dx, SkScalar dy, SkRRect* dst) const;
+    void inset(float dx, float dy, SkRRect* dst) const;
 
-    void inset(SkScalar dx, SkScalar dy) {
+    void inset(float dx, float dy) {
         this->inset(dx, dy, this);
     }
 
@@ -231,18 +178,11 @@ public:
      *
      *  It is valid for dst == this.
      */
-    void outset(SkScalar dx, SkScalar dy, SkRRect* dst) const {
+    void outset(float dx, float dy, SkRRect* dst) const {
         this->inset(-dx, -dy, dst);
     }
-    void outset(SkScalar dx, SkScalar dy) {
+    void outset(float dx, float dy) {
         this->inset(-dx, -dy, this);
-    }
-
-    /**
-     * Translate the rrect by (dx, dy).
-     */
-    void offset(SkScalar dx, SkScalar dy) {
-        fRect.offset(dx, dy);
     }
 
     /**
@@ -251,10 +191,8 @@ public:
      */
     bool contains(const SkRect& rect) const;
 
-    SkDEBUGCODE(void validate() const;)
-
     enum {
-        kSizeInMemory = 12 * sizeof(SkScalar)
+        kSizeInMemory = 12 * sizeof(float)
     };
 
     /**
@@ -297,7 +235,7 @@ private:
     // uninitialized data
 
     void computeType() const;
-    bool checkCornerContainment(SkScalar x, SkScalar y) const;
+    bool checkCornerContainment(float x, float y) const;
 
     // to access fRadii directly
     friend class SkPath;

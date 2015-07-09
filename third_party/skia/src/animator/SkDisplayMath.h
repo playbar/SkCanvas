@@ -23,7 +23,7 @@ class SkDisplayMath : public SkDisplayable {
     virtual bool getProperty(int index, SkScriptValue* value) const;
 private:
     mutable SkRandom fRandom;
-    static const SkScalar gConstants[];
+    static const float gConstants[];
     static const SkFunctionParamType fFunctionParameters[];
 
 };

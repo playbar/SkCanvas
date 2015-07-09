@@ -11,8 +11,7 @@
 #include "SkGradientShader.h"
 #include "SkClampRange.h"
 #include "SkColorPriv.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkMallocPixelRef.h"
 #include "SkUnitMapper.h"
 #include "SkUtils.h"
@@ -90,7 +89,7 @@ public:
         }
 
         const SkColor*      fColors;
-        const SkScalar*     fPos;
+        const float*     fPos;
         int                 fCount;
         SkShader::TileMode  fTileMode;
         SkUnitMapper*       fMapper;
@@ -130,9 +129,9 @@ public:
 
 
 protected:
-    SkGradientShaderBase(SkReadBuffer& );
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
-    SK_TO_STRING_OVERRIDE()
+    SkGradientShaderBase(SkFlattenableReadBuffer& );
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
+    SK_DEVELOPER_TO_STRING()
 
     SkUnitMapper* fMapper;
     SkMatrix    fPtsToUnit;     // set by subclass
@@ -247,7 +246,7 @@ public:
     virtual ~GrGradientEffect();
 
     bool useAtlas() const { return SkToBool(-1 != fRow); }
-    SkScalar getYCoord() const { return fYCoord; };
+    float getYCoord() const { return fYCoord; };
 
     virtual void getConstantColorComponents(GrColor* color, uint32_t* validFlags) const SK_OVERRIDE;
 
@@ -267,8 +266,6 @@ public:
     PremulType getPremulType() const { return fPremulType; }
 
     const SkColor* getColors(int pos) const {
-        SkASSERT(fColorType != kTexture_ColorType);
-        SkASSERT((pos-1) <= fColorType);
         return &fColors[pos];
     }
 
@@ -284,7 +281,7 @@ protected:
     static const int kMaxRandomGradientColors = 4;
     static int RandomGradientParams(SkRandom* r,
                                     SkColor colors[kMaxRandomGradientColors],
-                                    SkScalar** stops,
+                                    float** stops,
                                     SkShader::TileMode* tm);
 
     virtual bool onIsEqual(const GrEffect& effect) const SK_OVERRIDE;
@@ -300,7 +297,7 @@ private:
 
     GrCoordTransform fCoordTransform;
     GrTextureAccess fTextureAccess;
-    SkScalar fYCoord;
+    float fYCoord;
     GrTextureStripAtlas* fAtlas;
     int fRow;
     bool fIsOpaque;
@@ -376,7 +373,7 @@ protected:
                    const TextureSamplerArray& samplers);
 
 private:
-    SkScalar fCachedYCoord;
+    float fCachedYCoord;
     GrGLUniformManager::UniformHandle fFSYUni;
     GrGLUniformManager::UniformHandle fColorStartUni;
     GrGLUniformManager::UniformHandle fColorMidUni;

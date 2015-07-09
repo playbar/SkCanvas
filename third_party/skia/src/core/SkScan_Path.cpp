@@ -24,29 +24,12 @@
 #define kEDGE_HEAD_Y    SK_MinS32
 #define kEDGE_TAIL_Y    SK_MaxS32
 
-#ifdef SK_DEBUG
-    static void validate_sort(const SkEdge* edge) {
-        int y = kEDGE_HEAD_Y;
-
-        while (edge->fFirstY != SK_MaxS32) {
-            edge->validate();
-            SkASSERT(y <= edge->fFirstY);
-
-            y = edge->fFirstY;
-            edge = edge->fNext;
-        }
-    }
-#else
-    #define validate_sort(edge)
-#endif
-
 static inline void remove_edge(SkEdge* edge) {
     edge->fPrev->fNext = edge->fNext;
     edge->fNext->fPrev = edge->fPrev;
 }
 
 static inline void swap_edges(SkEdge* prev, SkEdge* next) {
-    SkASSERT(prev->fNext == next && next->fPrev == prev);
 
     // remove prev from the list
     prev->fPrev->fNext = next;
@@ -67,7 +50,6 @@ static void backward_insert_edge_based_on_x(SkEdge* edge SkDECLAREPARAM(int, cur
 
         // add 1 to curr_y since we may have added new edges (built from curves)
         // that start on the next scanline
-        SkASSERT(prev && prev->fFirstY <= curr_y + 1);
 
         if (prev->fX <= x) {
             break;
@@ -77,7 +59,6 @@ static void backward_insert_edge_based_on_x(SkEdge* edge SkDECLAREPARAM(int, cur
 }
 
 static void insert_new_edges(SkEdge* newEdge, int curr_y) {
-    SkASSERT(newEdge->fFirstY >= curr_y);
 
     while (newEdge->fFirstY == curr_y) {
         SkEdge* next = newEdge->fNext;
@@ -85,22 +66,6 @@ static void insert_new_edges(SkEdge* newEdge, int curr_y) {
         newEdge = next;
     }
 }
-
-#ifdef SK_DEBUG
-static void validate_edges_for_y(const SkEdge* edge, int curr_y) {
-    while (edge->fFirstY <= curr_y) {
-        SkASSERT(edge->fPrev && edge->fNext);
-        SkASSERT(edge->fPrev->fNext == edge);
-        SkASSERT(edge->fNext->fPrev == edge);
-        SkASSERT(edge->fFirstY <= edge->fLastY);
-
-        SkASSERT(edge->fPrev->fX <= edge->fX);
-        edge = edge->fNext;
-    }
-}
-#else
-    #define validate_edges_for_y(edge, curr_y)
-#endif
 
 #if defined _WIN32 && _MSC_VER >= 1300  // disable warning : local variable used without having been initialized
 #pragma warning ( push )
@@ -114,34 +79,27 @@ typedef void (*PrePostProc)(SkBlitter* blitter, int y, bool isStartOfScanline);
 static void walk_edges(SkEdge* prevHead, SkPath::FillType fillType,
                        SkBlitter* blitter, int start_y, int stop_y,
                        PrePostProc proc) {
-    validate_sort(prevHead->fNext);
-
     int curr_y = start_y;
     // returns 1 for evenodd, -1 for winding, regardless of inverse-ness
     int windingMask = (fillType & 1) ? 1 : -1;
 
     for (;;) {
         int     w = 0;
-        int     left SK_INIT_TO_AVOID_WARNING;
+        int     left =0;
         bool    in_interval = false;
         SkEdge* currE = prevHead->fNext;
         SkFixed prevX = prevHead->fX;
-
-        validate_edges_for_y(currE, curr_y);
 
         if (proc) {
             proc(blitter, curr_y, PREPOST_START);    // pre-proc
         }
 
         while (currE->fFirstY <= curr_y) {
-            SkASSERT(currE->fLastY >= curr_y);
 
             int x = SkFixedRoundToInt(currE->fX);
             w += currE->fWinding;
             if ((w & windingMask) == 0) { // we finished an interval
-                SkASSERT(in_interval);
                 int width = x - left;
-                SkASSERT(width >= 0);
                 if (width)
                     blitter->blitH(left, curr_y, width);
                 in_interval = false;
@@ -156,7 +114,6 @@ static void walk_edges(SkEdge* prevHead, SkPath::FillType fillType,
             if (currE->fLastY == curr_y) {    // are we done with this edge?
                 if (currE->fCurveCount < 0) {
                     if (((SkCubicEdge*)currE)->updateCubic()) {
-                        SkASSERT(currE->fFirstY == curr_y + 1);
 
                         newX = currE->fX;
                         goto NEXT_X;
@@ -169,7 +126,6 @@ static void walk_edges(SkEdge* prevHead, SkPath::FillType fillType,
                 }
                 remove_edge(currE);
             } else {
-                SkASSERT(currE->fLastY > curr_y);
                 newX = currE->fX + currE->fDX;
                 currE->fX = newX;
             NEXT_X:
@@ -180,7 +136,6 @@ static void walk_edges(SkEdge* prevHead, SkPath::FillType fillType,
                 }
             }
             currE = next;
-            SkASSERT(currE);
         }
 
         if (proc) {
@@ -198,16 +153,13 @@ static void walk_edges(SkEdge* prevHead, SkPath::FillType fillType,
 
 // return true if we're done with this edge
 static bool update_edge(SkEdge* edge, int last_y) {
-    SkASSERT(edge->fLastY >= last_y);
     if (last_y == edge->fLastY) {
         if (edge->fCurveCount < 0) {
             if (((SkCubicEdge*)edge)->updateCubic()) {
-                SkASSERT(edge->fFirstY == last_y + 1);
                 return false;
             }
         } else if (edge->fCurveCount > 0) {
             if (((SkQuadraticEdge*)edge)->updateQuadratic()) {
-                SkASSERT(edge->fFirstY == last_y + 1);
                 return false;
             }
         }
@@ -219,25 +171,17 @@ static bool update_edge(SkEdge* edge, int last_y) {
 static void walk_convex_edges(SkEdge* prevHead, SkPath::FillType,
                               SkBlitter* blitter, int start_y, int stop_y,
                               PrePostProc proc) {
-    validate_sort(prevHead->fNext);
 
     SkEdge* leftE = prevHead->fNext;
     SkEdge* riteE = leftE->fNext;
     SkEdge* currE = riteE->fNext;
 
-#if 0
-    int local_top = leftE->fFirstY;
-    SkASSERT(local_top == riteE->fFirstY);
-#else
+
     // our edge choppers for curves can result in the initial edges
     // not lining up, so we take the max.
     int local_top = SkMax32(leftE->fFirstY, riteE->fFirstY);
-#endif
-    SkASSERT(local_top >= start_y);
 
     for (;;) {
-        SkASSERT(leftE->fFirstY <= stop_y);
-        SkASSERT(riteE->fFirstY <= stop_y);
 
         if (leftE->fX > riteE->fX || (leftE->fX == riteE->fX &&
                                       leftE->fDX > riteE->fDX)) {
@@ -246,14 +190,12 @@ static void walk_convex_edges(SkEdge* prevHead, SkPath::FillType,
 
         int local_bot = SkMin32(leftE->fLastY, riteE->fLastY);
         local_bot = SkMin32(local_bot, stop_y - 1);
-        SkASSERT(local_top <= local_bot);
 
         SkFixed left = leftE->fX;
         SkFixed dLeft = leftE->fDX;
         SkFixed rite = riteE->fX;
         SkFixed dRite = riteE->fDX;
         int count = local_bot - local_top;
-        SkASSERT(count >= 0);
         if (0 == (dLeft | dRite)) {
             int L = SkFixedRoundToInt(left);
             int R = SkFixedRoundToInt(rite);
@@ -295,11 +237,8 @@ static void walk_convex_edges(SkEdge* prevHead, SkPath::FillType,
             currE = currE->fNext;
         }
 
-        SkASSERT(leftE);
-        SkASSERT(riteE);
 
         // check our bottom clip
-        SkASSERT(local_top == local_bot + 1);
         if (local_top >= stop_y) {
             break;
         }
@@ -342,19 +281,14 @@ public:
 
     // we do not expect to get called with these entrypoints
     virtual void blitAntiH(int, int, const SkAlpha[], const int16_t runs[]) {
-        SkDEBUGFAIL("blitAntiH unexpected");
     }
     virtual void blitV(int x, int y, int height, SkAlpha alpha) {
-        SkDEBUGFAIL("blitV unexpected");
     }
     virtual void blitRect(int x, int y, int width, int height) {
-        SkDEBUGFAIL("blitRect unexpected");
     }
     virtual void blitMask(const SkMask&, const SkIRect& clip) {
-        SkDEBUGFAIL("blitMask unexpected");
     }
     virtual const SkBitmap* justAnOpaqueColor(uint32_t* value) {
-        SkDEBUGFAIL("justAnOpaqueColor unexpected");
         return NULL;
     }
 
@@ -432,7 +366,6 @@ static SkEdge* sort_edges(SkEdge* list[], int count, SkEdge** last) {
 void sk_fill_path(const SkPath& path, const SkIRect* clipRect, SkBlitter* blitter,
                   int start_y, int stop_y, int shiftEdgesUp,
                   const SkRegion& clipRgn) {
-    SkASSERT(&path && blitter);
 
     SkEdgeBuilder   builder;
 
@@ -658,7 +591,6 @@ static int build_tri_edges(SkEdge edge[], const SkPoint pts[],
 
 static void sk_fill_triangle(const SkPoint pts[], const SkIRect* clipRect,
                              SkBlitter* blitter, const SkIRect& ir) {
-    SkASSERT(pts && blitter);
 
     SkEdge edgeStorage[3];
     SkEdge* list[3];

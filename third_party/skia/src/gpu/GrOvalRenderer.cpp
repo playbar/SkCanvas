@@ -27,8 +27,8 @@ namespace {
 struct CircleVertex {
     GrPoint  fPos;
     GrPoint  fOffset;
-    SkScalar fOuterRadius;
-    SkScalar fInnerRadius;
+    float fOuterRadius;
+    float fInnerRadius;
 };
 
 struct EllipseVertex {
@@ -503,8 +503,8 @@ void GrOvalRenderer::drawCircle(GrDrawTarget* target,
     const SkMatrix& vm = drawState->getViewMatrix();
     GrPoint center = GrPoint::Make(circle.centerX(), circle.centerY());
     vm.mapPoints(&center, 1);
-    SkScalar radius = vm.mapRadius(SkScalarHalf(circle.width()));
-    SkScalar strokeWidth = vm.mapRadius(stroke.getWidth());
+    float radius = vm.mapRadius(SkScalarHalf(circle.width()));
+    float strokeWidth = vm.mapRadius(stroke.getWidth());
 
     GrDrawState::AutoViewMatrixRestore avmr;
     if (!avmr.setIdentity(drawState)) {
@@ -512,7 +512,6 @@ void GrOvalRenderer::drawCircle(GrDrawTarget* target,
     }
 
     drawState->setVertexAttribs<gCircleVertexAttribs>(SK_ARRAY_COUNT(gCircleVertexAttribs));
-    SkASSERT(sizeof(CircleVertex) == drawState->getVertexSize());
 
     GrDrawTarget::AutoReleaseGeometry geo(target, 4, 0);
     if (!geo.succeeded()) {
@@ -525,9 +524,9 @@ void GrOvalRenderer::drawCircle(GrDrawTarget* target,
     SkStrokeRec::Style style = stroke.getStyle();
     bool isStroked = (SkStrokeRec::kStroke_Style == style || SkStrokeRec::kHairline_Style == style);
 
-    SkScalar innerRadius = 0.0f;
-    SkScalar outerRadius = radius;
-    SkScalar halfWidth = 0;
+    float innerRadius = 0.0f;
+    float outerRadius = radius;
+    float halfWidth = 0;
     if (style != SkStrokeRec::kFill_Style) {
         if (SkScalarNearlyZero(strokeWidth)) {
             halfWidth = SK_ScalarHalf;
@@ -604,36 +603,29 @@ bool GrOvalRenderer::drawEllipse(GrDrawTarget* target,
                                  const SkStrokeRec& stroke)
 {
     GrDrawState* drawState = target->drawState();
-#ifdef SK_DEBUG
-    {
-        // we should have checked for this previously
-        bool isAxisAlignedEllipse = drawState->getViewMatrix().rectStaysRect();
-        SkASSERT(useCoverageAA && isAxisAlignedEllipse);
-    }
-#endif
 
     // do any matrix crunching before we reset the draw state for device coords
     const SkMatrix& vm = drawState->getViewMatrix();
     GrPoint center = GrPoint::Make(ellipse.centerX(), ellipse.centerY());
     vm.mapPoints(&center, 1);
-    SkScalar ellipseXRadius = SkScalarHalf(ellipse.width());
-    SkScalar ellipseYRadius = SkScalarHalf(ellipse.height());
-    SkScalar xRadius = SkScalarAbs(vm[SkMatrix::kMScaleX]*ellipseXRadius +
+    float ellipseXRadius = SkScalarHalf(ellipse.width());
+    float ellipseYRadius = SkScalarHalf(ellipse.height());
+    float xRadius = SkScalarAbs(vm[SkMatrix::kMScaleX]*ellipseXRadius +
                                    vm[SkMatrix::kMSkewY]*ellipseYRadius);
-    SkScalar yRadius = SkScalarAbs(vm[SkMatrix::kMSkewX]*ellipseXRadius +
+    float yRadius = SkScalarAbs(vm[SkMatrix::kMSkewX]*ellipseXRadius +
                                    vm[SkMatrix::kMScaleY]*ellipseYRadius);
 
     // do (potentially) anisotropic mapping of stroke
     SkVector scaledStroke;
-    SkScalar strokeWidth = stroke.getWidth();
+    float strokeWidth = stroke.getWidth();
     scaledStroke.fX = SkScalarAbs(strokeWidth*(vm[SkMatrix::kMScaleX] + vm[SkMatrix::kMSkewY]));
     scaledStroke.fY = SkScalarAbs(strokeWidth*(vm[SkMatrix::kMSkewX] + vm[SkMatrix::kMScaleY]));
 
     SkStrokeRec::Style style = stroke.getStyle();
     bool isStroked = (SkStrokeRec::kStroke_Style == style || SkStrokeRec::kHairline_Style == style);
 
-    SkScalar innerXRadius = 0;
-    SkScalar innerYRadius = 0;
+    float innerXRadius = 0;
+    float innerYRadius = 0;
     if (SkStrokeRec::kFill_Style != style) {
         if (SkScalarNearlyZero(scaledStroke.length())) {
             scaledStroke.set(SK_ScalarHalf, SK_ScalarHalf);
@@ -669,7 +661,6 @@ bool GrOvalRenderer::drawEllipse(GrDrawTarget* target,
     }
 
     drawState->setVertexAttribs<gEllipseVertexAttribs>(SK_ARRAY_COUNT(gEllipseVertexAttribs));
-    SkASSERT(sizeof(EllipseVertex) == drawState->getVertexSize());
 
     GrDrawTarget::AutoReleaseGeometry geo(target, 4, 0);
     if (!geo.succeeded()) {
@@ -687,10 +678,10 @@ bool GrOvalRenderer::drawEllipse(GrDrawTarget* target,
     drawState->addCoverageEffect(effect, kEllipseCenterAttrIndex, kEllipseEdgeAttrIndex)->unref();
 
     // Compute the reciprocals of the radii here to save time in the shader
-    SkScalar xRadRecip = SkScalarInvert(xRadius);
-    SkScalar yRadRecip = SkScalarInvert(yRadius);
-    SkScalar xInnerRadRecip = SkScalarInvert(innerXRadius);
-    SkScalar yInnerRadRecip = SkScalarInvert(innerYRadius);
+    float xRadRecip = SkScalarInvert(xRadius);
+    float yRadRecip = SkScalarInvert(yRadius);
+    float xInnerRadRecip = SkScalarInvert(innerXRadius);
+    float yInnerRadRecip = SkScalarInvert(innerYRadius);
 
     // We've extended the outer x radius out half a pixel to antialias.
     // This will also expand the rect so all the pixels will be captured.
@@ -739,8 +730,8 @@ bool GrOvalRenderer::drawDIEllipse(GrDrawTarget* target,
     const SkMatrix& vm = drawState->getViewMatrix();
 
     GrPoint center = GrPoint::Make(ellipse.centerX(), ellipse.centerY());
-    SkScalar xRadius = SkScalarHalf(ellipse.width());
-    SkScalar yRadius = SkScalarHalf(ellipse.height());
+    float xRadius = SkScalarHalf(ellipse.width());
+    float yRadius = SkScalarHalf(ellipse.height());
 
     SkStrokeRec::Style style = stroke.getStyle();
     DIEllipseEdgeEffect::Mode mode = (SkStrokeRec::kStroke_Style == style) ?
@@ -748,10 +739,10 @@ bool GrOvalRenderer::drawDIEllipse(GrDrawTarget* target,
                                     (SkStrokeRec::kHairline_Style == style) ?
                                     DIEllipseEdgeEffect::kHairline : DIEllipseEdgeEffect::kFill;
 
-    SkScalar innerXRadius = 0;
-    SkScalar innerYRadius = 0;
+    float innerXRadius = 0;
+    float innerYRadius = 0;
     if (SkStrokeRec::kFill_Style != style && SkStrokeRec::kHairline_Style != style) {
-        SkScalar strokeWidth = stroke.getWidth();
+        float strokeWidth = stroke.getWidth();
 
         if (SkScalarNearlyZero(strokeWidth)) {
             strokeWidth = SK_ScalarHalf;
@@ -784,11 +775,10 @@ bool GrOvalRenderer::drawDIEllipse(GrDrawTarget* target,
         mode = (innerXRadius > 0 && innerYRadius > 0) ? DIEllipseEdgeEffect::kStroke :
                                                         DIEllipseEdgeEffect::kFill;
     }
-    SkScalar innerRatioX = SkScalarDiv(xRadius, innerXRadius);
-    SkScalar innerRatioY = SkScalarDiv(yRadius, innerYRadius);
+    float innerRatioX = SkScalarDiv(xRadius, innerXRadius);
+    float innerRatioY = SkScalarDiv(yRadius, innerYRadius);
 
     drawState->setVertexAttribs<gDIEllipseVertexAttribs>(SK_ARRAY_COUNT(gDIEllipseVertexAttribs));
-    SkASSERT(sizeof(DIEllipseVertex) == drawState->getVertexSize());
 
     GrDrawTarget::AutoReleaseGeometry geo(target, 4, 0);
     if (!geo.succeeded()) {
@@ -806,15 +796,15 @@ bool GrOvalRenderer::drawDIEllipse(GrDrawTarget* target,
                                          kEllipseInnerOffsetAttrIndex)->unref();
 
     // This expands the outer rect so that after CTM we end up with a half-pixel border
-    SkScalar a = vm[SkMatrix::kMScaleX];
-    SkScalar b = vm[SkMatrix::kMSkewX];
-    SkScalar c = vm[SkMatrix::kMSkewY];
-    SkScalar d = vm[SkMatrix::kMScaleY];
-    SkScalar geoDx = SkScalarDiv(SK_ScalarHalf, SkScalarSqrt(a*a + c*c));
-    SkScalar geoDy = SkScalarDiv(SK_ScalarHalf, SkScalarSqrt(b*b + d*d));
+    float a = vm[SkMatrix::kMScaleX];
+    float b = vm[SkMatrix::kMSkewX];
+    float c = vm[SkMatrix::kMSkewY];
+    float d = vm[SkMatrix::kMScaleY];
+    float geoDx = SkScalarDiv(SK_ScalarHalf, SkScalarSqrt(a*a + c*c));
+    float geoDy = SkScalarDiv(SK_ScalarHalf, SkScalarSqrt(b*b + d*d));
     // This adjusts the "radius" to include the half-pixel border
-    SkScalar offsetDx = SkScalarDiv(geoDx, xRadius);
-    SkScalar offsetDy = SkScalarDiv(geoDy, yRadius);
+    float offsetDx = SkScalarDiv(geoDx, xRadius);
+    float offsetDy = SkScalarDiv(geoDy, yRadius);
 
     SkRect bounds = SkRect::MakeLTRB(
         center.fX - xRadius - geoDx,
@@ -894,12 +884,6 @@ bool GrOvalRenderer::drawSimpleRRect(GrDrawTarget* target, GrContext* context, b
     }
 
     const SkMatrix& vm = context->getMatrix();
-#ifdef SK_DEBUG
-    {
-        // we should have checked for this previously
-        SkASSERT(useCoverageAA && vm.rectStaysRect() && rrect.isSimple());
-    }
-#endif
 
     // do any matrix crunching before we reset the draw state for device coords
     const SkRect& rrectBounds = rrect.getBounds();
@@ -907,9 +891,9 @@ bool GrOvalRenderer::drawSimpleRRect(GrDrawTarget* target, GrContext* context, b
     vm.mapRect(&bounds, rrectBounds);
 
     SkVector radii = rrect.getSimpleRadii();
-    SkScalar xRadius = SkScalarAbs(vm[SkMatrix::kMScaleX]*radii.fX +
+    float xRadius = SkScalarAbs(vm[SkMatrix::kMScaleX]*radii.fX +
                                    vm[SkMatrix::kMSkewY]*radii.fY);
-    SkScalar yRadius = SkScalarAbs(vm[SkMatrix::kMSkewX]*radii.fX +
+    float yRadius = SkScalarAbs(vm[SkMatrix::kMSkewX]*radii.fX +
                                    vm[SkMatrix::kMScaleY]*radii.fY);
 
     // if hairline stroke is greater than radius, we don't handle that right now
@@ -921,7 +905,7 @@ bool GrOvalRenderer::drawSimpleRRect(GrDrawTarget* target, GrContext* context, b
 
     // do (potentially) anisotropic mapping of stroke
     SkVector scaledStroke;
-    SkScalar strokeWidth = stroke.getWidth();
+    float strokeWidth = stroke.getWidth();
     scaledStroke.fX = SkScalarAbs(strokeWidth*(vm[SkMatrix::kMScaleX] + vm[SkMatrix::kMSkewY]));
     scaledStroke.fY = SkScalarAbs(strokeWidth*(vm[SkMatrix::kMSkewX] + vm[SkMatrix::kMScaleY]));
 
@@ -948,7 +932,6 @@ bool GrOvalRenderer::drawSimpleRRect(GrDrawTarget* target, GrContext* context, b
     // if the corners are circles, use the circle renderer
     if ((!isStroked || scaledStroke.fX == scaledStroke.fY) && xRadius == yRadius) {
         drawState->setVertexAttribs<gCircleVertexAttribs>(SK_ARRAY_COUNT(gCircleVertexAttribs));
-        SkASSERT(sizeof(CircleVertex) == drawState->getVertexSize());
 
         GrDrawTarget::AutoReleaseGeometry geo(target, 16, 0);
         if (!geo.succeeded()) {
@@ -957,9 +940,9 @@ bool GrOvalRenderer::drawSimpleRRect(GrDrawTarget* target, GrContext* context, b
         }
         CircleVertex* verts = reinterpret_cast<CircleVertex*>(geo.vertices());
 
-        SkScalar innerRadius = 0.0f;
-        SkScalar outerRadius = xRadius;
-        SkScalar halfWidth = 0;
+        float innerRadius = 0.0f;
+        float outerRadius = xRadius;
+        float halfWidth = 0;
         if (style != SkStrokeRec::kFill_Style) {
             if (SkScalarNearlyZero(scaledStroke.fX)) {
                 halfWidth = SK_ScalarHalf;
@@ -990,13 +973,13 @@ bool GrOvalRenderer::drawSimpleRRect(GrDrawTarget* target, GrContext* context, b
         // Expand the rect so all the pixels will be captured.
         bounds.outset(SK_ScalarHalf, SK_ScalarHalf);
 
-        SkScalar yCoords[4] = {
+        float yCoords[4] = {
             bounds.fTop,
             bounds.fTop + outerRadius,
             bounds.fBottom - outerRadius,
             bounds.fBottom
         };
-        SkScalar yOuterRadii[4] = {
+        float yOuterRadii[4] = {
             -outerRadius,
             0,
             0,
@@ -1036,10 +1019,9 @@ bool GrOvalRenderer::drawSimpleRRect(GrDrawTarget* target, GrContext* context, b
     // otherwise we use the ellipse renderer
     } else {
         drawState->setVertexAttribs<gEllipseVertexAttribs>(SK_ARRAY_COUNT(gEllipseVertexAttribs));
-        SkASSERT(sizeof(EllipseVertex) == drawState->getVertexSize());
 
-        SkScalar innerXRadius = 0.0f;
-        SkScalar innerYRadius = 0.0f;
+        float innerXRadius = 0.0f;
+        float innerYRadius = 0.0f;
         if (SkStrokeRec::kFill_Style != style) {
             if (SkScalarNearlyZero(scaledStroke.length())) {
                 scaledStroke.set(SK_ScalarHalf, SK_ScalarHalf);
@@ -1086,25 +1068,25 @@ bool GrOvalRenderer::drawSimpleRRect(GrDrawTarget* target, GrContext* context, b
                                      kEllipseOffsetAttrIndex, kEllipseRadiiAttrIndex)->unref();
 
         // Compute the reciprocals of the radii here to save time in the shader
-        SkScalar xRadRecip = SkScalarInvert(xRadius);
-        SkScalar yRadRecip = SkScalarInvert(yRadius);
-        SkScalar xInnerRadRecip = SkScalarInvert(innerXRadius);
-        SkScalar yInnerRadRecip = SkScalarInvert(innerYRadius);
+        float xRadRecip = SkScalarInvert(xRadius);
+        float yRadRecip = SkScalarInvert(yRadius);
+        float xInnerRadRecip = SkScalarInvert(innerXRadius);
+        float yInnerRadRecip = SkScalarInvert(innerYRadius);
 
         // Extend the radii out half a pixel to antialias.
-        SkScalar xOuterRadius = xRadius + SK_ScalarHalf;
-        SkScalar yOuterRadius = yRadius + SK_ScalarHalf;
+        float xOuterRadius = xRadius + SK_ScalarHalf;
+        float yOuterRadius = yRadius + SK_ScalarHalf;
 
         // Expand the rect so all the pixels will be captured.
         bounds.outset(SK_ScalarHalf, SK_ScalarHalf);
 
-        SkScalar yCoords[4] = {
+        float yCoords[4] = {
             bounds.fTop,
             bounds.fTop + yOuterRadius,
             bounds.fBottom - yOuterRadius,
             bounds.fBottom
         };
-        SkScalar yOuterOffsets[4] = {
+        float yOuterOffsets[4] = {
             yOuterRadius,
             SK_ScalarNearlyZero, // we're using inversesqrt() in the shader, so can't be exactly 0
             SK_ScalarNearlyZero,

@@ -33,7 +33,6 @@ public:
         builder->fsAppendTextureLookup(samplers[0], coords[0].c_str(), coords[0].type());
         builder->fsCodeAppend(";\n");
         if (GrConfigConversionEffect::kNone_PMConversion == fPMConversion) {
-            SkASSERT(fSwapRedAndBlue);
             builder->fsCodeAppendf("\t%s = %s.bgra;\n", outputColor, outputColor);
         } else {
             const char* swiz = fSwapRedAndBlue ? "bgr" : "rgb";
@@ -92,10 +91,7 @@ GrConfigConversionEffect::GrConfigConversionEffect(GrTexture* texture,
     : GrSingleTextureEffect(texture, matrix)
     , fSwapRedAndBlue(swapRedAndBlue)
     , fPMConversion(pmConversion) {
-    SkASSERT(kRGBA_8888_GrPixelConfig == texture->config() ||
-             kBGRA_8888_GrPixelConfig == texture->config());
     // Why did we pollute our texture cache instead of using a GrSingleTextureEffect?
-    SkASSERT(swapRedAndBlue || kNone_PMConversion != pmConversion);
 }
 
 const GrBackendEffectFactory& GrConfigConversionEffect::getFactory() const {

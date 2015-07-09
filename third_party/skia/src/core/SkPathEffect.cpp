@@ -8,8 +8,7 @@
 
 #include "SkPathEffect.h"
 #include "SkPath.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -26,8 +25,6 @@ bool SkPathEffect::asPoints(PointData* results, const SkPath& src,
 
 SkPairPathEffect::SkPairPathEffect(SkPathEffect* pe0, SkPathEffect* pe1)
         : fPE0(pe0), fPE1(pe1) {
-    SkASSERT(pe0);
-    SkASSERT(pe1);
     fPE0->ref();
     fPE1->ref();
 }
@@ -40,13 +37,13 @@ SkPairPathEffect::~SkPairPathEffect() {
 /*
     Format: [oe0-factory][pe1-factory][pe0-size][pe0-data][pe1-data]
 */
-void SkPairPathEffect::flatten(SkWriteBuffer& buffer) const {
+void SkPairPathEffect::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writeFlattenable(fPE0);
     buffer.writeFlattenable(fPE1);
 }
 
-SkPairPathEffect::SkPairPathEffect(SkReadBuffer& buffer) {
+SkPairPathEffect::SkPairPathEffect(SkFlattenableReadBuffer& buffer) {
     fPE0 = buffer.readPathEffect();
     fPE1 = buffer.readPathEffect();
     // either of these may fail, so we have to check for nulls later on

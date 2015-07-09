@@ -44,7 +44,6 @@ SkStrokeRec::SkStrokeRec(const SkPaint& paint) {
             }
             break;
         default:
-            SkDEBUGFAIL("unknown paint style");
             // fall back on just fill
             fWidth = kStrokeRec_FillStyleWidth;
             fStrokeAndFill = false;
@@ -77,7 +76,7 @@ void SkStrokeRec::setHairlineStyle() {
     fStrokeAndFill = false;
 }
 
-void SkStrokeRec::setStrokeStyle(SkScalar width, bool strokeAndFill) {
+void SkStrokeRec::setStrokeStyle(float width, bool strokeAndFill) {
     if (strokeAndFill && (0 == width)) {
         // hairline+fill == fill
         this->setFillStyle();

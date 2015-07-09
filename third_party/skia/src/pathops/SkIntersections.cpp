@@ -13,7 +13,7 @@ void SkIntersections::append(const SkIntersections& i) {
     }
 }
 
-int (SkIntersections::*CurveVertical[])(const SkPoint[], SkScalar, SkScalar, SkScalar, bool) = {
+int (SkIntersections::*CurveVertical[])(const SkPoint[], float, float, float, bool) = {
     NULL,
     &SkIntersections::verticalLine,
     &SkIntersections::verticalQuad,
@@ -29,22 +29,14 @@ int (SkIntersections::*CurveRay[])(const SkPoint[], const SkDLine&) = {
 
 int SkIntersections::coincidentUsed() const {
     if (!fIsCoincident[0]) {
-        SkASSERT(!fIsCoincident[1]);
         return 0;
     }
     int count = 0;
-    SkDEBUGCODE(int count2 = 0;)
     for (int index = 0; index < fUsed; ++index) {
         if (fIsCoincident[0] & (1 << index)) {
             ++count;
         }
-#ifdef SK_DEBUG
-        if (fIsCoincident[1] & (1 << index)) {
-            ++count2;
-        }
-#endif
     }
-    SkASSERT(count == count2);
     return count;
 }
 
@@ -66,7 +58,6 @@ int SkIntersections::insert(double one, double two, const SkDPoint& pt) {
         // For now, don't allow a mix of coincident and non-coincident intersections
         return -1;
     }
-    SkASSERT(fUsed <= 1 || fT[0][0] <= fT[0][1]);
     int index;
     for (index = 0; index < fUsed; ++index) {
         double oldOne = fT[0][index];
@@ -95,7 +86,6 @@ int SkIntersections::insert(double one, double two, const SkDPoint& pt) {
         }
     }
     if (fUsed >= fMax) {
-        SkASSERT(0);  // FIXME : this error, if it is to be handled at runtime in release, must
                       // be propagated all the way back down to the caller, and return failure.
         fUsed = 0;
         return 0;
@@ -152,19 +142,6 @@ void SkIntersections::quickRemoveOne(int index, int replace) {
     }
 }
 
-#if 0
-void SkIntersections::remove(double one, double two, const SkDPoint& startPt,
-        const SkDPoint& endPt) {
-    for (int index = fUsed - 1; index >= 0; --index) {
-        if (!(fIsCoincident[0] & (1 << index)) && (between(one, fT[fSwap][index], two)
-                || startPt.approximatelyEqual(fPt[index])
-                || endPt.approximatelyEqual(fPt[index]))) {
-            SkASSERT(fUsed > 0);
-            removeOne(index);
-        }
-    }
-}
-#endif
 
 void SkIntersections::removeOne(int index) {
     int remaining = --fUsed - index;
@@ -174,10 +151,8 @@ void SkIntersections::removeOne(int index) {
     memmove(&fPt[index], &fPt[index + 1], sizeof(fPt[0]) * remaining);
     memmove(&fT[0][index], &fT[0][index + 1], sizeof(fT[0][0]) * remaining);
     memmove(&fT[1][index], &fT[1][index + 1], sizeof(fT[1][0]) * remaining);
-    SkASSERT(fIsCoincident[0] == 0);
     int coBit = fIsCoincident[0] & (1 << index);
     fIsCoincident[0] -= ((fIsCoincident[0] >> 1) & ~((1 << index) - 1)) + coBit;
-    SkASSERT(!(coBit ^ (fIsCoincident[1] & (1 << index))));
     fIsCoincident[1] -= ((fIsCoincident[1] >> 1) & ~((1 << index) - 1)) + coBit;
 }
 
@@ -188,22 +163,22 @@ void SkIntersections::swapPts() {
     }
 }
 
-int SkIntersections::verticalLine(const SkPoint a[2], SkScalar top, SkScalar bottom,
-        SkScalar x, bool flipped) {
+int SkIntersections::verticalLine(const SkPoint a[2], float top, float bottom,
+        float x, bool flipped) {
     SkDLine line;
     line.set(a);
     return vertical(line, top, bottom, x, flipped);
 }
 
-int SkIntersections::verticalQuad(const SkPoint a[3], SkScalar top, SkScalar bottom,
-        SkScalar x, bool flipped) {
+int SkIntersections::verticalQuad(const SkPoint a[3], float top, float bottom,
+        float x, bool flipped) {
     SkDQuad quad;
     quad.set(a);
     return vertical(quad, top, bottom, x, flipped);
 }
 
-int SkIntersections::verticalCubic(const SkPoint a[4], SkScalar top, SkScalar bottom,
-        SkScalar x, bool flipped) {
+int SkIntersections::verticalCubic(const SkPoint a[4], float top, float bottom,
+        float x, bool flipped) {
     SkDCubic cubic;
     cubic.set(a);
     return vertical(cubic, top, bottom, x, flipped);

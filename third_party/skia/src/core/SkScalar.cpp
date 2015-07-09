@@ -10,15 +10,9 @@
 #include "SkMath.h"
 #include "SkScalar.h"
 
-SkScalar SkScalarInterpFunc(SkScalar searchKey, const SkScalar keys[],
-                            const SkScalar values[], int length) {
-    SkASSERT(length > 0);
-    SkASSERT(keys != NULL);
-    SkASSERT(values != NULL);
-#ifdef SK_DEBUG
-    for (int i = 1; i < length; i++)
-        SkASSERT(keys[i] >= keys[i-1]);
-#endif
+float SkScalarInterpFunc(float searchKey, const float keys[],
+                            const float values[], int length) {
+
     int right = 0;
     while (right < length && searchKey > keys[right])
         right++;
@@ -29,8 +23,8 @@ SkScalar SkScalarInterpFunc(SkScalar searchKey, const SkScalar keys[],
     if (0 == right)
         return values[0];
     // Otherwise, interpolate between right - 1 and right.
-    SkScalar rightKey = keys[right];
-    SkScalar leftKey = keys[right-1];
-    SkScalar fract = SkScalarDiv(searchKey-leftKey,rightKey-leftKey);
+    float rightKey = keys[right];
+    float leftKey = keys[right-1];
+    float fract = SkScalarDiv(searchKey-leftKey,rightKey-leftKey);
     return SkScalarInterp(values[right-1], values[right], fract);
 }

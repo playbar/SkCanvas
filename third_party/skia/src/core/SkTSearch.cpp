@@ -22,8 +22,6 @@ int SkStrSearch(const char*const* base, int count, const char target[],
     if (count <= 0)
         return ~0;
 
-    SkASSERT(base != NULL);
-
     int lo = 0;
     int hi = count - 1;
 
@@ -61,8 +59,6 @@ int SkStrSearch(const char*const* base, int count, const char target[],
 int SkStrLCSearch(const char*const* base, int count, const char target[],
                   size_t len, size_t elemSize)
 {
-    SkASSERT(target);
-
     SkAutoAsciiToLC tolc(target, len);
 
     return SkStrSearch(base, count, tolc.lc(), len, elemSize);

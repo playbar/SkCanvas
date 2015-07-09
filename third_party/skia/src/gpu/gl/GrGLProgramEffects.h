@@ -79,7 +79,6 @@ public:
         TextureSampler(UniformHandle uniform, const GrTextureAccess& access)
             : fSamplerUniform(uniform)
             , fConfigComponentMask(GrPixelConfigComponentMask(access.getTexture()->config())) {
-            SkASSERT(0 != fConfigComponentMask);
             memcpy(fSwizzle, access.getSwizzle(), 5);
         }
 

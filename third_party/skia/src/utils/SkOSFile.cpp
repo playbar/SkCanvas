@@ -49,8 +49,6 @@ static uint16_t* concat_to_16(const char src[], const char suffix[])
             dst[i++] = *suffix++;
     }
     dst[i] = 0;
-    SkASSERT(i + 1 <= len + len2);
-
     return dst;
 }
 

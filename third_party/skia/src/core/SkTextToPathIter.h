@@ -20,28 +20,28 @@ public:
     ~SkTextToPathIter();
 
     const SkPaint&  getPaint() const { return fPaint; }
-    SkScalar        getPathScale() const { return fScale; }
+	float        getPathScale() const { return fScale; }
 
     struct Rec {
         const SkPath*   fPath;  // may be null for "whitespace" glyphs
-        SkScalar        fXPos;
+		float        fXPos;
     };
 
     /**
      *  Returns false when all of the text has been consumed
      */
-    bool next(const SkPath** path, SkScalar* xpos);
+	bool next(const SkPath** path, float* xpos);
 
 private:
     SkGlyphCache*   fCache;
     SkPaint         fPaint;
-    SkScalar        fScale;
+	float       fScale;
     SkFixed         fPrevAdvance;
     const char*     fText;
     const char*     fStop;
     SkMeasureCacheProc fGlyphCacheProc;
 
-    SkScalar        fXPos;      // accumulated xpos, returned in next
+	float        fXPos;      // accumulated xpos, returned in next
     SkAutoKern      fAutoKern;
     int             fXYIndex;   // cache for horizontal -vs- vertical text
 };

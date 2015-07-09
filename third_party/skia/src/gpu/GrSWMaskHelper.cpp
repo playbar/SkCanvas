@@ -76,7 +76,6 @@ void GrSWMaskHelper::draw(const SkPath& path, const SkStrokeRec& stroke, SkRegio
     paint.setAntiAlias(antiAlias);
 
     if (SkRegion::kReplace_Op == op && 0xFF == alpha) {
-        SkASSERT(0xFF == paint.getAlpha());
         fDraw.drawPathCoverage(path, paint);
     } else {
         paint.setXfermodeMode(op_to_mode(op));
@@ -99,7 +98,8 @@ bool GrSWMaskHelper::init(const SkIRect& resultBounds,
     SkIRect bounds = SkIRect::MakeWH(resultBounds.width(),
                                      resultBounds.height());
 
-    if (!fBM.allocPixels(SkImageInfo::MakeA8(bounds.fRight, bounds.fBottom))) {
+    fBM.setConfig(SkBitmap::kA8_Config, bounds.fRight, bounds.fBottom);
+    if (!fBM.allocPixels()) {
         return false;
     }
     sk_bzero(fBM.getPixels(), fBM.getSafeSize());
@@ -138,7 +138,6 @@ void GrSWMaskHelper::toTexture(GrTexture *texture) {
     bool reuseScratch = fContext->getGpu()->caps()->reuseScratchTextures();
 
     // Since we're uploading to it, 'texture' shouldn't have a render target.
-    SkASSERT(NULL == texture->asRenderTarget());
 
     texture->writePixels(0, 0, fBM.width(), fBM.height(),
                          kAlpha_8_GrPixelConfig,

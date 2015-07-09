@@ -81,8 +81,6 @@ static void do_nothing_output_message(j_common_ptr) {
 }
 
 static void initialize_info(jpeg_decompress_struct* cinfo, skjpeg_source_mgr* src_mgr) {
-    SkASSERT(cinfo != NULL);
-    SkASSERT(src_mgr != NULL);
     jpeg_create_decompress(cinfo);
     overwrite_mem_buffer_size(cinfo);
     cinfo->src = src_mgr;
@@ -143,8 +141,6 @@ public:
      *  in the destructor.
      */
     void destroyInfo() {
-        SkASSERT(fInfoInitialized);
-        SkASSERT(!fDecompressStarted);
         // Like fHuffmanCreated, set to false before calling libjpeg
         // function to prevent potential infinite loop.
         fInfoInitialized = false;
@@ -161,7 +157,6 @@ public:
      *  destroy the old one. Must not be called after startTileDecompress.
      */
     bool initializeInfoAndReadHeader() {
-        SkASSERT(!fInfoInitialized && !fDecompressStarted);
         initialize_info(&fCInfo, &fSrcMgr);
         fInfoInitialized = true;
         const bool success = (JPEG_HEADER_OK == jpeg_read_header(&fCInfo, true));
@@ -180,10 +175,7 @@ public:
      *  than once.
      */
     bool buildHuffmanIndex() {
-        SkASSERT(fReadHeaderSucceeded);
-        SkASSERT(!fHuffmanCreated);
         jpeg_create_huffman_index(&fCInfo, &fHuffmanIndex);
-        SkASSERT(1 == fCInfo.scale_num && 1 == fCInfo.scale_denom);
         fHuffmanCreated = jpeg_build_huffman_index(&fCInfo, &fHuffmanIndex);
         return fHuffmanCreated;
     }
@@ -194,9 +186,6 @@ public:
      *  called once.
      */
     bool startTileDecompress() {
-        SkASSERT(fHuffmanCreated);
-        SkASSERT(fReadHeaderSucceeded);
-        SkASSERT(!fDecompressStarted);
         if (jpeg_start_tile_decompress(&fCInfo)) {
             fDecompressStarted = true;
             return true;
@@ -362,8 +351,6 @@ static void convert_CMYK_to_RGB(uint8_t* scanline, unsigned int width) {
  *  Common code for setting the error manager.
  */
 static void set_error_mgr(jpeg_decompress_struct* cinfo, skjpeg_error_mgr* errorManager) {
-    SkASSERT(cinfo != NULL);
-    SkASSERT(errorManager != NULL);
     cinfo->err = jpeg_std_error(errorManager);
     errorManager->error_exit = skjpeg_error_exit;
 }
@@ -374,7 +361,6 @@ static void set_error_mgr(jpeg_decompress_struct* cinfo, skjpeg_error_mgr* error
  *  resulting bitmap.
  */
 static void turn_off_visual_optimizations(jpeg_decompress_struct* cinfo) {
-    SkASSERT(cinfo != NULL);
     /* this gives about 30% performance improvement. In theory it may
        reduce the visual quality, in practice I'm not seeing a difference
      */
@@ -388,21 +374,10 @@ static void turn_off_visual_optimizations(jpeg_decompress_struct* cinfo) {
  * Common code for setting the dct method.
  */
 static void set_dct_method(const SkImageDecoder& decoder, jpeg_decompress_struct* cinfo) {
-    SkASSERT(cinfo != NULL);
-#ifdef DCT_IFAST_SUPPORTED
-    if (decoder.getPreferQualityOverSpeed()) {
-        cinfo->dct_method = JDCT_ISLOW;
-    } else {
-        cinfo->dct_method = JDCT_IFAST;
-    }
-#else
     cinfo->dct_method = JDCT_ISLOW;
-#endif
 }
 
 SkBitmap::Config SkJPEGImageDecoder::getBitmapConfig(jpeg_decompress_struct* cinfo) {
-    SkASSERT(cinfo != NULL);
-
     SrcDepth srcDepth = k32Bit_SrcDepth;
     if (JCS_GRAYSCALE == cinfo->jpeg_color_space) {
         srcDepth = k8BitGray_SrcDepth;
@@ -462,7 +437,6 @@ SkBitmap::Config SkJPEGImageDecoder::getBitmapConfig(jpeg_decompress_struct* cin
 static void adjust_out_color_space_and_dither(jpeg_decompress_struct* cinfo,
                                               SkBitmap::Config config,
                                               const SkImageDecoder& decoder) {
-    SkASSERT(cinfo != NULL);
     cinfo->dither_mode = JDITHER_NONE;
     if (JCS_CMYK == cinfo->out_color_space) {
         return;
@@ -502,7 +476,6 @@ static void fill_below_level(int y, SkBitmap* bitmap) {
 static bool get_src_config(const jpeg_decompress_struct& cinfo,
                            SkScaledBitmapSampler::SrcConfig* sc,
                            int* srcBytesPerPixel) {
-    SkASSERT(sc != NULL && srcBytesPerPixel != NULL);
     if (JCS_CMYK == cinfo.out_color_space) {
         // In this case we will manually convert the CMYK values to RGB
         *sc = SkScaledBitmapSampler::kRGBX;
@@ -564,7 +537,6 @@ bool SkJPEGImageDecoder::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
 
     set_dct_method(*this, &cinfo);
 
-    SkASSERT(1 == cinfo.scale_num);
     cinfo.scale_denom = sampleSize;
 
     turn_off_visual_optimizations(&cinfo);
@@ -773,7 +745,6 @@ bool SkJPEGImageDecoder::onBuildTileIndex(SkStreamRewindable* stream, int *width
         return false;
     }
 
-    SkASSERT(1 == cinfo->scale_num);
     fImageWidth = cinfo->output_width;
     fImageHeight = cinfo->output_height;
 

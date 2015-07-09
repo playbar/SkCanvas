@@ -23,8 +23,8 @@ class SkBaseBitmap : public SkBoundable {
     virtual bool draw(SkAnimateMaker& );
 protected:
     SkBitmap fBitmap;
-    SkScalar x;
-    SkScalar y;
+    float x;
+    float y;
 private:
     friend class SkDrawTo;
     friend class SkDrawBitmapShader;

@@ -255,8 +255,6 @@ void BmpDecoderHelper::DoRLEDecode() {
 }
 
 void BmpDecoderHelper::PutPixel(int x, int y, uint8 col) {
-  CHECK(x >= 0 && x < width_);
-  CHECK(y >= 0 && y < height_);
   if (!inverted_) {
     y = height_ - (y + 1);
   }
@@ -336,7 +334,6 @@ int BmpDecoderHelper::GetShort() {
 }
 
 uint8 BmpDecoderHelper::GetByte() {
-  CHECK(pos_ <= len_);
   // We deliberately allow this off-by-one access to cater for BMPs with their
   // last byte missing.
   if (pos_ == len_) {

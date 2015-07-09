@@ -55,10 +55,10 @@ public:
 
         virtual SkBaseDevice* createDevice(int width, int height) = 0;
         // returns true if the proxy can handle this filter natively
-        virtual bool canHandleImageFilter(const SkImageFilter*) = 0;
+        virtual bool canHandleImageFilter(SkImageFilter*) = 0;
         // returns true if the proxy handled the filter itself. if this returns
         // false then the filter's code will be called.
-        virtual bool filterImage(const SkImageFilter*, const SkBitmap& src,
+        virtual bool filterImage(SkImageFilter*, const SkBitmap& src,
                                  const SkMatrix& ctm,
                                  SkBitmap* result, SkIPoint* offset) = 0;
     };
@@ -71,19 +71,19 @@ public:
      *  The matrix is the current matrix on the canvas.
      *
      *  Offset is the amount to translate the resulting image relative to the
-     *  src when it is drawn. This is an out-param.
+     *  src when it is drawn.
      *
      *  If the result image cannot be created, return false, in which case both
      *  the result and offset parameters will be ignored by the caller.
      */
     bool filterImage(Proxy*, const SkBitmap& src, const SkMatrix& ctm,
-                     SkBitmap* result, SkIPoint* offset) const;
+                     SkBitmap* result, SkIPoint* offset);
 
     /**
      *  Given the src bounds of an image, this returns the bounds of the result
      *  image after the filter has been applied.
      */
-    bool filterBounds(const SkIRect& src, const SkMatrix& ctm, SkIRect* dst) const;
+    bool filterBounds(const SkIRect& src, const SkMatrix& ctm, SkIRect* dst);
 
     /**
      *  Returns true if the filter can be processed on the GPU.  This is most
@@ -105,7 +105,7 @@ public:
      *  single-pass processing using asNewEffect().
      */
     virtual bool filterImageGPU(Proxy*, const SkBitmap& src, const SkMatrix& ctm,
-                                SkBitmap* result, SkIPoint* offset) const;
+                                SkBitmap* result, SkIPoint* offset);
 
     /**
      *  Returns whether this image filter is a color filter and puts the color filter into the
@@ -127,7 +127,6 @@ public:
      *  connected.  The indices used are filter-specific.
      */
     SkImageFilter* getInput(int i) const {
-        SkASSERT(i < fInputCount);
         return fInputs[i];
     }
 
@@ -143,23 +142,6 @@ public:
      */
     bool cropRectIsSet() const { return fCropRect.flags() != 0x0; }
 
-    // Default impl returns union of all input bounds.
-    virtual void computeFastBounds(const SkRect&, SkRect*) const;
-
-#ifdef SK_SUPPORT_GPU
-    /**
-     * Wrap the given texture in a texture-backed SkBitmap.
-     */
-    static void WrapTexture(GrTexture* texture, int width, int height, SkBitmap* result);
-
-    /**
-     * Recursively evaluate this filter on the GPU. If the filter has no GPU
-     * implementation, it will be processed in software and uploaded to the GPU.
-     */
-    bool getInputResultGPU(SkImageFilter::Proxy* proxy, const SkBitmap& src, const SkMatrix& ctm,
-                           SkBitmap* result, SkIPoint* offset) const;
-#endif
-
     SK_DEFINE_FLATTENABLE_TYPE(SkImageFilter)
 
 protected:
@@ -174,42 +156,21 @@ protected:
     virtual ~SkImageFilter();
 
     /**
-     *  Constructs a new SkImageFilter read from an SkReadBuffer object.
+     *  Constructs a new SkImageFilter read from an SkFlattenableReadBuffer object.
      *
      *  @param inputCount    The exact number of inputs expected for this SkImageFilter object.
      *                       -1 can be used if the filter accepts any number of inputs.
-     *  @param rb            SkReadBuffer object from which the SkImageFilter is read.
+     *  @param rb            SkFlattenableReadBuffer object from which the SkImageFilter is read.
      */
-    explicit SkImageFilter(int inputCount, SkReadBuffer& rb);
+    explicit SkImageFilter(int inputCount, SkFlattenableReadBuffer& rb);
 
-    virtual void flatten(SkWriteBuffer& wb) const SK_OVERRIDE;
+    virtual void flatten(SkFlattenableWriteBuffer& wb) const SK_OVERRIDE;
 
-    /**
-     *  This is the virtual which should be overridden by the derived class
-     *  to perform image filtering.
-     *
-     *  src is the original primitive bitmap. If the filter has a connected
-     *  input, it should recurse on that input and use that in place of src.
-     *
-     *  The matrix is the current matrix on the canvas.
-     *
-     *  Offset is the amount to translate the resulting image relative to the
-     *  src when it is drawn. This is an out-param.
-     *
-     *  If the result image cannot be created, this should false, in which
-     *  case both the result and offset parameters will be ignored by the
-     *  caller.
-     */
+    // Default impl returns false
     virtual bool onFilterImage(Proxy*, const SkBitmap& src, const SkMatrix&,
-                               SkBitmap* result, SkIPoint* offset) const;
-    // Given the bounds of the destination rect to be filled in device
-    // coordinates (first parameter), and the CTM, compute (conservatively)
-    // which rect of the source image would be required (third parameter).
-    // Used for clipping and temp-buffer allocations, so the result need not
-    // be exact, but should never be smaller than the real answer. The default
-    // implementation recursively unions all input bounds, or returns false if
-    // no inputs.
-    virtual bool onFilterBounds(const SkIRect&, const SkMatrix&, SkIRect*) const;
+                               SkBitmap* result, SkIPoint* offset);
+    // Default impl copies src into dst and returns true
+    virtual bool onFilterBounds(const SkIRect&, const SkMatrix&, SkIRect*);
 
     // Applies "matrix" to the crop rect, and sets "rect" to the intersection of
     // "rect" and the transformed crop rect. If there is no overlap, returns
@@ -235,7 +196,6 @@ protected:
                              GrTexture*,
                              const SkMatrix& matrix,
                              const SkIRect& bounds) const;
-
 
 private:
     typedef SkFlattenable INHERITED;

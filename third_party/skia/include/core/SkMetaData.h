@@ -49,9 +49,9 @@ public:
     void reset();
 
     bool findS32(const char name[], int32_t* value = NULL) const;
-    bool findScalar(const char name[], SkScalar* value = NULL) const;
-    const SkScalar* findScalars(const char name[], int* count,
-                                SkScalar values[] = NULL) const;
+    bool findScalar(const char name[], float* value = NULL) const;
+    const float* findScalars(const char name[], int* count,
+                                float values[] = NULL) const;
     const char* findString(const char name[]) const;
     bool findPtr(const char name[], void** value = NULL, PtrProc* = NULL) const;
     bool findBool(const char name[], bool* value = NULL) const;
@@ -61,8 +61,8 @@ public:
         int32_t v;
         return this->findS32(name, &v) && v == value;
     }
-    bool hasScalar(const char name[], SkScalar value) const {
-        SkScalar v;
+    bool hasScalar(const char name[], float value) const {
+        float v;
         return this->findScalar(name, &v) && v == value;
     }
     bool hasString(const char name[], const char value[]) const {
@@ -85,8 +85,8 @@ public:
     }
 
     void setS32(const char name[], int32_t value);
-    void setScalar(const char name[], SkScalar value);
-    SkScalar* setScalars(const char name[], int count, const SkScalar values[] = NULL);
+    void setScalar(const char name[], float value);
+    float* setScalars(const char name[], int count, const float values[] = NULL);
     void setString(const char name[], const char value[]);
     void setPtr(const char name[], void* value, PtrProc proc = NULL);
     void setBool(const char name[], bool value);

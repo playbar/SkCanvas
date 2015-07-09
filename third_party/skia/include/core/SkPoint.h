@@ -131,17 +131,18 @@ struct SkIPoint {
     }
 };
 
-struct SK_API SkPoint {
-    SkScalar    fX, fY;
+struct SK_API SkPoint
+{
+    float    fX, fY;
 
-    static SkPoint Make(SkScalar x, SkScalar y) {
+    static SkPoint Make(float x, float y) {
         SkPoint pt;
         pt.set(x, y);
         return pt;
     }
 
-    SkScalar x() const { return fX; }
-    SkScalar y() const { return fY; }
+    float x() const { return fX; }
+    float y() const { return fY; }
 
     /**
      *  Returns true iff fX and fY are both zero.
@@ -149,19 +150,13 @@ struct SK_API SkPoint {
     bool isZero() const { return (0 == fX) & (0 == fY); }
 
     /** Set the point's X and Y coordinates */
-    void set(SkScalar x, SkScalar y) { fX = x; fY = y; }
+    void set(float x, float y) { fX = x; fY = y; }
 
-    /** Set the point's X and Y coordinates by automatically promoting (x,y) to
-        SkScalar values.
-    */
     void iset(int32_t x, int32_t y) {
         fX = SkIntToScalar(x);
         fY = SkIntToScalar(y);
     }
 
-    /** Set the point's X and Y coordinates by automatically promoting p's
-        coordinates to SkScalar values.
-    */
     void iset(const SkIPoint& p) {
         fX = SkIntToScalar(p.fX);
         fY = SkIntToScalar(p.fY);
@@ -183,40 +178,40 @@ struct SK_API SkPoint {
     void setIRectFan(int l, int t, int r, int b, size_t stride);
 
     // counter-clockwise fan
-    void setRectFan(SkScalar l, SkScalar t, SkScalar r, SkScalar b) {
+    void setRectFan(float l, float t, float r, float b) {
         SkPoint* v = this;
         v[0].set(l, t);
         v[1].set(l, b);
         v[2].set(r, b);
         v[3].set(r, t);
     }
-    void setRectFan(SkScalar l, SkScalar t, SkScalar r, SkScalar b, size_t stride);
+    void setRectFan(float l, float t, float r, float b, size_t stride);
 
     static void Offset(SkPoint points[], int count, const SkPoint& offset) {
         Offset(points, count, offset.fX, offset.fY);
     }
 
-    static void Offset(SkPoint points[], int count, SkScalar dx, SkScalar dy) {
+    static void Offset(SkPoint points[], int count, float dx, float dy) {
         for (int i = 0; i < count; ++i) {
             points[i].offset(dx, dy);
         }
     }
 
-    void offset(SkScalar dx, SkScalar dy) {
+    void offset(float dx, float dy) {
         fX += dx;
         fY += dy;
     }
 
     /** Return the euclidian distance from (0,0) to the point
     */
-    SkScalar length() const { return SkPoint::Length(fX, fY); }
-    SkScalar distanceToOrigin() const { return this->length(); }
+    float length() const { return SkPoint::Length(fX, fY); }
+    float distanceToOrigin() const { return this->length(); }
 
     /**
      *  Return true if the computed length of the vector is >= the internal
      *  tolerance (used to avoid dividing by tiny values).
      */
-    static bool CanNormalize(SkScalar dx, SkScalar dy) {
+    static bool CanNormalize(float dx, float dy) {
         // Simple enough (and performance critical sometimes) so we inline it.
         return (dx*dx + dy*dy) > (SK_ScalarNearlyZero * SK_ScalarNearlyZero);
     }
@@ -235,37 +230,37 @@ struct SK_API SkPoint {
         x,y params. If the vector (x,y) has a degenerate length (i.e. nearly 0)
         then return false and do nothing, otherwise return true.
     */
-    bool setNormalize(SkScalar x, SkScalar y);
+    bool setNormalize(float x, float y);
 
     /** Scale the point (vector) to have the specified length, and return that
         length. If the original length is degenerately small (nearly zero),
         do nothing and return false, otherwise return true.
     */
-    bool setLength(SkScalar length);
+    bool setLength(float length);
 
     /** Set the point (vector) to have the specified length in the same
      direction as (x,y). If the vector (x,y) has a degenerate length
      (i.e. nearly 0) then return false and do nothing, otherwise return true.
     */
-    bool setLength(SkScalar x, SkScalar y, SkScalar length);
+    bool setLength(float x, float y, float length);
 
     /** Same as setLength, but favoring speed over accuracy.
     */
-    bool setLengthFast(SkScalar length);
+    bool setLengthFast(float length);
 
     /** Same as setLength, but favoring speed over accuracy.
     */
-    bool setLengthFast(SkScalar x, SkScalar y, SkScalar length);
+    bool setLengthFast(float x, float y, float length);
 
     /** Scale the point's coordinates by scale, writing the answer into dst.
         It is legal for dst == this.
     */
-    void scale(SkScalar scale, SkPoint* dst) const;
+    void scale(float scale, SkPoint* dst) const;
 
     /** Scale the point's coordinates by scale, writing the answer back into
         the point.
     */
-    void scale(SkScalar value) { this->scale(value, this); }
+    void scale(float value) { this->scale(value, this); }
 
     /** Rotate the point clockwise by 90 degrees, writing the answer into dst.
         It is legal for dst == this.
@@ -321,13 +316,11 @@ struct SK_API SkPoint {
      *  Returns true if both X and Y are finite (not infinity or NaN)
      */
     bool isFinite() const {
-        SkScalar accum = 0;
+        float accum = 0;
         accum *= fX;
         accum *= fY;
 
         // accum is either NaN or it is finite (zero).
-        SkASSERT(0 == accum || !(accum == accum));
-
         // value==value will be true iff value is not NaN
         // TODO: is it faster to say !accum or accum==accum?
         return accum == accum;
@@ -336,7 +329,7 @@ struct SK_API SkPoint {
     /**
      *  Returns true if the point's coordinates equal (x,y)
      */
-    bool equals(SkScalar x, SkScalar y) const {
+    bool equals(float x, float y) const {
         return fX == x && fY == y;
     }
 
@@ -365,7 +358,7 @@ struct SK_API SkPoint {
         elsewhere regarding degeneracy ("points A and B are so close that the
         vector between them is essentially zero").
     */
-    bool equalsWithinTolerance(const SkPoint& p, SkScalar tol) const {
+    bool equalsWithinTolerance(const SkPoint& p, float tol) const {
         return SkScalarNearlyZero(fX - p.fX, tol)
                && SkScalarNearlyZero(fY - p.fY, tol);
     }
@@ -389,7 +382,7 @@ struct SK_API SkPoint {
 
     /** Returns the euclidian distance from (0,0) to (x,y)
     */
-    static SkScalar Length(SkScalar x, SkScalar y);
+    static float Length(float x, float y);
 
     /** Normalize pt, returning its previous length. If the prev length is too
         small (degenerate), return 0 and leave pt unchanged. This uses the same
@@ -400,42 +393,42 @@ struct SK_API SkPoint {
         of the point.  If you don't need the previous length, call the
         non-static normalize() method instead.
      */
-    static SkScalar Normalize(SkPoint* pt);
+    static float Normalize(SkPoint* pt);
 
     /** Returns the euclidian distance between a and b
     */
-    static SkScalar Distance(const SkPoint& a, const SkPoint& b) {
+    static float Distance(const SkPoint& a, const SkPoint& b) {
         return Length(a.fX - b.fX, a.fY - b.fY);
     }
 
     /** Returns the dot product of a and b, treating them as 2D vectors
     */
-    static SkScalar DotProduct(const SkPoint& a, const SkPoint& b) {
-        return a.fX * b.fX + a.fY * b.fY;
+    static float DotProduct(const SkPoint& a, const SkPoint& b) {
+        return SkScalarMul(a.fX, b.fX) + SkScalarMul(a.fY, b.fY);
     }
 
     /** Returns the cross product of a and b, treating them as 2D vectors
     */
-    static SkScalar CrossProduct(const SkPoint& a, const SkPoint& b) {
-        return a.fX * b.fY - a.fY * b.fX;
+    static float CrossProduct(const SkPoint& a, const SkPoint& b) {
+        return SkScalarMul(a.fX, b.fY) - SkScalarMul(a.fY, b.fX);
     }
 
-    SkScalar cross(const SkPoint& vec) const {
+    float cross(const SkPoint& vec) const {
         return CrossProduct(*this, vec);
     }
 
-    SkScalar dot(const SkPoint& vec) const {
+    float dot(const SkPoint& vec) const {
         return DotProduct(*this, vec);
     }
 
-    SkScalar lengthSqd() const {
+    float lengthSqd() const {
         return DotProduct(*this, *this);
     }
 
-    SkScalar distanceToSqd(const SkPoint& pt) const {
-        SkScalar dx = fX - pt.fX;
-        SkScalar dy = fY - pt.fY;
-        return dx * dx + dy * dy;
+    float distanceToSqd(const SkPoint& pt) const {
+        float dx = fX - pt.fX;
+        float dy = fY - pt.fY;
+        return SkScalarMul(dx, dx) + SkScalarMul(dy, dy);
     }
 
     /**
@@ -453,7 +446,7 @@ struct SK_API SkPoint {
      * optionally returns the side of the line that the pt falls on (looking
      * along line from a to b)
      */
-    SkScalar distanceToLineBetweenSqd(const SkPoint& a,
+    float distanceToLineBetweenSqd(const SkPoint& a,
                                       const SkPoint& b,
                                       Side* side = NULL) const;
 
@@ -462,7 +455,7 @@ struct SK_API SkPoint {
      * optionally returns the side of the line that the pt falls on (looking
      * along the line from a to b)
      */
-    SkScalar distanceToLineBetween(const SkPoint& a,
+    float distanceToLineBetween(const SkPoint& a,
                                    const SkPoint& b,
                                    Side* side = NULL) const {
         return SkScalarSqrt(this->distanceToLineBetweenSqd(a, b, side));
@@ -471,13 +464,13 @@ struct SK_API SkPoint {
     /**
      * Returns the squared distance to the line segment between pts a and b
      */
-    SkScalar distanceToLineSegmentBetweenSqd(const SkPoint& a,
+    float distanceToLineSegmentBetweenSqd(const SkPoint& a,
                                              const SkPoint& b) const;
 
     /**
      * Returns the distance to the line segment between pts a and b.
      */
-    SkScalar distanceToLineSegmentBetween(const SkPoint& a,
+    float distanceToLineSegmentBetween(const SkPoint& a,
                                           const SkPoint& b) const {
         return SkScalarSqrt(this->distanceToLineSegmentBetweenSqd(a, b));
     }
@@ -489,12 +482,11 @@ struct SK_API SkPoint {
      */
     void setOrthog(const SkPoint& vec, Side side = kLeft_Side) {
         // vec could be this
-        SkScalar tmp = vec.fX;
+        float tmp = vec.fX;
         if (kRight_Side == side) {
             fX = -vec.fY;
             fY = tmp;
         } else {
-            SkASSERT(kLeft_Side == side);
             fX = vec.fY;
             fY = -tmp;
         }
@@ -503,7 +495,7 @@ struct SK_API SkPoint {
     /**
      *  cast-safe way to treat the point as an array of (2) SkScalars.
      */
-    const SkScalar* asScalars() const { return &fX; }
+    const float* asScalars() const { return &fX; }
 };
 
 typedef SkPoint SkVector;

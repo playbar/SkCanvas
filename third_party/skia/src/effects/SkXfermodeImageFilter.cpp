@@ -9,13 +9,13 @@
 #include "SkCanvas.h"
 #include "SkDevice.h"
 #include "SkColorPriv.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkXfermode.h"
 #if SK_SUPPORT_GPU
 #include "GrContext.h"
 #include "effects/GrSimpleTextureEffect.h"
 #include "SkGr.h"
+#include "SkImageFilterUtils.h"
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,12 +32,12 @@ SkXfermodeImageFilter::~SkXfermodeImageFilter() {
     SkSafeUnref(fMode);
 }
 
-SkXfermodeImageFilter::SkXfermodeImageFilter(SkReadBuffer& buffer)
+SkXfermodeImageFilter::SkXfermodeImageFilter(SkFlattenableReadBuffer& buffer)
   : INHERITED(2, buffer) {
     fMode = buffer.readXfermode();
 }
 
-void SkXfermodeImageFilter::flatten(SkWriteBuffer& buffer) const {
+void SkXfermodeImageFilter::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writeFlattenable(fMode);
 }
@@ -46,7 +46,7 @@ bool SkXfermodeImageFilter::onFilterImage(Proxy* proxy,
                                             const SkBitmap& src,
                                             const SkMatrix& ctm,
                                             SkBitmap* dst,
-                                            SkIPoint* offset) const {
+                                            SkIPoint* offset) {
     SkBitmap background = src, foreground = src;
     SkImageFilter* backgroundInput = getInput(0);
     SkImageFilter* foregroundInput = getInput(1);
@@ -88,8 +88,8 @@ bool SkXfermodeImageFilter::onFilterImage(Proxy* proxy,
     paint.setColor(SK_ColorTRANSPARENT);
     canvas.drawPaint(paint);
     *dst = device->accessBitmap(false);
-    offset->fX = bounds.left();
-    offset->fY = bounds.top();
+    offset->fX += bounds.left();
+    offset->fY += bounds.top();
     return true;
 }
 
@@ -99,18 +99,18 @@ bool SkXfermodeImageFilter::filterImageGPU(Proxy* proxy,
                                            const SkBitmap& src,
                                            const SkMatrix& ctm,
                                            SkBitmap* result,
-                                           SkIPoint* offset) const {
-    SkBitmap background = src;
+                                           SkIPoint* offset) {
+    SkBitmap background;
     SkIPoint backgroundOffset = SkIPoint::Make(0, 0);
-    if (getInput(0) && !getInput(0)->getInputResultGPU(proxy, src, ctm, &background,
-                                                       &backgroundOffset)) {
+    if (!SkImageFilterUtils::GetInputResultGPU(getInput(0), proxy, src, ctm, &background,
+                                               &backgroundOffset)) {
         return false;
     }
     GrTexture* backgroundTex = background.getTexture();
-    SkBitmap foreground = src;
+    SkBitmap foreground;
     SkIPoint foregroundOffset = SkIPoint::Make(0, 0);
-    if (getInput(1) && !getInput(1)->getInputResultGPU(proxy, src, ctm, &foreground,
-                                                       &foregroundOffset)) {
+    if (!SkImageFilterUtils::GetInputResultGPU(getInput(1), proxy, src, ctm, &foreground,
+                                               &foregroundOffset)) {
         return false;
     }
     GrTexture* foregroundTex = foreground.getTexture();
@@ -157,10 +157,9 @@ bool SkXfermodeImageFilter::filterImageGPU(Proxy* proxy,
         foregroundPaint.addColorTextureEffect(foregroundTex, foregroundMatrix);
         context->drawRect(foregroundPaint, srcRect);
     }
-    offset->fX = backgroundOffset.fX;
-    offset->fY = backgroundOffset.fY;
-    WrapTexture(dst, src.width(), src.height(), result);
-    return true;
+    offset->fX += backgroundOffset.fX;
+    offset->fY += backgroundOffset.fY;
+    return SkImageFilterUtils::WrapTexture(dst, src.width(), src.height(), result);
 }
 
 #endif

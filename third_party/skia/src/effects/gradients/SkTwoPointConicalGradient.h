@@ -24,14 +24,14 @@ struct TwoPtRadial {
     float   fRadius2;
     float   fRDR;
 
-    void init(const SkPoint& center0, SkScalar rad0,
-              const SkPoint& center1, SkScalar rad1);
+    void init(const SkPoint& center0, float rad0,
+              const SkPoint& center1, float rad1);
 
     // used by setup and nextT
     float   fRelX, fRelY, fIncX, fIncY;
     float   fB, fDB;
 
-    void setup(SkScalar fx, SkScalar fy, SkScalar dfx, SkScalar dfy);
+    void setup(float fx, float fy, float dfx, float dfy);
     SkFixed nextT();
 
     static bool DontDrawT(SkFixed t) {
@@ -45,8 +45,8 @@ class SkTwoPointConicalGradient : public SkGradientShaderBase {
     void init();
 
 public:
-    SkTwoPointConicalGradient(const SkPoint& start, SkScalar startRadius,
-                              const SkPoint& end, SkScalar endRadius,
+    SkTwoPointConicalGradient(const SkPoint& start, float startRadius,
+                              const SkPoint& end, float endRadius,
                               const Descriptor&);
 
     virtual void shadeSpan(int x, int y, SkPMColor* dstCParam,
@@ -62,23 +62,23 @@ public:
     virtual GrEffectRef* asNewEffect(GrContext* context, const SkPaint& paint) const SK_OVERRIDE;
     virtual bool isOpaque() const SK_OVERRIDE;
 
-    SkScalar getCenterX1() const { return SkPoint::Distance(fCenter1, fCenter2); }
-    SkScalar getStartRadius() const { return fRadius1; }
-    SkScalar getDiffRadius() const { return fRadius2 - fRadius1; }
+    float getCenterX1() const { return SkPoint::Distance(fCenter1, fCenter2); }
+    float getStartRadius() const { return fRadius1; }
+    float getDiffRadius() const { return fRadius2 - fRadius1; }
 
-    SK_TO_STRING_OVERRIDE()
+    SK_DEVELOPER_TO_STRING()
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkTwoPointConicalGradient)
 
 protected:
-    SkTwoPointConicalGradient(SkReadBuffer& buffer);
-    virtual void flatten(SkWriteBuffer& buffer) const SK_OVERRIDE;
+    SkTwoPointConicalGradient(SkFlattenableReadBuffer& buffer);
+    virtual void flatten(SkFlattenableWriteBuffer& buffer) const SK_OVERRIDE;
 
 private:
     typedef SkGradientShaderBase INHERITED;
     const SkPoint fCenter1;
     const SkPoint fCenter2;
-    const SkScalar fRadius1;
-    const SkScalar fRadius2;
+    const float fRadius1;
+    const float fRadius2;
 };
 
 #endif

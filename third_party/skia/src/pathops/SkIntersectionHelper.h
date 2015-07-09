@@ -54,7 +54,7 @@ public:
         return ++fIndex < fLast;
     }
 
-    SkScalar bottom() const {
+    float bottom() const {
         return bounds().fBottom;
     }
 
@@ -85,7 +85,7 @@ public:
         return midPtByT.approximatelyPEqual(midPtByAvg);
     }
 
-    SkScalar left() const {
+    float left() const {
         return bounds().fLeft;
     }
 
@@ -93,7 +93,7 @@ public:
         return fContour->segments()[fIndex].pts();
     }
 
-    SkScalar right() const {
+    float right() const {
         return bounds().fRight;
     }
 
@@ -117,7 +117,7 @@ public:
         return advance();
     }
 
-    SkScalar top() const {
+    float top() const {
         return bounds().fTop;
     }
 
@@ -125,7 +125,7 @@ public:
         return fContour->segments()[fIndex].verb();
     }
 
-    SkScalar x() const {
+    float x() const {
         return bounds().fLeft;
     }
 
@@ -133,7 +133,7 @@ public:
         return x() != pts()[0].fX;
     }
 
-    SkScalar y() const {
+    float y() const {
         return bounds().fTop;
     }
 

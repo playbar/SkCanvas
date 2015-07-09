@@ -185,7 +185,6 @@ static void blitrow_d16_si8(uint16_t* SK_RESTRICT dst,
     }
 
     int qcount = count >> 2;
-    SkASSERT(qcount > 0);
     const uint32_t* qsrc = reinterpret_cast<const uint32_t*>(src);
     if (asint(dst) & 2) {
         do {
@@ -306,11 +305,11 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-SkSpriteBlitter* SkSpriteBlitter::ChooseD16(const SkBitmap& source, const SkPaint& paint,
-        SkTBlitterAllocator* allocator) {
+#include "SkTemplatesPriv.h"
 
-    SkASSERT(allocator != NULL);
-
+SkSpriteBlitter* SkSpriteBlitter::ChooseD16(const SkBitmap& source,
+                                            const SkPaint& paint,
+                                            void* storage, size_t storageSize) {
     if (paint.getMaskFilter() != NULL) { // may add cases for this
         return NULL;
     }
@@ -324,41 +323,49 @@ SkSpriteBlitter* SkSpriteBlitter::ChooseD16(const SkBitmap& source, const SkPain
     SkSpriteBlitter* blitter = NULL;
     unsigned alpha = paint.getAlpha();
 
-    switch (source.colorType()) {
-        case kPMColor_SkColorType: {
-            blitter = allocator->createT<Sprite_D16_S32_BlitRowProc>(source);
+    switch (source.config()) {
+        case SkBitmap::kARGB_8888_Config:
+            SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D16_S32_BlitRowProc,
+                                  storage, storageSize, (source));
             break;
-        }
-        case kARGB_4444_SkColorType:
+        case SkBitmap::kARGB_4444_Config:
             if (255 == alpha) {
-                blitter = allocator->createT<Sprite_D16_S4444_Opaque>(source);
+                SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D16_S4444_Opaque,
+                                      storage, storageSize, (source));
             } else {
-                blitter = allocator->createT<Sprite_D16_S4444_Blend>(source, alpha >> 4);
+                SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D16_S4444_Blend,
+                                    storage, storageSize, (source, alpha >> 4));
             }
             break;
-        case kRGB_565_SkColorType:
+        case SkBitmap::kRGB_565_Config:
             if (255 == alpha) {
-                blitter = allocator->createT<Sprite_D16_S16_Opaque>(source);
+                SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D16_S16_Opaque,
+                                      storage, storageSize, (source));
             } else {
-                blitter = allocator->createT<Sprite_D16_S16_Blend>(source, alpha);
+                SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D16_S16_Blend,
+                                      storage, storageSize, (source, alpha));
             }
             break;
-        case kIndex_8_SkColorType:
+        case SkBitmap::kIndex8_Config:
             if (paint.isDither()) {
                 // we don't support dither yet in these special cases
                 break;
             }
             if (source.isOpaque()) {
                 if (255 == alpha) {
-                    blitter = allocator->createT<Sprite_D16_SIndex8_Opaque>(source);
+                    SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D16_SIndex8_Opaque,
+                                          storage, storageSize, (source));
                 } else {
-                    blitter = allocator->createT<Sprite_D16_SIndex8_Blend>(source, alpha);
+                    SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D16_SIndex8_Blend,
+                                         storage, storageSize, (source, alpha));
                 }
             } else {
                 if (255 == alpha) {
-                    blitter = allocator->createT<Sprite_D16_SIndex8A_Opaque>(source);
+                    SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D16_SIndex8A_Opaque,
+                                          storage, storageSize, (source));
                 } else {
-                    blitter = allocator->createT<Sprite_D16_SIndex8A_Blend>(source, alpha);
+                    SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D16_SIndex8A_Blend,
+                                         storage, storageSize, (source, alpha));
                 }
             }
             break;

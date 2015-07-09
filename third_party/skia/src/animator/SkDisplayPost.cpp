@@ -48,7 +48,6 @@ SkPost::~SkPost() {
 }
 
 bool SkPost::addChild(SkAnimateMaker& , SkDisplayable* child) {
-    SkASSERT(child && child->isDataInput());
     SkDataInput* part = (SkDataInput*) child;
     *fParts.append() = part;
     return true;
@@ -125,7 +124,7 @@ void SkPost::dump(SkAnimateMaker* maker) {
                 SkDebugf("int=\"%d\" ", s32);
                 } break;
             case SkMetaData::kScalar_Type: {
-                SkScalar scalar;
+                float scalar;
                 meta.findScalar(name, &scalar);
                 SkDebugf("float=\"%g\" ", SkScalarToFloat(scalar));
                 } break;
@@ -279,7 +278,6 @@ void SkPost::setChildHasID() {
 }
 
 bool SkPost::setProperty(int index, SkScriptValue& value) {
-    SkASSERT(value.fType == SkType_String);
     SkString* string = value.fOperand.fString;
     switch(index) {
         case SK_PROPERTY(target): {
@@ -291,7 +289,6 @@ bool SkPost::setProperty(int index, SkScriptValue& value) {
             fEvent.setType(*string);
             break;
         default:
-            SkASSERT(0);
             return false;
     }
     return true;

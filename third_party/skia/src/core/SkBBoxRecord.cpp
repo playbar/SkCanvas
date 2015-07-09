@@ -26,13 +26,6 @@ void SkBBoxRecord::drawRect(const SkRect& rect, const SkPaint& paint) {
     }
 }
 
-void SkBBoxRecord::onDrawDRRect(const SkRRect& outer, const SkRRect& inner,
-                                const SkPaint& paint) {
-    if (this->transformBounds(outer.rect(), &paint)) {
-        this->INHERITED::onDrawDRRect(outer, inner, paint);
-    }
-}
-
 void SkBBoxRecord::drawPath(const SkPath& path, const SkPaint& paint) {
     if (path.isInverseFillType()) {
         // If path is inverse filled, use the current clip bounds as the
@@ -50,7 +43,7 @@ void SkBBoxRecord::drawPath(const SkPath& path, const SkPaint& paint) {
 void SkBBoxRecord::drawPoints(PointMode mode, size_t count, const SkPoint pts[],
                               const SkPaint& paint) {
     SkRect bbox;
-    bbox.set(pts, SkToInt(count));
+    bbox.set(pts, count);
     // Small min width value, just to ensure hairline point bounding boxes aren't empty.
     // Even though we know hairline primitives are drawn one pixel wide, we do not use a
     // minimum of 1 because the playback scale factor is unknown at record time. Later
@@ -60,8 +53,8 @@ void SkBBoxRecord::drawPoints(PointMode mode, size_t count, const SkPoint pts[],
     // Note: The device coordinate outset in SkBBoxHierarchyRecord::handleBBox is currently
     // done in the recording coordinate space, which is wrong.
     // http://code.google.com/p/skia/issues/detail?id=1021
-    static const SkScalar kMinWidth = 0.01f;
-    SkScalar halfStrokeWidth = SkMaxScalar(paint.getStrokeWidth(), kMinWidth) / 2;
+    static const float kMinWidth = 0.01f;
+    float halfStrokeWidth = SkMaxScalar(paint.getStrokeWidth(), kMinWidth) / 2;
     bbox.outset(halfStrokeWidth, halfStrokeWidth);
     if (this->transformBounds(bbox, &paint)) {
         INHERITED::drawPoints(mode, count, pts, paint);
@@ -84,7 +77,7 @@ void SkBBoxRecord::clear(SkColor color) {
     INHERITED::clear(color);
 }
 
-void SkBBoxRecord::drawText(const void* text, size_t byteLength, SkScalar x, SkScalar y,
+void SkBBoxRecord::drawText(const void* text, size_t byteLength, float x, float y,
                             const SkPaint& paint) {
     SkRect bbox;
     paint.measureText(text, byteLength, &bbox);
@@ -93,7 +86,7 @@ void SkBBoxRecord::drawText(const void* text, size_t byteLength, SkScalar x, SkS
 
     // Vertical and aligned text need to be offset
     if (paint.isVerticalText()) {
-        SkScalar h = bbox.fBottom - bbox.fTop;
+        float h = bbox.fBottom - bbox.fTop;
         if (paint.getTextAlign() == SkPaint::kCenter_Align) {
             bbox.fTop    -= h / 2;
             bbox.fBottom -= h / 2;
@@ -102,7 +95,7 @@ void SkBBoxRecord::drawText(const void* text, size_t byteLength, SkScalar x, SkS
         bbox.fBottom += metrics.fBottom;
         bbox.fTop += metrics.fTop;
     } else {
-        SkScalar w = bbox.fRight - bbox.fLeft;
+        float w = bbox.fRight - bbox.fLeft;
         if (paint.getTextAlign() == SkPaint::kCenter_Align) {
             bbox.fLeft  -= w / 2;
             bbox.fRight -= w / 2;
@@ -119,7 +112,7 @@ void SkBBoxRecord::drawText(const void* text, size_t byteLength, SkScalar x, SkS
     // arbitrary, but seems to produce reasonable results, if there were a way of getting max
     // glyph X-extents to pad by, that may be better here, but FontMetrics fXMin and fXMax seem
     // incorrect on most platforms (too small in Linux, never even set in Windows).
-    SkScalar pad = (metrics.fBottom - metrics.fTop) / 2;
+    float pad = (metrics.fBottom - metrics.fTop) / 2;
     bbox.fLeft  -= pad;
     bbox.fRight += pad;
 
@@ -132,7 +125,7 @@ void SkBBoxRecord::drawText(const void* text, size_t byteLength, SkScalar x, SkS
     }
 }
 
-void SkBBoxRecord::drawBitmap(const SkBitmap& bitmap, SkScalar left, SkScalar top,
+void SkBBoxRecord::drawBitmap(const SkBitmap& bitmap, float left, float top,
                               const SkPaint* paint) {
     SkRect bbox = {left, top, left + bitmap.width(), top + bitmap.height()};
     if (this->transformBounds(bbox, paint)) {
@@ -175,7 +168,7 @@ void SkBBoxRecord::drawPosText(const void* text, size_t byteLength,
     bbox.fBottom += metrics.fBottom;
 
     // pad on left and right by half of max vertical glyph extents
-    SkScalar pad = (metrics.fTop - metrics.fBottom) / 2;
+    float pad = (metrics.fTop - metrics.fBottom) / 2;
     bbox.fLeft += pad;
     bbox.fRight -= pad;
 
@@ -184,8 +177,8 @@ void SkBBoxRecord::drawPosText(const void* text, size_t byteLength,
     }
 }
 
-void SkBBoxRecord::drawPosTextH(const void* text, size_t byteLength, const SkScalar xpos[],
-                                SkScalar constY, const SkPaint& paint) {
+void SkBBoxRecord::drawPosTextH(const void* text, size_t byteLength, const float xpos[],
+                                float constY, const SkPaint& paint) {
     size_t numChars = paint.countText(text, byteLength);
     if (numChars == 0) {
         return;
@@ -194,9 +187,9 @@ void SkBBoxRecord::drawPosTextH(const void* text, size_t byteLength, const SkSca
     const SkFlatData* flatPaintData = this->getFlatPaintData(paint);
     WriteTopBot(paint, *flatPaintData);
 
-    SkScalar top = flatPaintData->topBot()[0];
-    SkScalar bottom = flatPaintData->topBot()[1];
-    SkScalar pad = top - bottom;
+    float top = flatPaintData->topBot()[0];
+    float bottom = flatPaintData->topBot()[1];
+    float pad = top - bottom;
 
     SkRect bbox;
     bbox.fLeft = SK_ScalarMax;
@@ -243,7 +236,7 @@ void SkBBoxRecord::drawTextOnPath(const void* text, size_t byteLength,
     paint.getFontMetrics(&metrics);
 
     // pad out all sides by the max glyph height above baseline
-    SkScalar pad = metrics.fTop;
+    float pad = metrics.fTop;
     bbox.fLeft += pad;
     bbox.fRight -= pad;
     bbox.fTop += pad;

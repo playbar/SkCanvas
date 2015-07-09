@@ -27,11 +27,12 @@ public:
     SkAnimatorScript(SkAnimateMaker& , SkDisplayable* , SkDisplayTypes type);
     ~SkAnimatorScript();
     bool evaluate(const char* script, SkScriptValue* , SkDisplayTypes type);
-    void track(SkDisplayable* displayable) {
-        SkASSERT(fTrackDisplayable.find(displayable) < 0);
-        *fTrackDisplayable.append() = displayable; }
+    void track(SkDisplayable* displayable) 
+	{
+        *fTrackDisplayable.append() = displayable;
+	}
     static bool EvaluateDisplayable(SkAnimateMaker& , SkDisplayable* , const char* script, SkDisplayable** );
-    static bool EvaluateFloat(SkAnimateMaker& , SkDisplayable* , const char* script, SkScalar* );
+    static bool EvaluateFloat(SkAnimateMaker& , SkDisplayable* , const char* script, float* );
     static bool EvaluateInt(SkAnimateMaker& , SkDisplayable* , const char* script, int32_t* );
     static bool EvaluateString(SkAnimateMaker& , SkDisplayable* , const char* script, SkString* );
     static bool EvaluateString(SkAnimateMaker& , SkDisplayable* , SkDisplayable* parent, const char* script, SkString* );

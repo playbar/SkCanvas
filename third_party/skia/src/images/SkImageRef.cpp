@@ -7,8 +7,7 @@
  */
 #include "SkImageRef.h"
 #include "SkBitmap.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkImageDecoder.h"
 #include "SkStream.h"
 #include "SkTemplates.h"
@@ -16,23 +15,18 @@
 
 //#define DUMP_IMAGEREF_LIFECYCLE
 
+
 ///////////////////////////////////////////////////////////////////////////////
 
 SkImageRef::SkImageRef(const SkImageInfo& info, SkStreamRewindable* stream,
                        int sampleSize, SkBaseMutex* mutex)
-        : INHERITED(info, mutex), fErrorInDecoding(false)
-{
-    SkASSERT(stream);
+        : SkPixelRef(info, mutex), fErrorInDecoding(false) {
     stream->ref();
     fStream = stream;
     fSampleSize = sampleSize;
     fDoDither = true;
     fPrev = fNext = NULL;
     fFactory = NULL;
-
-    // This sets the colortype/alphatype to exactly match our info, so that this
-    // can get communicated down to the codec.
-    fBitmap.setConfig(info);
 
 #ifdef DUMP_IMAGEREF_LIFECYCLE
     SkDebugf("add ImageRef %p [%d] data=%d\n",
@@ -44,7 +38,7 @@ SkImageRef::~SkImageRef() {
 
 #ifdef DUMP_IMAGEREF_LIFECYCLE
     SkDebugf("delete ImageRef %p [%d] data=%d\n",
-              this, this->info().fColorType, (int)fStream->getLength());
+              this, fConfig, (int)fStream->getLength());
 #endif
 
     fStream->unref();
@@ -58,7 +52,6 @@ bool SkImageRef::getInfo(SkBitmap* bitmap) {
         return false;
     }
 
-    SkASSERT(SkBitmap::kNo_Config != fBitmap.config());
     if (bitmap) {
         bitmap->setConfig(fBitmap.config(), fBitmap.width(), fBitmap.height());
     }
@@ -102,7 +95,6 @@ bool SkImageRef::prepareBitmap(SkImageDecoder::Mode mode) {
         return true;
     }
 
-    SkASSERT(fBitmap.getPixels() == NULL);
 
     if (!fStream->rewind()) {
         SkDEBUGF(("Failed to rewind SkImageRef stream!"));
@@ -121,12 +113,7 @@ bool SkImageRef::prepareBitmap(SkImageDecoder::Mode mode) {
 
         codec->setSampleSize(fSampleSize);
         codec->setDitherImage(fDoDither);
-        codec->setRequireUnpremultipliedColors(this->info().fAlphaType == kUnpremul_SkAlphaType);
         if (this->onDecode(codec, fStream, &fBitmap, fBitmap.config(), mode)) {
-            if (kOpaque_SkAlphaType == fBitmap.alphaType()) {
-                this->changeAlphaType(kOpaque_SkAlphaType);
-            }
-            SkASSERT(this->info() == fBitmap.info());
             return true;
         }
     }
@@ -144,18 +131,15 @@ bool SkImageRef::prepareBitmap(SkImageDecoder::Mode mode) {
     return false;
 }
 
-bool SkImageRef::onNewLockPixels(LockRec* rec) {
+void* SkImageRef::onLockPixels(SkColorTable** ct) {
     if (NULL == fBitmap.getPixels()) {
         (void)this->prepareBitmap(SkImageDecoder::kDecodePixels_Mode);
     }
 
-    if (NULL == fBitmap.getPixels()) {
-        return false;
+    if (ct) {
+        *ct = fBitmap.getColorTable();
     }
-    rec->fPixels = fBitmap.getPixels();
-    rec->fColorTable = NULL;
-    rec->fRowBytes = fBitmap.rowBytes();
-    return true;
+    return fBitmap.getPixels();
 }
 
 size_t SkImageRef::ramUsed() const {
@@ -172,7 +156,7 @@ size_t SkImageRef::ramUsed() const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-SkImageRef::SkImageRef(SkReadBuffer& buffer, SkBaseMutex* mutex)
+SkImageRef::SkImageRef(SkFlattenableReadBuffer& buffer, SkBaseMutex* mutex)
         : INHERITED(buffer, mutex), fErrorInDecoding(false) {
     fSampleSize = buffer.readInt();
     fDoDither = buffer.readBool();
@@ -187,13 +171,9 @@ SkImageRef::SkImageRef(SkReadBuffer& buffer, SkBaseMutex* mutex)
 
     fPrev = fNext = NULL;
     fFactory = NULL;
-
-    // This sets the colortype/alphatype to exactly match our info, so that this
-    // can get communicated down to the codec.
-    fBitmap.setConfig(this->info());
 }
 
-void SkImageRef::flatten(SkWriteBuffer& buffer) const {
+void SkImageRef::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
 
     buffer.writeInt(fSampleSize);

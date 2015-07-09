@@ -45,9 +45,6 @@ void PERSP_FILTER_NAME(const SkBitmapProcState& s,
 
 void SCALE_NOFILTER_NAME(const SkBitmapProcState& s,
                                 uint32_t xy[], int count, int x, int y) {
-    SkASSERT((s.fInvType & ~(SkMatrix::kTranslate_Mask |
-                             SkMatrix::kScale_Mask)) == 0);
-
     PREAMBLE(s);
     // we store y, x, x, x, x, x
 
@@ -109,10 +106,6 @@ void SCALE_NOFILTER_NAME(const SkBitmapProcState& s,
 
 void AFFINE_NOFILTER_NAME(const SkBitmapProcState& s,
                                  uint32_t xy[], int count, int x, int y) {
-    SkASSERT(s.fInvType & SkMatrix::kAffine_Mask);
-    SkASSERT((s.fInvType & ~(SkMatrix::kTranslate_Mask |
-                             SkMatrix::kScale_Mask |
-                             SkMatrix::kAffine_Mask)) == 0);
 
     PREAMBLE(s);
     SkPoint srcPt;
@@ -137,7 +130,6 @@ void AFFINE_NOFILTER_NAME(const SkBitmapProcState& s,
 void PERSP_NOFILTER_NAME(const SkBitmapProcState& s,
                                 uint32_t* SK_RESTRICT xy,
                                 int count, int x, int y) {
-    SkASSERT(s.fInvType & SkMatrix::kPerspective_Mask);
 
     PREAMBLE(s);
     int maxX = s.fBitmap->width() - 1;
@@ -175,9 +167,6 @@ static inline uint32_t PACK_FILTER_X_NAME(SkFixed f, unsigned max,
 
 void SCALE_FILTER_NAME(const SkBitmapProcState& s,
                               uint32_t xy[], int count, int x, int y) {
-    SkASSERT((s.fInvType & ~(SkMatrix::kTranslate_Mask |
-                             SkMatrix::kScale_Mask)) == 0);
-    SkASSERT(s.fInvKy == 0);
 
     PREAMBLE(s);
 
@@ -215,10 +204,6 @@ void SCALE_FILTER_NAME(const SkBitmapProcState& s,
 
 void AFFINE_FILTER_NAME(const SkBitmapProcState& s,
                                uint32_t xy[], int count, int x, int y) {
-    SkASSERT(s.fInvType & SkMatrix::kAffine_Mask);
-    SkASSERT((s.fInvType & ~(SkMatrix::kTranslate_Mask |
-                             SkMatrix::kScale_Mask |
-                             SkMatrix::kAffine_Mask)) == 0);
 
     PREAMBLE(s);
     SkPoint srcPt;
@@ -246,7 +231,6 @@ void AFFINE_FILTER_NAME(const SkBitmapProcState& s,
 void PERSP_FILTER_NAME(const SkBitmapProcState& s,
                               uint32_t* SK_RESTRICT xy, int count,
                               int x, int y) {
-    SkASSERT(s.fInvType & SkMatrix::kPerspective_Mask);
 
     PREAMBLE(s);
     unsigned maxX = s.fBitmap->width() - 1;

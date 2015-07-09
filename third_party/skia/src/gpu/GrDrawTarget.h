@@ -26,7 +26,8 @@ class GrPath;
 class GrVertexBuffer;
 class SkStrokeRec;
 
-class GrDrawTarget : public SkRefCnt {
+class GrDrawTarget : public SkRefCnt
+{
 protected:
     class DrawInfo;
 
@@ -423,20 +424,6 @@ public:
                        GrRenderTarget* renderTarget = NULL) = 0;
 
     /**
-     * instantGpuTraceEvent places a single "sign post" type marker into command stream. The
-     * argument marker will be the name of the annotation that is added.
-     */
-    void instantGpuTraceEvent(const char* marker);
-    /**
-     * The following two functions are used for marking groups of commands. Use pushGpuTraceEvent
-     * to set the beginning of a command set, and popGpuTraceEvent is be called at end of the
-     * command set. The argument marker is the name for the annotation that is added. The push and
-     * pops can be used hierarchically, but every push must have a match pop.
-     */
-    void pushGpuTraceEvent(const char* marker);
-    void popGpuTraceEvent();
-
-    /**
      * Copies a pixel rectangle from one surface to another. This call may finalize
      * reserved vertex/index data (as though a draw call was made). The src pixels
      * copied are specified by srcRect. They are copied to a rect of the same
@@ -576,8 +563,8 @@ public:
                  int            vertexCount,
                  int            indexCount);
         bool succeeded() const { return NULL != fTarget; }
-        void* vertices() const { SkASSERT(this->succeeded()); return fVertices; }
-        void* indices() const { SkASSERT(this->succeeded()); return fIndices; }
+        void* vertices() const { return fVertices; }
+        void* indices() const { return fIndices; }
         GrPoint* positions() const {
             return static_cast<GrPoint*>(this->vertices());
         }
@@ -621,7 +608,6 @@ public:
     public:
         AutoGeometryPush(GrDrawTarget* target)
             : fAttribRestore(target->drawState()) {
-            SkASSERT(NULL != target);
             fTarget = target;
             target->pushGeometrySource();
         }
@@ -643,7 +629,6 @@ public:
                                  ASRInit init,
                                  const SkMatrix* viewMatrix = NULL)
             : fState(target, init, viewMatrix) {
-            SkASSERT(NULL != target);
             fTarget = target;
             target->pushGeometrySource();
             if (kPreserve_ASRInit == init) {
@@ -756,7 +741,6 @@ protected:
     // it is preferable to call this rather than getGeomSrc()->fVertexSize because of the assert.
     size_t getVertexSize() const {
         // the vertex layout is only valid if a vertex source has been specified.
-        SkASSERT(this->getGeomSrc().fVertexSrc != kNone_GeometrySrcType);
         return this->getGeomSrc().fVertexSize;
     }
 
@@ -781,11 +765,8 @@ protected:
         int instanceCount() const { return fInstanceCount; }
 
         bool isIndexed() const { return fIndexCount > 0; }
-#ifdef SK_DEBUG
-        bool isInstanced() const; // this version is longer because of asserts
-#else
         bool isInstanced() const { return fInstanceCount > 0; }
-#endif
+
 
         // adds or remove instances
         void adjustInstanceCount(int instanceOffset);
@@ -868,10 +849,6 @@ private:
     virtual void onDrawPath(const GrPath*, SkPath::FillType,
                             const GrDeviceCoordTexture* dstCopy) = 0;
 
-    virtual void onInstantGpuTraceEvent(const char* marker) = 0;
-    virtual void onPushGpuTraceEvent(const char* marker) = 0;
-    virtual void onPopGpuTraceEvent() = 0;
-
     // helpers for reserving vertex and index space.
     bool reserveVertexSpace(size_t vertexSize,
                             int vertexCount,
@@ -906,8 +883,6 @@ private:
     GrDrawState                                                     fDefaultDrawState;
     // The context owns us, not vice-versa, so this ptr is not ref'ed by DrawTarget.
     GrContext*                                                      fContext;
-    // To keep track that we always have at least as many debug marker pushes as pops
-    int                                                             fPushGpuTraceCount;
 
     typedef SkRefCnt INHERITED;
 };

@@ -34,7 +34,8 @@ class GrGLShaderBuilder;
  * Uniforms are program-local so we can't rely on fHWState to hold the
  * previous uniform state after a program change.
  */
-class GrGLProgram : public SkRefCnt {
+class GrGLProgram : public SkRefCnt
+{
 public:
     SK_DECLARE_INST_COUNT(GrGLProgram)
 
@@ -60,7 +61,7 @@ public:
     /**
      * Gets the GL program ID for this program.
      */
-    GrGLuint programID() const { return fProgramID; }
+    GLuint programID() const { return fProgramID; }
 
     bool hasVertexShader() const { return fHasVertexShader; }
 
@@ -70,14 +71,16 @@ public:
      * GrGLProgram::setColor and GrGLProgram::setCoverage to allow us to avoid setting this state
      * redundantly.
      */
-    struct SharedGLState {
+    struct SharedGLState 
+	{
         GrColor fConstAttribColor;
         int     fConstAttribColorIndex;
         GrColor fConstAttribCoverage;
         int     fConstAttribCoverageIndex;
 
         SharedGLState() { this->invalidate(); }
-        void invalidate() {
+        void invalidate()
+		{
             fConstAttribColor = GrColor_ILLEGAL;
             fConstAttribColorIndex = -1;
             fConstAttribCoverage = GrColor_ILLEGAL;
@@ -91,25 +94,31 @@ public:
      * convert from Skia device coords to GL's normalized coords. Also the origin of the render
      * target may require us to perform a mirror-flip.
      */
-    struct MatrixState {
+    struct MatrixState 
+	{
         SkMatrix        fViewMatrix;
         SkISize         fRenderTargetSize;
         GrSurfaceOrigin fRenderTargetOrigin;
 
         MatrixState() { this->invalidate(); }
-        void invalidate() {
+        void invalidate()
+		{
             fViewMatrix = SkMatrix::InvalidMatrix();
             fRenderTargetSize.fWidth = -1;
             fRenderTargetSize.fHeight = -1;
             fRenderTargetOrigin = (GrSurfaceOrigin) -1;
         }
-        template<int Size> void getGLMatrix(GrGLfloat* destMatrix) {
+        template<int Size> void getGLMatrix(GLfloat* destMatrix) 
+		{
             SkMatrix combined;
-            if (kBottomLeft_GrSurfaceOrigin == fRenderTargetOrigin) {
+            if (kBottomLeft_GrSurfaceOrigin == fRenderTargetOrigin)
+			{
                 combined.setAll(SkIntToScalar(2) / fRenderTargetSize.fWidth, 0, -SK_Scalar1,
                                 0, -SkIntToScalar(2) / fRenderTargetSize.fHeight, SK_Scalar1,
                                 0, 0, SkMatrix::I()[8]);
-            } else {
+            } 
+			else 
+			{
                 combined.setAll(SkIntToScalar(2) / fRenderTargetSize.fWidth, 0, -SK_Scalar1,
                                 0, SkIntToScalar(2) / fRenderTargetSize.fHeight, -SK_Scalar1,
                                 0, 0, SkMatrix::I()[8]);
@@ -135,7 +144,8 @@ private:
     typedef GrGLUniformManager::UniformHandle UniformHandle;
 
     // handles for uniforms (aside from per-effect samplers)
-    struct UniformHandles {
+    struct UniformHandles 
+	{
         UniformHandle       fViewMatrixUni;
         UniformHandle       fColorUni;
         UniformHandle       fCoverageUni;
@@ -180,7 +190,7 @@ private:
     void setMatrixAndRenderTargetHeight(const GrDrawState&);
 
     // GL program ID
-    GrGLuint                    fProgramID;
+    GLuint                    fProgramID;
 
     // these reflect the current values of uniforms (GL uniform values travel with program)
     MatrixState                       fMatrixState;

@@ -27,8 +27,8 @@ class SkDrawTextBox : public SkDrawRect {
 
 private:
     SkString fText;
-    SkScalar fSpacingMul;
-    SkScalar fSpacingAdd;
+    float fSpacingMul;
+    float fSpacingAdd;
     int /*SkTextBox::Mode*/  mode;
     int /*SkTextBox::SpacingAlign*/ spacingAlign;
 

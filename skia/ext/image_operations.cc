@@ -183,8 +183,6 @@ ResizeFilter::ResizeFilter(ImageOperations::ResizeMethod method,
     : method_(method),
       out_bounds_(dest_subset) {
   // method_ will only ever refer to an "algorithm method".
-  SkASSERT((ImageOperations::RESIZE_FIRST_ALGORITHM_METHOD <= method) &&
-           (method <= ImageOperations::RESIZE_LAST_ALGORITHM_METHOD));
 
   float scale_x = static_cast<float>(dest_width) /
                   static_cast<float>(src_full_width);
@@ -471,10 +469,6 @@ SkBitmap ImageOperations::ResizeBasic(const SkBitmap& source,
                "src_pixels", source.width()*source.height(),
                "dst_pixels", dest_width*dest_height);
   // Ensure that the ResizeMethod enumeration is sound.
-  SkASSERT(((RESIZE_FIRST_QUALITY_METHOD <= method) &&
-            (method <= RESIZE_LAST_QUALITY_METHOD)) ||
-           ((RESIZE_FIRST_ALGORITHM_METHOD <= method) &&
-            (method <= RESIZE_LAST_ALGORITHM_METHOD)));
 
   // Time how long this takes to see if it's a problem for users.
   base::TimeTicks resize_start = base::TimeTicks::Now();
@@ -491,8 +485,6 @@ SkBitmap ImageOperations::ResizeBasic(const SkBitmap& source,
 
   method = ResizeMethodToAlgorithmMethod(method);
   // Check that we deal with an "algorithm methods" from this point onward.
-  SkASSERT((ImageOperations::RESIZE_FIRST_ALGORITHM_METHOD <= method) &&
-           (method <= ImageOperations::RESIZE_LAST_ALGORITHM_METHOD));
 
   SkAutoLockPixels locker(source);
   if (!source.readyToDraw() || source.config() != SkBitmap::kARGB_8888_Config)

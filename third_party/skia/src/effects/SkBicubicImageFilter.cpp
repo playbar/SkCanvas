@@ -8,8 +8,7 @@
 #include "SkBicubicImageFilter.h"
 #include "SkBitmap.h"
 #include "SkColorPriv.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkMatrix.h"
 #include "SkRect.h"
 #include "SkUnPreMultiply.h"
@@ -18,18 +17,19 @@
 #include "effects/GrBicubicEffect.h"
 #include "GrContext.h"
 #include "GrTexture.h"
+#include "SkImageFilterUtils.h"
 #endif
 
 #define DS(x) SkDoubleToScalar(x)
 
-static const SkScalar gMitchellCoefficients[16] = {
+static const float gMitchellCoefficients[16] = {
     DS( 1.0 / 18.0), DS(-9.0 / 18.0), DS( 15.0 / 18.0), DS( -7.0 / 18.0),
     DS(16.0 / 18.0), DS( 0.0 / 18.0), DS(-36.0 / 18.0), DS( 21.0 / 18.0),
     DS( 1.0 / 18.0), DS( 9.0 / 18.0), DS( 27.0 / 18.0), DS(-21.0 / 18.0),
     DS( 0.0 / 18.0), DS( 0.0 / 18.0), DS( -6.0 / 18.0), DS(  7.0 / 18.0),
 };
 
-SkBicubicImageFilter::SkBicubicImageFilter(const SkSize& scale, const SkScalar coefficients[16], SkImageFilter* input)
+SkBicubicImageFilter::SkBicubicImageFilter(const SkSize& scale, const float coefficients[16], SkImageFilter* input)
   : INHERITED(input),
     fScale(scale) {
     memcpy(fCoefficients, coefficients, sizeof(fCoefficients));
@@ -40,10 +40,9 @@ SkBicubicImageFilter* SkBicubicImageFilter::CreateMitchell(const SkSize& scale,
     return SkNEW_ARGS(SkBicubicImageFilter, (scale, gMitchellCoefficients, input));
 }
 
-SkBicubicImageFilter::SkBicubicImageFilter(SkReadBuffer& buffer)
+SkBicubicImageFilter::SkBicubicImageFilter(SkFlattenableReadBuffer& buffer)
   : INHERITED(1, buffer) {
-    SkDEBUGCODE(bool success =) buffer.readScalarArray(fCoefficients, 16);
-    SkASSERT(success);
+    buffer.readScalarArray(fCoefficients, 16);
     fScale.fWidth = buffer.readScalar();
     fScale.fHeight = buffer.readScalar();
     buffer.validate(SkScalarIsFinite(fScale.fWidth) &&
@@ -52,7 +51,7 @@ SkBicubicImageFilter::SkBicubicImageFilter(SkReadBuffer& buffer)
                     (fScale.fHeight >= 0));
 }
 
-void SkBicubicImageFilter::flatten(SkWriteBuffer& buffer) const {
+void SkBicubicImageFilter::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writeScalarArray(fCoefficients, 16);
     buffer.writeScalar(fScale.fWidth);
@@ -62,18 +61,18 @@ void SkBicubicImageFilter::flatten(SkWriteBuffer& buffer) const {
 SkBicubicImageFilter::~SkBicubicImageFilter() {
 }
 
-inline SkPMColor cubicBlend(const SkScalar c[16], SkScalar t, SkPMColor c0, SkPMColor c1, SkPMColor c2, SkPMColor c3) {
-    SkScalar t2 = t * t, t3 = t2 * t;
-    SkScalar cc[4];
+inline SkPMColor cubicBlend(const float c[16], float t, SkPMColor c0, SkPMColor c1, SkPMColor c2, SkPMColor c3) {
+    float t2 = t * t, t3 = t2 * t;
+    float cc[4];
     // FIXME:  For the fractx case, this should be refactored out of this function.
     cc[0] = c[0]  + SkScalarMul(c[1], t) + SkScalarMul(c[2], t2) + SkScalarMul(c[3], t3);
     cc[1] = c[4]  + SkScalarMul(c[5], t) + SkScalarMul(c[6], t2) + SkScalarMul(c[7], t3);
     cc[2] = c[8]  + SkScalarMul(c[9], t) + SkScalarMul(c[10], t2) + SkScalarMul(c[11], t3);
     cc[3] = c[12] + SkScalarMul(c[13], t) + SkScalarMul(c[14], t2) + SkScalarMul(c[15], t3);
-    SkScalar a = SkScalarClampMax(SkScalarMul(cc[0], SkGetPackedA32(c0)) + SkScalarMul(cc[1], SkGetPackedA32(c1)) + SkScalarMul(cc[2], SkGetPackedA32(c2)) + SkScalarMul(cc[3], SkGetPackedA32(c3)), 255);
-    SkScalar r = SkScalarMul(cc[0], SkGetPackedR32(c0)) + SkScalarMul(cc[1], SkGetPackedR32(c1)) + SkScalarMul(cc[2], SkGetPackedR32(c2)) + SkScalarMul(cc[3], SkGetPackedR32(c3));
-    SkScalar g = SkScalarMul(cc[0], SkGetPackedG32(c0)) + SkScalarMul(cc[1], SkGetPackedG32(c1)) + SkScalarMul(cc[2], SkGetPackedG32(c2)) + SkScalarMul(cc[3], SkGetPackedG32(c3));
-    SkScalar b = SkScalarMul(cc[0], SkGetPackedB32(c0)) + SkScalarMul(cc[1], SkGetPackedB32(c1)) + SkScalarMul(cc[2], SkGetPackedB32(c2)) + SkScalarMul(cc[3], SkGetPackedB32(c3));
+    float a = SkScalarClampMax(SkScalarMul(cc[0], SkGetPackedA32(c0)) + SkScalarMul(cc[1], SkGetPackedA32(c1)) + SkScalarMul(cc[2], SkGetPackedA32(c2)) + SkScalarMul(cc[3], SkGetPackedA32(c3)), 255);
+    float r = SkScalarMul(cc[0], SkGetPackedR32(c0)) + SkScalarMul(cc[1], SkGetPackedR32(c1)) + SkScalarMul(cc[2], SkGetPackedR32(c2)) + SkScalarMul(cc[3], SkGetPackedR32(c3));
+    float g = SkScalarMul(cc[0], SkGetPackedG32(c0)) + SkScalarMul(cc[1], SkGetPackedG32(c1)) + SkScalarMul(cc[2], SkGetPackedG32(c2)) + SkScalarMul(cc[3], SkGetPackedG32(c3));
+    float b = SkScalarMul(cc[0], SkGetPackedB32(c0)) + SkScalarMul(cc[1], SkGetPackedB32(c1)) + SkScalarMul(cc[2], SkGetPackedB32(c2)) + SkScalarMul(cc[3], SkGetPackedB32(c3));
     return SkPackARGB32(SkScalarRoundToInt(a),
                         SkScalarRoundToInt(SkScalarClampMax(r, a)),
                         SkScalarRoundToInt(SkScalarClampMax(g, a)),
@@ -84,14 +83,13 @@ bool SkBicubicImageFilter::onFilterImage(Proxy* proxy,
                                          const SkBitmap& source,
                                          const SkMatrix& matrix,
                                          SkBitmap* result,
-                                         SkIPoint* offset) const {
+                                         SkIPoint* loc) {
     SkBitmap src = source;
-    SkIPoint srcOffset = SkIPoint::Make(0, 0);
-    if (getInput(0) && !getInput(0)->filterImage(proxy, source, matrix, &src, &srcOffset)) {
+    if (getInput(0) && !getInput(0)->filterImage(proxy, source, matrix, &src, loc)) {
         return false;
     }
 
-    if (src.colorType() != kPMColor_SkColorType) {
+    if (src.config() != SkBitmap::kARGB_8888_Config) {
         return false;
     }
 
@@ -108,13 +106,13 @@ bool SkBicubicImageFilter::onFilterImage(Proxy* proxy,
         return false;
     }
     result->setConfig(src.config(), dstIRect.width(), dstIRect.height());
-    if (!result->allocPixels()) {
+    result->allocPixels();
+    if (!result->getPixels()) {
         return false;
     }
 
     SkRect srcRect;
     src.getBounds(&srcRect);
-    srcRect.offset(SkPoint::Make(SkIntToScalar(srcOffset.fX), SkIntToScalar(srcOffset.fY)));
     SkMatrix inverse;
     inverse.setRectToRect(dstRect, srcRect, SkMatrix::kFill_ScaleToFit);
     inverse.postTranslate(-0.5f, -0.5f);
@@ -124,8 +122,8 @@ bool SkBicubicImageFilter::onFilterImage(Proxy* proxy,
         for (int x = dstIRect.fLeft; x < dstIRect.fRight; ++x) {
             SkPoint srcPt, dstPt = SkPoint::Make(SkIntToScalar(x), SkIntToScalar(y));
             inverse.mapPoints(&srcPt, &dstPt, 1);
-            SkScalar fractx = srcPt.fX - SkScalarFloorToScalar(srcPt.fX);
-            SkScalar fracty = srcPt.fY - SkScalarFloorToScalar(srcPt.fY);
+            float fractx = srcPt.fX - SkScalarFloorToScalar(srcPt.fX);
+            float fracty = srcPt.fY - SkScalarFloorToScalar(srcPt.fY);
             int sx = SkScalarFloorToInt(srcPt.fX);
             int sy = SkScalarFloorToInt(srcPt.fY);
             int x0 = SkClampMax(sx - 1, src.width() - 1);
@@ -159,8 +157,6 @@ bool SkBicubicImageFilter::onFilterImage(Proxy* proxy,
             *dptr++ = cubicBlend(fCoefficients, fracty, s0, s1, s2, s3);
         }
     }
-    offset->fX = dstIRect.fLeft;
-    offset->fY = dstIRect.fTop;
     return true;
 }
 
@@ -169,9 +165,9 @@ bool SkBicubicImageFilter::onFilterImage(Proxy* proxy,
 #if SK_SUPPORT_GPU
 
 bool SkBicubicImageFilter::filterImageGPU(Proxy* proxy, const SkBitmap& src, const SkMatrix& ctm,
-                                          SkBitmap* result, SkIPoint* offset) const {
-    SkBitmap srcBM = src;
-    if (getInput(0) && !getInput(0)->getInputResultGPU(proxy, src, ctm, &srcBM, offset)) {
+                                          SkBitmap* result, SkIPoint* offset) {
+    SkBitmap srcBM;
+    if (!SkImageFilterUtils::GetInputResultGPU(getInput(0), proxy, src, ctm, &srcBM, offset)) {
         return false;
     }
     GrTexture* srcTexture = srcBM.getTexture();
@@ -197,8 +193,7 @@ bool SkBicubicImageFilter::filterImageGPU(Proxy* proxy, const SkBitmap& src, con
     SkRect srcRect;
     srcBM.getBounds(&srcRect);
     context->drawRectToRect(paint, dstRect, srcRect);
-    WrapTexture(dst, desc.fWidth, desc.fHeight, result);
-    return true;
+    return SkImageFilterUtils::WrapTexture(dst, desc.fWidth, desc.fHeight, result);
 }
 #endif
 

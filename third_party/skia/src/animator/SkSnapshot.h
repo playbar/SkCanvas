@@ -21,7 +21,7 @@ class SkSnapshot: public SkDrawable {
     virtual bool draw(SkAnimateMaker& );
     private:
     SkString filename;
-    SkScalar quality;
+    float quality;
     SkBool sequence;
     int /*SkImageEncoder::Type*/    type;
     int fSeqVal;

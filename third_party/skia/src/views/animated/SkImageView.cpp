@@ -59,8 +59,6 @@ void SkImageView::setUri(const SkString& uri)
 
 void SkImageView::setScaleType(ScaleType st)
 {
-    SkASSERT((unsigned)st <= kFitEnd_ScaleType);
-
     if ((ScaleType)fScaleType != st)
     {
         fScaleType = SkToU8(st);
@@ -73,7 +71,6 @@ bool SkImageView::getImageMatrix(SkMatrix* matrix) const
 {
     if (fMatrix)
     {
-        SkASSERT(!fMatrix->isIdentity());
         if (matrix)
             *matrix = *fMatrix;
         return true;
@@ -101,7 +98,6 @@ void SkImageView::setImageMatrix(const SkMatrix* matrix)
     {
         if (fMatrix)
         {
-            SkASSERT(!fMatrix->isIdentity());
             sk_free(fMatrix);
             fMatrix = NULL;
             changed = true;
@@ -128,14 +124,6 @@ bool SkImageView::onEvent(const SkEvent& evt)
 
 static inline SkMatrix::ScaleToFit scaleTypeToScaleToFit(SkImageView::ScaleType st)
 {
-    SkASSERT(st != SkImageView::kMatrix_ScaleType);
-    SkASSERT((unsigned)st <= SkImageView::kFitEnd_ScaleType);
-
-    SkASSERT(SkImageView::kFitXY_ScaleType - 1 == SkMatrix::kFill_ScaleToFit);
-    SkASSERT(SkImageView::kFitStart_ScaleType - 1 == SkMatrix::kStart_ScaleToFit);
-    SkASSERT(SkImageView::kFitCenter_ScaleType - 1 == SkMatrix::kCenter_ScaleToFit);
-    SkASSERT(SkImageView::kFitEnd_ScaleType - 1 == SkMatrix::kEnd_ScaleToFit);
-
     return (SkMatrix::ScaleToFit)(st - 1);
 }
 
@@ -228,11 +216,9 @@ bool SkImageView::freeData()
 
 bool SkImageView::getDataBounds(SkRect* bounds)
 {
-    SkASSERT(bounds);
-
     if (this->ensureUriIsLoaded())
     {
-        SkScalar width, height;
+        float width, height;
 
         if (fDataIsAnim)
         {
@@ -259,7 +245,6 @@ bool SkImageView::ensureUriIsLoaded()
 {
     if (fData.fAnim)    // test is valid for all union values
     {
-        SkASSERT(fUriIsValid);
         return true;
     }
     if (!fUriIsValid)

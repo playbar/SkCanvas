@@ -8,7 +8,6 @@
 #include "SkTwoPointConicalGradient.h"
 
 static int valid_divide(float numer, float denom, float* ratio) {
-    SkASSERT(ratio);
     if (0 == denom) {
         return 0;
     }
@@ -19,7 +18,6 @@ static int valid_divide(float numer, float denom, float* ratio) {
 // Return the number of distinct real roots, and write them into roots[] in
 // ascending order
 static int find_quad_roots(float A, float B, float C, float roots[2]) {
-    SkASSERT(roots);
 
     if (A == 0) {
         return valid_divide(-C, B, roots);
@@ -61,8 +59,8 @@ static float lerp(float x, float dx, float t) {
 
 static float sqr(float x) { return x * x; }
 
-void TwoPtRadial::init(const SkPoint& center0, SkScalar rad0,
-                       const SkPoint& center1, SkScalar rad1) {
+void TwoPtRadial::init(const SkPoint& center0, float rad0,
+                       const SkPoint& center1, float rad1) {
     fCenterX = SkScalarToFloat(center0.fX);
     fCenterY = SkScalarToFloat(center0.fY);
     fDCenterX = SkScalarToFloat(center1.fX) - fCenterX;
@@ -75,7 +73,7 @@ void TwoPtRadial::init(const SkPoint& center0, SkScalar rad0,
     fRDR = fRadius * fDRadius;
 }
 
-void TwoPtRadial::setup(SkScalar fx, SkScalar fy, SkScalar dfx, SkScalar dfy) {
+void TwoPtRadial::setup(float fx, float fy, float dfx, float dfy) {
     fRelX = SkScalarToFloat(fx) - fCenterX;
     fRelY = SkScalarToFloat(fy) - fCenterY;
     fIncX = SkScalarToFloat(dfx);
@@ -124,7 +122,6 @@ static void twopoint_clamp(TwoPtRadial* rec, SkPMColor* SK_RESTRICT dstC,
             *dstC++ = 0;
         } else {
             SkFixed index = SkClampMax(t, 0xFFFF);
-            SkASSERT(index <= 0xFFFF);
             *dstC++ = cache[toggle +
                             (index >> SkGradientShaderBase::kCache32Shift)];
         }
@@ -141,7 +138,6 @@ static void twopoint_repeat(TwoPtRadial* rec, SkPMColor* SK_RESTRICT dstC,
             *dstC++ = 0;
         } else {
             SkFixed index = repeat_tileproc(t);
-            SkASSERT(index <= 0xFFFF);
             *dstC++ = cache[toggle +
                             (index >> SkGradientShaderBase::kCache32Shift)];
         }
@@ -158,7 +154,6 @@ static void twopoint_mirror(TwoPtRadial* rec, SkPMColor* SK_RESTRICT dstC,
             *dstC++ = 0;
         } else {
             SkFixed index = mirror_tileproc(t);
-            SkASSERT(index <= 0xFFFF);
             *dstC++ = cache[toggle +
                             (index >> SkGradientShaderBase::kCache32Shift)];
         }
@@ -174,8 +169,8 @@ void SkTwoPointConicalGradient::init() {
 /////////////////////////////////////////////////////////////////////
 
 SkTwoPointConicalGradient::SkTwoPointConicalGradient(
-        const SkPoint& start, SkScalar startRadius,
-        const SkPoint& end, SkScalar endRadius,
+        const SkPoint& start, float startRadius,
+        const SkPoint& end, float endRadius,
         const Descriptor& desc)
     : SkGradientShaderBase(desc),
     fCenter1(start),
@@ -183,7 +178,6 @@ SkTwoPointConicalGradient::SkTwoPointConicalGradient(
     fRadius1(startRadius),
     fRadius2(endRadius) {
     // this is degenerate, and should be caught by our caller
-    SkASSERT(fCenter1 != fCenter2 || fRadius1 != fRadius2);
     this->init();
 }
 
@@ -198,8 +192,6 @@ void SkTwoPointConicalGradient::shadeSpan(int x, int y, SkPMColor* dstCParam,
                                           int count) {
     int toggle = init_dither_toggle(x, y);
 
-    SkASSERT(count > 0);
-
     SkPMColor* SK_RESTRICT dstC = dstCParam;
 
     SkMatrix::MapXYProc dstProc = fDstToIndexProc;
@@ -212,15 +204,14 @@ void SkTwoPointConicalGradient::shadeSpan(int x, int y, SkPMColor* dstCParam,
     } else if (SkShader::kMirror_TileMode == fTileMode) {
         shadeProc = twopoint_mirror;
     } else {
-        SkASSERT(SkShader::kRepeat_TileMode == fTileMode);
     }
 
     if (fDstToIndexClass != kPerspective_MatrixClass) {
         SkPoint srcPt;
         dstProc(fDstToIndex, SkIntToScalar(x) + SK_ScalarHalf,
                 SkIntToScalar(y) + SK_ScalarHalf, &srcPt);
-        SkScalar dx, fx = srcPt.fX;
-        SkScalar dy, fy = srcPt.fY;
+        float dx, fx = srcPt.fX;
+        float dy, fy = srcPt.fY;
 
         if (fDstToIndexClass == kFixedStepInX_MatrixClass) {
             SkFixed fixedX, fixedY;
@@ -228,7 +219,6 @@ void SkTwoPointConicalGradient::shadeSpan(int x, int y, SkPMColor* dstCParam,
             dx = SkFixedToScalar(fixedX);
             dy = SkFixedToScalar(fixedY);
         } else {
-            SkASSERT(fDstToIndexClass == kLinear_MatrixClass);
             dx = fDstToIndex.getScaleX();
             dy = fDstToIndex.getSkewY();
         }
@@ -236,8 +226,8 @@ void SkTwoPointConicalGradient::shadeSpan(int x, int y, SkPMColor* dstCParam,
         fRec.setup(fx, fy, dx, dy);
         (*shadeProc)(&fRec, dstC, cache, toggle, count);
     } else {    // perspective case
-        SkScalar dstX = SkIntToScalar(x) + SK_ScalarHalf;
-        SkScalar dstY = SkIntToScalar(y) + SK_ScalarHalf;
+        float dstX = SkIntToScalar(x) + SK_ScalarHalf;
+        float dstY = SkIntToScalar(y) + SK_ScalarHalf;
         for (; count > 0; --count) {
             SkPoint srcPt;
             dstProc(fDstToIndex, dstX, dstY, &srcPt);
@@ -271,7 +261,7 @@ bool SkTwoPointConicalGradient::setContext(const SkBitmap& device,
 SkShader::BitmapType SkTwoPointConicalGradient::asABitmap(
     SkBitmap* bitmap, SkMatrix* matrix, SkShader::TileMode* xy) const {
     SkPoint diff = fCenter2 - fCenter1;
-    SkScalar diffLen = 0;
+    float diffLen = 0;
 
     if (bitmap) {
         this->getGradientTableBitmap(bitmap);
@@ -281,7 +271,7 @@ SkShader::BitmapType SkTwoPointConicalGradient::asABitmap(
     }
     if (matrix) {
         if (diffLen) {
-            SkScalar invDiffLen = SkScalarInvert(diffLen);
+            float invDiffLen = SkScalarInvert(diffLen);
             // rotate to align circle centers with the x-axis
             matrix->setSinCos(-SkScalarMul(invDiffLen, diff.fY),
                               SkScalarMul(invDiffLen, diff.fX));
@@ -310,7 +300,7 @@ SkShader::GradientType SkTwoPointConicalGradient::asAGradient(
 }
 
 SkTwoPointConicalGradient::SkTwoPointConicalGradient(
-    SkReadBuffer& buffer)
+    SkFlattenableReadBuffer& buffer)
     : INHERITED(buffer),
     fCenter1(buffer.readPoint()),
     fCenter2(buffer.readPoint()),
@@ -320,7 +310,7 @@ SkTwoPointConicalGradient::SkTwoPointConicalGradient(
 };
 
 void SkTwoPointConicalGradient::flatten(
-    SkWriteBuffer& buffer) const {
+    SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writePoint(fCenter1);
     buffer.writePoint(fCenter2);
@@ -366,9 +356,9 @@ protected:
     // @{
     /// Values last uploaded as uniforms
 
-    SkScalar fCachedCenter;
-    SkScalar fCachedRadius;
-    SkScalar fCachedDiffRadius;
+    float fCachedCenter;
+    float fCachedRadius;
+    float fCachedDiffRadius;
 
     // @}
 
@@ -400,9 +390,9 @@ public:
 
     // The radial gradient parameters can collapse to a linear (instead of quadratic) equation.
     bool isDegenerate() const { return SkScalarAbs(fDiffRadius) == SkScalarAbs(fCenterX1); }
-    SkScalar center() const { return fCenterX1; }
-    SkScalar diffRadius() const { return fDiffRadius; }
-    SkScalar radius() const { return fRadius0; }
+    float center() const { return fCenterX1; }
+    float diffRadius() const { return fDiffRadius; }
+    float radius() const { return fRadius0; }
 
     typedef GrGLConical2Gradient GLEffect;
 
@@ -427,7 +417,7 @@ private:
         //    float b = -2.0 * (fCenterX1 * x + fRadius0 * fDiffRadius * z)
         fBTransform = this->getCoordTransform();
         SkMatrix& bMatrix = *fBTransform.accessMatrix();
-        SkScalar r0dr = SkScalarMul(fRadius0, fDiffRadius);
+        float r0dr = SkScalarMul(fRadius0, fDiffRadius);
         bMatrix[SkMatrix::kMScaleX] = -2 * (SkScalarMul(fCenterX1, bMatrix[SkMatrix::kMScaleX]) +
                                             SkScalarMul(r0dr, bMatrix[SkMatrix::kMPersp0]));
         bMatrix[SkMatrix::kMSkewX] = -2 * (SkScalarMul(fCenterX1, bMatrix[SkMatrix::kMSkewX]) +
@@ -444,9 +434,9 @@ private:
     // we shouldn't change between degenerate and non-degenerate?!
 
     GrCoordTransform fBTransform;
-    SkScalar         fCenterX1;
-    SkScalar         fRadius0;
-    SkScalar         fDiffRadius;
+    float         fCenterX1;
+    float         fRadius0;
+    float         fDiffRadius;
 
     // @}
 
@@ -460,9 +450,9 @@ GrEffectRef* GrConical2Gradient::TestCreate(SkRandom* random,
                                             const GrDrawTargetCaps&,
                                             GrTexture**) {
     SkPoint center1 = {random->nextUScalar1(), random->nextUScalar1()};
-    SkScalar radius1 = random->nextUScalar1();
+    float radius1 = random->nextUScalar1();
     SkPoint center2;
-    SkScalar radius2;
+    float radius2;
     do {
         center2.set(random->nextUScalar1(), random->nextUScalar1());
         radius2 = random->nextUScalar1 ();
@@ -470,8 +460,8 @@ GrEffectRef* GrConical2Gradient::TestCreate(SkRandom* random,
     } while (radius1 == radius2 && center1 == center2);
 
     SkColor colors[kMaxRandomGradientColors];
-    SkScalar stopsArray[kMaxRandomGradientColors];
-    SkScalar* stops = stopsArray;
+    float stopsArray[kMaxRandomGradientColors];
+    float* stops = stopsArray;
     SkShader::TileMode tm;
     int colorCount = RandomGradientParams(random, colors, &stops, &tm);
     SkAutoTUnref<SkShader> shader(SkGradientShader::CreateTwoPointConical(center1, radius1,
@@ -531,7 +521,6 @@ void GrGLConical2Gradient::emitCode(GrGLShaderBuilder* builder,
     builder->getUniformVariable(fParamUni).appendArrayAccess(5, &p5);
 
     // We interpolate the linear component in coords[1].
-    SkASSERT(coords[0].type() == coords[1].type());
     const char* coords2D;
     SkString bVar;
     if (kVec3f_GrSLType == coords[0].type()) {
@@ -631,16 +620,15 @@ void GrGLConical2Gradient::setData(const GrGLUniformManager& uman,
                                    const GrDrawEffect& drawEffect) {
     INHERITED::setData(uman, drawEffect);
     const GrConical2Gradient& data = drawEffect.castEffect<GrConical2Gradient>();
-    SkASSERT(data.isDegenerate() == fIsDegenerate);
-    SkScalar centerX1 = data.center();
-    SkScalar radius0 = data.radius();
-    SkScalar diffRadius = data.diffRadius();
+    float centerX1 = data.center();
+    float radius0 = data.radius();
+    float diffRadius = data.diffRadius();
 
     if (fCachedCenter != centerX1 ||
         fCachedRadius != radius0 ||
         fCachedDiffRadius != diffRadius) {
 
-        SkScalar a = SkScalarMul(centerX1, centerX1) - diffRadius * diffRadius;
+        float a = SkScalarMul(centerX1, centerX1) - diffRadius * diffRadius;
 
         // When we're in the degenerate (linear) case, the second
         // value will be INF but the program doesn't read it. (We
@@ -679,8 +667,6 @@ GrGLEffect::EffectKey GrGLConical2Gradient::GenKey(const GrDrawEffect& drawEffec
 /////////////////////////////////////////////////////////////////////
 
 GrEffectRef* SkTwoPointConicalGradient::asNewEffect(GrContext* context, const SkPaint&) const {
-    SkASSERT(NULL != context);
-    SkASSERT(fPtsToUnit.isIdentity());
     // invert the localM, translate to center1, rotate so center2 is on x axis.
     SkMatrix matrix;
     if (!this->getLocalMatrix().invert(&matrix)) {
@@ -689,9 +675,9 @@ GrEffectRef* SkTwoPointConicalGradient::asNewEffect(GrContext* context, const Sk
     matrix.postTranslate(-fCenter1.fX, -fCenter1.fY);
 
     SkPoint diff = fCenter2 - fCenter1;
-    SkScalar diffLen = diff.length();
+    float diffLen = diff.length();
     if (0 != diffLen) {
-        SkScalar invDiffLen = SkScalarInvert(diffLen);
+        float invDiffLen = SkScalarInvert(diffLen);
         SkMatrix rot;
         rot.setSinCos(-SkScalarMul(invDiffLen, diff.fY),
                        SkScalarMul(invDiffLen, diff.fX));
@@ -710,7 +696,7 @@ GrEffectRef* SkTwoPointConicalGradient::asNewEffect(GrContext*, const SkPaint&) 
 
 #endif
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkTwoPointConicalGradient::toString(SkString* str) const {
     str->append("SkTwoPointConicalGradient: (");
 

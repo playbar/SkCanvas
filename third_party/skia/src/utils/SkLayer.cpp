@@ -90,17 +90,14 @@ int SkLayer::countChildren() const {
 
 SkLayer* SkLayer::getChild(int index) const {
     if ((unsigned)index < (unsigned)m_children.count()) {
-        SkASSERT(m_children[index]->fParent == this);
         return m_children[index];
     }
     return NULL;
 }
 
 SkLayer* SkLayer::addChild(SkLayer* child) {
-    SkASSERT(this != child);
     child->ref();
     child->detachFromParent();
-    SkASSERT(child->fParent == NULL);
     child->fParent = this;
 
     *m_children.append() = child;
@@ -110,7 +107,6 @@ SkLayer* SkLayer::addChild(SkLayer* child) {
 void SkLayer::detachFromParent() {
     if (fParent) {
         int index = fParent->m_children.find(this);
-        SkASSERT(index >= 0);
         fParent->m_children.remove(index);
         fParent = NULL;
         this->unref();  // this call might delete us
@@ -121,7 +117,6 @@ void SkLayer::removeChildren() {
     int count = m_children.count();
     for (int i = 0; i < count; i++) {
         SkLayer* child = m_children[i];
-        SkASSERT(child->fParent == this);
         child->fParent = NULL;  // in case it has more than one owner
         child->unref();
     }
@@ -141,8 +136,8 @@ SkLayer* SkLayer::getRootLayer() const {
 void SkLayer::getLocalTransform(SkMatrix* matrix) const {
     matrix->setTranslate(m_position.fX, m_position.fY);
 
-    SkScalar tx = SkScalarMul(m_anchorPoint.fX, m_size.width());
-    SkScalar ty = SkScalarMul(m_anchorPoint.fY, m_size.height());
+    float tx = SkScalarMul(m_anchorPoint.fX, m_size.width());
+    float ty = SkScalarMul(m_anchorPoint.fY, m_size.height());
     matrix->preTranslate(tx, ty);
     matrix->preConcat(this->getMatrix());
     matrix->preTranslate(-tx, -ty);
@@ -169,13 +164,13 @@ void SkLayer::localToGlobal(SkMatrix* matrix) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void SkLayer::onDraw(SkCanvas*, SkScalar opacity) {
+void SkLayer::onDraw(SkCanvas*, float opacity) {
 //    SkDebugf("----- no onDraw for %p\n", this);
 }
 
 #include "SkString.h"
 
-void SkLayer::draw(SkCanvas* canvas, SkScalar opacity) {
+void SkLayer::draw(SkCanvas* canvas, float opacity) {
 #if 0
     SkString str1, str2;
  //   this->getMatrix().toDumpString(&str1);

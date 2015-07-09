@@ -10,16 +10,21 @@
 
 //#define SK_DEBUG_SIZE
 
+#include "SkBitmap.h"
 #include "SkBitmapHeap.h"
 #include "SkChecksum.h"
 #include "SkChunkAlloc.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkMatrix.h"
+#include "SkOrderedReadBuffer.h"
+#include "SkOrderedWriteBuffer.h"
 #include "SkPaint.h"
+#include "SkPath.h"
 #include "SkPicture.h"
 #include "SkPtrRecorder.h"
+#include "SkRegion.h"
 #include "SkTDynamicHash.h"
 #include "SkTRefArray.h"
+#include "SkTSearch.h"
 
 enum DrawType {
     UNUSED,
@@ -63,12 +68,7 @@ enum DrawType {
     COMMENT,
     END_COMMENT_GROUP,
 
-    // new ops -- feel free to re-alphabetize on next version bump
-    DRAW_DRRECT,
-    PUSH_CULL,
-    POP_CULL,
-
-    LAST_DRAWTYPE_ENUM = POP_CULL
+    LAST_DRAWTYPE_ENUM = END_COMMENT_GROUP
 };
 
 // In the 'match' method, this constant will match any flavor of DRAW_BITMAP*
@@ -77,8 +77,7 @@ static const int kDRAW_BITMAP_FLAVOR = LAST_DRAWTYPE_ENUM+1;
 enum DrawVertexFlags {
     DRAW_VERTICES_HAS_TEXS    = 0x01,
     DRAW_VERTICES_HAS_COLORS  = 0x02,
-    DRAW_VERTICES_HAS_INDICES = 0x04,
-    DRAW_VERTICES_HAS_XFER    = 0x08,
+    DRAW_VERTICES_HAS_INDICES = 0x04
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -112,7 +111,7 @@ public:
     void setCount(int count);
     SkRefCnt* set(int index, SkRefCnt*);
 
-    void setupBuffer(SkReadBuffer& buffer) const {
+    void setupBuffer(SkOrderedReadBuffer& buffer) const {
         buffer.setTypefaceArray((SkTypeface**)fArray, fCount);
     }
 
@@ -133,7 +132,7 @@ public:
 
     SkFlattenable::Factory* base() const { return fArray; }
 
-    void setupBuffer(SkReadBuffer& buffer) const {
+    void setupBuffer(SkOrderedReadBuffer& buffer) const {
         buffer.setFactoryPlayback(fArray, fCount);
     }
 
@@ -152,17 +151,19 @@ private:
 // SkFlatData:       is a simple indexable container for the flattened data
 //                   which is agnostic to the type of data is is indexing. It is
 //                   also responsible for flattening/unflattening objects but
-//                   details of that operation are hidden in the provided traits
+//                   details of that operation are hidden in the provided procs
 // SkFlatDictionary: is an abstract templated dictionary that maintains a
 //                   searchable set of SkFlatData objects of type T.
 // SkFlatController: is an interface provided to SkFlatDictionary which handles
 //                   allocation (and unallocation in some cases). It also holds
 //                   ref count recorders and the like.
 //
-// NOTE: any class that wishes to be used in conjunction with SkFlatDictionary must subclass the
-// dictionary and provide the necessary flattening traits.  SkFlatController must also be
-// implemented, or SkChunkFlatController can be used to use an SkChunkAllocator and never do
-// replacements.
+// NOTE: any class that wishes to be used in conjunction with SkFlatDictionary
+// must subclass the dictionary and provide the necessary flattening procs.
+// The end of this header contains dictionary subclasses for some common classes
+// like SkBitmap, SkMatrix, SkPaint, and SkRegion. SkFlatController must also
+// be implemented, or SkChunkFlatController can be used to use an
+// SkChunkAllocator and never do replacements.
 //
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -173,7 +174,7 @@ class SkFlatController : public SkRefCnt {
 public:
     SK_DECLARE_INST_COUNT(SkFlatController)
 
-    SkFlatController(uint32_t writeBufferFlags = 0);
+    SkFlatController();
     virtual ~SkFlatController();
     /**
      * Return a new block of memory for the SkFlatDictionary to use.
@@ -247,12 +248,17 @@ protected:
      */
     SkNamedFactorySet* setNamedFactorySet(SkNamedFactorySet*);
 
+    /**
+     * Set the flags to be used during flattening.
+     */
+    void setWriteBufferFlags(uint32_t flags) { fWriteBufferFlags = flags; }
+
 private:
     SkBitmapHeap*       fBitmapHeap;
     SkRefCntSet*        fTypefaceSet;
     SkTypefacePlayback* fTypefacePlayback;
     SkNamedFactorySet*  fFactorySet;
-    const uint32_t      fWriteBufferFlags;
+    uint32_t            fWriteBufferFlags;
 
     typedef SkRefCnt INHERITED;
 };
@@ -260,48 +266,16 @@ private:
 class SkFlatData {
 public:
     // Flatten obj into an SkFlatData with this index.  controller owns the SkFlatData*.
-    template <typename Traits, typename T>
-    static SkFlatData* Create(SkFlatController* controller, const T& obj, int index) {
-        // A buffer of 256 bytes should fit most paints, regions, and matrices.
-        uint32_t storage[64];
-        SkWriteBuffer buffer(storage, sizeof(storage), controller->getWriteBufferFlags());
+    static SkFlatData* Create(SkFlatController* controller,
+                              const void* obj,
+                              int index,
+                              void (*flattenProc)(SkOrderedWriteBuffer&, const void*));
 
-        buffer.setBitmapHeap(controller->getBitmapHeap());
-        buffer.setTypefaceRecorder(controller->getTypefaceSet());
-        buffer.setNamedFactoryRecorder(controller->getNamedFactorySet());
-
-        Traits::Flatten(buffer, obj);
-        size_t size = buffer.bytesWritten();
-        SkASSERT(SkIsAlign4(size));
-
-        // Allocate enough memory to hold SkFlatData struct and the flat data itself.
-        size_t allocSize = sizeof(SkFlatData) + size;
-        SkFlatData* result = (SkFlatData*) controller->allocThrow(allocSize);
-
-        // Put the serialized contents into the data section of the new allocation.
-        buffer.writeToMemory(result->data());
-        // Stamp the index, size and checksum in the header.
-        result->stampHeader(index, SkToS32(size));
-        return result;
-    }
-
-    // Unflatten this into result, using bitmapHeap and facePlayback for bitmaps and fonts if given
-    template <typename Traits, typename T>
-    void unflatten(T* result,
+    // Unflatten this into result, using bitmapHeap and facePlayback for bitmaps and fonts if given.
+    void unflatten(void* result,
+                   void (*unflattenProc)(SkOrderedReadBuffer&, void*),
                    SkBitmapHeap* bitmapHeap = NULL,
-                   SkTypefacePlayback* facePlayback = NULL) const {
-        SkReadBuffer buffer(this->data(), fFlatSize);
-
-        if (bitmapHeap) {
-            buffer.setBitmapStorage(bitmapHeap);
-        }
-        if (facePlayback) {
-            facePlayback->setupBuffer(buffer);
-        }
-
-        Traits::Unflatten(buffer, result);
-        SkASSERT(fFlatSize == (int32_t)buffer.offset());
-    }
+                   SkTypefacePlayback* facePlayback = NULL) const;
 
     // Do these contain the same data?  Ignores index() and topBot().
     bool operator==(const SkFlatData& that) const {
@@ -323,14 +297,12 @@ public:
 
     // Returns fTopBot array, so it can be passed to a routine to compute them.
     // For efficiency, we assert that fTopBot have not been recorded yet.
-    SkScalar* writableTopBot() const {
-        SkASSERT(!this->isTopBotWritten());
+    float* writableTopBot() const {
         return fTopBot;
     }
 
     // Return the topbot[] after it has been recorded.
-    const SkScalar* topBot() const {
-        SkASSERT(this->isTopBotWritten());
+    const float* topBot() const {
         return fTopBot;
     }
 
@@ -345,7 +317,6 @@ private:
 
     // This assumes the payload flat data has already been written and does not modify it.
     void stampHeader(int index, int32_t size) {
-        SkASSERT(SkIsAlign4(size));
         fIndex     = index;
         fFlatSize  = size;
         fTopBot[0] = SK_ScalarNaN;  // Mark as unwritten.
@@ -355,19 +326,25 @@ private:
     int fIndex;
     int32_t fFlatSize;
     uint32_t fChecksum;
-    mutable SkScalar fTopBot[2];  // Cache of FontMetrics fTop, fBottom.  Starts as [NaN,?].
+    mutable float fTopBot[2];  // Cache of FontMetrics fTop, fBottom.  Starts as [NaN,?].
     // uint32_t flattenedData[] implicitly hangs off the end.
 
-    template <typename T, typename Traits> friend class SkFlatDictionary;
+    template <class T> friend class SkFlatDictionary;
 };
 
-template <typename T, typename Traits>
+template <class T>
 class SkFlatDictionary {
+    static const size_t kWriteBufferGrowthBytes = 1024;
+
 public:
-    explicit SkFlatDictionary(SkFlatController* controller)
-    : fController(SkRef(controller))
-    , fScratch(controller->getWriteBufferFlags())
-    , fReady(false) {
+    SkFlatDictionary(SkFlatController* controller, size_t scratchSizeGuess = 0)
+    : fFlattenProc(NULL)
+    , fUnflattenProc(NULL)
+    , fController(SkRef(controller))
+    , fScratchSize(scratchSizeGuess)
+    , fScratch(AllocScratch(fScratchSize))
+    , fWriteBuffer(kWriteBufferGrowthBytes)
+    , fWriteBufferReady(false) {
         this->reset();
     }
 
@@ -377,16 +354,23 @@ public:
      */
     void reset() {
         fIndexedData.rewind();
+        // TODO(mtklein): There's no reason to have the index start from 1.  Clean this up.
+        // index 0 is always empty since it is used as a signal that find failed
+        fIndexedData.push(NULL);
+        fNextIndex = 1;
+    }
+
+    ~SkFlatDictionary() {
+        sk_free(fScratch);
     }
 
     int count() const {
-        SkASSERT(fHash.count() == fIndexedData.count());
-        return fHash.count();
+        return fNextIndex - 1;
     }
 
     // For testing only.  Index is zero-based.
     const SkFlatData* operator[](int index) {
-        return fIndexedData[index];
+        return fIndexedData[index+1];
     }
 
     /**
@@ -410,8 +394,6 @@ public:
                                      const SkFlatData* toReplace,
                                      bool* added,
                                      bool* replaced) {
-        SkASSERT(added != NULL && replaced != NULL);
-
         const int oldCount = this->count();
         SkFlatData* flat = this->findAndReturnMutableFlat(element);
         *added = this->count() > oldCount;
@@ -429,17 +411,15 @@ public:
             return flat;
         }
 
-        // findAndReturnMutableFlat put flat at the back.  Swap it into found->index() instead.
-        // indices in SkFlatData are 1-based, while fIndexedData is 0-based.  Watch out!
-        SkASSERT(flat->index() == this->count());
+        // findAndReturnMutableFlat gave us index (fNextIndex-1), but we'll use the old one.
+        fIndexedData.remove(flat->index());
+        fNextIndex--;
         flat->setIndex(found->index());
-        fIndexedData.removeShuffle(found->index()-1);
-        SkASSERT(flat == fIndexedData[found->index()-1]);
+        fIndexedData[flat->index()] = flat;
 
         // findAndReturnMutableFlat already called fHash.add(), so we just clean up the old entry.
         fHash.remove(*found);
         fController->unalloc((void*)found);
-        SkASSERT(this->count() == oldCount);
 
         *replaced = true;
         return flat;
@@ -456,7 +436,7 @@ public:
         }
         SkTRefArray<T>* array = SkTRefArray<T>::Create(count);
         for (int i = 0; i < count; i++) {
-            this->unflatten(&array->writableAt(i), fIndexedData[i]);
+            this->unflatten(&array->writableAt(i), fIndexedData[i+1]);
         }
         return array;
     }
@@ -466,9 +446,7 @@ public:
      * Caller takes ownership of the result.
      */
     T* unflatten(int index) const {
-        // index is 1-based, while fIndexedData is 0-based.
-        const SkFlatData* element = fIndexedData[index-1];
-        SkASSERT(index == element->index());
+        const SkFlatData* element = fIndexedData[index];
 
         T* dst = new T;
         this->unflatten(dst, element);
@@ -483,54 +461,75 @@ public:
         return this->findAndReturnMutableFlat(element);
     }
 
+protected:
+    void (*fFlattenProc)(SkOrderedWriteBuffer&, const void*);
+    void (*fUnflattenProc)(SkOrderedReadBuffer&, void*);
+
 private:
-    // We have to delay fScratch's initialization until its first use; fController might not
+    // Layout: [ SkFlatData header, 20 bytes ] [ data ..., 4-byte aligned ]
+    static size_t SizeWithPadding(size_t flatDataSize) {
+        return sizeof(SkFlatData) + flatDataSize;
+    }
+
+    // Allocate a new scratch SkFlatData.  Must be sk_freed.
+    static SkFlatData* AllocScratch(size_t scratchSize) {
+        return (SkFlatData*) sk_malloc_throw(SizeWithPadding(scratchSize));
+    }
+
+    // We have to delay fWriteBuffer's initialization until its first use; fController might not
     // be fully set up by the time we get it in the constructor.
-    void lazyInit() {
-        if (fReady) {
+    void lazyWriteBufferInit() {
+        if (fWriteBufferReady) {
             return;
         }
-
         // Without a bitmap heap, we'll flatten bitmaps into paints.  That's never what you want.
-        SkASSERT(fController->getBitmapHeap() != NULL);
-        fScratch.setBitmapHeap(fController->getBitmapHeap());
-        fScratch.setTypefaceRecorder(fController->getTypefaceSet());
-        fScratch.setNamedFactoryRecorder(fController->getNamedFactorySet());
-        fReady = true;
+        fWriteBuffer.setBitmapHeap(fController->getBitmapHeap());
+        fWriteBuffer.setTypefaceRecorder(fController->getTypefaceSet());
+        fWriteBuffer.setNamedFactoryRecorder(fController->getNamedFactorySet());
+        fWriteBuffer.setFlags(fController->getWriteBufferFlags());
+        fWriteBufferReady = true;
     }
 
     // As findAndReturnFlat, but returns a mutable pointer for internal use.
     SkFlatData* findAndReturnMutableFlat(const T& element) {
         // Only valid until the next call to resetScratch().
-        const SkFlatData& scratch = this->resetScratch(element, this->count()+1);
+        const SkFlatData& scratch = this->resetScratch(element, fNextIndex);
 
         SkFlatData* candidate = fHash.find(scratch);
-        if (candidate != NULL) {
-            return candidate;
-        }
+        if (candidate != NULL) return candidate;
 
         SkFlatData* detached = this->detachScratch();
         fHash.add(detached);
-        *fIndexedData.append() = detached;
-        SkASSERT(fIndexedData.top()->index() == this->count());
+        *fIndexedData.insert(fNextIndex) = detached;
+        fNextIndex++;
         return detached;
     }
 
     // This reference is valid only until the next call to resetScratch() or detachScratch().
     const SkFlatData& resetScratch(const T& element, int index) {
-        this->lazyInit();
+        this->lazyWriteBufferInit();
 
-        // Layout of fScratch: [ SkFlatData header, 20 bytes ] [ data ..., 4-byte aligned ]
-        fScratch.reset();
-        fScratch.reserve(sizeof(SkFlatData));
-        Traits::Flatten(fScratch, element);
-        const size_t dataSize = fScratch.bytesWritten() - sizeof(SkFlatData);
+        // Flatten element into fWriteBuffer (using fScratch as storage).
+        fWriteBuffer.reset(fScratch->data(), fScratchSize);
+        fFlattenProc(fWriteBuffer, &element);
+        const size_t bytesWritten = fWriteBuffer.bytesWritten();
 
-        // Reinterpret data in fScratch as an SkFlatData.
-        SkFlatData* scratch = (SkFlatData*)fScratch.getWriter32()->contiguousArray();
-        SkASSERT(scratch != NULL);
-        scratch->stampHeader(index, dataSize);
-        return *scratch;
+        // If all the flattened bytes fit into fScratch, we can skip a call to writeToMemory.
+        if (!fWriteBuffer.wroteOnlyToStorage()) {
+            // It didn't all fit.  Copy into a larger replacement SkFlatData.
+            // We can't just realloc because it might move the pointer and confuse writeToMemory.
+            SkFlatData* larger = AllocScratch(bytesWritten);
+            fWriteBuffer.writeToMemory(larger->data());
+
+            // Carry on with this larger scratch to minimize the likelihood of future resizing.
+            sk_free(fScratch);
+            fScratchSize = bytesWritten;
+            fScratch = larger;
+        }
+
+        // The data is in fScratch now but we need to stamp its header.
+        fScratch->stampHeader(index, bytesWritten);
+        return *fScratch;
     }
 
     // This result is owned by fController and lives as long as it does (unless unalloc'd).
@@ -538,29 +537,34 @@ private:
         // Allocate a new SkFlatData exactly big enough to hold our current scratch.
         // We use the controller for this allocation to extend the allocation's lifetime and allow
         // the controller to do whatever memory management it wants.
-        SkFlatData* detached = (SkFlatData*)fController->allocThrow(fScratch.bytesWritten());
+        const size_t paddedSize = SizeWithPadding(fScratch->flatSize());
+        SkFlatData* detached = (SkFlatData*)fController->allocThrow(paddedSize);
 
         // Copy scratch into the new SkFlatData.
-        SkFlatData* scratch = (SkFlatData*)fScratch.getWriter32()->contiguousArray();
-        SkASSERT(scratch != NULL);
-        memcpy(detached, scratch, fScratch.bytesWritten());
+        memcpy(detached, fScratch, paddedSize);
 
         // We can now reuse fScratch, and detached will live until fController dies.
         return detached;
     }
 
     void unflatten(T* dst, const SkFlatData* element) const {
-        element->unflatten<Traits>(dst,
-                                   fController->getBitmapHeap(),
-                                   fController->getTypefacePlayback());
+        element->unflatten(dst,
+                           fUnflattenProc,
+                           fController->getBitmapHeap(),
+                           fController->getTypefacePlayback());
     }
 
     // All SkFlatData* stored in fIndexedData and fHash are owned by the controller.
     SkAutoTUnref<SkFlatController> fController;
-    SkWriteBuffer fScratch;
-    bool fReady;
+    size_t fScratchSize;  // How many bytes fScratch has allocated for data itself.
+    SkFlatData* fScratch;  // Owned, must be freed with sk_free.
+    SkOrderedWriteBuffer fWriteBuffer;
+    bool fWriteBufferReady;
 
-    // For index -> SkFlatData.  0-based, while all indices in the API are 1-based.  Careful!
+    // We map between SkFlatData and a 1-based integer index.
+    int fNextIndex;
+
+    // For index -> SkFlatData.  fIndexedData[0] is always NULL.
     SkTDArray<const SkFlatData*> fIndexedData;
 
     // For SkFlatData -> cached SkFlatData, which has index().
@@ -568,7 +572,19 @@ private:
                    SkFlatData::Identity, SkFlatData::Hash, SkFlatData::Equal> fHash;
 };
 
-typedef SkFlatDictionary<SkPaint, SkPaint::FlatteningTraits> SkPaintDictionary;
+///////////////////////////////////////////////////////////////////////////////
+// Some common dictionaries are defined here for both reference and convenience
+///////////////////////////////////////////////////////////////////////////////
+
+template <class T>
+static void SkFlattenObjectProc(SkOrderedWriteBuffer& buffer, const void* obj) {
+    ((T*)obj)->flatten(buffer);
+}
+
+template <class T>
+static void SkUnflattenObjectProc(SkOrderedReadBuffer& buffer, void* obj) {
+    ((T*)obj)->unflatten(buffer);
+}
 
 class SkChunkFlatController : public SkFlatController {
 public:
@@ -604,6 +620,51 @@ private:
     SkAutoTUnref<SkRefCntSet>  fTypefaceSet;
     void*                      fLastAllocated;
     mutable SkTypefacePlayback fTypefacePlayback;
+};
+
+class SkMatrixDictionary : public SkFlatDictionary<SkMatrix> {
+ public:
+    // All matrices fit in 36 bytes.
+    SkMatrixDictionary(SkFlatController* controller)
+    : SkFlatDictionary<SkMatrix>(controller, 36) {
+        fFlattenProc = &flattenMatrix;
+        fUnflattenProc = &unflattenMatrix;
+    }
+
+    static void flattenMatrix(SkOrderedWriteBuffer& buffer, const void* obj) {
+        buffer.getWriter32()->writeMatrix(*(SkMatrix*)obj);
+    }
+
+    static void unflattenMatrix(SkOrderedReadBuffer& buffer, void* obj) {
+        buffer.getReader32()->readMatrix((SkMatrix*)obj);
+    }
+};
+
+class SkPaintDictionary : public SkFlatDictionary<SkPaint> {
+ public:
+    // The largest paint across ~60 .skps was 500 bytes.
+    SkPaintDictionary(SkFlatController* controller)
+    : SkFlatDictionary<SkPaint>(controller, 512) {
+        fFlattenProc = &SkFlattenObjectProc<SkPaint>;
+        fUnflattenProc = &SkUnflattenObjectProc<SkPaint>;
+    }
+};
+
+class SkRegionDictionary : public SkFlatDictionary<SkRegion> {
+ public:
+    SkRegionDictionary(SkFlatController* controller)
+    : SkFlatDictionary<SkRegion>(controller) {
+        fFlattenProc = &flattenRegion;
+        fUnflattenProc = &unflattenRegion;
+    }
+
+    static void flattenRegion(SkOrderedWriteBuffer& buffer, const void* obj) {
+        buffer.getWriter32()->writeRegion(*(SkRegion*)obj);
+    }
+
+    static void unflattenRegion(SkOrderedReadBuffer& buffer, void* obj) {
+        buffer.getReader32()->readRegion((SkRegion*)obj);
+    }
 };
 
 #endif

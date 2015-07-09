@@ -205,7 +205,6 @@ SkDisplayable* SkDisplayType::CreateInstance(SkAnimateMaker* maker, SkDisplayTyp
                 if ((result = (*extraPtr)->createInstance(type)) != NULL)
                     return result;
             }
-            SkASSERT(0);
     }
     return result;
 }
@@ -372,10 +371,9 @@ const SkMemberInfo* SkDisplayType::GetMembers(SkAnimateMaker* maker,
 
 const SkMemberInfo* SkDisplayType::GetMember(SkAnimateMaker* maker,
         SkDisplayTypes type, const char** matchPtr ) {
-    int infoCount = 0;  // Initialize to remove a warning.
+    int infoCount;
     const SkMemberInfo* info = GetMembers(maker, type, &infoCount);
     info = SkMemberInfo::Find(info, infoCount, matchPtr);
-//  SkASSERT(info);
     return info;
 }
 
@@ -543,7 +541,6 @@ SkDisplayTypes SkDisplayType::GetParent(SkAnimateMaker* maker, SkDisplayTypes ba
     if (base == SkType_Set)
         return SkType_Animate;  // another cheat until we have a lookup table
     const SkMemberInfo* info = GetMembers(maker, base, NULL); // get info for this type
-    SkASSERT(info);
     if (info->fType != SkType_BaseClassInfo)
         return SkType_Unknown; // if no base, done
     // !!! could change SK_MEMBER_INHERITED macro to take type, stuff in offset, so that
@@ -555,7 +552,6 @@ SkDisplayTypes SkDisplayType::GetParent(SkAnimateMaker* maker, SkDisplayTypes ba
         if (match == inherited)
             break;
     }
-    SkASSERT(result <= SkType_Xfermode);
     return result;
 }
 
@@ -722,45 +718,3 @@ const char* SkDisplayType::GetName(SkAnimateMaker* maker, SkDisplayTypes type) {
 }
 #endif
 
-#ifdef SK_SUPPORT_UNITTEST
-void SkDisplayType::UnitTest() {
-    SkAnimator animator;
-    SkAnimateMaker* maker = animator.fMaker;
-    int index;
-    for (index = 0; index < kTypeNamesSize - 1; index++) {
-        SkASSERT(strcmp(gTypeNames[index].fName, gTypeNames[index + 1].fName) < 0);
-        SkASSERT(gTypeNames[index].fType < gTypeNames[index + 1].fType);
-    }
-    for (index = 0; index < kTypeNamesSize; index++) {
-        SkDisplayable* test = CreateInstance(maker, gTypeNames[index].fType);
-        if (test == NULL)
-            continue;
-#if defined _WIN32 && _MSC_VER >= 1300  && defined _INC_CRTDBG // only on windows, only if using "crtdbg.h"
-    // we know that crtdbg puts 0xfdfdfdfd at the end of the block
-    // look for unitialized memory, signature 0xcdcdcdcd prior to that
-        int* start = (int*) test;
-        while (*start != 0xfdfdfdfd) {
-            SkASSERT(*start != 0xcdcdcdcd);
-            start++;
-        }
-#endif
-        delete test;
-    }
-    for (index = 0; index < kTypeNamesSize; index++) {
-        int infoCount;
-        const SkMemberInfo* info = GetMembers(maker, gTypeNames[index].fType, &infoCount);
-        if (info == NULL)
-            continue;
-#if SK_USE_CONDENSED_INFO == 0
-        for (int inner = 0; inner < infoCount - 1; inner++) {
-            if (info[inner].fType == SkType_BaseClassInfo)
-                continue;
-            SkASSERT(strcmp(info[inner].fName, info[inner + 1].fName) < 0);
-        }
-#endif
-    }
-#if defined SK_DEBUG || defined SK_BUILD_CONDENSED
-    BuildCondensedInfo(maker);
-#endif
-}
-#endif

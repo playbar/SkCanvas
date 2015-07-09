@@ -8,15 +8,14 @@
 
 
 #include "SkDashPathEffect.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkPathMeasure.h"
 
 static inline int is_even(int x) {
     return (~x) << 31;
 }
 
-static SkScalar FindFirstInterval(const SkScalar intervals[], SkScalar phase,
+static float FindFirstInterval(const float intervals[], float phase,
                                   int32_t* index, int count) {
     for (int i = 0; i < count; ++i) {
         if (phase > intervals[i]) {
@@ -34,18 +33,15 @@ static SkScalar FindFirstInterval(const SkScalar intervals[], SkScalar phase,
     return intervals[0];
 }
 
-SkDashPathEffect::SkDashPathEffect(const SkScalar intervals[], int count,
-                                   SkScalar phase, bool scaleToFit)
+SkDashPathEffect::SkDashPathEffect(const float intervals[], int count,
+                                   float phase, bool scaleToFit)
         : fScaleToFit(scaleToFit) {
-    SkASSERT(intervals);
-    SkASSERT(count > 1 && SkAlign2(count) == count);
 
-    fIntervals = (SkScalar*)sk_malloc_throw(sizeof(SkScalar) * count);
+    fIntervals = (float*)sk_malloc_throw(sizeof(float) * count);
     fCount = count;
 
-    SkScalar len = 0;
+    float len = 0;
     for (int i = 0; i < count; i++) {
-        SkASSERT(intervals[i] >= 0);
         fIntervals[i] = intervals[i];
         len += intervals[i];
     }
@@ -66,20 +62,16 @@ SkDashPathEffect::SkDashPathEffect(const SkScalar intervals[], int count,
             // Due to finite precision, it's possible that phase == len,
             // even after the subtract (if len >>> phase), so fix that here.
             // This fixes http://crbug.com/124652 .
-            SkASSERT(phase <= len);
             if (phase == len) {
                 phase = 0;
             }
         } else if (phase >= len) {
             phase = SkScalarMod(phase, len);
         }
-        SkASSERT(phase >= 0 && phase < len);
 
         fInitialDashLength = FindFirstInterval(intervals, phase,
                                                &fInitialDashIndex, count);
 
-        SkASSERT(fInitialDashLength >= 0);
-        SkASSERT(fInitialDashIndex >= 0 && fInitialDashIndex < fCount);
     } else {
         fInitialDashLength = -1;    // signal bad dash intervals
     }
@@ -90,7 +82,7 @@ SkDashPathEffect::~SkDashPathEffect() {
 }
 
 static void outset_for_stroke(SkRect* rect, const SkStrokeRec& rec) {
-    SkScalar radius = SkScalarHalf(rec.getWidth());
+    float radius = SkScalarHalf(rec.getWidth());
     if (0 == radius) {
         radius = SK_Scalar1;    // hairlines
     }
@@ -103,7 +95,7 @@ static void outset_for_stroke(SkRect* rect, const SkStrokeRec& rec) {
 // Only handles lines for now. If returns true, dstPath is the new (smaller)
 // path. If returns false, then dstPath parameter is ignored.
 static bool cull_path(const SkPath& srcPath, const SkStrokeRec& rec,
-                      const SkRect* cullRect, SkScalar intervalLength,
+                      const SkRect* cullRect, float intervalLength,
                       SkPath* dstPath) {
     if (NULL == cullRect) {
         return false;
@@ -117,16 +109,16 @@ static bool cull_path(const SkPath& srcPath, const SkStrokeRec& rec,
     SkRect bounds = *cullRect;
     outset_for_stroke(&bounds, rec);
 
-    SkScalar dx = pts[1].x() - pts[0].x();
-    SkScalar dy = pts[1].y() - pts[0].y();
+    float dx = pts[1].x() - pts[0].x();
+    float dy = pts[1].y() - pts[0].y();
 
     // just do horizontal lines for now (lazy)
     if (dy) {
         return false;
     }
 
-    SkScalar minX = pts[0].fX;
-    SkScalar maxX = pts[1].fX;
+    float minX = pts[0].fX;
+    float maxX = pts[1].fX;
 
     if (maxX < bounds.fLeft || minX > bounds.fRight) {
         return false;
@@ -149,7 +141,6 @@ static bool cull_path(const SkPath& srcPath, const SkStrokeRec& rec,
                                            intervalLength);
     }
 
-    SkASSERT(maxX >= minX);
     if (dx < 0) {
         SkTSwap(minX, maxX);
     }
@@ -164,7 +155,7 @@ static bool cull_path(const SkPath& srcPath, const SkStrokeRec& rec,
 class SpecialLineRec {
 public:
     bool init(const SkPath& src, SkPath* dst, SkStrokeRec* rec,
-              int intervalCount, SkScalar intervalLength) {
+              int intervalCount, float intervalLength) {
         if (rec->isHairlineStyle() || !src.isLine(fPts)) {
             return false;
         }
@@ -174,7 +165,7 @@ public:
             return false;
         }
 
-        SkScalar pathLength = SkPoint::Distance(fPts[0], fPts[1]);
+        float pathLength = SkPoint::Distance(fPts[0], fPts[1]);
 
         fTangent = fPts[1] - fPts[0];
         if (fTangent.isZero()) {
@@ -190,7 +181,7 @@ public:
         //     resulting segments = pathLen * intervalCount / intervalLen
         //     resulting points = 4 * segments
 
-        SkScalar ptCount = SkScalarMulDiv(pathLength,
+        float ptCount = SkScalarMulDiv(pathLength,
                                           SkIntToScalar(intervalCount),
                                           intervalLength);
         int n = SkScalarCeilToInt(ptCount) << 2;
@@ -201,17 +192,16 @@ public:
         return true;
     }
 
-    void addSegment(SkScalar d0, SkScalar d1, SkPath* path) const {
-        SkASSERT(d0 < fPathLength);
+    void addSegment(float d0, float d1, SkPath* path) const {
         // clamp the segment to our length
         if (d1 > fPathLength) {
             d1 = fPathLength;
         }
 
-        SkScalar x0 = fPts[0].fX + SkScalarMul(fTangent.fX, d0);
-        SkScalar x1 = fPts[0].fX + SkScalarMul(fTangent.fX, d1);
-        SkScalar y0 = fPts[0].fY + SkScalarMul(fTangent.fY, d0);
-        SkScalar y1 = fPts[0].fY + SkScalarMul(fTangent.fY, d1);
+        float x0 = fPts[0].fX + SkScalarMul(fTangent.fX, d0);
+        float x1 = fPts[0].fX + SkScalarMul(fTangent.fX, d1);
+        float y0 = fPts[0].fY + SkScalarMul(fTangent.fY, d0);
+        float y1 = fPts[0].fY + SkScalarMul(fTangent.fY, d1);
 
         SkPoint pts[4];
         pts[0].set(x0 + fNormal.fX, y0 + fNormal.fY);   // moveTo
@@ -226,7 +216,7 @@ private:
     SkPoint fPts[2];
     SkVector fTangent;
     SkVector fNormal;
-    SkScalar fPathLength;
+    float fPathLength;
 };
 
 bool SkDashPathEffect::filterPath(SkPath* dst, const SkPath& src,
@@ -236,8 +226,8 @@ bool SkDashPathEffect::filterPath(SkPath* dst, const SkPath& src,
         return false;
     }
 
-    const SkScalar* intervals = fIntervals;
-    SkScalar        dashCount = 0;
+    const float* intervals = fIntervals;
+    float        dashCount = 0;
     int             segCount = 0;
 
     SkPath cullPathStorage;
@@ -254,9 +244,9 @@ bool SkDashPathEffect::filterPath(SkPath* dst, const SkPath& src,
     do {
         bool        skipFirstSegment = meas.isClosed();
         bool        addedSegment = false;
-        SkScalar    length = meas.getLength();
+        float    length = meas.getLength();
         int         index = fInitialDashIndex;
-        SkScalar    scale = SK_Scalar1;
+        float    scale = SK_Scalar1;
 
         // Since the path length / dash length ratio may be arbitrarily large, we can exert
         // significant memory pressure while attempting to build the filtered path. To avoid this,
@@ -266,7 +256,7 @@ bool SkDashPathEffect::filterPath(SkPath* dst, const SkPath& src,
         // 90 million dash segments and crashing the memory allocator. A limit of 1 million
         // segments seems reasonable: at 2 verbs per segment * 9 bytes per verb, this caps the
         // maximum dash memory overhead at roughly 17MB per path.
-        static const SkScalar kMaxDashCount = 1000000;
+        static const float kMaxDashCount = 1000000;
         dashCount += length * (fCount >> 1) / fIntervalLength;
         if (dashCount > kMaxDashCount) {
             dst->reset();
@@ -277,7 +267,7 @@ bool SkDashPathEffect::filterPath(SkPath* dst, const SkPath& src,
             if (fIntervalLength >= length) {
                 scale = SkScalarDiv(length, fIntervalLength);
             } else {
-                SkScalar div = SkScalarDiv(length, fIntervalLength);
+                float div = SkScalarDiv(length, fIntervalLength);
                 int n = SkScalarFloorToInt(div);
                 scale = SkScalarDiv(length, n * fIntervalLength);
             }
@@ -289,7 +279,6 @@ bool SkDashPathEffect::filterPath(SkPath* dst, const SkPath& src,
         double  dlen = SkScalarMul(fInitialDashLength, scale);
 
         while (distance < length) {
-            SkASSERT(dlen >= 0);
             addedSegment = false;
             if (is_even(index) && dlen > 0 && !skipFirstSegment) {
                 addedSegment = true;
@@ -312,7 +301,6 @@ bool SkDashPathEffect::filterPath(SkPath* dst, const SkPath& src,
 
             // wrap around our intervals array if necessary
             index += 1;
-            SkASSERT(index <= fCount);
             if (index == fCount) {
                 index = 0;
             }
@@ -385,7 +373,7 @@ bool SkDashPathEffect::asPoints(PointData* results,
         return false;
     }
 
-    SkScalar        length = SkPoint::Distance(pts[1], pts[0]);
+    float        length = SkPoint::Distance(pts[1], pts[0]);
 
     SkVector tangent = pts[1] - pts[0];
     if (tangent.isZero()) {
@@ -408,16 +396,15 @@ bool SkDashPathEffect::asPoints(PointData* results,
 
     if (NULL != results) {
         results->fFlags = 0;
-        SkScalar clampedInitialDashLength = SkMinScalar(length, fInitialDashLength);
+        float clampedInitialDashLength = SkMinScalar(length, fInitialDashLength);
 
         if (SkPaint::kRound_Cap == rec.getCap()) {
             results->fFlags |= PointData::kCircles_PointFlag;
         }
 
         results->fNumPoints = 0;
-        SkScalar len2 = length;
+        float len2 = length;
         if (clampedInitialDashLength > 0 || 0 == fInitialDashIndex) {
-            SkASSERT(len2 >= clampedInitialDashLength);
             if (0 == fInitialDashIndex) {
                 if (clampedInitialDashLength > 0) {
                     if (clampedInitialDashLength >= fIntervals[0]) {
@@ -448,19 +435,17 @@ bool SkDashPathEffect::asPoints(PointData* results,
 
         results->fPoints = new SkPoint[results->fNumPoints];
 
-        SkScalar    distance = 0;
+        float    distance = 0;
         int         curPt = 0;
 
         if (clampedInitialDashLength > 0 || 0 == fInitialDashIndex) {
-            SkASSERT(clampedInitialDashLength <= length);
 
             if (0 == fInitialDashIndex) {
                 if (clampedInitialDashLength > 0) {
                     // partial first block
-                    SkASSERT(SkPaint::kRound_Cap != rec.getCap()); // can't handle partial circles
-                    SkScalar x = pts[0].fX + SkScalarMul(tangent.fX, SkScalarHalf(clampedInitialDashLength));
-                    SkScalar y = pts[0].fY + SkScalarMul(tangent.fY, SkScalarHalf(clampedInitialDashLength));
-                    SkScalar halfWidth, halfHeight;
+                    float x = pts[0].fX + SkScalarMul(tangent.fX, SkScalarHalf(clampedInitialDashLength));
+                    float y = pts[0].fY + SkScalarMul(tangent.fY, SkScalarHalf(clampedInitialDashLength));
+                    float halfWidth, halfHeight;
                     if (isXAxis) {
                         halfWidth = SkScalarHalf(clampedInitialDashLength);
                         halfHeight = SkScalarHalf(rec.getWidth());
@@ -473,7 +458,6 @@ bool SkDashPathEffect::asPoints(PointData* results,
                         results->fFirst.addRect(x - halfWidth, y - halfHeight,
                                                 x + halfWidth, y + halfHeight);
                     } else {
-                        SkASSERT(curPt < results->fNumPoints);
                         results->fPoints[curPt].set(x, y);
                         ++curPt;
                     }
@@ -491,10 +475,9 @@ bool SkDashPathEffect::asPoints(PointData* results,
             distance += SkScalarHalf(fIntervals[0]);
 
             for (int i = 0; i < numMidPoints; ++i) {
-                SkScalar x = pts[0].fX + SkScalarMul(tangent.fX, distance);
-                SkScalar y = pts[0].fY + SkScalarMul(tangent.fY, distance);
+                float x = pts[0].fX + SkScalarMul(tangent.fX, distance);
+                float y = pts[0].fY + SkScalarMul(tangent.fY, distance);
 
-                SkASSERT(curPt < results->fNumPoints);
                 results->fPoints[curPt].set(x, y);
                 ++curPt;
 
@@ -506,12 +489,10 @@ bool SkDashPathEffect::asPoints(PointData* results,
 
         if (partialLast) {
             // partial final block
-            SkASSERT(SkPaint::kRound_Cap != rec.getCap()); // can't handle partial circles
-            SkScalar temp = length - distance;
-            SkASSERT(temp < fIntervals[0]);
-            SkScalar x = pts[0].fX + SkScalarMul(tangent.fX, distance + SkScalarHalf(temp));
-            SkScalar y = pts[0].fY + SkScalarMul(tangent.fY, distance + SkScalarHalf(temp));
-            SkScalar halfWidth, halfHeight;
+            float temp = length - distance;
+            float x = pts[0].fX + SkScalarMul(tangent.fX, distance + SkScalarHalf(temp));
+            float y = pts[0].fY + SkScalarMul(tangent.fY, distance + SkScalarHalf(temp));
+            float halfWidth, halfHeight;
             if (isXAxis) {
                 halfWidth = SkScalarHalf(temp);
                 halfHeight = SkScalarHalf(rec.getWidth());
@@ -522,18 +503,16 @@ bool SkDashPathEffect::asPoints(PointData* results,
             results->fLast.addRect(x - halfWidth, y - halfHeight,
                                    x + halfWidth, y + halfHeight);
         }
-
-        SkASSERT(curPt == results->fNumPoints);
     }
 
     return true;
 }
 
 SkFlattenable::Factory SkDashPathEffect::getFactory() const {
-    return CreateProc;
+    return fInitialDashLength < 0 ? NULL : CreateProc;
 }
 
-void SkDashPathEffect::flatten(SkWriteBuffer& buffer) const {
+void SkDashPathEffect::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writeInt(fInitialDashIndex);
     buffer.writeScalar(fInitialDashLength);
@@ -542,20 +521,20 @@ void SkDashPathEffect::flatten(SkWriteBuffer& buffer) const {
     buffer.writeScalarArray(fIntervals, fCount);
 }
 
-SkFlattenable* SkDashPathEffect::CreateProc(SkReadBuffer& buffer) {
+SkFlattenable* SkDashPathEffect::CreateProc(SkFlattenableReadBuffer& buffer) {
     return SkNEW_ARGS(SkDashPathEffect, (buffer));
 }
 
-SkDashPathEffect::SkDashPathEffect(SkReadBuffer& buffer) : INHERITED(buffer) {
+SkDashPathEffect::SkDashPathEffect(SkFlattenableReadBuffer& buffer) : INHERITED(buffer) {
     fInitialDashIndex = buffer.readInt();
     fInitialDashLength = buffer.readScalar();
     fIntervalLength = buffer.readScalar();
     fScaleToFit = buffer.readBool();
 
     fCount = buffer.getArrayCount();
-    size_t allocSize = sizeof(SkScalar) * fCount;
+    size_t allocSize = sizeof(float) * fCount;
     if (buffer.validateAvailable(allocSize)) {
-        fIntervals = (SkScalar*)sk_malloc_throw(allocSize);
+        fIntervals = (float*)sk_malloc_throw(allocSize);
         buffer.readScalarArray(fIntervals, fCount);
     } else {
         fIntervals = NULL;

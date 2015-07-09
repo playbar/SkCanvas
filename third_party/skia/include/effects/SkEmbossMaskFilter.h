@@ -17,15 +17,16 @@
 class SK_API SkEmbossMaskFilter : public SkMaskFilter {
 public:
     struct Light {
-        SkScalar    fDirection[3];  // x,y,z
+        float    fDirection[3];  // x,y,z
         uint16_t    fPad;
         uint8_t     fAmbient;
         uint8_t     fSpecular;      // exponent, 4.4 right now
     };
 
-    static SkEmbossMaskFilter* Create(SkScalar blurSigma, const Light& light) {
-        return SkNEW_ARGS(SkEmbossMaskFilter, (blurSigma, light));
-    }
+    SkEmbossMaskFilter(float blurSigma, const Light& light);
+
+    SK_ATTR_DEPRECATED("use sigma version")
+    SkEmbossMaskFilter(const Light& light, float blurRadius);
 
     // overrides from SkMaskFilter
     //  This method is not exported to java.
@@ -34,21 +35,16 @@ public:
     virtual bool filterMask(SkMask* dst, const SkMask& src, const SkMatrix&,
                             SkIPoint* margin) const SK_OVERRIDE;
 
-    SK_TO_STRING_OVERRIDE()
+    SkDEVCODE(virtual void toString(SkString* str) const SK_OVERRIDE;)
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkEmbossMaskFilter)
 
 protected:
-    SkEmbossMaskFilter(SkReadBuffer&);
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
-
-#ifdef SK_SUPPORT_LEGACY_PUBLICEFFECTCONSTRUCTORS
-public:
-#endif
-    SkEmbossMaskFilter(SkScalar blurSigma, const Light& light);
+    SkEmbossMaskFilter(SkFlattenableReadBuffer&);
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
 
 private:
     Light       fLight;
-    SkScalar    fBlurSigma;
+    float    fBlurSigma;
 
     typedef SkMaskFilter INHERITED;
 };

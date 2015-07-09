@@ -41,8 +41,8 @@ static inline int mirror_8bits(int x) {
 
 static void pts_to_unit_matrix(const SkPoint pts[2], SkMatrix* matrix) {
     SkVector    vec = pts[1] - pts[0];
-    SkScalar    mag = vec.length();
-    SkScalar    inv = mag ? SkScalarInvert(mag) : 0;
+    float    mag = vec.length();
+    float    inv = mag ? SkScalarInvert(mag) : 0;
 
     vec.scale(inv);
     matrix->setSinCos(-vec.fY, vec.fX, pts[0].fX, pts[0].fY);
@@ -59,13 +59,13 @@ SkLinearGradient::SkLinearGradient(const SkPoint pts[2], const Descriptor& desc)
     pts_to_unit_matrix(pts, &fPtsToUnit);
 }
 
-SkLinearGradient::SkLinearGradient(SkReadBuffer& buffer)
+SkLinearGradient::SkLinearGradient(SkFlattenableReadBuffer& buffer)
     : INHERITED(buffer)
     , fStart(buffer.readPoint())
     , fEnd(buffer.readPoint()) {
 }
 
-void SkLinearGradient::flatten(SkWriteBuffer& buffer) const {
+void SkLinearGradient::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writePoint(fStart);
     buffer.writePoint(fEnd);
@@ -93,7 +93,6 @@ bool SkLinearGradient::setContext(const SkBitmap& device, const SkPaint& paint,
 #define NO_CHECK_ITER               \
     do {                            \
     unsigned fi = fx >> SkGradientShaderBase::kCache32Shift; \
-    SkASSERT(fi <= 0xFF);           \
     fx += dx;                       \
     *dstC++ = cache[toggle + fi];   \
     toggle = next_dither_toggle(toggle); \
@@ -174,7 +173,6 @@ void shadeSpan_linear_mirror(TileProc proc, SkFixed dx, SkFixed fx,
                              int toggle, int count) {
     do {
         unsigned fi = mirror_8bits(fx >> 8);
-        SkASSERT(fi <= 0xFF);
         fx += dx;
         *dstC++ = cache[toggle + fi];
         toggle = next_dither_toggle(toggle);
@@ -187,7 +185,6 @@ void shadeSpan_linear_repeat(TileProc proc, SkFixed dx, SkFixed fx,
         int toggle, int count) {
     do {
         unsigned fi = repeat_8bits(fx >> 8);
-        SkASSERT(fi <= 0xFF);
         fx += dx;
         *dstC++ = cache[toggle + fi];
         toggle = next_dither_toggle(toggle);
@@ -198,8 +195,6 @@ void shadeSpan_linear_repeat(TileProc proc, SkFixed dx, SkFixed fx,
 
 void SkLinearGradient::shadeSpan(int x, int y, SkPMColor* SK_RESTRICT dstC,
                                 int count) {
-    SkASSERT(count > 0);
-
     SkPoint             srcPt;
     SkMatrix::MapXYProc dstProc = fDstToIndexProc;
     TileProc            proc = fTileProc;
@@ -216,7 +211,6 @@ void SkLinearGradient::shadeSpan(int x, int y, SkPMColor* SK_RESTRICT dstC,
             (void)fDstToIndex.fixedStepInX(SkIntToScalar(y), dxStorage, NULL);
             dx = dxStorage[0];
         } else {
-            SkASSERT(fDstToIndexClass == kLinear_MatrixClass);
             dx = SkScalarToFixed(fDstToIndex.getScaleX());
         }
 
@@ -228,16 +222,14 @@ void SkLinearGradient::shadeSpan(int x, int y, SkPMColor* SK_RESTRICT dstC,
         } else if (SkShader::kMirror_TileMode == fTileMode) {
             shadeProc = shadeSpan_linear_mirror;
         } else {
-            SkASSERT(SkShader::kRepeat_TileMode == fTileMode);
         }
         (*shadeProc)(proc, dx, fx, dstC, cache, toggle, count);
     } else {
-        SkScalar    dstX = SkIntToScalar(x);
-        SkScalar    dstY = SkIntToScalar(y);
+        float    dstX = SkIntToScalar(x);
+        float    dstY = SkIntToScalar(y);
         do {
             dstProc(fDstToIndex, dstX, dstY, &srcPt);
             unsigned fi = proc(SkScalarToFixed(srcPt.fX));
-            SkASSERT(fi <= 0xFFFF);
             *dstC++ = cache[toggle + (fi >> kCache32Shift)];
             toggle = next_dither_toggle(toggle);
             dstX += SK_Scalar1;
@@ -288,7 +280,6 @@ static void dither_memset16(uint16_t dst[], uint16_t value, uint16_t other,
 #define NO_CHECK_ITER_16                \
     do {                                \
     unsigned fi = fx >> SkGradientShaderBase::kCache16Shift;  \
-    SkASSERT(fi < SkGradientShaderBase::kCache16Count);       \
     fx += dx;                           \
     *dstC++ = cache[toggle + fi];       \
     toggle = next_dither_toggle16(toggle);            \
@@ -306,7 +297,6 @@ void shadeSpan16_linear_vertical(TileProc proc, SkFixed dx, SkFixed fx,
                                  int toggle, int count) {
     // we're a vertical gradient, so no change in a span
     unsigned fi = proc(fx) >> SkGradientShaderBase::kCache16Shift;
-    SkASSERT(fi < SkGradientShaderBase::kCache16Count);
     dither_memset16(dstC, cache[toggle + fi],
         cache[next_dither_toggle16(toggle) + fi], count);
 }
@@ -355,7 +345,6 @@ void shadeSpan16_linear_mirror(TileProc proc, SkFixed dx, SkFixed fx,
     do {
         unsigned fi = mirror_bits(fx >> SkGradientShaderBase::kCache16Shift,
                                         SkGradientShaderBase::kCache16Bits);
-        SkASSERT(fi < SkGradientShaderBase::kCache16Count);
         fx += dx;
         *dstC++ = cache[toggle + fi];
         toggle = next_dither_toggle16(toggle);
@@ -369,7 +358,6 @@ void shadeSpan16_linear_repeat(TileProc proc, SkFixed dx, SkFixed fx,
     do {
         unsigned fi = repeat_bits(fx >> SkGradientShaderBase::kCache16Shift,
                                   SkGradientShaderBase::kCache16Bits);
-        SkASSERT(fi < SkGradientShaderBase::kCache16Count);
         fx += dx;
         *dstC++ = cache[toggle + fi];
         toggle = next_dither_toggle16(toggle);
@@ -383,8 +371,6 @@ static bool fixed_nearly_zero(SkFixed x) {
 
 void SkLinearGradient::shadeSpan16(int x, int y,
                                   uint16_t* SK_RESTRICT dstC, int count) {
-    SkASSERT(count > 0);
-
     SkPoint             srcPt;
     SkMatrix::MapXYProc dstProc = fDstToIndexProc;
     TileProc            proc = fTileProc;
@@ -401,7 +387,6 @@ void SkLinearGradient::shadeSpan16(int x, int y,
             (void)fDstToIndex.fixedStepInX(SkIntToScalar(y), dxStorage, NULL);
             dx = dxStorage[0];
         } else {
-            SkASSERT(fDstToIndexClass == kLinear_MatrixClass);
             dx = SkScalarToFixed(fDstToIndex.getScaleX());
         }
 
@@ -413,16 +398,14 @@ void SkLinearGradient::shadeSpan16(int x, int y,
         } else if (SkShader::kMirror_TileMode == fTileMode) {
             shadeProc = shadeSpan16_linear_mirror;
         } else {
-            SkASSERT(SkShader::kRepeat_TileMode == fTileMode);
         }
         (*shadeProc)(proc, dx, fx, dstC, cache, toggle, count);
     } else {
-        SkScalar    dstX = SkIntToScalar(x);
-        SkScalar    dstY = SkIntToScalar(y);
+        float    dstX = SkIntToScalar(x);
+        float    dstY = SkIntToScalar(y);
         do {
             dstProc(fDstToIndex, dstX, dstY, &srcPt);
             unsigned fi = proc(SkScalarToFixed(srcPt.fX));
-            SkASSERT(fi <= 0xFFFF);
 
             int index = fi >> kCache16Shift;
             *dstC++ = cache[toggle + index];
@@ -433,7 +416,6 @@ void SkLinearGradient::shadeSpan16(int x, int y,
     }
 }
 
-#if SK_SUPPORT_GPU
 
 #include "GrTBackendEffectFactory.h"
 
@@ -509,8 +491,8 @@ GrEffectRef* GrLinearGradient::TestCreate(SkRandom* random,
                         {random->nextUScalar1(), random->nextUScalar1()}};
 
     SkColor colors[kMaxRandomGradientColors];
-    SkScalar stopsArray[kMaxRandomGradientColors];
-    SkScalar* stops = stopsArray;
+    float stopsArray[kMaxRandomGradientColors];
+    float* stops = stopsArray;
     SkShader::TileMode tm;
     int colorCount = RandomGradientParams(random, colors, &stops, &tm);
     SkAutoTUnref<SkShader> shader(SkGradientShader::CreateLinear(points,
@@ -538,7 +520,6 @@ void GrGLLinearGradient::emitCode(GrGLShaderBuilder* builder,
 /////////////////////////////////////////////////////////////////////
 
 GrEffectRef* SkLinearGradient::asNewEffect(GrContext* context, const SkPaint&) const {
-    SkASSERT(NULL != context);
     SkMatrix matrix;
     if (!this->getLocalMatrix().invert(&matrix)) {
         return NULL;
@@ -547,16 +528,8 @@ GrEffectRef* SkLinearGradient::asNewEffect(GrContext* context, const SkPaint&) c
     return GrLinearGradient::Create(context, *this, matrix, fTileMode);
 }
 
-#else
 
-GrEffectRef* SkLinearGradient::asNewEffect(GrContext*, const SkPaint&) const {
-    SkDEBUGFAIL("Should not call in GPU-less build");
-    return NULL;
-}
-
-#endif
-
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkLinearGradient::toString(SkString* str) const {
     str->append("SkLinearGradient (");
 

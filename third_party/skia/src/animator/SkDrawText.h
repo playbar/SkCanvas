@@ -26,8 +26,8 @@ class SkText : public SkBoundable {
     size_t getSize() { return text.size(); }
 protected:
     SkString text;
-    SkScalar x;
-    SkScalar y;
+    float x;
+    float y;
 private:
     friend class SkTextToPath;
     typedef SkBoundable INHERITED;

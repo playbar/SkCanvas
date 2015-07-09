@@ -5,15 +5,18 @@
  * found in the LICENSE file.
  */
 
+
+#include "Sk64.h"
 #include "SkMask.h"
 
 /** returns the product if it is positive and fits in 31 bits. Otherwise this
     returns 0.
  */
 static int32_t safeMul32(int32_t a, int32_t b) {
-    int64_t size = sk_64_mul(a, b);
-    if (size > 0 && sk_64_isS32(size)) {
-        return sk_64_asS32(size);
+    Sk64 size;
+    size.setMul(a, b);
+    if (size.is32() && size.isPos()) {
+        return size.get32();
     }
     return 0;
 }
@@ -25,7 +28,7 @@ size_t SkMask::computeImageSize() const {
 size_t SkMask::computeTotalImageSize() const {
     size_t size = this->computeImageSize();
     if (fFormat == SkMask::k3D_Format) {
-        size = safeMul32(SkToS32(size), 3);
+        size = safeMul32(size, 3);
     }
     return size;
 }
@@ -56,15 +59,10 @@ static const int gMaskFormatToShift[] = {
 };
 
 static int maskFormatToShift(SkMask::Format format) {
-    SkASSERT((unsigned)format < SK_ARRAY_COUNT(gMaskFormatToShift));
-    SkASSERT(SkMask::kBW_Format != format);
     return gMaskFormatToShift[format];
 }
 
 void* SkMask::getAddr(int x, int y) const {
-    SkASSERT(kBW_Format != fFormat);
-    SkASSERT(fBounds.contains(x, y));
-    SkASSERT(fImage);
 
     char* addr = (char*)fImage;
     addr += (y - fBounds.fTop) * fRowBytes;

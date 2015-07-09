@@ -30,9 +30,9 @@ class SkDrawColor : public SkPaintPart {
     virtual bool setProperty(int index, SkScriptValue&);
 protected:
     SkColor color;
-    SkScalar fHue;
-    SkScalar fSaturation;
-    SkScalar fValue;
+    float fHue;
+    float fSaturation;
+    float fValue;
     SkBool fDirty;
 private:
     friend class SkDrawGradient;

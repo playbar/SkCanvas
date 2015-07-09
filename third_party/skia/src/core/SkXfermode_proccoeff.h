@@ -2,8 +2,7 @@
 #define SkXfermode_proccoeff_DEFINED
 
 #include "SkXfermode.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 
 struct ProcCoeff {
     SkXfermodeProc      fProc;
@@ -15,8 +14,12 @@ struct ProcCoeff {
 
 class SkProcCoeffXfermode : public SkProcXfermode {
 public:
-    static SkProcCoeffXfermode* Create(const ProcCoeff& rec, Mode mode) {
-        return SkNEW_ARGS(SkProcCoeffXfermode, (rec, mode));
+    SkProcCoeffXfermode(const ProcCoeff& rec, Mode mode)
+            : INHERITED(rec.fProc) {
+        fMode = mode;
+        // these may be valid, or may be CANNOT_USE_COEFF
+        fSrcCoeff = rec.fSC;
+        fDstCoeff = rec.fDC;
     }
 
     virtual bool asMode(Mode* mode) const SK_OVERRIDE;
@@ -28,21 +31,13 @@ public:
                              GrTexture* background) const SK_OVERRIDE;
 #endif
 
-    SK_TO_STRING_OVERRIDE()
+    SK_DEVELOPER_TO_STRING()
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkProcCoeffXfermode)
 
 protected:
-    SkProcCoeffXfermode(const ProcCoeff& rec, Mode mode)
-            : INHERITED(rec.fProc) {
-        fMode = mode;
-        // these may be valid, or may be CANNOT_USE_COEFF
-        fSrcCoeff = rec.fSC;
-        fDstCoeff = rec.fDC;
-    }
+    SkProcCoeffXfermode(SkFlattenableReadBuffer& buffer);
 
-    SkProcCoeffXfermode(SkReadBuffer& buffer);
-
-    virtual void flatten(SkWriteBuffer& buffer) const SK_OVERRIDE;
+    virtual void flatten(SkFlattenableWriteBuffer& buffer) const SK_OVERRIDE;
 
     Mode getMode() const {
         return fMode;

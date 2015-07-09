@@ -42,7 +42,7 @@ class SkDrawMatrix : public SkDrawable {
     virtual SkDisplayable* deepCopy(SkAnimateMaker* );
 
 
-    void rotate(SkScalar degrees, SkPoint& center) {
+    void rotate(float degrees, SkPoint& center) {
         fMatrix.preRotate(degrees, center.fX, center.fY);
     }
 
@@ -50,15 +50,15 @@ class SkDrawMatrix : public SkDrawable {
         fMatrix.preConcat(src);
     }
 
-    void scale(SkScalar scaleX, SkScalar scaleY, SkPoint& center) {
+    void scale(float scaleX, float scaleY, SkPoint& center) {
         fMatrix.preScale(scaleX, scaleY, center.fX, center.fY);
     }
 
-    void skew(SkScalar skewX, SkScalar skewY, SkPoint& center) {
+    void skew(float skewX, float skewY, SkPoint& center) {
         fMatrix.preSkew(skewX, skewY, center.fX, center.fY);
     }
 
-    void translate(SkScalar x, SkScalar y) {
+    void translate(float x, float y) {
         fMatrix.preTranslate(x, y);
     }
 private:

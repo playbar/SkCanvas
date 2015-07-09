@@ -20,11 +20,8 @@ static inline bool normals_too_curvy(const SkVector& norm0, SkVector& norm1) {
     /*  root2/2 is a 45-degree angle
         make this constant bigger for more subdivisions (but not >= 1)
     */
-    static const SkScalar kFlatEnoughNormalDotProd =
+    static const float kFlatEnoughNormalDotProd =
                                             SK_ScalarSqrt2/2 + SK_Scalar1/10;
-
-    SkASSERT(kFlatEnoughNormalDotProd > 0 &&
-             kFlatEnoughNormalDotProd < SK_Scalar1);
 
     return SkPoint::DotProduct(norm0, norm1) <= kFlatEnoughNormalDotProd;
 }
@@ -33,19 +30,17 @@ static inline bool normals_too_pinchy(const SkVector& norm0, SkVector& norm1) {
     // if the dot-product is -1, then we are definitely too pinchy. We tweak
     // that by an epsilon to ensure we have significant bits in our test
     static const int kMinSigBitsForDot = 8;
-    static const SkScalar kDotEpsilon = FLT_EPSILON * (1 << kMinSigBitsForDot);
-    static const SkScalar kTooPinchyNormalDotProd = kDotEpsilon - 1;
+    static const float kDotEpsilon = FLT_EPSILON * (1 << kMinSigBitsForDot);
+    static const float kTooPinchyNormalDotProd = kDotEpsilon - 1;
 
     // just some sanity asserts to help document the expected range
-    SkASSERT(kTooPinchyNormalDotProd >= -1);
-    SkASSERT(kTooPinchyNormalDotProd < SkDoubleToScalar(-0.999));
 
-    SkScalar dot = SkPoint::DotProduct(norm0, norm1);
+    float dot = SkPoint::DotProduct(norm0, norm1);
     return dot <= kTooPinchyNormalDotProd;
 }
 
 static bool set_normal_unitnormal(const SkPoint& before, const SkPoint& after,
-                                  SkScalar radius,
+                                  float radius,
                                   SkVector* normal, SkVector* unitNormal) {
     if (!unitNormal->setNormalize(after.fX - before.fX, after.fY - before.fY)) {
         return false;
@@ -56,7 +51,7 @@ static bool set_normal_unitnormal(const SkPoint& before, const SkPoint& after,
 }
 
 static bool set_normal_unitnormal(const SkVector& vec,
-                                  SkScalar radius,
+                                  float radius,
                                   SkVector* normal, SkVector* unitNormal) {
     if (!unitNormal->setNormalize(vec.fX, vec.fY)) {
         return false;
@@ -71,7 +66,7 @@ static bool set_normal_unitnormal(const SkVector& vec,
 class SkPathStroker {
 public:
     SkPathStroker(const SkPath& src,
-                  SkScalar radius, SkScalar miterLimit, SkPaint::Cap cap,
+                  float radius, float miterLimit, SkPaint::Cap cap,
                   SkPaint::Join join);
 
     void moveTo(const SkPoint&);
@@ -87,8 +82,8 @@ public:
     }
 
 private:
-    SkScalar    fRadius;
-    SkScalar    fInvMiterLimit;
+    float    fRadius;
+    float    fInvMiterLimit;
 
     SkVector    fFirstNormal, fPrevNormal, fFirstUnitNormal, fPrevUnitNormal;
     SkPoint     fFirstPt, fPrevPt;  // on original path
@@ -123,10 +118,9 @@ private:
 
 void SkPathStroker::preJoinTo(const SkPoint& currPt, SkVector* normal,
                               SkVector* unitNormal, bool currIsLine) {
-    SkASSERT(fSegmentCount >= 0);
 
-    SkScalar    prevX = fPrevPt.fX;
-    SkScalar    prevY = fPrevPt.fY;
+    float    prevX = fPrevPt.fX;
+    float    prevY = fPrevPt.fY;
 
     SkAssertResult(set_normal_unitnormal(fPrevPt, currPt, fRadius, normal,
                                          unitNormal));
@@ -188,7 +182,7 @@ void SkPathStroker::finishContour(bool close, bool currIsLine) {
 ///////////////////////////////////////////////////////////////////////////////
 
 SkPathStroker::SkPathStroker(const SkPath& src,
-                             SkScalar radius, SkScalar miterLimit,
+                             float radius, float miterLimit,
                              SkPaint::Cap cap, SkPaint::Join join)
         : fRadius(radius) {
 
@@ -268,7 +262,7 @@ void SkPathStroker::quad_to(const SkPoint pts[3],
 
         normalB = pts[2] - pts[0];
         normalB.rotateCCW();
-        SkScalar dot = SkPoint::DotProduct(unitNormalAB, *unitNormalBC);
+        float dot = SkPoint::DotProduct(unitNormalAB, *unitNormalBC);
         SkAssertResult(normalB.setLength(SkScalarDiv(fRadius,
                                      SkScalarSqrt((SK_Scalar1 + dot)/2))));
 
@@ -346,7 +340,7 @@ DRAW_LINE:
         normalB = unitNormalAB + unitBC;
         normalC = *unitNormalCD + unitBC;
 
-        SkScalar dot = SkPoint::DotProduct(unitNormalAB, unitBC);
+        float dot = SkPoint::DotProduct(unitNormalAB, unitBC);
         SkAssertResult(normalB.setLength(SkScalarDiv(fRadius,
                                     SkScalarSqrt((SK_Scalar1 + dot)/2))));
         dot = SkPoint::DotProduct(*unitNormalCD, unitBC);
@@ -443,7 +437,7 @@ void SkPathStroker::cubicTo(const SkPoint& pt1, const SkPoint& pt2,
         SkPoint pts[4], tmp[13];
         int         i, count;
         SkVector    n, u;
-        SkScalar    tValues[3];
+        float    tValues[3];
 
         pts[0] = fPrevPt;
         pts[1] = pt1;
@@ -489,7 +483,7 @@ SkStroke::SkStroke(const SkPaint& p) {
     fDoFill     = SkToU8(p.getStyle() == SkPaint::kStrokeAndFill_Style);
 }
 
-SkStroke::SkStroke(const SkPaint& p, SkScalar width) {
+SkStroke::SkStroke(const SkPaint& p, float width) {
     fWidth      = width;
     fMiterLimit = p.getStrokeMiter();
     fCap        = (uint8_t)p.getStrokeCap();
@@ -497,23 +491,19 @@ SkStroke::SkStroke(const SkPaint& p, SkScalar width) {
     fDoFill     = SkToU8(p.getStyle() == SkPaint::kStrokeAndFill_Style);
 }
 
-void SkStroke::setWidth(SkScalar width) {
-    SkASSERT(width >= 0);
+void SkStroke::setWidth(float width) {
     fWidth = width;
 }
 
-void SkStroke::setMiterLimit(SkScalar miterLimit) {
-    SkASSERT(miterLimit >= 0);
+void SkStroke::setMiterLimit(float miterLimit) {
     fMiterLimit = miterLimit;
 }
 
 void SkStroke::setCap(SkPaint::Cap cap) {
-    SkASSERT((unsigned)cap < SkPaint::kCapCount);
     fCap = SkToU8(cap);
 }
 
 void SkStroke::setJoin(SkPaint::Join join) {
-    SkASSERT((unsigned)join < SkPaint::kJoinCount);
     fJoin = SkToU8(join);
 }
 
@@ -546,9 +536,8 @@ private:
 };
 
 void SkStroke::strokePath(const SkPath& src, SkPath* dst) const {
-    SkASSERT(&src != NULL && dst != NULL);
 
-    SkScalar radius = SkScalarHalf(fWidth);
+    float radius = SkScalarHalf(fWidth);
 
     AutoTmpPath tmp(src, &dst);
 
@@ -564,7 +553,6 @@ void SkStroke::strokePath(const SkPath& src, SkPath* dst) const {
             this->strokeRect(src.getBounds(), dst, dir);
             // our answer should preserve the inverseness of the src
             if (src.isInverseFillType()) {
-                SkASSERT(!dst->isInverseFillType());
                 dst->toggleInverseFillType();
             }
             return;
@@ -572,7 +560,7 @@ void SkStroke::strokePath(const SkPath& src, SkPath* dst) const {
     }
 
     SkAutoConicToQuads converter;
-    const SkScalar conicTol = SK_Scalar1 / 4;
+    const float conicTol = SK_Scalar1 / 4;
 
     SkPathStroker   stroker(src, radius, fMiterLimit, this->getCap(),
                             this->getJoin());
@@ -648,13 +636,11 @@ DONE:
 
     // our answer should preserve the inverseness of the src
     if (src.isInverseFillType()) {
-        SkASSERT(!dst->isInverseFillType());
         dst->toggleInverseFillType();
     }
 }
 
 static SkPath::Direction reverse_direction(SkPath::Direction dir) {
-    SkASSERT(SkPath::kUnknown_Direction != dir);
     return SkPath::kCW_Direction == dir ? SkPath::kCCW_Direction : SkPath::kCW_Direction;
 }
 
@@ -685,16 +671,15 @@ static void addBevel(SkPath* path, const SkRect& r, const SkRect& outer, SkPath:
 
 void SkStroke::strokeRect(const SkRect& origRect, SkPath* dst,
                           SkPath::Direction dir) const {
-    SkASSERT(dst != NULL);
     dst->reset();
 
-    SkScalar radius = SkScalarHalf(fWidth);
+    float radius = SkScalarHalf(fWidth);
     if (radius <= 0) {
         return;
     }
 
-    SkScalar rw = origRect.width();
-    SkScalar rh = origRect.height();
+    float rw = origRect.width();
+    float rh = origRect.height();
     if ((rw < 0) ^ (rh < 0)) {
         dir = reverse_direction(dir);
     }

@@ -28,7 +28,6 @@ SkString* SkObjectParser::BitmapToString(const SkBitmap& bitmap) {
     const char* gConfigStrings[] = {
         "None", "A8", "Index8", "RGB565", "ARGB4444", "ARGB8888"
     };
-    SkASSERT(SkBitmap::kConfigCount == SK_ARRAY_COUNT(gConfigStrings));
 
     mBitmap->append(" Config: ");
     mBitmap->append(gConfigStrings[bitmap.config()]);
@@ -94,7 +93,7 @@ SkString* SkObjectParser::IRectToString(const SkIRect& rect) {
 
 SkString* SkObjectParser::MatrixToString(const SkMatrix& matrix) {
     SkString* str = new SkString("SkMatrix: ");
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
     matrix.toString(str);
 #endif
     return str;
@@ -102,7 +101,7 @@ SkString* SkObjectParser::MatrixToString(const SkMatrix& matrix) {
 
 SkString* SkObjectParser::PaintToString(const SkPaint& paint) {
     SkString* str = new SkString;
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
     paint.toString(str);
 #endif
     return str;
@@ -121,7 +120,6 @@ SkString* SkObjectParser::PathToString(const SkPath& path) {
     static const char* gConvexityStrings[] = {
         "Unknown", "Convex", "Concave"
     };
-    SkASSERT(SkPath::kConcave_Convexity == 2);
 
     mPath->append(gConvexityStrings[path.getConvexity()]);
     mPath->append(", ");
@@ -142,7 +140,6 @@ SkString* SkObjectParser::PathToString(const SkPath& path) {
     };
     static const int gPtsPerVerb[] = { 1, 1, 2, 2, 3, 0, 0 };
     static const int gPtOffsetPerVerb[] = { 0, 1, 1, 1, 1, 0, 0 };
-    SkASSERT(SkPath::kDone_Verb == 6);
 
     SkPath::Iter iter(const_cast<SkPath&>(path), false);
     SkPath::Verb verb;
@@ -242,7 +239,6 @@ SkString* SkObjectParser::RRectToString(const SkRRect& rrect, const char* title)
         } else if (rrect.isSimple()) {
             mRRect->append("simple");
         } else {
-            SkASSERT(rrect.isComplex());
             mRRect->append("complex");
         }
         mRRect->append("): ");
@@ -316,7 +312,7 @@ SkString* SkObjectParser::SaveFlagsToString(SkCanvas::SaveFlags flags) {
     return mFlags;
 }
 
-SkString* SkObjectParser::ScalarToString(SkScalar x, const char* text) {
+SkString* SkObjectParser::ScalarToString(float x, const char* text) {
     SkString* mScalar = new SkString(text);
     mScalar->append(" ");
     mScalar->appendScalar(x);

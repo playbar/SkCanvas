@@ -7,8 +7,7 @@
 
 #include "SkArithmeticMode.h"
 #include "SkColorPriv.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkString.h"
 #include "SkUnPreMultiply.h"
 #if SK_SUPPORT_GPU
@@ -16,20 +15,24 @@
 #include "GrCoordTransform.h"
 #include "gl/GrGLEffect.h"
 #include "GrTBackendEffectFactory.h"
+#include "SkImageFilterUtils.h"
 #endif
 
 static const bool gUseUnpremul = false;
 
 class SkArithmeticMode_scalar : public SkXfermode {
 public:
-    static SkArithmeticMode_scalar* Create(SkScalar k1, SkScalar k2, SkScalar k3, SkScalar k4) {
-        return SkNEW_ARGS(SkArithmeticMode_scalar, (k1, k2, k3, k4));
+    SkArithmeticMode_scalar(float k1, float k2, float k3, float k4) {
+        fK[0] = k1;
+        fK[1] = k2;
+        fK[2] = k3;
+        fK[3] = k4;
     }
 
     virtual void xfer32(SkPMColor dst[], const SkPMColor src[], int count,
                         const SkAlpha aa[]) const SK_OVERRIDE;
 
-    SK_TO_STRING_OVERRIDE()
+    SK_DEVELOPER_TO_STRING()
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkArithmeticMode_scalar)
 
 #if SK_SUPPORT_GPU
@@ -37,28 +40,21 @@ public:
 #endif
 
 private:
-    SkArithmeticMode_scalar(SkScalar k1, SkScalar k2, SkScalar k3, SkScalar k4) {
-        fK[0] = k1;
-        fK[1] = k2;
-        fK[2] = k3;
-        fK[3] = k4;
-    }
-
-    SkArithmeticMode_scalar(SkReadBuffer& buffer) : INHERITED(buffer) {
+    SkArithmeticMode_scalar(SkFlattenableReadBuffer& buffer) : INHERITED(buffer) {
         fK[0] = buffer.readScalar();
         fK[1] = buffer.readScalar();
         fK[2] = buffer.readScalar();
         fK[3] = buffer.readScalar();
     }
 
-    virtual void flatten(SkWriteBuffer& buffer) const SK_OVERRIDE {
+    virtual void flatten(SkFlattenableWriteBuffer& buffer) const SK_OVERRIDE {
         INHERITED::flatten(buffer);
         buffer.writeScalar(fK[0]);
         buffer.writeScalar(fK[1]);
         buffer.writeScalar(fK[2]);
         buffer.writeScalar(fK[3]);
     }
-    SkScalar fK[4];
+    float fK[4];
 
     typedef SkXfermode INHERITED;
 };
@@ -72,9 +68,9 @@ static int pinToByte(int value) {
     return value;
 }
 
-static int arith(SkScalar k1, SkScalar k2, SkScalar k3, SkScalar k4,
+static int arith(float k1, float k2, float k3, float k4,
                  int src, int dst) {
-    SkScalar result = SkScalarMul(k1, src * dst) +
+    float result = SkScalarMul(k1, src * dst) +
                       SkScalarMul(k2, src) +
                       SkScalarMul(k3, dst) +
                       k4;
@@ -92,10 +88,10 @@ static bool needsUnpremul(int alpha) {
 
 void SkArithmeticMode_scalar::xfer32(SkPMColor dst[], const SkPMColor src[],
                                  int count, const SkAlpha aaCoverage[]) const {
-    SkScalar k1 = fK[0] / 255;
-    SkScalar k2 = fK[1];
-    SkScalar k3 = fK[2];
-    SkScalar k4 = fK[3] * 255;
+    float k1 = fK[0] / 255;
+    float k2 = fK[1];
+    float k3 = fK[2];
+    float k4 = fK[3] * 255;
 
     for (int i = 0; i < count; ++i) {
         if ((NULL == aaCoverage) || aaCoverage[i]) {
@@ -173,7 +169,7 @@ void SkArithmeticMode_scalar::xfer32(SkPMColor dst[], const SkPMColor src[],
     }
 }
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkArithmeticMode_scalar::toString(SkString* str) const {
     str->append("SkArithmeticMode_scalar: ");
     for (int i = 0; i < 4; ++i) {
@@ -187,7 +183,7 @@ void SkArithmeticMode_scalar::toString(SkString* str) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool fitsInBits(SkScalar x, int bits) {
+static bool fitsInBits(float x, int bits) {
     return SkScalarAbs(x) < (1 << (bits - 1));
 }
 
@@ -197,8 +193,8 @@ static int32_t toDot8(SkScalar x) {
 }
 #endif
 
-SkXfermode* SkArithmeticMode::Create(SkScalar k1, SkScalar k2,
-                                     SkScalar k3, SkScalar k4) {
+SkXfermode* SkArithmeticMode::Create(float k1, float k2,
+                                     float k3, float k4) {
     if (fitsInBits(k1, 8) && fitsInBits(k2, 16) &&
         fitsInBits(k2, 16) && fitsInBits(k2, 24)) {
 
@@ -219,7 +215,7 @@ SkXfermode* SkArithmeticMode::Create(SkScalar k1, SkScalar k2,
         return SkNEW_ARGS(SkArithmeticMode_linear, (i2, i3, i4));
 #endif
     }
-    return SkArithmeticMode_scalar::Create(k1, k2, k3, k4);
+    return SkNEW_ARGS(SkArithmeticMode_scalar, (k1, k2, k3, k4));
 }
 
 
@@ -350,7 +346,6 @@ void GrGLArithmeticEffect::emitCode(GrGLShaderBuilder* builder,
         dstColor = builder->dstColor();
     }
 
-    SkASSERT(NULL != dstColor);
     fKUni = builder->addUniform(GrGLShaderBuilder::kFragment_Visibility,
                                 kVec4f_GrSLType, "k");
     const char* kUni = builder->getUniformCStr(fKUni);

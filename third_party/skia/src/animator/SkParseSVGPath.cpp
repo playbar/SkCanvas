@@ -74,7 +74,6 @@ static inline bool is_sep(int c)
 
 static const char* skip_ws(const char str[])
 {
-    SkASSERT(str);
     while (is_ws(*str))
         str++;
     return str;
@@ -82,7 +81,6 @@ static const char* skip_ws(const char str[])
 
 static const char* skip_sep(const char str[])
 {
-    SkASSERT(str);
     while (is_sep(*str))
         str++;
     return str;
@@ -101,8 +99,8 @@ static const char* find_points(const char str[], SkPoint value[], int count,
     return str;
 }
 
-static const char* find_scalar(const char str[], SkScalar* value,
-    bool isRelative, SkScalar relative)
+static const char* find_scalar(const char str[], float* value,
+    bool isRelative, float relative)
 {
     str = SkParse::FindScalar(str, value);
     if (isRelative)
@@ -152,14 +150,14 @@ void SkDrawPath::parseSVG() {
                 c = points[0];
                 break;
             case 'H': {
-                SkScalar x;
+                float x;
                 data = find_scalar(data, &x, relative, c.fX);
                 fPath.lineTo(x, c.fY);
                 c.fX = x;
             }
                 break;
             case 'V': {
-                SkScalar y;
+                float y;
                 data = find_scalar(data, &y, relative, c.fY);
                 fPath.lineTo(c.fX, y);
                 c.fY = y;
@@ -224,7 +222,6 @@ void SkDrawPath::parseSVG() {
             }
                 break;
             default:
-                SkASSERT(0);
                 return;
         }
         if (previousOp == 0)

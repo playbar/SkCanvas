@@ -6,7 +6,6 @@
  * found in the LICENSE file.
  */
 
-#include "SkAdvancedTypefaceMetrics.h"
 #include "SkBitmap.h"
 #include "SkCanvas.h"
 #include "SkColorPriv.h"
@@ -19,7 +18,7 @@
 #include "SkMask.h"
 #include "SkMaskGamma.h"
 #include "SkOTUtils.h"
-#include "SkOnce.h"
+#include "SkAdvancedTypefaceMetrics.h"
 #include "SkScalerContext.h"
 #include "SkStream.h"
 #include "SkString.h"
@@ -161,22 +160,17 @@ static bool InitFreetype() {
     return true;
 }
 
-// Called while holding gFTMutex.
-static void determine_lcd_support(bool* lcdSupported) {
-    if (!gLCDSupportValid) {
-        // This will determine LCD support as a side effect.
-        InitFreetype();
-        FT_Done_FreeType(gFTLibrary);
-    }
-    SkASSERT(gLCDSupportValid);
-    *lcdSupported = gLCDSupport;
-}
-
 // Lazy, once, wrapper to ask the FreeType Library if it can support LCD text
 static bool is_lcd_supported() {
-    static bool lcdSupported = false;
-    SkOnce(&gLCDSupportValid, &gFTMutex, determine_lcd_support, &lcdSupported);
-    return lcdSupported;
+    if (!gLCDSupportValid) {
+        SkAutoMutexAcquire  ac(gFTMutex);
+
+        if (!gLCDSupportValid) {
+            InitFreetype();
+            FT_Done_FreeType(gFTLibrary);
+        }
+    }
+    return gLCDSupport;
 }
 
 class SkScalerContext_FreeType : public SkScalerContext_FreeType_Base {
@@ -222,9 +216,6 @@ private:
     bool getCBoxForLetter(char letter, FT_BBox* bbox);
     // Caller must lock gFTMutex before calling this function.
     void updateGlyphIfLCD(SkGlyph* glyph);
-    // Caller must lock gFTMutex before calling this function.
-    // update FreeType2 glyph slot with glyph emboldened
-    void emboldenIfNeeded(FT_Face face, FT_GlyphSlot glyph);
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -921,12 +912,13 @@ SkScalerContext_FreeType::SkScalerContext_FreeType(SkTypeface* typeface,
                 loadFlags = FT_LOAD_TARGET_LIGHT;  // This implies FORCE_AUTOHINT
                 break;
             case SkPaint::kNormal_Hinting:
-                if (fRec.fFlags & SkScalerContext::kForceAutohinting_Flag) {
+                if (fRec.fFlags & SkScalerContext::kAutohinting_Flag)
                     loadFlags = FT_LOAD_FORCE_AUTOHINT;
-                }
+                else
+                    loadFlags = FT_LOAD_NO_AUTOHINT;
                 break;
             case SkPaint::kFull_Hinting:
-                if (fRec.fFlags & SkScalerContext::kForceAutohinting_Flag) {
+                if (fRec.fFlags & SkScalerContext::kAutohinting_Flag) {
                     loadFlags = FT_LOAD_FORCE_AUTOHINT;
                     break;
                 }
@@ -1147,7 +1139,10 @@ bool SkScalerContext_FreeType::getCBoxForLetter(char letter, FT_BBox* bbox) {
         return false;
     if (FT_Load_Glyph(fFace, glyph_id, fLoadGlyphFlags) != 0)
         return false;
-    emboldenIfNeeded(fFace, fFace->glyph);
+    if ((fRec.fFlags & kEmbolden_Flag) &&
+        !(fFace->style_flags & FT_STYLE_FLAG_BOLD)) {
+        emboldenOutline(fFace, &fFace->glyph->outline);
+    }
     FT_Outline_Get_CBox(&fFace->glyph->outline, bbox);
     return true;
 }
@@ -1197,7 +1192,6 @@ void SkScalerContext_FreeType::generateMetrics(SkGlyph* glyph) {
         glyph->zeroMetrics();
         return;
     }
-    emboldenIfNeeded(fFace, fFace->glyph);
 
     switch ( fFace->glyph->format ) {
       case FT_GLYPH_FORMAT_OUTLINE:
@@ -1207,6 +1201,10 @@ void SkScalerContext_FreeType::generateMetrics(SkGlyph* glyph) {
             glyph->fTop = 0;
             glyph->fLeft = 0;
         } else {
+            if (fRec.fFlags & kEmbolden_Flag && !(fFace->style_flags & FT_STYLE_FLAG_BOLD)) {
+                emboldenOutline(fFace, &fFace->glyph->outline);
+            }
+
             FT_BBox bbox;
             getBBoxForCurrentGlyph(glyph, &bbox, true);
 
@@ -1220,6 +1218,11 @@ void SkScalerContext_FreeType::generateMetrics(SkGlyph* glyph) {
         break;
 
       case FT_GLYPH_FORMAT_BITMAP:
+        if (fRec.fFlags & kEmbolden_Flag) {
+            FT_GlyphSlot_Own_Bitmap(fFace->glyph);
+            FT_Bitmap_Embolden(gFTLibrary, &fFace->glyph->bitmap, kBitmapEmboldenStrength, 0);
+        }
+
         if (fRec.fFlags & SkScalerContext::kVertical_Flag) {
             FT_Vector vector;
             vector.x = fFace->glyph->metrics.vertBearingX - fFace->glyph->metrics.horiBearingX;
@@ -1298,7 +1301,6 @@ void SkScalerContext_FreeType::generateImage(const SkGlyph& glyph) {
         return;
     }
 
-    emboldenIfNeeded(fFace, fFace->glyph);
     generateGlyphImage(fFace, glyph);
 }
 
@@ -1326,7 +1328,6 @@ void SkScalerContext_FreeType::generatePath(const SkGlyph& glyph,
         path->reset();
         return;
     }
-    emboldenIfNeeded(fFace, fFace->glyph);
 
     generateGlyphPath(fFace, path);
 
@@ -1390,7 +1391,6 @@ void SkScalerContext_FreeType::generateFontMetrics(SkPaint::FontMetrics* mx,
 
     // pull from format-specific metrics as needed
     SkScalar ascent, descent, leading, xmin, xmax, ymin, ymax;
-    SkScalar underlineThickness, underlinePosition;
     if (face->face_flags & FT_FACE_FLAG_SCALABLE) { // scalable outline font
         ascent = -SkIntToScalar(face->ascender) / upem;
         descent = -SkIntToScalar(face->descender) / upem;
@@ -1399,17 +1399,6 @@ void SkScalerContext_FreeType::generateFontMetrics(SkPaint::FontMetrics* mx,
         xmax = SkIntToScalar(face->bbox.xMax) / upem;
         ymin = -SkIntToScalar(face->bbox.yMin) / upem;
         ymax = -SkIntToScalar(face->bbox.yMax) / upem;
-        underlineThickness = SkIntToScalar(face->underline_thickness) / upem;
-        underlinePosition = -SkIntToScalar(face->underline_position) / upem;
-
-        if(mx) {
-            mx->fFlags |= SkPaint::FontMetrics::kUnderlineThinknessIsValid_Flag;
-            mx->fFlags |= SkPaint::FontMetrics::kUnderlinePositionIsValid_Flag;
-        }
-        if(my){
-            my->fFlags |= SkPaint::FontMetrics::kUnderlineThinknessIsValid_Flag;
-            my->fFlags |= SkPaint::FontMetrics::kUnderlinePositionIsValid_Flag;
-        }
         // we may be able to synthesize x_height and cap_height from outline
         if (!x_height) {
             FT_BBox bbox;
@@ -1434,17 +1423,6 @@ void SkScalerContext_FreeType::generateFontMetrics(SkPaint::FontMetrics* mx,
         xmax = SkIntToScalar(face->available_sizes[fStrikeIndex].width) / xppem;
         ymin = descent + leading;
         ymax = ascent - descent;
-        underlineThickness = 0;
-        underlinePosition = 0;
-
-        if(mx) {
-            mx->fFlags &= ~SkPaint::FontMetrics::kUnderlineThinknessIsValid_Flag;
-            mx->fFlags &= ~SkPaint::FontMetrics::kUnderlinePositionIsValid_Flag;
-        }
-        if(my){
-            my->fFlags &= ~SkPaint::FontMetrics::kUnderlineThinknessIsValid_Flag;
-            my->fFlags &= ~SkPaint::FontMetrics::kUnderlinePositionIsValid_Flag;
-        }
     } else {
         goto ERROR;
     }
@@ -1476,8 +1454,6 @@ void SkScalerContext_FreeType::generateFontMetrics(SkPaint::FontMetrics* mx,
         mx->fXMax = xmax;
         mx->fXHeight = x_height;
         mx->fCapHeight = cap_height;
-        mx->fUnderlineThickness = underlineThickness;
-        mx->fUnderlinePosition = underlinePosition;
     }
     if (my) {
         my->fTop = ymax * myy;
@@ -1490,27 +1466,6 @@ void SkScalerContext_FreeType::generateFontMetrics(SkPaint::FontMetrics* mx,
         my->fXMax = xmax;
         my->fXHeight = x_height;
         my->fCapHeight = cap_height;
-        my->fUnderlineThickness = underlineThickness;
-        my->fUnderlinePosition = underlinePosition;
-    }
-}
-
-void SkScalerContext_FreeType::emboldenIfNeeded(FT_Face face, FT_GlyphSlot glyph)
-{
-    if (fRec.fFlags & SkScalerContext::kEmbolden_Flag) {
-        switch ( glyph->format ) {
-            case FT_GLYPH_FORMAT_OUTLINE:
-                FT_Pos strength;
-                strength = FT_MulFix(face->units_per_EM, face->size->metrics.y_scale) / 24;
-                FT_Outline_Embolden(&glyph->outline, strength);
-                break;
-            case FT_GLYPH_FORMAT_BITMAP:
-                FT_GlyphSlot_Own_Bitmap(glyph);
-                FT_Bitmap_Embolden(glyph->library, &glyph->bitmap, kBitmapEmboldenStrength, 0);
-                break;
-            default:
-                SkDEBUGFAIL("unknown glyph format");
-        }
     }
 }
 

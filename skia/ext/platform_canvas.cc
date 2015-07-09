@@ -4,7 +4,6 @@
 
 #include "skia/ext/platform_canvas.h"
 
-#include "skia/ext/bitmap_platform_device.h"
 #include "third_party/skia/include/core/SkTypes.h"
 
 namespace skia {

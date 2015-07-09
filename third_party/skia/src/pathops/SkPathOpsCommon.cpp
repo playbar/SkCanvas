@@ -11,7 +11,7 @@
 #include "SkTSort.h"
 
 static int contourRangeCheckY(const SkTArray<SkOpContour*, true>& contourList, SkOpSegment** currentPtr,
-                              int* indexPtr, int* endIndexPtr, double* bestHit, SkScalar* bestDx,
+                              int* indexPtr, int* endIndexPtr, double* bestHit, float* bestDx,
                               bool* tryAgain, double* midPtr, bool opp) {
     const int index = *indexPtr;
     const int endIndex = *endIndexPtr;
@@ -20,7 +20,7 @@ static int contourRangeCheckY(const SkTArray<SkOpContour*, true>& contourList, S
     double tAtMid = current->tAtMid(index, endIndex, mid);
     SkPoint basePt = current->ptAtT(tAtMid);
     int contourCount = contourList.count();
-    SkScalar bestY = SK_ScalarMin;
+    float bestY = SK_ScalarMin;
     SkOpSegment* bestSeg = NULL;
     int bestTIndex = 0;
     bool bestOpp;
@@ -37,7 +37,7 @@ static int contourRangeCheckY(const SkTArray<SkOpContour*, true>& contourList, S
         int segmentCount = contour->segments().count();
         for (int test = 0; test < segmentCount; ++test) {
             SkOpSegment* testSeg = &contour->segments()[test];
-            SkScalar testY = bestY;
+            float testY = bestY;
             double testHit;
             int testTIndex = testSeg->crossedSpanY(basePt, &testY, &testHit, &hitSomething, tAtMid,
                     testOpp, testSeg == current);
@@ -85,12 +85,10 @@ abortContours:
             *currentPtr = bestSeg;
             *indexPtr = bestTIndex;
             *endIndexPtr = bestSeg->nextSpan(bestTIndex, 1);
-            SkASSERT(*indexPtr != *endIndexPtr && *indexPtr >= 0 && *endIndexPtr >= 0);
             *tryAgain = true;
             return 0;
         }
         result = bestSeg->windingAtT(*bestHit, bestTIndex, bestOpp, bestDx);
-        SkASSERT(result == SK_MinS32 || *bestDx);
     }
     double baseT = current->t(index);
     double endT = current->t(endIndex);
@@ -175,7 +173,6 @@ SkOpSegment* FindChase(SkTDArray<SkOpSpan*>& chase, int& tIndex, int& endIndex) 
         angle = sorted[firstIndex];
         winding -= angle->segment()->spanSign(angle);
         do {
-            SkASSERT(nextIndex != firstIndex);
             if (nextIndex == angleCount) {
                 nextIndex = 0;
             }
@@ -259,7 +256,7 @@ static SkOpSegment* findSortableTop(const SkTArray<SkOpContour*, true>& contourL
 
 static int rightAngleWinding(const SkTArray<SkOpContour*, true>& contourList,
                              SkOpSegment** current, int* index, int* endIndex, double* tHit,
-                             SkScalar* hitDx, bool* tryAgain, bool opp) {
+                             float* hitDx, bool* tryAgain, bool opp) {
     double test = 0.9;
     int contourWinding;
     do {
@@ -270,7 +267,6 @@ static int rightAngleWinding(const SkTArray<SkOpContour*, true>& contourList,
         }
         test /= 2;
     } while (!approximately_negative(test));
-    SkASSERT(0);  // should be OK to comment out, but interested when this hits
     return contourWinding;
 }
 
@@ -312,7 +308,6 @@ SkOpSegment* FindSortableTop(const SkTArray<SkOpContour*, true>& contourList,
     if (sumWinding != SK_MinS32) {
         return current;
     }
-    SkASSERT(current->windSum(SkMin32(index, endIndex)) == SK_MinS32);
     SkSTArray<SkOpAngle::kStackBasedCount, SkOpAngle, true> angles;
     SkSTArray<SkOpAngle::kStackBasedCount, SkOpAngle*, true> sorted;
     sumWinding = current->computeSum(index, endIndex, angleIncludeType, &angles, &sorted);
@@ -325,15 +320,13 @@ SkOpSegment* FindSortableTop(const SkTArray<SkOpContour*, true>& contourList,
     // shoot rays at right angles to the segment to find its winding, ignoring angle cases
     bool tryAgain;
     double tHit;
-    SkScalar hitDx = 0;
-    SkScalar hitOppDx = 0;
+    float hitDx = 0;
+    float hitOppDx = 0;
     do {
         // if current is vertical, find another candidate which is not
         // if only remaining candidates are vertical, then they can be marked done
-        SkASSERT(*indexPtr != *endIndexPtr && *indexPtr >= 0 && *endIndexPtr >= 0);
         skipVertical(contourList, &current, indexPtr, endIndexPtr);
 
-        SkASSERT(*indexPtr != *endIndexPtr && *indexPtr >= 0 && *endIndexPtr >= 0);
         tryAgain = false;
         contourWinding = rightAngleWinding(contourList, &current, indexPtr, endIndexPtr, &tHit,
                 &hitDx, &tryAgain, false);
@@ -510,7 +503,6 @@ void Assemble(const SkPathWriter& path, SkPathWriter* simple) {
         if (linkTwo[ndxTwo] != SK_MaxS32) {
             continue;
         }
-        SkASSERT(&linkOne[ndxOne] != &linkTwo[ndxTwo]);
         bool flip = endOne == endTwo;
         linkOne[ndxOne] = flip ? ~ndxTwo : ndxTwo;
         linkTwo[ndxTwo] = flip ? ~ndxOne : ndxOne;
@@ -518,7 +510,6 @@ void Assemble(const SkPathWriter& path, SkPathWriter* simple) {
             break;
         }
     }
-    SkASSERT(!remaining);
 #if DEBUG_ASSEMBLE
     for (rIndex = 0; rIndex < count; ++rIndex) {
         int s = sLink[rIndex];
@@ -532,7 +523,6 @@ void Assemble(const SkPathWriter& path, SkPathWriter* simple) {
         bool forward = true;
         bool first = true;
         int sIndex = sLink[rIndex];
-        SkASSERT(sIndex != SK_MaxS32);
         sLink[rIndex] = SK_MaxS32;
         int eIndex;
         if (sIndex < 0) {
@@ -542,7 +532,6 @@ void Assemble(const SkPathWriter& path, SkPathWriter* simple) {
             eIndex = eLink[sIndex];
             eLink[sIndex] = SK_MaxS32;
         }
-        SkASSERT(eIndex != SK_MaxS32);
 #if DEBUG_ASSEMBLE
         SkDebugf("%s sIndex=%c%d eIndex=%c%d\n", __FUNCTION__, sIndex < 0 ? 's' : 'e',
                     sIndex < 0 ? ~sIndex : sIndex, eIndex < 0 ? 's' : 'e',
@@ -572,24 +561,18 @@ void Assemble(const SkPathWriter& path, SkPathWriter* simple) {
             }
             if (forward) {
                 eIndex = eLink[rIndex];
-                SkASSERT(eIndex != SK_MaxS32);
                 eLink[rIndex] = SK_MaxS32;
                 if (eIndex >= 0) {
-                    SkASSERT(sLink[eIndex] == rIndex);
                     sLink[eIndex] = SK_MaxS32;
                 } else {
-                    SkASSERT(eLink[~eIndex] == ~rIndex);
                     eLink[~eIndex] = SK_MaxS32;
                 }
             } else {
                 eIndex = sLink[rIndex];
-                SkASSERT(eIndex != SK_MaxS32);
                 sLink[rIndex] = SK_MaxS32;
                 if (eIndex >= 0) {
-                    SkASSERT(eLink[eIndex] == rIndex);
                     eLink[eIndex] = SK_MaxS32;
                 } else {
-                    SkASSERT(sLink[~eIndex] == ~rIndex);
                     sLink[~eIndex] = SK_MaxS32;
                 }
             }
@@ -605,12 +588,7 @@ void Assemble(const SkPathWriter& path, SkPathWriter* simple) {
             }
         }
     } while (rIndex < count);
-#if DEBUG_ASSEMBLE
-    for (rIndex = 0; rIndex < count; ++rIndex) {
-       SkASSERT(sLink[rIndex] == SK_MaxS32);
-       SkASSERT(eLink[rIndex] == SK_MaxS32);
-    }
-#endif
+
 }
 
 void HandleCoincidence(SkTArray<SkOpContour*, true>* contourList, int total) {

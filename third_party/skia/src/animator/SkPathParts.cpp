@@ -25,7 +25,6 @@ SkDisplayable* SkPathPart::getParent() const {
 }
 
 bool SkPathPart::setParent(SkDisplayable* parent) {
-    SkASSERT(parent != NULL);
     if (parent->isPath() == false)
         return true;
     fPath = (SkDrawPath*) parent;
@@ -309,7 +308,6 @@ SkAddPath::SkAddPath() : matrix(NULL), path(NULL) {
 }
 
 bool SkAddPath::add() {
-    SkASSERT (path != NULL);
     if (matrix)
         fPath->fPath.addPath(path->fPath, matrix->getMatrix());
     else

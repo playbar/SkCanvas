@@ -63,22 +63,12 @@ public:
     /** Destruct, asserting that the weak reference count is 1.
     */
     virtual ~SkWeakRefCnt() {
-#ifdef SK_DEBUG
-        SkASSERT(fWeakCnt == 1);
-        fWeakCnt = 0;
-#endif
+
     }
 
     /** Return the weak reference count.
     */
     int32_t getWeakCnt() const { return fWeakCnt; }
-
-#ifdef SK_DEBUG
-    void validate() const {
-        this->INHERITED::validate();
-        SkASSERT(fWeakCnt > 0);
-    }
-#endif
 
     /** Creates a strong reference from a weak reference, if possible. The
         caller must already be an owner. If try_ref() returns true the owner
@@ -101,8 +91,6 @@ public:
         weak_unref().
     */
     void weak_ref() const {
-        SkASSERT(fRefCnt > 0);
-        SkASSERT(fWeakCnt > 0);
         sk_atomic_inc(&fWeakCnt);  // No barrier required.
     }
 
@@ -112,16 +100,12 @@ public:
         not on the stack.
     */
     void weak_unref() const {
-        SkASSERT(fWeakCnt > 0);
         // Release barrier (SL/S), if not provided below.
         if (sk_atomic_dec(&fWeakCnt) == 1) {
             // Acquire barrier (L/SL), if not provided above.
             // Prevents code in destructor from happening before the decrement.
             sk_membar_acquire__after_atomic_dec();
-#ifdef SK_DEBUG
-            // so our destructor won't complain
-            fWeakCnt = 1;
-#endif
+
             this->INHERITED::internal_dispose();
         }
     }

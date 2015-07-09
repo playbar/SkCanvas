@@ -11,8 +11,6 @@
 #include "SkTileGrid.h"
 
 SkTileGridPicture::SkTileGridPicture(int width, int height, const TileGridInfo& info) {
-    SkASSERT(info.fMargin.width() >= 0);
-    SkASSERT(info.fMargin.height() >= 0);
     fInfo = info;
     // Note: SkIRects are non-inclusive of the right() column and bottom() row.
     // For example, an SkIRect at 0,0 with a size of (1,1) will only have

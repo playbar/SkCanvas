@@ -46,8 +46,8 @@ class SkRoundRect : public SkDrawRect {
     virtual void dump(SkAnimateMaker* );
 #endif
 protected:
-    SkScalar rx;
-    SkScalar ry;
+    float rx;
+    float ry;
 private:
     typedef SkDrawRect INHERITED;
 };

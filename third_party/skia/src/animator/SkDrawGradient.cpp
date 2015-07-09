@@ -13,12 +13,12 @@
 #include "SkGradientShader.h"
 #include "SkUnitMapper.h"
 
-static SkScalar SkUnitToScalar(U16CPU x) {
+static float SkUnitToScalar(U16CPU x) {
     return x / 65535.0f;
 }
 
-static U16CPU SkScalarToUnit(SkScalar x) {
-    SkScalar pin =  SkScalarPin(x, 0, SK_Scalar1);
+static U16CPU SkScalarToUnit(float x) {
+    float pin =  SkScalarPin(x, 0, SK_Scalar1);
     return (int) (pin * 65535.0f);
 }
 
@@ -42,7 +42,7 @@ protected:
 
     static bool GetUnitValue(const char* token, size_t len, void* unitPtr, SkScriptValue* value) {
         if (SK_LITERAL_STR_EQUAL("unit", token, len)) {
-            value->fOperand.fScalar = *(SkScalar*) unitPtr;
+            value->fOperand.fScalar = *(float*) unitPtr;
             value->fType = SkType_Float;
             return true;
         }
@@ -51,7 +51,7 @@ protected:
 
     SkAnimateMaker* fMaker;
     const char* fScript;
-    SkScalar fUnit;
+    float fUnit;
 };
 
 
@@ -77,7 +77,6 @@ SkDrawGradient::~SkDrawGradient() {
 }
 
 bool SkDrawGradient::addChild(SkAnimateMaker& , SkDisplayable* child) {
-    SkASSERT(child);
     if (child->isColor()) {
         SkDrawColor* color = (SkDrawColor*) child;
         *fDrawColors.append() = color;

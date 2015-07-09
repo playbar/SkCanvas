@@ -17,10 +17,6 @@
 static void BlitRect32_OpaqueNarrow_SSE2(SkPMColor* SK_RESTRICT destination,
                                   int width, int height,
                                   size_t rowBytes, uint32_t color) {
-    SkASSERT(255 == SkGetPackedA32(color));
-    SkASSERT(width > 0);
-    SkASSERT(width < 31);
-
     while (--height >= 0) {
         SkPMColor* dst = destination;
         int count = width;
@@ -51,9 +47,6 @@ static void BlitRect32_OpaqueNarrow_SSE2(SkPMColor* SK_RESTRICT destination,
 static void BlitRect32_OpaqueWide_SSE2(SkPMColor* SK_RESTRICT destination,
                                 int width, int height,
                                 size_t rowBytes, uint32_t color) {
-    SkASSERT(255 == SkGetPackedA32(color));
-    SkASSERT(width >= 31);
-
     __m128i color_wide = _mm_set1_epi32(color);
     while (--height >= 0) {
         // Prefetching one row ahead to L1 cache can equal hardware

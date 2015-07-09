@@ -20,9 +20,7 @@ public:
         away from the original path by a maximum of deviation.
         Note: works on filled or framed paths
     */
-    static SkDiscretePathEffect* Create(SkScalar segLength, SkScalar deviation) {
-        return SkNEW_ARGS(SkDiscretePathEffect, (segLength, deviation));
-    }
+    SkDiscretePathEffect(float segLength, float deviation);
 
     virtual bool filterPath(SkPath* dst, const SkPath& src,
                             SkStrokeRec*, const SkRect*) const SK_OVERRIDE;
@@ -30,16 +28,11 @@ public:
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkDiscretePathEffect)
 
 protected:
-    SkDiscretePathEffect(SkReadBuffer&);
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
-
-#ifdef SK_SUPPORT_LEGACY_PUBLICEFFECTCONSTRUCTORS
-public:
-#endif
-    SkDiscretePathEffect(SkScalar segLength, SkScalar deviation);
+    SkDiscretePathEffect(SkFlattenableReadBuffer&);
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
 
 private:
-    SkScalar fSegLength, fPerterb;
+    float fSegLength, fPerterb;
 
     typedef SkPathEffect INHERITED;
 };

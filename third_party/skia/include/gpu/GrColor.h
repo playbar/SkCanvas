@@ -35,10 +35,6 @@ typedef uint32_t GrColor;
  */
 static inline GrColor GrColorPackRGBA(unsigned r, unsigned g,
                                       unsigned b, unsigned a) {
-    SkASSERT((uint8_t)r == r);
-    SkASSERT((uint8_t)g == g);
-    SkASSERT((uint8_t)b == b);
-    SkASSERT((uint8_t)a == a);
     return  (r << GrColor_SHIFT_R) |
             (g << GrColor_SHIFT_G) |
             (b << GrColor_SHIFT_B) |
@@ -58,7 +54,7 @@ static inline GrColor GrColorPackRGBA(unsigned r, unsigned g,
  */
 #define GrColor_ILLEGAL     (~(0xFF << GrColor_SHIFT_A))
 
-/** Converts a GrColor to an rgba array of GrGLfloat */
+/** Converts a GrColor to an rgba array of GLfloat */
 static inline void GrColorToRGBAFloat(GrColor color, float rgba[4]) {
     static const float ONE_OVER_255 = 1.f / 255.f;
     rgba[0] = GrColorUnpackR(color) * ONE_OVER_255;
@@ -85,7 +81,6 @@ enum GrColorComponentFlags {
 };
 
 static inline char GrColorComponentFlagToChar(GrColorComponentFlags component) {
-    SkASSERT(GrIsPow2(component));
     switch (component) {
         case kR_GrColorComponentFlag:
             return 'r';
@@ -102,7 +97,6 @@ static inline char GrColorComponentFlagToChar(GrColorComponentFlags component) {
 }
 
 static inline uint32_t GrPixelConfigComponentMask(GrPixelConfig config) {
-    SkASSERT(config >= 0 && config < kGrPixelConfigCnt);
     static const uint32_t kFlags[] = {
         0,                              // kUnknown_GrPixelConfig
         kA_GrColorComponentFlag,        // kAlpha_8_GrPixelConfig

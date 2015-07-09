@@ -53,19 +53,19 @@ public:
 
     // helpers for calling SkParse
     bool findS32(const Node*, const char name[], int32_t* value) const;
-    bool findScalars(const Node*, const char name[], SkScalar value[], int count) const;
+    bool findScalars(const Node*, const char name[], float value[], int count) const;
     bool findHex(const Node*, const char name[], uint32_t* value) const;
     bool findBool(const Node*, const char name[], bool*) const;
     int  findList(const Node*, const char name[], const char list[]) const;
 
-    bool findScalar(const Node* node, const char name[], SkScalar value[]) const
+    bool findScalar(const Node* node, const char name[], float value[]) const
     {
         return this->findScalars(node, name, value, 1);
     }
 
     bool hasAttr(const Node*, const char name[], const char value[]) const;
     bool hasS32(const Node*, const char name[], int32_t value) const;
-    bool hasScalar(const Node*, const char name[], SkScalar value) const;
+    bool hasScalar(const Node*, const char name[], float value) const;
     bool hasHex(const Node*, const char name[], uint32_t value) const;
     bool hasBool(const Node*, const char name[], bool value) const;
 

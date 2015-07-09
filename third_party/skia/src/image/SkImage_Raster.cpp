@@ -10,7 +10,7 @@
 #include "SkBitmap.h"
 #include "SkCanvas.h"
 #include "SkData.h"
-#include "SkMallocPixelRef.h"
+#include "SkDataPixelRef.h"
 
 class SkImage_Raster : public SkImage_Base {
 public:
@@ -53,10 +53,8 @@ public:
     SkImage_Raster(const SkImageInfo&, SkData*, size_t rb);
     virtual ~SkImage_Raster();
 
-    virtual void onDraw(SkCanvas*, SkScalar, SkScalar, const SkPaint*) SK_OVERRIDE;
+    virtual void onDraw(SkCanvas*, float, float, const SkPaint*) SK_OVERRIDE;
     virtual void onDrawRectToRect(SkCanvas*, const SkRect*, const SkRect&, const SkPaint*) SK_OVERRIDE;
-    virtual bool onReadPixels(SkBitmap*, const SkIRect&) const SK_OVERRIDE;
-    virtual const void* onPeekPixels(SkImageInfo*, size_t* /*rowBytes*/) const SK_OVERRIDE;
     virtual bool getROPixels(SkBitmap*) const SK_OVERRIDE;
 
     // exposed for SkSurface_Raster via SkNewImageFromPixelRef
@@ -84,62 +82,29 @@ SkImage* SkImage_Raster::NewEmpty() {
     return gEmpty;
 }
 
-static void release_data(void* addr, void* context) {
-    SkData* data = static_cast<SkData*>(context);
-    data->unref();
-}
-
 SkImage_Raster::SkImage_Raster(const Info& info, SkData* data, size_t rowBytes)
-    : INHERITED(info.fWidth, info.fHeight)
-{
-    data->ref();
-    void* addr = const_cast<void*>(data->data());
-
-    fBitmap.installPixels(info, addr, rowBytes, release_data, data);
+        : INHERITED(info.fWidth, info.fHeight) {
+    fBitmap.setConfig(info, rowBytes);
+    fBitmap.setPixelRef(SkNEW_ARGS(SkDataPixelRef, (info, data)))->unref();
     fBitmap.setImmutable();
-    fBitmap.lockPixels();
 }
 
 SkImage_Raster::SkImage_Raster(const Info& info, SkPixelRef* pr, size_t rowBytes)
-    : INHERITED(info.fWidth, info.fHeight)
-{
-    fBitmap.setConfig(info, rowBytes);
+: INHERITED(info.fWidth, info.fHeight) {
+    SkBitmap::Config config = SkImageInfoToBitmapConfig(info);
+
+    fBitmap.setConfig(config, info.fWidth, info.fHeight, rowBytes, info.fAlphaType);
     fBitmap.setPixelRef(pr);
-    fBitmap.lockPixels();
 }
 
 SkImage_Raster::~SkImage_Raster() {}
 
-void SkImage_Raster::onDraw(SkCanvas* canvas, SkScalar x, SkScalar y, const SkPaint* paint) {
+void SkImage_Raster::onDraw(SkCanvas* canvas, float x, float y, const SkPaint* paint) {
     canvas->drawBitmap(fBitmap, x, y, paint);
 }
 
-void SkImage_Raster::onDrawRectToRect(SkCanvas* canvas, const SkRect* src,
-                                      const SkRect& dst, const SkPaint* paint) {
+void SkImage_Raster::onDrawRectToRect(SkCanvas* canvas, const SkRect* src, const SkRect& dst, const SkPaint* paint) {
     canvas->drawBitmapRectToRect(fBitmap, src, dst, paint);
-}
-
-bool SkImage_Raster::onReadPixels(SkBitmap* dst, const SkIRect& subset) const {
-    if (dst->pixelRef()) {
-        return this->INHERITED::onReadPixels(dst, subset);
-    } else {
-        SkBitmap src;
-        if (!fBitmap.extractSubset(&src, subset)) {
-            return false;
-        }
-        return src.copyTo(dst, src.colorType());
-    }
-}
-
-const void* SkImage_Raster::onPeekPixels(SkImageInfo* infoPtr,
-                                         size_t* rowBytesPtr) const {
-    SkImageInfo info;
-    if (!fBitmap.asImageInfo(&info) || !fBitmap.getPixels()) {
-        return NULL;
-    }
-    *infoPtr = info;
-    *rowBytesPtr = fBitmap.rowBytes();
-    return fBitmap.getPixels();
 }
 
 bool SkImage_Raster::getROPixels(SkBitmap* dst) const {
@@ -167,7 +132,7 @@ SkImage* SkImage::NewRasterCopy(const SkImageInfo& info, const void* pixels, siz
 }
 
 
-SkImage* SkImage::NewRasterData(const SkImageInfo& info, SkData* data, size_t rowBytes) {
+SkImage* SkImage::NewRasterData(const SkImageInfo& info, SkData* pixelData, size_t rowBytes) {
     if (!SkImage_Raster::ValidArgs(info, rowBytes)) {
         return NULL;
     }
@@ -175,16 +140,17 @@ SkImage* SkImage::NewRasterData(const SkImageInfo& info, SkData* data, size_t ro
         return SkImage_Raster::NewEmpty();
     }
     // check this after empty-check
-    if (NULL == data) {
+    if (NULL == pixelData) {
         return NULL;
     }
 
     // did they give us enough data?
     size_t size = info.fHeight * rowBytes;
-    if (data->size() < size) {
+    if (pixelData->size() < size) {
         return NULL;
     }
 
+    SkAutoDataUnref data(pixelData);
     return SkNEW_ARGS(SkImage_Raster, (info, data, rowBytes));
 }
 

@@ -11,8 +11,7 @@
 #include "SkBlurMaskFilter.h"
 #include "SkBlurMask.h"
 #include "SkEmbossMask.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkString.h"
 
 static inline int pin2byte(int n) {
@@ -24,15 +23,15 @@ static inline int pin2byte(int n) {
     return n;
 }
 
-SkMaskFilter* SkBlurMaskFilter::CreateEmboss(const SkScalar direction[3],
-                                             SkScalar ambient, SkScalar specular,
-                                             SkScalar blurRadius) {
+SkMaskFilter* SkBlurMaskFilter::CreateEmboss(const float direction[3],
+                                             float ambient, float specular,
+                                             float blurRadius) {
     return SkBlurMaskFilter::CreateEmboss(SkBlurMask::ConvertRadiusToSigma(blurRadius),
                                           direction, ambient, specular);
 }
 
-SkMaskFilter* SkBlurMaskFilter::CreateEmboss(SkScalar blurSigma, const SkScalar direction[3],
-                                             SkScalar ambient, SkScalar specular) {
+SkMaskFilter* SkBlurMaskFilter::CreateEmboss(float blurSigma, const float direction[3],
+                                             float ambient, float specular) {
     if (direction == NULL) {
         return NULL;
     }
@@ -49,13 +48,13 @@ SkMaskFilter* SkBlurMaskFilter::CreateEmboss(SkScalar blurSigma, const SkScalar 
     light.fAmbient = SkToU8(am);
     light.fSpecular = SkToU8(sp);
 
-    return SkEmbossMaskFilter::Create(blurSigma, light);
+    return SkNEW_ARGS(SkEmbossMaskFilter, (blurSigma, light));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void normalize(SkScalar v[3]) {
-    SkScalar mag = SkScalarSquare(v[0]) + SkScalarSquare(v[1]) + SkScalarSquare(v[2]);
+static void normalize(float v[3]) {
+    float mag = SkScalarSquare(v[0]) + SkScalarSquare(v[1]) + SkScalarSquare(v[2]);
     mag = SkScalarSqrt(mag);
 
     for (int i = 0; i < 3; i++) {
@@ -63,9 +62,16 @@ static void normalize(SkScalar v[3]) {
     }
 }
 
-SkEmbossMaskFilter::SkEmbossMaskFilter(SkScalar blurSigma, const Light& light)
+SkEmbossMaskFilter::SkEmbossMaskFilter(float blurSigma, const Light& light)
     : fLight(light), fBlurSigma(blurSigma) {
     normalize(fLight.fDirection);
+}
+
+SkEmbossMaskFilter::SkEmbossMaskFilter(const Light& light, float blurRadius)
+        : fLight(light) {
+    normalize(fLight.fDirection);
+
+    fBlurSigma = SkBlurMask::ConvertRadiusToSigma(blurRadius);
 }
 
 SkMask::Format SkEmbossMaskFilter::getFormat() const {
@@ -74,7 +80,7 @@ SkMask::Format SkEmbossMaskFilter::getFormat() const {
 
 bool SkEmbossMaskFilter::filterMask(SkMask* dst, const SkMask& src,
                                     const SkMatrix& matrix, SkIPoint* margin) const {
-    SkScalar sigma = matrix.mapRadius(fBlurSigma);
+    float sigma = matrix.mapRadius(fBlurSigma);
 
     if (!SkBlurMask::BoxBlur(dst, src, sigma, SkBlurMask::kInner_Style,
                              SkBlurMask::kLow_Quality)) {
@@ -123,15 +129,13 @@ bool SkEmbossMaskFilter::filterMask(SkMask* dst, const SkMask& src,
     return true;
 }
 
-SkEmbossMaskFilter::SkEmbossMaskFilter(SkReadBuffer& buffer)
+SkEmbossMaskFilter::SkEmbossMaskFilter(SkFlattenableReadBuffer& buffer)
         : SkMaskFilter(buffer) {
-    SkASSERT(buffer.getArrayCount() == sizeof(Light));
     buffer.readByteArray(&fLight, sizeof(Light));
-    SkASSERT(fLight.fPad == 0); // for the font-cache lookup to be clean
-    fBlurSigma = buffer.readScalar();
+    fBlurSigma = SkScalarAbs(buffer.readScalar());
 }
 
-void SkEmbossMaskFilter::flatten(SkWriteBuffer& buffer) const {
+void SkEmbossMaskFilter::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
 
     Light tmpLight = fLight;
@@ -140,7 +144,7 @@ void SkEmbossMaskFilter::flatten(SkWriteBuffer& buffer) const {
     buffer.writeScalar(fBlurSigma);
 }
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkEmbossMaskFilter::toString(SkString* str) const {
     str->append("SkEmbossMaskFilter: (");
 

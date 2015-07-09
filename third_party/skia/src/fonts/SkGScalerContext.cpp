@@ -55,7 +55,6 @@ SkGScalerContext::SkGScalerContext(SkGTypeface* face, const SkDescriptor* desc)
         rec->fPost2x2[0][0] = rec->fPost2x2[1][1] = SK_Scalar1;
         rec->fPost2x2[1][0] = rec->fPost2x2[0][1] = 0;
     }
-    SkASSERT(descSize == newDesc->getLength());
     newDesc->computeChecksum();
 
     fProxy = face->proxy()->createScalerContext(newDesc);
@@ -143,7 +142,7 @@ void SkGScalerContext::generateFontMetrics(SkPaint::FontMetrics*,
                                            SkPaint::FontMetrics* metrics) {
     fProxy->getFontMetrics(metrics);
     if (metrics) {
-        SkScalar scale = fMatrix.getScaleY();
+        float scale = fMatrix.getScaleY();
         metrics->fTop = SkScalarMul(metrics->fTop, scale);
         metrics->fAscent = SkScalarMul(metrics->fAscent, scale);
         metrics->fDescent = SkScalarMul(metrics->fDescent, scale);
@@ -223,43 +222,3 @@ size_t SkGTypeface::onGetTableData(SkFontTableTag tag, size_t offset,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-#if 0
-// under construction -- defining a font purely in terms of skia primitives
-// ala an SVG-font.
-class SkGFont : public SkRefCnt {
-public:
-    virtual ~SkGFont();
-
-    int unicharToGlyph(SkUnichar) const;
-
-    int countGlyphs() const { return fCount; }
-
-    float getAdvance(int index) const {
-        SkASSERT((unsigned)index < (unsigned)fCount);
-        return fGlyphs[index].fAdvance;
-    }
-
-    const SkPath& getPath(int index) const {
-        SkASSERT((unsigned)index < (unsigned)fCount);
-        return fGlyphs[index].fPath;
-    }
-
-private:
-    struct Glyph {
-        SkUnichar   fUni;
-        float       fAdvance;
-        SkPath      fPath;
-    };
-    int fCount;
-    Glyph* fGlyphs;
-
-    friend class SkGFontBuilder;
-    SkGFont(int count, Glyph* array);
-};
-
-class SkGFontBuilder {
-public:
-
-};
-#endif

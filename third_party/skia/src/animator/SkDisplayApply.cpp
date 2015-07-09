@@ -109,8 +109,6 @@ void SkApply::applyValues(int animatorIndex, SkOperand* values, int count,
 {
     SkAnimateBase* animator = fActive->fAnimators[animatorIndex];
     const SkMemberInfo * info = animator->fFieldInfo;
-    SkASSERT(animator);
-    SkASSERT(info != NULL);
     SkDisplayTypes type = (SkDisplayTypes) info->fType;
     SkDisplayable* target = getTarget(animator);
     if (animator->hasExecute() || type == SkType_MemberFunction || type == SkType_MemberProperty) {
@@ -139,10 +137,8 @@ void SkApply::applyValues(int animatorIndex, SkOperand* values, int count,
                 values = converted.begin();
                 count = converted.count();
             } else {
-                SkASSERT(count == 1);
             }
         }
-//      SkASSERT(type == SkType_ARGB || type == SkType_String ||info->isSettable());
         if (type == SkType_String || type == SkType_DynamicString)
             info->setString(target, values->fString);
         else if (type == SkType_Drawable || type == SkType_Displayable)
@@ -190,7 +186,6 @@ bool SkApply::draw(SkAnimateMaker& maker) {
         return false;
     if (fEnabled == false)
         enable(maker);
-    SkASSERT(scope);
     activate(maker);
     if (mode == kMode_immediate)
         return fActive->draw();
@@ -362,7 +357,6 @@ append:
         } else
             reset();
     } else {
-        SkASSERT(old < parentList->count());
         if ((*parentList)[old]->isApply()) {
             SkApply* apply = (SkApply*) (*parentList)[old];
             if (apply != this && apply->fActive == NULL)
@@ -423,7 +417,6 @@ void SkApply::enableCreate(SkAnimateMaker& maker) {
 }
 
 void SkApply::enableDynamic(SkAnimateMaker& maker) {
-    SkASSERT(mode != kMode_create); // create + dynamic are not currently compatible
     SkDisplayable* newScope;
     bool success = SkAnimatorScript::EvaluateDisplayable(maker, this, dynamicScope.c_str(),
         &newScope);
@@ -460,7 +453,7 @@ void SkApply::endSave(int index) {
         return;
     SkDisplayable* target = getTarget(animate);
     size_t size = info->getSize(target);
-    int count = (int) (size / sizeof(SkScalar));
+    int count = (int) (size / sizeof(float));
     int activeIndex = fActive->fDrawIndex + index;
     SkOperand* last = new SkOperand[count];
     SkAutoTDelete<SkOperand> autoLast(last);
@@ -471,8 +464,7 @@ void SkApply::endSave(int index) {
             info->setValue(target, fActive->fSaveRestore[activeIndex], count);
     } else {
         SkScriptValue scriptValue;
-        SkDEBUGCODE(bool success = ) target->getProperty(info->propertyIndex(), &scriptValue);
-        SkASSERT(success == true);
+        target->getProperty(info->propertyIndex(), &scriptValue);
         last[0] = scriptValue.fOperand;
         scriptValue.fOperand = fActive->fSaveRestore[activeIndex][0];
         target->setProperty(info->propertyIndex(), scriptValue);
@@ -497,7 +489,6 @@ bool SkApply::getProperty(int index, SkScriptValue* value) const {
             value->fOperand.fS32 = fLastTime;
             break;
         default:
-    //      SkASSERT(0);
             return false;
     }
     return true;
@@ -629,9 +620,8 @@ bool SkApply::interpolate(SkAnimateMaker& maker, SkMSec rawTime) {
                 fLastTime = animate->dur;
             SkTypedArray formulaValues;
             formulaValues.setCount(count);
-            SkDEBUGCODE(bool success = ) animate->fFieldInfo->setValue(maker, &formulaValues, 0, 0, NULL,
+            animate->fFieldInfo->setValue(maker, &formulaValues, 0, 0, NULL,
                 animate->getValuesType(), animate->formula);
-            SkASSERT(success);
             if (restore)
                 save(inner); // save existing value
             applyValues(inner, formulaValues.begin(), count, animate->getValuesType(), innerTime);
@@ -684,7 +674,6 @@ void SkApply::onEndElement(SkAnimateMaker& maker)
 }
 
 const SkMemberInfo* SkApply::preferredChild(SkDisplayTypes type) {
-    SkASSERT(SkDisplayType::IsAnimate(type) == false);
     fContainsScope = true;
     return getMember("scope"); // !!! cwap! need to refer to member through enum like kScope instead
 }
@@ -743,7 +732,7 @@ void SkApply::save(int index) {
     if (type == SkType_MemberFunction)
         return; // nothing to save
     size_t size = info->getSize(target);
-    int count = (int) (size / sizeof(SkScalar));
+    int count = (int) (size / sizeof(float));
     bool useLast = true;
 // !!! this all may be unneeded, at least in the dynamic case ??
     int activeIndex = fActive->fDrawIndex + index;
@@ -761,9 +750,7 @@ void SkApply::save(int index) {
             info->setValue(target, last.begin(), count);
     } else {
         SkScriptValue scriptValue;
-        SkDEBUGCODE(bool success = ) target->getProperty(info->propertyIndex(), &scriptValue);
-        SkASSERT(success == true);
-        SkASSERT(scriptValue.fType == SkType_Float);
+        target->getProperty(info->propertyIndex(), &scriptValue);
         fActive->fSaveRestore[activeIndex][0] = scriptValue.fOperand;
         if (useLast) {
             SkScriptValue scriptValue;
@@ -779,7 +766,6 @@ bool SkApply::setProperty(int index, SkScriptValue& scriptValue) {
     switch (index) {
         case SK_PROPERTY(animator): {
             SkAnimateBase* animate = (SkAnimateBase*) scriptValue.fOperand.fDisplayable;
-            SkASSERT(animate->isAnimate());
             *fAnimators.append() = animate;
             return true;
         }

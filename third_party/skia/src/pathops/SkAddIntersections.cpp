@@ -7,144 +7,6 @@
 #include "SkAddIntersections.h"
 #include "SkPathOpsBounds.h"
 
-#if DEBUG_ADD_INTERSECTING_TS
-
-static void debugShowLineIntersection(int pts, const SkIntersectionHelper& wt,
-                                      const SkIntersectionHelper& wn, const SkIntersections& i) {
-    SkASSERT(i.used() == pts);
-    if (!pts) {
-        SkDebugf("%s no intersect " LINE_DEBUG_STR " " LINE_DEBUG_STR "\n",
-                __FUNCTION__, LINE_DEBUG_DATA(wt.pts()), LINE_DEBUG_DATA(wn.pts()));
-        return;
-    }
-    SkDebugf("%s " T_DEBUG_STR(wtTs, 0) " " LINE_DEBUG_STR " " PT_DEBUG_STR, __FUNCTION__,
-            i[0][0], LINE_DEBUG_DATA(wt.pts()), PT_DEBUG_DATA(i, 0));
-    if (pts == 2) {
-        SkDebugf(" " T_DEBUG_STR(wtTs, 1) " " PT_DEBUG_STR, i[0][1], PT_DEBUG_DATA(i, 1));
-    }
-    SkDebugf(" wnTs[0]=%g " LINE_DEBUG_STR, i[1][0], LINE_DEBUG_DATA(wn.pts()));
-    if (pts == 2) {
-        SkDebugf(" " T_DEBUG_STR(wnTs, 1), i[1][1]);
-    }
-    SkDebugf("\n");
-}
-
-static void debugShowQuadLineIntersection(int pts, const SkIntersectionHelper& wt,
-                                          const SkIntersectionHelper& wn,
-                                          const SkIntersections& i) {
-    SkASSERT(i.used() == pts);
-    if (!pts) {
-        SkDebugf("%s no intersect " QUAD_DEBUG_STR " " LINE_DEBUG_STR "\n",
-                __FUNCTION__, QUAD_DEBUG_DATA(wt.pts()), LINE_DEBUG_DATA(wn.pts()));
-        return;
-    }
-    SkDebugf("%s " T_DEBUG_STR(wtTs, 0) " " QUAD_DEBUG_STR " " PT_DEBUG_STR, __FUNCTION__,
-            i[0][0], QUAD_DEBUG_DATA(wt.pts()), PT_DEBUG_DATA(i, 0));
-    for (int n = 1; n < pts; ++n) {
-        SkDebugf(" " TX_DEBUG_STR(wtTs) " " PT_DEBUG_STR, n, i[0][n], PT_DEBUG_DATA(i, n));
-    }
-    SkDebugf(" wnTs[0]=%g " LINE_DEBUG_STR, i[1][0], LINE_DEBUG_DATA(wn.pts()));
-    for (int n = 1; n < pts; ++n) {
-        SkDebugf(" " TX_DEBUG_STR(wnTs), n, i[1][n]);
-    }
-    SkDebugf("\n");
-}
-
-static void debugShowQuadIntersection(int pts, const SkIntersectionHelper& wt,
-        const SkIntersectionHelper& wn, const SkIntersections& i) {
-    SkASSERT(i.used() == pts);
-    if (!pts) {
-        SkDebugf("%s no intersect " QUAD_DEBUG_STR " " QUAD_DEBUG_STR "\n",
-                __FUNCTION__, QUAD_DEBUG_DATA(wt.pts()), QUAD_DEBUG_DATA(wn.pts()));
-        return;
-    }
-    SkDebugf("%s " T_DEBUG_STR(wtTs, 0) " " QUAD_DEBUG_STR " " PT_DEBUG_STR, __FUNCTION__,
-            i[0][0], QUAD_DEBUG_DATA(wt.pts()), PT_DEBUG_DATA(i, 0));
-    for (int n = 1; n < pts; ++n) {
-        SkDebugf(" " TX_DEBUG_STR(wtTs) " " PT_DEBUG_STR, n, i[0][n], PT_DEBUG_DATA(i, n));
-    }
-    SkDebugf(" wnTs[0]=%g " QUAD_DEBUG_STR, i[1][0], QUAD_DEBUG_DATA(wn.pts()));
-    for (int n = 1; n < pts; ++n) {
-        SkDebugf(" " TX_DEBUG_STR(wnTs), n, i[1][n]);
-    }
-    SkDebugf("\n");
-}
-
-static void debugShowCubicLineIntersection(int pts, const SkIntersectionHelper& wt,
-        const SkIntersectionHelper& wn, const SkIntersections& i) {
-    SkASSERT(i.used() == pts);
-    if (!pts) {
-        SkDebugf("%s no intersect " CUBIC_DEBUG_STR " " LINE_DEBUG_STR "\n",
-                __FUNCTION__, CUBIC_DEBUG_DATA(wt.pts()), LINE_DEBUG_DATA(wn.pts()));
-        return;
-    }
-    SkDebugf("%s " T_DEBUG_STR(wtTs, 0) " " CUBIC_DEBUG_STR " " PT_DEBUG_STR, __FUNCTION__,
-            i[0][0], CUBIC_DEBUG_DATA(wt.pts()), PT_DEBUG_DATA(i, 0));
-    for (int n = 1; n < pts; ++n) {
-        SkDebugf(" " TX_DEBUG_STR(wtTs) " " PT_DEBUG_STR, n, i[0][n], PT_DEBUG_DATA(i, n));
-    }
-    SkDebugf(" wnTs[0]=%g " LINE_DEBUG_STR, i[1][0], LINE_DEBUG_DATA(wn.pts()));
-    for (int n = 1; n < pts; ++n) {
-        SkDebugf(" " TX_DEBUG_STR(wnTs), n, i[1][n]);
-    }
-    SkDebugf("\n");
-}
-
-static void debugShowCubicQuadIntersection(int pts, const SkIntersectionHelper& wt,
-        const SkIntersectionHelper& wn, const SkIntersections& i) {
-    SkASSERT(i.used() == pts);
-    if (!pts) {
-        SkDebugf("%s no intersect " CUBIC_DEBUG_STR " " QUAD_DEBUG_STR "\n",
-                __FUNCTION__, CUBIC_DEBUG_DATA(wt.pts()), QUAD_DEBUG_DATA(wn.pts()));
-        return;
-    }
-    SkDebugf("%s " T_DEBUG_STR(wtTs, 0) " " CUBIC_DEBUG_STR " " PT_DEBUG_STR, __FUNCTION__,
-            i[0][0], CUBIC_DEBUG_DATA(wt.pts()), PT_DEBUG_DATA(i, 0));
-    for (int n = 1; n < pts; ++n) {
-        SkDebugf(" " TX_DEBUG_STR(wtTs) " " PT_DEBUG_STR, n, i[0][n], PT_DEBUG_DATA(i, n));
-    }
-    SkDebugf(" wnTs[0]=%g " QUAD_DEBUG_STR, i[1][0], QUAD_DEBUG_DATA(wn.pts()));
-    for (int n = 1; n < pts; ++n) {
-        SkDebugf(" " TX_DEBUG_STR(wnTs), n, i[1][n]);
-    }
-    SkDebugf("\n");
-}
-
-static void debugShowCubicIntersection(int pts, const SkIntersectionHelper& wt,
-        const SkIntersectionHelper& wn, const SkIntersections& i) {
-    SkASSERT(i.used() == pts);
-    if (!pts) {
-        SkDebugf("%s no intersect " CUBIC_DEBUG_STR " " CUBIC_DEBUG_STR "\n",
-                __FUNCTION__, CUBIC_DEBUG_DATA(wt.pts()), CUBIC_DEBUG_DATA(wn.pts()));
-        return;
-    }
-    SkDebugf("%s " T_DEBUG_STR(wtTs, 0) " " CUBIC_DEBUG_STR " " PT_DEBUG_STR, __FUNCTION__,
-            i[0][0], CUBIC_DEBUG_DATA(wt.pts()), PT_DEBUG_DATA(i, 0));
-    for (int n = 1; n < pts; ++n) {
-        SkDebugf(" " TX_DEBUG_STR(wtTs) " " PT_DEBUG_STR, n, i[0][n], PT_DEBUG_DATA(i, n));
-    }
-    SkDebugf(" wnTs[0]=%g " CUBIC_DEBUG_STR, i[1][0], CUBIC_DEBUG_DATA(wn.pts()));
-    for (int n = 1; n < pts; ++n) {
-        SkDebugf(" " TX_DEBUG_STR(wnTs), n, i[1][n]);
-    }
-    SkDebugf("\n");
-}
-
-static void debugShowCubicIntersection(int pts, const SkIntersectionHelper& wt,
-        const SkIntersections& i) {
-    SkASSERT(i.used() == pts);
-    if (!pts) {
-        SkDebugf("%s no self intersect " CUBIC_DEBUG_STR "\n", __FUNCTION__,
-                CUBIC_DEBUG_DATA(wt.pts()));
-        return;
-    }
-    SkDebugf("%s " T_DEBUG_STR(wtTs, 0) " " CUBIC_DEBUG_STR " " PT_DEBUG_STR, __FUNCTION__,
-            i[0][0], CUBIC_DEBUG_DATA(wt.pts()), PT_DEBUG_DATA(i, 0));
-    SkDebugf(" " T_DEBUG_STR(wtTs, 1), i[1][0]);
-    SkDebugf("\n");
-}
-
-#else
 static void debugShowLineIntersection(int , const SkIntersectionHelper& ,
         const SkIntersectionHelper& , const SkIntersections& ) {
 }
@@ -172,7 +34,7 @@ static void debugShowCubicIntersection(int , const SkIntersectionHelper& ,
 static void debugShowCubicIntersection(int , const SkIntersectionHelper& ,
         const SkIntersections& ) {
 }
-#endif
+
 
 bool AddIntersectTs(SkOpContour* test, SkOpContour* next) {
     if (test != next) {
@@ -225,7 +87,7 @@ bool AddIntersectTs(SkOpContour* test, SkOpContour* next) {
                             break;
                         }
                         default:
-                            SkASSERT(0);
+							break;
                     }
                     break;
                 case SkIntersectionHelper::kVerticalLine_Segment:
@@ -252,7 +114,7 @@ bool AddIntersectTs(SkOpContour* test, SkOpContour* next) {
                             break;
                         }
                         default:
-                            SkASSERT(0);
+							break;
                     }
                     break;
                 case SkIntersectionHelper::kLine_Segment:
@@ -285,7 +147,7 @@ bool AddIntersectTs(SkOpContour* test, SkOpContour* next) {
                             break;
                         }
                         default:
-                            SkASSERT(0);
+							break;
                     }
                     break;
                 case SkIntersectionHelper::kQuad_Segment:
@@ -317,7 +179,7 @@ bool AddIntersectTs(SkOpContour* test, SkOpContour* next) {
                             break;
                         }
                         default:
-                            SkASSERT(0);
+							break;
                     }
                     break;
                 case SkIntersectionHelper::kCubic_Segment:
@@ -348,11 +210,11 @@ bool AddIntersectTs(SkOpContour* test, SkOpContour* next) {
                             break;
                         }
                         default:
-                            SkASSERT(0);
+							break;
                     }
                     break;
                 default:
-                    SkASSERT(0);
+					break;
             }
             if (!foundCommonContour && pts > 0) {
                 test->addCross(next);
@@ -371,7 +233,6 @@ bool AddIntersectTs(SkOpContour* test, SkOpContour* next) {
                 } else if (wn.segmentType() >= SkIntersectionHelper::kQuad_Segment
                         && wt.segmentType() >= SkIntersectionHelper::kQuad_Segment
                         && ts.isCoincident(0)) {
-                    SkASSERT(ts.coincidentUsed() == 2);
                     if (wt.addCoincident(wn, ts, swap)) {
                         continue;
                     }
@@ -394,8 +255,6 @@ bool AddIntersectTs(SkOpContour* test, SkOpContour* next) {
                 }
             }
             for (int pt = 0; pt < pts; ++pt) {
-                SkASSERT(ts[0][pt] >= 0 && ts[0][pt] <= 1);
-                SkASSERT(ts[1][pt] >= 0 && ts[1][pt] <= 1);
                 SkPoint point = ts.pt(pt).asSkPoint();
                 int testTAt = wt.addT(wn, point, ts[swap][pt]);
                 int nextTAt = wn.addT(wt, point, ts[!swap][pt]);
@@ -420,9 +279,6 @@ void AddSelfIntersectTs(SkOpContour* test) {
         if (!pts) {
             continue;
         }
-        SkASSERT(pts == 1);
-        SkASSERT(ts[0][0] >= 0 && ts[0][0] <= 1);
-        SkASSERT(ts[1][0] >= 0 && ts[1][0] <= 1);
         SkPoint point = ts.pt(0).asSkPoint();
         int testTAt = wt.addSelfT(wt, point, ts[0][0]);
         int nextTAt = wt.addT(wt, point, ts[1][0]);

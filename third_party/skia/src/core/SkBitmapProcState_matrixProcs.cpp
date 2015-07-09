@@ -19,7 +19,6 @@
     returns:  2  3  4  0  1  2  3  4  0  1  2  3  4  0  1  2  3
  */
 static inline int sk_int_mod(int x, int n) {
-    SkASSERT(n > 0);
     if ((unsigned)x >= (unsigned)n) {
         if (x < 0) {
             x = n + ~(~x % n);
@@ -114,7 +113,6 @@ static SkBitmapProcState::FixedTileProc choose_tile_proc(unsigned m)
         return fixed_clamp;
     if (SkShader::kRepeat_TileMode == m)
         return fixed_repeat;
-    SkASSERT(SkShader::kMirror_TileMode == m);
     return fixed_mirror;
 }
 
@@ -130,8 +128,6 @@ static SkBitmapProcState::FixedTileLowBitsProc choose_tile_lowbits_proc(unsigned
     if (SkShader::kClamp_TileMode == m) {
         return fixed_clamp_lowbits;
     } else {
-        SkASSERT(SkShader::kMirror_TileMode == m ||
-                 SkShader::kRepeat_TileMode == m);
         // mirror and repeat have the same behavior for the low bits.
         return fixed_repeat_or_mirrow_lowbits;
     }
@@ -172,7 +168,6 @@ static SkBitmapProcState::IntTileProc choose_int_tile_proc(unsigned tm) {
         return int_clamp;
     if (SkShader::kRepeat_TileMode == tm)
         return int_repeat;
-    SkASSERT(SkShader::kMirror_TileMode == tm);
     return int_mirror;
 }
 
@@ -203,13 +198,11 @@ void decal_filter_scale(uint32_t dst[], SkFixed fx, SkFixed dx, int count)
 
     if (count & 1)
     {
-        SkASSERT((fx >> (16 + 14)) == 0);
         *dst++ = (fx >> 12 << 14) | ((fx >> 16) + 1);
         fx += dx;
     }
     while ((count -= 2) >= 0)
     {
-        SkASSERT((fx >> (16 + 14)) == 0);
         *dst++ = (fx >> 12 << 14) | ((fx >> 16) + 1);
         fx += dx;
 
@@ -267,8 +260,6 @@ static int nofilter_trans_preamble(const SkBitmapProcState& s, uint32_t** xy,
 
 static void clampx_nofilter_trans(const SkBitmapProcState& s,
                                   uint32_t xy[], int count, int x, int y) {
-    SkASSERT((s.fInvType & ~SkMatrix::kTranslate_Mask) == 0);
-
     int xpos = nofilter_trans_preamble(s, &xy, x, y);
     const int width = s.fBitmap->width();
     if (1 == width) {
@@ -315,7 +306,6 @@ static void clampx_nofilter_trans(const SkBitmapProcState& s,
 
 static void repeatx_nofilter_trans(const SkBitmapProcState& s,
                                    uint32_t xy[], int count, int x, int y) {
-    SkASSERT((s.fInvType & ~SkMatrix::kTranslate_Mask) == 0);
 
     int xpos = nofilter_trans_preamble(s, &xy, x, y);
     const int width = s.fBitmap->width();
@@ -348,14 +338,12 @@ static void repeatx_nofilter_trans(const SkBitmapProcState& s,
 
 static void fill_backwards(uint16_t xptr[], int pos, int count) {
     for (int i = 0; i < count; i++) {
-        SkASSERT(pos >= 0);
         xptr[i] = pos--;
     }
 }
 
 static void mirrorx_nofilter_trans(const SkBitmapProcState& s,
                                    uint32_t xy[], int count, int x, int y) {
-    SkASSERT((s.fInvType & ~SkMatrix::kTranslate_Mask) == 0);
 
     int xpos = nofilter_trans_preamble(s, &xy, x, y);
     const int width = s.fBitmap->width();
@@ -417,7 +405,6 @@ SkBitmapProcState::chooseMatrixProc(bool trivial_matrix) {
 //    test_int_tileprocs();
     // check for our special case when there is no scale/affine/perspective
     if (trivial_matrix) {
-        SkASSERT(SkPaint::kNone_FilterLevel == fFilterLevel);
         fIntTileProcY = choose_int_tile_proc(fTileModeY);
         switch (fTileModeX) {
             case SkShader::kClamp_TileMode:

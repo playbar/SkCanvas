@@ -106,11 +106,10 @@ static HRESULT create_id(wchar_t* buffer, size_t bufferSize,
 
 static SkBitmap make_fake_bitmap(int width, int height) {
     SkBitmap bitmap;
-    bitmap.setConfig(SkImageInfo::MakeUnknown(width, height));
+    bitmap.setConfig(SkBitmap::kNo_Config, width, height);
     return bitmap;
 }
 
-// TODO: should inherit from SkBaseDevice instead of SkBitmapDevice...
 SkXPSDevice::SkXPSDevice()
     : SkBitmapDevice(make_fake_bitmap(10000, 10000))
     , fCurrentPage(0) {
@@ -1158,6 +1157,10 @@ HRESULT SkXPSDevice::createXpsQuad(const SkPoint (&points)[4],
     HRM((*xpsQuad)->SetIsFilled(fill), "Could not set quad fill.");
 
     return S_OK;
+}
+
+uint32_t SkXPSDevice::getDeviceCapabilities() {
+    return kVector_Capability;
 }
 
 void SkXPSDevice::clear(SkColor color) {
@@ -2415,7 +2418,11 @@ bool SkXPSDevice::onReadPixels(const SkBitmap& bitmap, int x, int y,
     return false;
 }
 
-SkBaseDevice* SkXPSDevice::onCreateDevice(const SkImageInfo&, Usage) {
+SkBaseDevice* SkXPSDevice::onCreateCompatibleDevice(SkBitmap::Config config,
+                                                    int width, int height,
+                                                    bool isOpaque,
+                                                    Usage usage) {
+
 //Conditional for bug compatibility with PDF device.
 #if 0
     if (SkBaseDevice::kGeneral_Usage == usage) {
@@ -2446,6 +2453,6 @@ SkXPSDevice::SkXPSDevice(IXpsOMObjectFactory* xpsFactory)
          "Could not create canvas for layer.");
 }
 
-bool SkXPSDevice::allowImageFilter(const SkImageFilter*) {
+bool SkXPSDevice::allowImageFilter(SkImageFilter*) {
     return false;
 }

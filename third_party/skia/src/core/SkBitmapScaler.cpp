@@ -56,24 +56,22 @@ SkResizeFilter::SkResizeFilter(SkBitmapScaler::ResizeMethod method,
                                const SkConvolutionProcs& convolveProcs) {
 
     // method will only ever refer to an "algorithm method".
-    SkASSERT((SkBitmapScaler::RESIZE_FIRST_ALGORITHM_METHOD <= method) &&
-             (method <= SkBitmapScaler::RESIZE_LAST_ALGORITHM_METHOD));
-
+	
     switch(method) {
         case SkBitmapScaler::RESIZE_BOX:
-            fBitmapFilter = SkNEW(SkBoxFilter);
+            fBitmapFilter = new SkBoxFilter;
             break;
         case SkBitmapScaler::RESIZE_TRIANGLE:
-            fBitmapFilter = SkNEW(SkTriangleFilter);
+            fBitmapFilter = new SkTriangleFilter;
             break;
         case SkBitmapScaler::RESIZE_MITCHELL:
-            fBitmapFilter = SkNEW_ARGS(SkMitchellFilter, (1.f/3.f, 1.f/3.f));
+            fBitmapFilter = new SkMitchellFilter(1.f/3.f, 1.f/3.f);
             break;
         case SkBitmapScaler::RESIZE_HAMMING:
-            fBitmapFilter = SkNEW(SkHammingFilter);
+            fBitmapFilter = new SkHammingFilter;
             break;
         case SkBitmapScaler::RESIZE_LANCZOS3:
-            fBitmapFilter = SkNEW(SkLanczosFilter);
+            fBitmapFilter = new SkLanczosFilter;
             break;
         default:
             // NOTREACHED:
@@ -89,15 +87,8 @@ SkResizeFilter::SkResizeFilter(SkBitmapScaler::ResizeMethod method,
 
     this->computeFilters(srcFullWidth, destSubset.fLeft, destSubset.width(),
                          scaleX, &fXFilter, convolveProcs);
-    if (srcFullWidth == srcFullHeight &&
-        destSubset.fLeft == destSubset.fTop &&
-        destSubset.width() == destSubset.height()&&
-        scaleX == scaleY) {
-        fYFilter = fXFilter;
-    } else {
-        this->computeFilters(srcFullHeight, destSubset.fTop, destSubset.height(),
-                          scaleY, &fYFilter, convolveProcs);
-    }
+    this->computeFilters(srcFullHeight, destSubset.fTop, destSubset.height(),
+                         scaleY, &fYFilter, convolveProcs);
 }
 
 // TODO(egouriou): Take advantage of periods in the convolution.
@@ -180,7 +171,6 @@ void SkResizeFilter::computeFilters(int srcSize,
 
       filterSum += filterValue;
     }
-    SkASSERT(!filterValues.empty());
 
     // The filter must be normalized so that we don't affect the brightness of
     // the image. Convert to normalized fixed point.
@@ -235,11 +225,7 @@ static SkBitmapScaler::ResizeMethod ResizeMethodToAlgorithmMethod(
         case SkBitmapScaler::RESIZE_BETTER:
             return SkBitmapScaler::RESIZE_HAMMING;
         default:
-#ifdef SK_HIGH_QUALITY_IS_LANCZOS
-            return SkBitmapScaler::RESIZE_LANCZOS3;
-#else
             return SkBitmapScaler::RESIZE_MITCHELL;
-#endif
     }
 }
 
@@ -252,11 +238,7 @@ bool SkBitmapScaler::Resize(SkBitmap* resultPtr,
                             const SkConvolutionProcs& convolveProcs,
                             SkBitmap::Allocator* allocator) {
   // Ensure that the ResizeMethod enumeration is sound.
-    SkASSERT(((RESIZE_FIRST_QUALITY_METHOD <= method) &&
-        (method <= RESIZE_LAST_QUALITY_METHOD)) ||
-        ((RESIZE_FIRST_ALGORITHM_METHOD <= method) &&
-        (method <= RESIZE_LAST_ALGORITHM_METHOD)));
-
+  
     SkIRect dest = { 0, 0, destWidth, destHeight };
     if (!dest.contains(destSubset)) {
         SkErrorInternals::SetError( kInvalidArgument_SkError,
@@ -277,12 +259,10 @@ bool SkBitmapScaler::Resize(SkBitmap* resultPtr,
     method = ResizeMethodToAlgorithmMethod(method);
 
     // Check that we deal with an "algorithm methods" from this point onward.
-    SkASSERT((SkBitmapScaler::RESIZE_FIRST_ALGORITHM_METHOD <= method) &&
-        (method <= SkBitmapScaler::RESIZE_LAST_ALGORITHM_METHOD));
 
     SkAutoLockPixels locker(source);
     if (!source.readyToDraw() ||
-        source.colorType() != kPMColor_SkColorType) {
+        source.config() != SkBitmap::kARGB_8888_Config) {
         return false;
     }
 
@@ -297,9 +277,9 @@ bool SkBitmapScaler::Resize(SkBitmap* resultPtr,
 
     // Convolve into the result.
     SkBitmap result;
-    result.setConfig(SkImageInfo::MakeN32(destSubset.width(),
-                                          destSubset.height(),
-                                          source.alphaType()));
+    result.setConfig(SkBitmap::kARGB_8888_Config,
+                     destSubset.width(), destSubset.height(), 0,
+                     source.alphaType());
     result.allocPixels(allocator, NULL);
     if (!result.readyToDraw()) {
         return false;
@@ -313,7 +293,6 @@ bool SkBitmapScaler::Resize(SkBitmap* resultPtr,
 
     *resultPtr = result;
     resultPtr->lockPixels();
-    SkASSERT(NULL != resultPtr->getPixels());
     return true;
 }
 

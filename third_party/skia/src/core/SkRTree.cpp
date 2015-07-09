@@ -16,7 +16,7 @@ static inline void join_no_empty_check(const SkIRect& joinWith, SkIRect* out);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-SkRTree* SkRTree::Create(int minChildren, int maxChildren, SkScalar aspectRatio,
+SkRTree* SkRTree::Create(int minChildren, int maxChildren, float aspectRatio,
             bool sortWhenBulkLoading) {
     if (minChildren < maxChildren && (maxChildren + 1) / 2 >= minChildren &&
         minChildren > 0 && maxChildren < static_cast<int>(SK_MaxU16)) {
@@ -25,7 +25,7 @@ SkRTree* SkRTree::Create(int minChildren, int maxChildren, SkScalar aspectRatio,
     return NULL;
 }
 
-SkRTree::SkRTree(int minChildren, int maxChildren, SkScalar aspectRatio,
+SkRTree::SkRTree(int minChildren, int maxChildren, float aspectRatio,
         bool sortWhenBulkLoading)
     : fMinChildren(minChildren)
     , fMaxChildren(maxChildren)
@@ -34,9 +34,6 @@ SkRTree::SkRTree(int minChildren, int maxChildren, SkScalar aspectRatio,
     , fNodes(fNodeSize * 256)
     , fAspectRatio(aspectRatio)
     , fSortWhenBulkLoading(sortWhenBulkLoading) {
-    SkASSERT(minChildren < maxChildren && minChildren > 0 && maxChildren <
-             static_cast<int>(SK_MaxU16));
-    SkASSERT((maxChildren + 1) / 2 >= minChildren);
     this->validate();
 }
 
@@ -47,7 +44,6 @@ SkRTree::~SkRTree() {
 void SkRTree::insert(void* data, const SkIRect& bounds, bool defer) {
     this->validate();
     if (bounds.isEmpty()) {
-        SkASSERT(false);
         return;
     }
     Branch newBranch;
@@ -96,7 +92,6 @@ void SkRTree::flushDeferredInserts() {
         }
     } else {
         // TODO: some algorithm for bulk loading into an already populated tree
-        SkASSERT(0 == fDeferredInserts.count());
     }
     fDeferredInserts.rewind();
     this->validate();
@@ -174,7 +169,6 @@ SkRTree::Branch* SkRTree::insert(Node* root, Branch* branch, uint16_t level) {
 }
 
 int SkRTree::chooseSubtree(Node* root, Branch* branch) {
-    SkASSERT(!root->isLeaf());
     if (1 < root->fLevel) {
         // root's child pointers do not point to leaves, so minimize area increase
         int32_t minAreaIncrease = SK_MaxS32;
@@ -191,7 +185,6 @@ int SkRTree::chooseSubtree(Node* root, Branch* branch) {
                 bestSubtree = i;
             }
         }
-        SkASSERT(-1 != bestSubtree);
         return bestSubtree;
     } else if (1 == root->fLevel) {
         // root's child pointers do point to leaves, so minimize overlap increase
@@ -221,7 +214,6 @@ int SkRTree::chooseSubtree(Node* root, Branch* branch) {
         }
         return bestSubtree;
     } else {
-        SkASSERT(false);
         return 0;
     }
 }
@@ -400,40 +392,28 @@ SkRTree::Branch SkRTree::bulkLoad(SkTDArray<Branch>* branches, int level) {
 }
 
 void SkRTree::validate() {
-#ifdef SK_DEBUG
-    if (this->isEmpty()) {
-        return;
-    }
-    SkASSERT(fCount == this->validateSubtree(fRoot.fChild.subtree, fRoot.fBounds, true));
-#endif
+
 }
 
 int SkRTree::validateSubtree(Node* root, SkIRect bounds, bool isRoot) {
     // make sure the pointer is pointing to a valid place
-    SkASSERT(fNodes.contains(static_cast<void*>(root)));
 
     if (isRoot) {
         // If the root of this subtree is the overall root, we have looser standards:
         if (root->isLeaf()) {
-            SkASSERT(root->fNumChildren >= 1 && root->fNumChildren <= fMaxChildren);
         } else {
-            SkASSERT(root->fNumChildren >= 2 && root->fNumChildren <= fMaxChildren);
         }
     } else {
-        SkASSERT(root->fNumChildren >= fMinChildren && root->fNumChildren <= fMaxChildren);
     }
 
     for (int i = 0; i < root->fNumChildren; ++i) {
-        SkASSERT(bounds.contains(root->child(i)->fBounds));
     }
 
     if (root->isLeaf()) {
-        SkASSERT(0 == root->fLevel);
         return root->fNumChildren;
     } else {
         int childCount = 0;
         for (int i = 0; i < root->fNumChildren; ++i) {
-            SkASSERT(root->child(i)->fChild.subtree->fLevel == root->fLevel - 1);
             childCount += this->validateSubtree(root->child(i)->fChild.subtree,
                                                 root->child(i)->fBounds);
         }
@@ -442,7 +422,6 @@ int SkRTree::validateSubtree(Node* root, SkIRect bounds, bool isRoot) {
 }
 
 void SkRTree::rewindInserts() {
-    SkASSERT(this->isEmpty()); // Currently only supports deferred inserts
     while (!fDeferredInserts.isEmpty() &&
            fClient->shouldRewind(fDeferredInserts.top().fChild.data)) {
         fDeferredInserts.pop();

@@ -49,7 +49,6 @@ extern SkMemset32Proc sk_memset32;
 #endif
 
 inline int SkUTF8_CountUTF8Bytes(const char utf8[]) {
-    SkASSERT(utf8);
     return SkUTF8_LeadByteToCount(*(const uint8_t*)utf8);
 }
 

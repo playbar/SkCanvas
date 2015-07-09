@@ -85,9 +85,6 @@ void SkDrawBitmap::dump(SkAnimateMaker* maker) {
 #endif
 
 void SkDrawBitmap::onEndElement(SkAnimateMaker&) {
-    SkASSERT(width != -1);
-    SkASSERT(height != -1);
-    SkASSERT(rowBytes >= 0);
     fBitmap.setConfig((SkBitmap::Config) format, width, height, rowBytes);
     fBitmap.allocPixels();
     if (fColorSet)
@@ -98,12 +95,10 @@ bool SkDrawBitmap::setProperty(int index, SkScriptValue& value)
 {
     switch (index) {
         case SK_PROPERTY(erase):
-            SkASSERT(value.fType == SkType_ARGB);
             fColor = value.fOperand.fS32;
             fColorSet = true;
             break;
         default:
-            SkASSERT(0);
             return false;
     }
     return true;
@@ -165,7 +160,6 @@ bool SkImageBaseBitmap::getProperty(int index, SkScriptValue* value) const {
             value->fOperand.fS32 = fBitmap.width();
             break;
     default:
-        SkASSERT(0);
         return false;
     }
     value->fType = SkType_Int;

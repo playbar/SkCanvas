@@ -40,7 +40,7 @@ class SkRotate : public SkMatrixPart {
     SkRotate();
 protected:
     virtual bool add();
-    SkScalar degrees;
+    float degrees;
     SkPoint center;
 };
 
@@ -49,8 +49,8 @@ class SkScale : public SkMatrixPart {
     SkScale();
 protected:
     virtual bool add();
-    SkScalar x;
-    SkScalar y;
+    float x;
+    float y;
     SkPoint center;
 };
 
@@ -59,8 +59,8 @@ class SkSkew : public SkMatrixPart {
     SkSkew();
 protected:
     virtual bool add();
-    SkScalar x;
-    SkScalar y;
+    float x;
+    float y;
     SkPoint center;
 };
 
@@ -69,8 +69,8 @@ class SkTranslate : public SkMatrixPart {
     SkTranslate();
 protected:
     virtual bool add();
-    SkScalar x;
-    SkScalar y;
+    float x;
+    float y;
 };
 
 class SkFromPath : public SkMatrixPart {
@@ -80,7 +80,7 @@ class SkFromPath : public SkMatrixPart {
 protected:
     virtual bool add();
     int32_t mode;
-    SkScalar offset;
+    float offset;
     SkDrawPath* path;
     SkPathMeasure fPathMeasure;
 };

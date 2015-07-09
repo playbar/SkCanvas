@@ -236,7 +236,6 @@ inline bool precisely_between(double a, double b, double c) {
 
 // returns true if (a <= b <= c) || (a >= b >= c)
 inline bool between(double a, double b, double c) {
-    SkASSERT(((a <= b && b <= c) || (a >= b && b >= c)) == ((a - b) * (c - b) <= 0));
     return (a - b) * (c - b) <= 0;
 }
 
@@ -258,28 +257,11 @@ struct SkDRect;
 
 inline SkPath::Verb SkPathOpsPointsToVerb(int points) {
     int verb = (1 << points) >> 1;
-#ifdef SK_DEBUG
-    switch (points) {
-        case 0: SkASSERT(SkPath::kMove_Verb == verb); break;
-        case 1: SkASSERT(SkPath::kLine_Verb == verb); break;
-        case 2: SkASSERT(SkPath::kQuad_Verb == verb); break;
-        case 3: SkASSERT(SkPath::kCubic_Verb == verb); break;
-        default: SkDEBUGFAIL("should not be here");
-    }
-#endif
     return (SkPath::Verb)verb;
 }
 
 inline int SkPathOpsVerbToPoints(SkPath::Verb verb) {
     int points = (int) verb - ((int) verb >> 2);
-#ifdef SK_DEBUG
-    switch (verb) {
-        case SkPath::kLine_Verb: SkASSERT(1 == points); break;
-        case SkPath::kQuad_Verb: SkASSERT(2 == points); break;
-        case SkPath::kCubic_Verb: SkASSERT(3 == points); break;
-        default: SkDEBUGFAIL("should not get here");
-    }
-#endif
     return points;
 }
 

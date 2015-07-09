@@ -35,29 +35,29 @@ public:
         kAll_BlurFlag               = 0x07
     };
 
-    SkBlurDrawLooper(SkColor color, SkScalar sigma, SkScalar dx, SkScalar dy,
+    SkBlurDrawLooper(SkColor color, float sigma, float dx, float dy,
                      uint32_t flags = kNone_BlurFlag);
 
 //    SK_ATTR_DEPRECATED("use sigma version")
-    SkBlurDrawLooper(SkScalar radius, SkScalar dx, SkScalar dy, SkColor color,
+    SkBlurDrawLooper(float radius, float dx, float dy, SkColor color,
                      uint32_t flags = kNone_BlurFlag);
     virtual ~SkBlurDrawLooper();
 
-    virtual SkDrawLooper::Context* createContext(SkCanvas*, void* storage) const SK_OVERRIDE;
+    // overrides from SkDrawLooper
+    virtual void init(SkCanvas*);
+    virtual bool next(SkCanvas*, SkPaint* paint);
 
-    virtual size_t contextSize() const SK_OVERRIDE { return sizeof(BlurDrawLooperContext); }
-
-    SK_TO_STRING_OVERRIDE()
+    SK_DEVELOPER_TO_STRING()
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkBlurDrawLooper)
 
 protected:
-    SkBlurDrawLooper(SkReadBuffer&);
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
+    SkBlurDrawLooper(SkFlattenableReadBuffer&);
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
 
 private:
     SkMaskFilter*   fBlur;
     SkColorFilter*  fColorFilter;
-    SkScalar        fDx, fDy;
+    float        fDx, fDy;
     SkColor         fBlurColor;
     uint32_t        fBlurFlags;
 
@@ -66,19 +66,9 @@ private:
         kAfterEdge,
         kDone
     };
+    State   fState;
 
-    class BlurDrawLooperContext : public SkDrawLooper::Context {
-    public:
-        explicit BlurDrawLooperContext(const SkBlurDrawLooper* looper);
-
-        virtual bool next(SkCanvas* canvas, SkPaint* paint) SK_OVERRIDE;
-
-    private:
-        const SkBlurDrawLooper* fLooper;
-        State fState;
-    };
-
-    void init(SkScalar sigma, SkScalar dx, SkScalar dy, SkColor color, uint32_t flags);
+    void init(float sigma, float dx, float dy, SkColor color, uint32_t flags);
 
     typedef SkDrawLooper INHERITED;
 };

@@ -78,7 +78,7 @@ public:
     uint32_t readU32() { return (uint32_t)this->readS32(); }
 
     bool     readBool() { return this->readU8() != 0; }
-    SkScalar readScalar();
+    float readScalar();
     size_t   readPackedUInt();
 
     /**
@@ -189,8 +189,6 @@ public:
     virtual void newline();
     virtual void flush();
 
-    virtual size_t bytesWritten() const = 0;
-
     // helpers
 
     bool    write8(U8CPU);
@@ -201,13 +199,13 @@ public:
     bool    writeDecAsText(int32_t);
     bool    writeBigDecAsText(int64_t, int minDigits = 0);
     bool    writeHexAsText(uint32_t, int minDigits = 0);
-    bool    writeScalarAsText(SkScalar);
+    bool    writeScalarAsText(float);
 
     bool    writeBool(bool v) { return this->write8(v); }
-    bool    writeScalar(SkScalar);
+    bool    writeScalar(float);
     bool    writePackedUInt(size_t);
 
-    bool    writeStream(SkStream* input, size_t length);
+    bool writeStream(SkStream* input, size_t length);
 
     /**
      * Append an SkData object to the stream, such that it can be read
@@ -218,12 +216,6 @@ public:
      * just write the raw content of the SkData object to the stream.
      */
     bool writeData(const SkData*);
-
-    /**
-     * This returns the number of bytes in the stream required to store
-     * 'value'.
-     */
-    static int SizeOfPackedUInt(size_t value);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -373,7 +365,6 @@ public:
 
     virtual bool write(const void* buffer, size_t size) SK_OVERRIDE;
     virtual void flush() SK_OVERRIDE;
-    virtual size_t bytesWritten() const SK_OVERRIDE;
 
 private:
     SkFILE* fFILE;
@@ -387,7 +378,7 @@ public:
 
     SkMemoryWStream(void* buffer, size_t size);
     virtual bool write(const void* buffer, size_t size) SK_OVERRIDE;
-    virtual size_t bytesWritten() const SK_OVERRIDE { return fBytesWritten; }
+    size_t bytesWritten() const { return fBytesWritten; }
 
 private:
     char*   fBuffer;
@@ -405,12 +396,12 @@ public:
     virtual ~SkDynamicMemoryWStream();
 
     virtual bool write(const void* buffer, size_t size) SK_OVERRIDE;
-    virtual size_t bytesWritten() const SK_OVERRIDE { return fBytesWritten; }
     // random access write
     // modifies stream and returns true if offset + size is less than or equal to getOffset()
     bool write(const void* buffer, size_t offset, size_t size);
     bool read(void* buffer, size_t offset, size_t size);
     size_t getOffset() const { return fBytesWritten; }
+    size_t bytesWritten() const { return fBytesWritten; }
 
     // copy what has been written to the stream into dst
     void copyTo(void* dst) const;
@@ -446,16 +437,13 @@ private:
 
 class SK_API SkDebugWStream : public SkWStream {
 public:
-    SkDebugWStream() : fBytesWritten(0) {}
     SK_DECLARE_INST_COUNT(SkDebugWStream)
 
     // overrides
     virtual bool write(const void* buffer, size_t size) SK_OVERRIDE;
     virtual void newline() SK_OVERRIDE;
-    virtual size_t bytesWritten() const SK_OVERRIDE { return fBytesWritten; }
 
 private:
-    size_t fBytesWritten;
     typedef SkWStream INHERITED;
 };
 

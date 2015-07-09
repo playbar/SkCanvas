@@ -23,11 +23,8 @@
  as the colortable.count says it is.
  */
 static void build_compressed_data(void* buffer, const SkBitmap& bitmap) {
-    SkASSERT(SkBitmap::kIndex8_Config == bitmap.config());
-
     SkAutoLockPixels alp(bitmap);
     if (!bitmap.readyToDraw()) {
-        SkDEBUGFAIL("bitmap not ready to draw!");
         return;
     }
 
@@ -65,20 +62,19 @@ static void generate_bitmap_cache_id(const SkBitmap& bitmap, GrCacheID* id) {
     // Our id includes the offset, width, and height so that bitmaps created by extractSubset()
     // are unique.
     uint32_t genID = bitmap.getGenerationID();
-    SkIPoint origin = bitmap.pixelRefOrigin();
-    int16_t width = SkToS16(bitmap.width());
-    int16_t height = SkToS16(bitmap.height());
+    size_t offset = bitmap.pixelRefOffset();
+    int16_t width = static_cast<int16_t>(bitmap.width());
+    int16_t height = static_cast<int16_t>(bitmap.height());
 
     GrCacheID::Key key;
-    memcpy(key.fData8 +  0, &genID,     4);
-    memcpy(key.fData8 +  4, &origin.fX, 4);
-    memcpy(key.fData8 +  8, &origin.fY, 4);
-    memcpy(key.fData8 + 12, &width,     2);
-    memcpy(key.fData8 + 14, &height,    2);
-    static const size_t kKeyDataSize = 16;
+    memcpy(key.fData8, &genID, 4);
+    memcpy(key.fData8 + 4, &width, 2);
+    memcpy(key.fData8 + 6, &height, 2);
+    memcpy(key.fData8 + 8, &offset, sizeof(size_t));
+    static const size_t kKeyDataSize = 8 + sizeof(size_t);
     memset(key.fData8 + kKeyDataSize, 0, sizeof(key) - kKeyDataSize);
-    GR_STATIC_ASSERT(sizeof(key) >= kKeyDataSize);
-    static const GrCacheID::Domain gBitmapTextureDomain = GrCacheID::GenerateDomain();
+    GR_STATIC_ASSERT(sizeof(key) >= 8 + sizeof(size_t));
+    static const uint8_t gBitmapTextureDomain = GrCacheID::GenerateDomain();
     id->reset(gBitmapTextureDomain, key);
 }
 
@@ -108,7 +104,6 @@ private:
 }  // namespace
 
 static void add_genID_listener(GrResourceKey key, SkPixelRef* pixelRef) {
-    SkASSERT(NULL != pixelRef);
     pixelRef->addGenIDChangeListener(SkNEW_ARGS(GrResourceInvalidator, (key)));
 }
 
@@ -155,7 +150,7 @@ static GrTexture* sk_gr_create_bitmap_texture(GrContext* ctx,
                 return result;
             }
         } else {
-            origBitmap.copyTo(&tmpBitmap, kPMColor_SkColorType);
+            origBitmap.copyTo(&tmpBitmap, SkBitmap::kARGB_8888_Config);
             // now bitmap points to our temp, which has been promoted to 32bits
             bitmap = &tmpBitmap;
             desc.fConfig = SkBitmapConfig2GrPixelConfig(bitmap->config());
@@ -234,7 +229,6 @@ GrTexture* GrLockAndRefCachedBitmapTexture(GrContext* ctx,
 }
 
 void GrUnlockAndUnrefCachedBitmapTexture(GrTexture* texture) {
-    SkASSERT(NULL != texture->getContext());
 
     texture->getContext()->unlockScratchTexture(texture);
     texture->unref();
@@ -258,29 +252,6 @@ GrPixelConfig SkBitmapConfig2GrPixelConfig(SkBitmap::Config config) {
             // kNo_Config, kA1_Config missing
             return kUnknown_GrPixelConfig;
     }
-}
-
-// alphatype is ignore for now, but if GrPixelConfig is expanded to encompass
-// alpha info, that will be considered.
-GrPixelConfig SkImageInfo2GrPixelConfig(SkColorType ct, SkAlphaType) {
-    switch (ct) {
-        case kUnknown_SkColorType:
-            return kUnknown_GrPixelConfig;
-        case kAlpha_8_SkColorType:
-            return kAlpha_8_GrPixelConfig;
-        case kRGB_565_SkColorType:
-            return kRGB_565_GrPixelConfig;
-        case kARGB_4444_SkColorType:
-            return kRGBA_4444_GrPixelConfig;
-        case kRGBA_8888_SkColorType:
-            return kRGBA_8888_GrPixelConfig;
-        case kBGRA_8888_SkColorType:
-            return kBGRA_8888_GrPixelConfig;
-        case kIndex_8_SkColorType:
-            return kIndex_8_GrPixelConfig;
-    }
-    SkASSERT(0);    // shouldn't get here
-    return kUnknown_GrPixelConfig;
 }
 
 bool GrPixelConfig2ColorType(GrPixelConfig config, SkColorType* ctOut) {

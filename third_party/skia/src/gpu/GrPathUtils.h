@@ -19,7 +19,7 @@ class SkMatrix;
  *  Utilities for evaluating paths.
  */
 namespace GrPathUtils {
-    SkScalar scaleToleranceToSrc(SkScalar devTol,
+    float scaleToleranceToSrc(float devTol,
                                  const SkMatrix& viewM,
                                  const SkRect& pathBounds);
 
@@ -27,28 +27,28 @@ namespace GrPathUtils {
     /// very small tolerances will be increased to gMinCurveTol.
     int worstCasePointCount(const SkPath&,
                             int* subpaths,
-                            SkScalar tol);
+                            float tol);
 
     /// Since we divide by tol if we're computing exact worst-case bounds,
     /// very small tolerances will be increased to gMinCurveTol.
-    uint32_t quadraticPointCount(const GrPoint points[], SkScalar tol);
+    uint32_t quadraticPointCount(const GrPoint points[], float tol);
 
     uint32_t generateQuadraticPoints(const GrPoint& p0,
                                      const GrPoint& p1,
                                      const GrPoint& p2,
-                                     SkScalar tolSqd,
+                                     float tolSqd,
                                      GrPoint** points,
                                      uint32_t pointsLeft);
 
     /// Since we divide by tol if we're computing exact worst-case bounds,
     /// very small tolerances will be increased to gMinCurveTol.
-    uint32_t cubicPointCount(const GrPoint points[], SkScalar tol);
+    uint32_t cubicPointCount(const GrPoint points[], float tol);
 
     uint32_t generateCubicPoints(const GrPoint& p0,
                                  const GrPoint& p1,
                                  const GrPoint& p2,
                                  const GrPoint& p3,
-                                 SkScalar tolSqd,
+                                 float tolSqd,
                                  GrPoint** points,
                                  uint32_t pointsLeft);
 
@@ -105,7 +105,7 @@ namespace GrPathUtils {
     //  K = (klm[0], klm[1], klm[2])
     //  L = (klm[3], klm[4], klm[5])
     //  M = (klm[6], klm[7], klm[8])
-    void getConicKLM(const SkPoint p[3], const SkScalar weight, SkScalar klm[9]);
+    void getConicKLM(const SkPoint p[3], const float weight, float klm[9]);
 
     // Converts a cubic into a sequence of quads. If working in device space
     // use tolScale = 1, otherwise set based on stretchiness of the matrix. The
@@ -120,7 +120,7 @@ namespace GrPathUtils {
     // is true the cubic must be simple and dir must specify the orientation of
     // the cubic. Otherwise, dir is ignored.
     void convertCubicToQuads(const GrPoint p[4],
-                             SkScalar tolScale,
+                             float tolScale,
                              bool constrainWithinTangents,
                              SkPath::Direction dir,
                              SkTArray<SkPoint, true>* quads);
@@ -155,7 +155,7 @@ namespace GrPathUtils {
     // If you transform the points the lines will also need to be transformed. This can be done
     // by mapping the lines with the inverse-transpose of the matrix used to map the points.
     int chopCubicAtLoopIntersection(const SkPoint src[4], SkPoint dst[10] = NULL,
-                                    SkScalar klm[9] = NULL, SkScalar klm_rev[3] = NULL);
+                                    float klm[9] = NULL, float klm_rev[3] = NULL);
 
     // Input is p which holds the 4 control points of a non-rational cubic Bezier curve.
     // Output is the coefficients of the three linear functionals K, L, & M which
@@ -168,6 +168,6 @@ namespace GrPathUtils {
     // Notice that the klm lines are calculated in the same space as the input control points.
     // If you transform the points the lines will also need to be transformed. This can be done
     // by mapping the lines with the inverse-transpose of the matrix used to map the points.
-    void getCubicKLM(const SkPoint p[4], SkScalar klm[9]);
+    void getCubicKLM(const SkPoint p[4], float klm[9]);
 };
 #endif

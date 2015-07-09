@@ -123,17 +123,14 @@ void SkDisplayString::executeFunction(SkDisplayable* target, int index,
         SkScriptValue* scriptValue) {
     if (scriptValue == NULL)
         return;
-    SkASSERT(target == this);
     switch (index) {
         case SK_FUNCTION(slice):
             scriptValue->fType = SkType_String;
-            SkASSERT(parameters[0].fType == SkType_Int);
             int start =  parameters[0].fOperand.fS32;
             if (start < 0)
                 start = (int) (value.size() - start);
             int end = (int) value.size();
             if (parameters.count() > 1) {
-                SkASSERT(parameters[1].fType == SkType_Int);
                 end = parameters[1].fOperand.fS32;
             }
             //if (end >= 0 && end < (int) value.size())
@@ -156,7 +153,6 @@ bool SkDisplayString::getProperty(int index, SkScriptValue* scriptValue) const {
             scriptValue->fOperand.fS32 = (int32_t) value.size();
             break;
         default:
-            SkASSERT(0);
             return false;
     }
     return true;
@@ -207,7 +203,6 @@ bool SkDisplayArray::getProperty(int index, SkScriptValue* value) const {
             value->fOperand.fS32 = values.count();
             break;
         default:
-            SkASSERT(0);
             return false;
     }
     return true;

@@ -89,7 +89,7 @@ public:
     void track(SkString* string);
     void unboxCallBack(_unboxCallBack func, void* userStorage);
     static bool ConvertTo(SkScriptEngine* , SkDisplayTypes toType, SkScriptValue* value);
-    static SkScalar IntToScalar(int32_t );
+    static float IntToScalar(int32_t );
     static SkDisplayTypes ToDisplayType(SkOpType type);
     static SkOpType ToOpType(SkDisplayTypes type);
     static bool ValueToString(SkScriptValue value, SkString* string);
@@ -257,7 +257,7 @@ struct SkScriptNAnswer {
     const char* fScript;
     SkDisplayTypes fType;
     int32_t fIntAnswer;
-    SkScalar fScalarAnswer;
+    float fScalarAnswer;
     const char* fStringAnswer;
 };
 

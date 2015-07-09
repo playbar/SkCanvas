@@ -39,7 +39,7 @@ DEFINE_GET_MEMBER(SkDisplayNumber);
 #endif
 
 bool SkDisplayNumber::getProperty(int index, SkScriptValue* value) const {
-    SkScalar constant;
+    float constant;
     switch (index) {
         case SK_PROPERTY(MAX_VALUE):
             constant = SK_ScalarMax;
@@ -57,7 +57,6 @@ bool SkDisplayNumber::getProperty(int index, SkScriptValue* value) const {
             constant = SK_ScalarInfinity;
         break;
         default:
-            SkASSERT(0);
             return false;
     }
     value->fOperand.fScalar = constant;

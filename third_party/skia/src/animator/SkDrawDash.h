@@ -20,7 +20,7 @@ class SkDash : public SkDrawPathEffect {
     virtual SkPathEffect* getPathEffect();
 private:
     SkTDScalarArray intervals;
-    SkScalar phase;
+    float phase;
 };
 
 #endif // SkDrawDash_DEFINED

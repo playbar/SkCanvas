@@ -44,18 +44,6 @@ private:
     SkMutex           fInboxesMutex;
 };
 
-// This must go in a single .cpp file, not some .h, or we risk creating more than one global
-// SkMessageBus per type when using shared libraries.
-#define DECLARE_SKMESSAGEBUS_MESSAGE(Message)             \
-    template <>                                           \
-    SkMessageBus<Message>* SkMessageBus<Message>::Get() { \
-        static SkMessageBus<Message>* bus = NULL;         \
-        SK_DECLARE_STATIC_ONCE(once);                     \
-        SkOnce(&once, &New, &bus);                        \
-        SkASSERT(bus != NULL);                            \
-        return bus;                                       \
-    }
-
 //   ----------------------- Implementation of SkMessageBus::Inbox -----------------------
 
 template<typename Message>
@@ -88,7 +76,6 @@ void SkMessageBus<Message>::Inbox::receive(const Message& m) {
 
 template<typename Message>
 void SkMessageBus<Message>::Inbox::poll(SkTDArray<Message>* messages) {
-    SkASSERT(NULL != messages);
     messages->reset();
     SkAutoMutexAcquire lock(fMessagesMutex);
     messages->swap(fMessages);
@@ -102,6 +89,16 @@ SkMessageBus<Message>::SkMessageBus() {}
 template <typename Message>
 /*static*/ void SkMessageBus<Message>::New(SkMessageBus<Message>** bus) {
     *bus = new SkMessageBus<Message>();
+}
+
+template <typename Message>
+/*static*/ SkMessageBus<Message>* SkMessageBus<Message>::Get() {
+    // The first time this method is called, create the singleton bus for this message type.
+    static SkMessageBus<Message>* bus = NULL;
+    SK_DECLARE_STATIC_ONCE(once);
+    SkOnce(&once, &New, &bus);
+
+    return bus;
 }
 
 template <typename Message>

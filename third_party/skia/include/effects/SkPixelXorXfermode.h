@@ -17,24 +17,17 @@
 */
 class SK_API SkPixelXorXfermode : public SkXfermode {
 public:
-    static SkPixelXorXfermode* Create(SkColor opColor) {
-        return SkNEW_ARGS(SkPixelXorXfermode, (opColor));
-    }
+    SkPixelXorXfermode(SkColor opColor) : fOpColor(opColor) {}
 
-    SK_TO_STRING_OVERRIDE()
+    SK_DEVELOPER_TO_STRING()
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkPixelXorXfermode)
 
 protected:
-    SkPixelXorXfermode(SkReadBuffer& rb);
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
+    SkPixelXorXfermode(SkFlattenableReadBuffer& rb);
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
 
     // override from SkXfermode
     virtual SkPMColor xferColor(SkPMColor src, SkPMColor dst) const;
-
-#ifdef SK_SUPPORT_LEGACY_PUBLICEFFECTCONSTRUCTORS
-public:
-#endif
-    SkPixelXorXfermode(SkColor opColor) : fOpColor(opColor) {}
 
 private:
     SkColor fOpColor;

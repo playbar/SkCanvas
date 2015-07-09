@@ -15,14 +15,12 @@
 static uint8_t rbyte(SkStream& s)
 {
     uint8_t b;
-    SkDEBUGCODE(size_t size = ) s.read(&b, 1);
-    SkASSERT(size == 1);
+    s.read(&b, 1);
     return b;
 }
 
 static int rdata(SkStream& s, int data)
 {
-    SkASSERT((data & ~31) == 0);
     if (data == 31)
     {
         data = rbyte(s);
@@ -37,8 +35,6 @@ static int rdata(SkStream& s, int data)
 
 static void set(char* array[256], int index, SkStream& s, int data)
 {
-    SkASSERT((unsigned)index <= 255);
-
     size_t size = rdata(s, data);
 
     if (array[index] == NULL)
@@ -112,7 +108,6 @@ static void rattr(unsigned verb, SkStream& s, BMLW& rec, SkXMLWriter& writer)
         valueIndex = rbyte(s);
         break;
     default:
-        SkDEBUGFAIL("bad verb");
         return;
     }
     writer.addAttribute(rec.fNames[nameIndex], rec.fValues[valueIndex]);
@@ -132,7 +127,6 @@ static void relem(unsigned verb, SkStream& s, BMLW& rec, SkXMLWriter& writer)
     }
     else
     {
-        SkASSERT(verb == kStartElem_Index_Verb);
         elemIndex = rdata(s, data);
     }
 
@@ -156,7 +150,7 @@ static void relem(unsigned verb, SkStream& s, BMLW& rec, SkXMLWriter& writer)
             writer.endElement();
             return;
         default:
-            SkDEBUGFAIL("bad verb");
+			break;
         }
     }
 }

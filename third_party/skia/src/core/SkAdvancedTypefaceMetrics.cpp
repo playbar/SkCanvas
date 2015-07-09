@@ -38,13 +38,11 @@ const int16_t kDontCareAdvance = SK_MinS16 + 1;
 template <typename Data>
 void stripUninterestingTrailingAdvancesFromRange(
                                                  SkAdvancedTypefaceMetrics::AdvanceMetric<Data>* range) {
-    SkASSERT(false);
 }
 
 template <>
 void stripUninterestingTrailingAdvancesFromRange<int16_t>(
                                                           SkAdvancedTypefaceMetrics::AdvanceMetric<int16_t>* range) {
-    SkASSERT(range);
 
     int expectedAdvanceCount = range->fEndId - range->fStartId + 1;
     if (range->fAdvance.count() < expectedAdvanceCount) {
@@ -80,17 +78,14 @@ SkAdvancedTypefaceMetrics::AdvanceMetric<Data>* appendRange(
 template <typename Data>
 void zeroWildcardsInRange(
                           SkAdvancedTypefaceMetrics::AdvanceMetric<Data>* range) {
-    SkASSERT(false);
 }
 
 template <>
 void zeroWildcardsInRange<int16_t>(
                                    SkAdvancedTypefaceMetrics::AdvanceMetric<int16_t>* range) {
-    SkASSERT(range);
     if (range->fType != SkAdvancedTypefaceMetrics::WidthRange::kRange) {
         return;
     }
-    SkASSERT(range->fAdvance.count() == range->fEndId - range->fStartId + 1);
 
     // Zero out wildcards.
     for (int i = 0; i < range->fAdvance.count(); ++i) {
@@ -119,7 +114,6 @@ void finishRange(
         }
         newLength = 1;
     }
-    SkASSERT(range->fAdvance.count() >= newLength);
     range->fAdvance.setCount(newLength);
     zeroWildcardsInRange(range);
 }
@@ -169,12 +163,11 @@ SkAdvancedTypefaceMetrics::AdvanceMetric<Data>* getAdvanceData(
         Data advance = kInvalidAdvance;
         if (gId < lastIndex) {
             // Get glyph id only when subset is NULL, or the id is in subset.
-            SkASSERT(!subsetGlyphIDs || (subsetIndex < subsetGlyphIDsLength &&
-                    static_cast<uint32_t>(gId) <= subsetGlyphIDs[subsetIndex]));
+         
             if (!subsetGlyphIDs ||
                 (subsetIndex < subsetGlyphIDsLength &&
                  static_cast<uint32_t>(gId) == subsetGlyphIDs[subsetIndex])) {
-                SkAssertResult(getAdvance(fontHandle, gId, &advance));
+				getAdvance(fontHandle, gId, &advance);
                 ++subsetIndex;
             } else {
                 advance = kDontCareAdvance;
@@ -243,8 +236,6 @@ SkAdvancedTypefaceMetrics::AdvanceMetric<Data>* getAdvanceData(
         }
     }
     if (curRange->fStartId == lastIndex) {
-        SkASSERT(prevRange);
-        SkASSERT(prevRange->fNext->fStartId == lastIndex);
         prevRange->fNext.free();
     } else {
         finishRange(curRange, lastIndex - 1,

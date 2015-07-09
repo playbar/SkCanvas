@@ -30,87 +30,6 @@
 
 //#define ENABLE_TIME_DRAW    // dumps milliseconds for each draw
 
-
-#ifdef SK_DEBUG
-// enable SK_DEBUG_TRACE to trace DrawType elements when
-//     recorded and played back
-// #define SK_DEBUG_TRACE
-// enable SK_DEBUG_SIZE to see the size of picture components
-// #define SK_DEBUG_SIZE
-// enable SK_DEBUG_DUMP to see the contents of recorded elements
-// #define SK_DEBUG_DUMP
-// enable SK_DEBUG_VALIDATE to check internal structures for consistency
-// #define SK_DEBUG_VALIDATE
-#endif
-
-#if defined SK_DEBUG_TRACE || defined SK_DEBUG_DUMP
-const char* DrawTypeToString(DrawType drawType) {
-    switch (drawType) {
-        case UNUSED: SkDebugf("DrawType UNUSED\n"); SkASSERT(0); break;
-        case CLIP_PATH: return "CLIP_PATH";
-        case CLIP_REGION: return "CLIP_REGION";
-        case CLIP_RECT: return "CLIP_RECT";
-        case CLIP_RRECT: return "CLIP_RRECT";
-        case CONCAT: return "CONCAT";
-        case DRAW_BITMAP: return "DRAW_BITMAP";
-        case DRAW_BITMAP_MATRIX: return "DRAW_BITMAP_MATRIX";
-        case DRAW_BITMAP_NINE: return "DRAW_BITMAP_NINE";
-        case DRAW_BITMAP_RECT_TO_RECT: return "DRAW_BITMAP_RECT_TO_RECT";
-        case DRAW_CLEAR: return "DRAW_CLEAR";
-        case DRAW_DATA: return "DRAW_DATA";
-        case DRAW_OVAL: return "DRAW_OVAL";
-        case DRAW_PAINT: return "DRAW_PAINT";
-        case DRAW_PATH: return "DRAW_PATH";
-        case DRAW_PICTURE: return "DRAW_PICTURE";
-        case DRAW_POINTS: return "DRAW_POINTS";
-        case DRAW_POS_TEXT: return "DRAW_POS_TEXT";
-        case DRAW_POS_TEXT_TOP_BOTTOM: return "DRAW_POS_TEXT_TOP_BOTTOM";
-        case DRAW_POS_TEXT_H: return "DRAW_POS_TEXT_H";
-        case DRAW_POS_TEXT_H_TOP_BOTTOM: return "DRAW_POS_TEXT_H_TOP_BOTTOM";
-        case DRAW_RECT: return "DRAW_RECT";
-        case DRAW_RRECT: return "DRAW_RRECT";
-        case DRAW_SPRITE: return "DRAW_SPRITE";
-        case DRAW_TEXT: return "DRAW_TEXT";
-        case DRAW_TEXT_ON_PATH: return "DRAW_TEXT_ON_PATH";
-        case DRAW_TEXT_TOP_BOTTOM: return "DRAW_TEXT_TOP_BOTTOM";
-        case DRAW_VERTICES: return "DRAW_VERTICES";
-        case RESTORE: return "RESTORE";
-        case ROTATE: return "ROTATE";
-        case SAVE: return "SAVE";
-        case SAVE_LAYER: return "SAVE_LAYER";
-        case SCALE: return "SCALE";
-        case SET_MATRIX: return "SET_MATRIX";
-        case SKEW: return "SKEW";
-        case TRANSLATE: return "TRANSLATE";
-        case NOOP: return "NOOP";
-        default:
-            SkDebugf("DrawType error 0x%08x\n", drawType);
-            SkASSERT(0);
-            break;
-    }
-    SkASSERT(0);
-    return NULL;
-}
-#endif
-
-#ifdef SK_DEBUG_VALIDATE
-static void validateMatrix(const SkMatrix* matrix) {
-    SkScalar scaleX = matrix->getScaleX();
-    SkScalar scaleY = matrix->getScaleY();
-    SkScalar skewX = matrix->getSkewX();
-    SkScalar skewY = matrix->getSkewY();
-    SkScalar perspX = matrix->getPerspX();
-    SkScalar perspY = matrix->getPerspY();
-    if (scaleX != 0 && skewX != 0)
-        SkDebugf("scaleX != 0 && skewX != 0\n");
-    SkASSERT(scaleX == 0 || skewX == 0);
-    SkASSERT(scaleY == 0 || skewY == 0);
-    SkASSERT(perspX == 0);
-    SkASSERT(perspY == 0);
-}
-#endif
-
-
 ///////////////////////////////////////////////////////////////////////////////
 
 SkPicture::SkPicture() {
@@ -143,12 +62,6 @@ SkPicture::~SkPicture() {
     SkDELETE(fPlayback);
 }
 
-void SkPicture::internalOnly_EnableOpts(bool enableOpts) {
-    if (NULL != fRecord) {
-        fRecord->internalOnly_EnableOpts(enableOpts);
-    }
-}
-
 void SkPicture::swap(SkPicture& other) {
     SkTSwap(fRecord, other.fRecord);
     SkTSwap(fPlayback, other.fPlayback);
@@ -170,7 +83,12 @@ void SkPicture::clone(SkPicture* pictures, int count) const {
 
         clone->fWidth = fWidth;
         clone->fHeight = fHeight;
-        SkSafeSetNull(clone->fRecord);
+        clone->fRecord = NULL;
+
+        if (NULL != clone->fRecord) {
+            clone->fRecord->unref();
+            clone->fRecord = NULL;
+        }
         SkDELETE(clone->fPlayback);
 
         /*  We want to copy the src's playback. However, if that hasn't been built
@@ -197,21 +115,25 @@ SkCanvas* SkPicture::beginRecording(int width, int height,
         fPlayback = NULL;
     }
 
-    SkSafeSetNull(fRecord);
+    if (NULL != fRecord) {
+        fRecord->unref();
+        fRecord = NULL;
+    }
+
+    SkBitmap bm;
+    bm.setConfig(SkBitmap::kNo_Config, width, height);
+    SkAutoTUnref<SkBaseDevice> dev(SkNEW_ARGS(SkBitmapDevice, (bm)));
 
     // Must be set before calling createBBoxHierarchy
     fWidth = width;
     fHeight = height;
 
-    const SkISize size = SkISize::Make(width, height);
-
     if (recordingFlags & kOptimizeForClippedPlayback_RecordingFlag) {
         SkBBoxHierarchy* tree = this->createBBoxHierarchy();
-        SkASSERT(NULL != tree);
-        fRecord = SkNEW_ARGS(SkBBoxHierarchyRecord, (size, recordingFlags, tree));
+        fRecord = SkNEW_ARGS(SkBBoxHierarchyRecord, (recordingFlags, tree, dev));
         tree->unref();
     } else {
-        fRecord = SkNEW_ARGS(SkPictureRecord, (size, recordingFlags));
+        fRecord = SkNEW_ARGS(SkPictureRecord, (recordingFlags, dev));
     }
     fRecord->beginRecording();
 
@@ -224,7 +146,7 @@ SkBBoxHierarchy* SkPicture::createBBoxHierarchy() const {
     static const int kRTreeMinChildren = 6;
     static const int kRTreeMaxChildren = 11;
 
-    SkScalar aspectRatio = SkScalarDiv(SkIntToScalar(fWidth),
+    float aspectRatio = SkScalarDiv(SkIntToScalar(fWidth),
                                        SkIntToScalar(fHeight));
     bool sortDraws = false;  // Do not sort draw calls when bulk loading.
 
@@ -242,10 +164,10 @@ void SkPicture::endRecording() {
         if (NULL != fRecord) {
             fRecord->endRecording();
             fPlayback = SkNEW_ARGS(SkPicturePlayback, (*fRecord));
-            SkSafeSetNull(fRecord);
+            fRecord->unref();
+            fRecord = NULL;
         }
     }
-    SkASSERT(NULL == fRecord);
 }
 
 void SkPicture::draw(SkCanvas* surface, SkDrawPictureCallback* callback) {
@@ -261,42 +183,29 @@ void SkPicture::draw(SkCanvas* surface, SkDrawPictureCallback* callback) {
 
 static const char kMagic[] = { 's', 'k', 'i', 'a', 'p', 'i', 'c', 't' };
 
-bool SkPicture::IsValidPictInfo(const SkPictInfo& info) {
-    if (0 != memcmp(info.fMagic, kMagic, sizeof(kMagic))) {
-        return false;
-    }
-
-    if (info.fVersion < MIN_PICTURE_VERSION ||
-        info.fVersion > CURRENT_PICTURE_VERSION) {
-        return false;
-    }
-
-    return true;
-}
-
-bool SkPicture::InternalOnly_StreamIsSKP(SkStream* stream, SkPictInfo* pInfo) {
+bool SkPicture::StreamIsSKP(SkStream* stream, SkPictInfo* pInfo) {
     if (NULL == stream) {
         return false;
     }
 
     // Check magic bytes.
-    SkPictInfo info;
-    SkASSERT(sizeof(kMagic) == sizeof(info.fMagic));
-    if (!stream->read(&info, sizeof(info)) || !IsValidPictInfo(info)) {
+    char magic[sizeof(kMagic)];
+    stream->read(magic, sizeof(kMagic));
+    if (0 != memcmp(magic, kMagic, sizeof(kMagic))) {
         return false;
     }
 
-    if (pInfo != NULL) {
-        *pInfo = info;
-    }
-    return true;
-}
-
-bool SkPicture::InternalOnly_BufferIsSKP(SkReadBuffer& buffer, SkPictInfo* pInfo) {
-    // Check magic bytes.
     SkPictInfo info;
-    SkASSERT(sizeof(kMagic) == sizeof(info.fMagic));
-    if (!buffer.readByteArray(&info, sizeof(info)) || !IsValidPictInfo(info)) {
+    if (!stream->read(&info, sizeof(SkPictInfo))) {
+        return false;
+    }
+
+    if (PICTURE_VERSION != info.fVersion
+#ifndef DELETE_THIS_CODE_WHEN_SKPS_ARE_REBUILT_AT_V16_AND_ALL_OTHER_INSTANCES_TOO
+        // V16 is backwards compatible with V15
+        && PRIOR_PICTURE_VERSION != info.fVersion  // TODO: remove when .skps regenerated
+#endif
+        ) {
         return false;
     }
 
@@ -315,7 +224,7 @@ SkPicture::SkPicture(SkPicturePlayback* playback, int width, int height)
 SkPicture* SkPicture::CreateFromStream(SkStream* stream, InstallPixelRefProc proc) {
     SkPictInfo info;
 
-    if (!InternalOnly_StreamIsSKP(stream, &info)) {
+    if (!StreamIsSKP(stream, &info)) {
         return NULL;
     }
 
@@ -333,46 +242,6 @@ SkPicture* SkPicture::CreateFromStream(SkStream* stream, InstallPixelRefProc pro
     return SkNEW_ARGS(SkPicture, (playback, info.fWidth, info.fHeight));
 }
 
-SkPicture* SkPicture::CreateFromBuffer(SkReadBuffer& buffer) {
-    SkPictInfo info;
-
-    if (!InternalOnly_BufferIsSKP(buffer, &info)) {
-        return NULL;
-    }
-
-    SkPicturePlayback* playback;
-    // Check to see if there is a playback to recreate.
-    if (buffer.readBool()) {
-        playback = SkPicturePlayback::CreateFromBuffer(buffer);
-        if (NULL == playback) {
-            return NULL;
-        }
-    } else {
-        playback = NULL;
-    }
-
-    return SkNEW_ARGS(SkPicture, (playback, info.fWidth, info.fHeight));
-}
-
-void SkPicture::createHeader(SkPictInfo* info) const {
-    // Copy magic bytes at the beginning of the header
-    SkASSERT(sizeof(kMagic) == 8);
-    SkASSERT(sizeof(kMagic) == sizeof(info->fMagic));
-    memcpy(info->fMagic, kMagic, sizeof(kMagic));
-
-    // Set picture info after magic bytes in the header
-    info->fVersion = CURRENT_PICTURE_VERSION;
-    info->fWidth = fWidth;
-    info->fHeight = fHeight;
-    info->fFlags = SkPictInfo::kCrossProcess_Flag;
-    // TODO: remove this flag, since we're always float (now)
-    info->fFlags |= SkPictInfo::kScalarIsFloat_Flag;
-
-    if (8 == sizeof(void*)) {
-        info->fFlags |= SkPictInfo::kPtrIs64Bit_Flag;
-    }
-}
-
 void SkPicture::serialize(SkWStream* stream, EncodeBitmap encoder) const {
     SkPicturePlayback* playback = fPlayback;
 
@@ -380,9 +249,23 @@ void SkPicture::serialize(SkWStream* stream, EncodeBitmap encoder) const {
         playback = SkNEW_ARGS(SkPicturePlayback, (*fRecord));
     }
 
-    SkPictInfo header;
-    this->createHeader(&header);
-    stream->write(&header, sizeof(header));
+    SkPictInfo info;
+
+    info.fVersion = PICTURE_VERSION;
+    info.fWidth = fWidth;
+    info.fHeight = fHeight;
+    info.fFlags = SkPictInfo::kCrossProcess_Flag;
+    // TODO: remove this flag, since we're always float (now)
+    info.fFlags |= SkPictInfo::kScalarIsFloat_Flag;
+
+    if (8 == sizeof(void*)) {
+        info.fFlags |= SkPictInfo::kPtrIs64Bit_Flag;
+    }
+
+    // Write 8 magic bytes to ID this file format.
+    stream->write(kMagic, sizeof(kMagic));
+
+    stream->write(&info, sizeof(info));
     if (playback) {
         stream->writeBool(true);
         playback->serialize(stream, encoder);
@@ -392,28 +275,6 @@ void SkPicture::serialize(SkWStream* stream, EncodeBitmap encoder) const {
         }
     } else {
         stream->writeBool(false);
-    }
-}
-
-void SkPicture::flatten(SkWriteBuffer& buffer) const {
-    SkPicturePlayback* playback = fPlayback;
-
-    if (NULL == playback && fRecord) {
-        playback = SkNEW_ARGS(SkPicturePlayback, (*fRecord));
-    }
-
-    SkPictInfo header;
-    this->createHeader(&header);
-    buffer.writeByteArray(&header, sizeof(header));
-    if (playback) {
-        buffer.writeBool(true);
-        playback->flatten(buffer);
-        // delete playback if it is a local version (i.e. cons'd up just now)
-        if (playback != fPlayback) {
-            SkDELETE(playback);
-        }
-    } else {
-        buffer.writeBool(false);
     }
 }
 

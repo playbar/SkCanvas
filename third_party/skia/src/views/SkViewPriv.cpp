@@ -11,13 +11,11 @@
 
 void SkView::Artist::draw(SkView* view, SkCanvas* canvas)
 {
-    SkASSERT(view && canvas);
     this->onDraw(view, canvas);
 }
 
 void SkView::Artist::inflate(const SkDOM& dom, const SkDOM::Node* node)
 {
-    SkASSERT(&dom && node);
     this->onInflate(dom, node);
 }
 
@@ -29,7 +27,6 @@ void SkView::Artist::onInflate(const SkDOM&, const SkDOM::Node*)
 SkView::Artist* SkView::getArtist() const
 {
     Artist_SkTagList* rec = (Artist_SkTagList*)this->findTagList(kViewArtist_SkTagList);
-    SkASSERT(rec == NULL || rec->fArtist != NULL);
 
     return rec ? rec->fArtist : NULL;
 }
@@ -56,14 +53,12 @@ SkView::Artist* SkView::setArtist(Artist* obj)
 
 void SkView::Layout::layoutChildren(SkView* parent)
 {
-    SkASSERT(parent);
     if (parent->width() > 0 && parent->height() > 0)
         this->onLayoutChildren(parent);
 }
 
 void SkView::Layout::inflate(const SkDOM& dom, const SkDOM::Node* node)
 {
-    SkASSERT(&dom && node);
     this->onInflate(dom, node);
 }
 
@@ -75,8 +70,6 @@ void SkView::Layout::onInflate(const SkDOM&, const SkDOM::Node*)
 SkView::Layout* SkView::getLayout() const
 {
     Layout_SkTagList* rec = (Layout_SkTagList*)this->findTagList(kViewLayout_SkTagList);
-    SkASSERT(rec == NULL || rec->fLayout != NULL);
-
     return rec ? rec->fLayout : NULL;
 }
 

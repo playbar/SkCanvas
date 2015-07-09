@@ -68,16 +68,6 @@ public:
     static SkPicture* CreateFromStream(SkStream*,
                                        InstallPixelRefProc proc = &SkImageDecoder::DecodeMemory);
 
-    /**
-     *  Recreate a picture that was serialized into a buffer. If the creation requires bitmap
-     *  decoding, the decoder must be set on the SkReadBuffer parameter by calling
-     *  SkReadBuffer::setBitmapDecoder() before calling SkPicture::CreateFromBuffer().
-     *  @param SkReadBuffer Serialized picture data.
-     *  @return A new SkPicture representing the serialized data, or NULL if the buffer is
-     *          invalid.
-     */
-    static SkPicture* CreateFromBuffer(SkReadBuffer&);
-
     virtual ~SkPicture();
 
     /**
@@ -125,6 +115,15 @@ public:
             discarded if you serialize into a stream and then deserialize.
         */
         kOptimizeForClippedPlayback_RecordingFlag = 0x02,
+        /*
+            This flag disables all the picture recording optimizations (i.e.,
+            those in SkPictureRecord). It is mainly intended for testing the
+            existing optimizations (i.e., to actually have the pattern
+            appear in an .skp we have to disable the optimization). This
+            option doesn't affect the optimizations controlled by
+            'kOptimizeForClippedPlayback_RecordingFlag'.
+         */
+        kDisableRecordOptimizations_RecordingFlag = 0x04
     };
 
     /** Returns the canvas that records the drawing commands.
@@ -170,11 +169,11 @@ public:
 
     /**
      *  Function to encode an SkBitmap to an SkData. A function with this
-     *  signature can be passed to serialize() and SkWriteBuffer.
-     *  Returning NULL will tell the SkWriteBuffer to use
+     *  signature can be passed to serialize() and SkOrderedWriteBuffer.
+     *  Returning NULL will tell the SkOrderedWriteBuffer to use
      *  SkBitmap::flatten() to store the bitmap.
-     *
-     *  @param pixelRefOffset DEPRECATED -- caller assumes it will return 0.
+     *  @param pixelRefOffset Output parameter, telling the deserializer what
+     *      offset in the bm's pixelRef corresponds to the encoded data.
      *  @return SkData If non-NULL, holds encoded data representing the passed
      *      in bitmap. The caller is responsible for calling unref().
      */
@@ -186,11 +185,6 @@ public:
      *  encoder will never be called with a NULL pixelRefOffset.
      */
     void serialize(SkWStream*, EncodeBitmap encoder = NULL) const;
-
-    /**
-     *  Serialize to a buffer.
-     */
-    void flatten(SkWriteBuffer&) const;
 
     /**
      * Returns true if any bitmaps may be produced when this SkPicture
@@ -207,25 +201,6 @@ public:
     */
     void abortPlayback();
 #endif
-
-    /** Return true if the SkStream/Buffer represents a serialized picture, and
-        fills out SkPictInfo. After this function returns, the data source is not
-        rewound so it will have to be manually reset before passing to
-        CreateFromStream or CreateFromBuffer. Note, CreateFromStream and
-        CreateFromBuffer perform this check internally so these entry points are
-        intended for stand alone tools.
-        If false is returned, SkPictInfo is unmodified.
-    */
-    static bool InternalOnly_StreamIsSKP(SkStream*, SkPictInfo*);
-    static bool InternalOnly_BufferIsSKP(SkReadBuffer&, SkPictInfo*);
-
-    /** Enable/disable all the picture recording optimizations (i.e.,
-        those in SkPictureRecord). It is mainly intended for testing the
-        existing optimizations (i.e., to actually have the pattern
-        appear in an .skp we have to disable the optimization). Call right
-        after 'beginRecording'.
-    */
-    void internalOnly_EnableOpts(bool enableOpts);
 
 protected:
     // V2 : adds SkPixelRef's generation ID.
@@ -246,18 +221,10 @@ protected:
     // V15: Remove A1 bitmpa config (and renumber remaining configs)
     // V16: Move SkPath's isOval flag to SkPathRef
     // V17: SkPixelRef now writes SkImageInfo
-    // V18: SkBitmap now records x,y for its pixelref origin, instead of offset.
-    // V19: encode matrices and regions into the ops stream
-    // V20: added bool to SkPictureImageFilter's serialization (to allow SkPicture serialization)
-    // V21: add pushCull, popCull
-    // V22: SK_PICT_FACTORY_TAG's size is now the chunk size in bytes
-
-    // Note: If the picture version needs to be increased then please follow the
-    // steps to generate new SKPs in (only accessible to Googlers): http://goo.gl/qATVcw
-
-    // Only SKPs within the min/current picture version range (inclusive) can be read.
-    static const uint32_t MIN_PICTURE_VERSION = 19;
-    static const uint32_t CURRENT_PICTURE_VERSION = 22;
+#ifndef DELETE_THIS_CODE_WHEN_SKPS_ARE_REBUILT_AT_V16_AND_ALL_OTHER_INSTANCES_TOO
+    static const uint32_t PRIOR_PICTURE_VERSION = 15;  // TODO: remove when .skps regenerated
+#endif
+    static const uint32_t PICTURE_VERSION = 17;
 
     // fPlayback, fRecord, fWidth & fHeight are protected to allow derived classes to
     // install their own SkPicturePlayback-derived players,SkPictureRecord-derived
@@ -273,10 +240,13 @@ protected:
     // For testing. Derived classes may instantiate an alternate
     // SkBBoxHierarchy implementation
     virtual SkBBoxHierarchy* createBBoxHierarchy() const;
-private:
-    void createHeader(SkPictInfo* info) const;
-    static bool IsValidPictInfo(const SkPictInfo& info);
 
+    // Return true if the SkStream represents a serialized picture, and fills out
+    // SkPictInfo. After this function returns, the SkStream is not rewound; it
+    // will be ready to be parsed to create an SkPicturePlayback.
+    // If false is returned, SkPictInfo is unmodified.
+    static bool StreamIsSKP(SkStream*, SkPictInfo*);
+private:
     friend class SkFlatPicture;
     friend class SkPicturePlayback;
 

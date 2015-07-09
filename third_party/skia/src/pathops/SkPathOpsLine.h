@@ -12,8 +12,8 @@
 struct SkDLine {
     SkDPoint fPts[2];
 
-    const SkDPoint& operator[](int n) const { SkASSERT(n >= 0 && n < 2); return fPts[n]; }
-    SkDPoint& operator[](int n) { SkASSERT(n >= 0 && n < 2); return fPts[n]; }
+    const SkDPoint& operator[](int n) const { return fPts[n]; }
+    SkDPoint& operator[](int n) { return fPts[n]; }
 
     void set(const SkPoint pts[2]) {
         fPts[0] = pts[0];

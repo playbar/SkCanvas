@@ -42,7 +42,7 @@ public:
      *  returns true, and sets the matrix appropriately.
      *  If not, this returns false and ignores the parameter.
      */
-    virtual bool asColorMatrix(SkScalar matrix[20]) const;
+    virtual bool asColorMatrix(float matrix[20]) const;
 
     /**
      *  If the filter can be represented by per-component table, return true,
@@ -128,14 +128,14 @@ public:
      */
     virtual GrEffectRef* asNewEffect(GrContext*) const;
 
-    SK_TO_STRING_PUREVIRT()
+    SkDEVCODE(virtual void toString(SkString* str) const = 0;)
 
     SK_DECLARE_FLATTENABLE_REGISTRAR_GROUP()
     SK_DEFINE_FLATTENABLE_TYPE(SkColorFilter)
 
 protected:
     SkColorFilter() {}
-    SkColorFilter(SkReadBuffer& rb) : INHERITED(rb) {}
+    SkColorFilter(SkFlattenableReadBuffer& rb) : INHERITED(rb) {}
 
 private:
     typedef SkFlattenable INHERITED;

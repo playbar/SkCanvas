@@ -118,7 +118,7 @@ public:
 
     /** If texture swizzling is available using tex parameters then it is preferred over mangling
         the generated shader code. This potentially allows greater reuse of cached shaders. */
-    static const GrGLenum* GetTexParamSwizzle(GrPixelConfig config, const GrGLCaps& caps);
+    static const GLenum* GetTexParamSwizzle(GrPixelConfig config, const GrGLCaps& caps);
 
     /** Add a uniform variable to the current program, that has visibility in one or more shaders.
         visibility is a bitfield of ShaderVisibility values indicating from which shaders the
@@ -204,7 +204,7 @@ public:
         return fDstCopySamplerUniform;
     }
 
-    bool finish(GrGLuint* outProgramId);
+    bool finish(GLuint* outProgramId);
 
     const GrGLContextInfo& ctxInfo() const;
 
@@ -216,7 +216,6 @@ public:
     class FSBlock {
     public:
         FSBlock(GrGLShaderBuilder* builder) : fBuilder(builder) {
-            SkASSERT(NULL != builder);
             fBuilder->fsCodeAppend("\t{\n");
         }
 
@@ -248,8 +247,8 @@ protected:
                               int effectCnt,
                               GrGLSLExpr4* inOutFSColor);
 
-    virtual bool compileAndAttachShaders(GrGLuint programId, SkTDArray<GrGLuint>* shaderIds) const;
-    virtual void bindProgramLocations(GrGLuint programId) const;
+    virtual bool compileAndAttachShaders(GLuint programId) const;
+    virtual void bindProgramLocations(GLuint programId) const;
 
     void appendDecls(const VarArray&, SkString*) const;
     void appendUniformDecls(ShaderVisibility, SkString*) const;
@@ -277,7 +276,6 @@ private:
         class AutoStageRestore : public SkNoncopyable {
         public:
             AutoStageRestore(CodeStage* codeStage, const GrEffectStage* newStage) {
-                SkASSERT(NULL != codeStage);
                 fSavedIndex = codeStage->fCurrentIndex;
                 fSavedEffectStage = codeStage->fEffectStage;
 
@@ -300,7 +298,7 @@ private:
             const GrEffectStage*    fSavedEffectStage;
         };
     private:
-        void validate() const { SkASSERT((NULL == fEffectStage) == (-1 == fCurrentIndex)); }
+        void validate() const {  }
         int                     fNextIndex;
         int                     fCurrentIndex;
         const GrEffectStage*    fEffectStage;
@@ -422,8 +420,8 @@ public:
     }
 
 protected:
-    virtual bool compileAndAttachShaders(GrGLuint programId, SkTDArray<GrGLuint>* shaderIds) const SK_OVERRIDE;
-    virtual void bindProgramLocations(GrGLuint programId) const SK_OVERRIDE;
+    virtual bool compileAndAttachShaders(GLuint programId) const SK_OVERRIDE;
+    virtual void bindProgramLocations(GLuint programId) const SK_OVERRIDE;
 
 private:
     const GrGLProgramDesc&              fDesc;

@@ -33,7 +33,6 @@ public:
             fItemsPerBlock(itemsPerBlock),
             fOwnFirstBlock(NULL == initialBlock),
             fCount(0) {
-        SkASSERT(itemsPerBlock > 0);
         fBlockSize = fItemSize * fItemsPerBlock;
         fBlocks.push_back() = initialBlock;
         SkDEBUGCODE(if (!fOwnFirstBlock) {*((char*)initialBlock+fBlockSize-1)='a';} );
@@ -48,9 +47,6 @@ public:
      *                          Caller is responsible for freeing this memory.
      */
     void setInitialBlock(void* initialBlock) {
-        SkASSERT(0 == fCount);
-        SkASSERT(1 == fBlocks.count());
-        SkASSERT(NULL == fBlocks.back());
         fOwnFirstBlock = false;
         fBlocks.back() = initialBlock;
     }
@@ -109,7 +105,6 @@ public:
      * access last item, only call if count() != 0
      */
     void* back() {
-        SkASSERT(fCount);
         return (*this)[fCount-1];
     }
 
@@ -117,7 +112,6 @@ public:
      * access last item, only call if count() != 0
      */
     const void* back() const {
-        SkASSERT(fCount);
         return (*this)[fCount-1];
     }
 
@@ -125,7 +119,6 @@ public:
      * access item by index.
      */
     void* operator[] (int i) {
-        SkASSERT(i >= 0 && i < fCount);
         return (char*)fBlocks[i / fItemsPerBlock] +
                fItemSize * (i % fItemsPerBlock);
     }
@@ -134,7 +127,6 @@ public:
      * access item by index.
      */
     const void* operator[] (int i) const {
-        SkASSERT(i >= 0 && i < fCount);
         return (const char*)fBlocks[i / fItemsPerBlock] +
                fItemSize * (i % fItemsPerBlock);
     }
@@ -172,14 +164,12 @@ public:
      */
     T& push_back() {
         void* item = fAllocator.push_back();
-        SkASSERT(NULL != item);
         SkNEW_PLACEMENT(item, T);
         return *(T*)item;
     }
 
     T& push_back(const T& t) {
         void* item = fAllocator.push_back();
-        SkASSERT(NULL != item);
         SkNEW_PLACEMENT_ARGS(item, T, (t));
         return *(T*)item;
     }

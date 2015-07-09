@@ -19,21 +19,21 @@
 #ifdef SK_BUILD_FOR_WINCEx
     #define SHOW_FPS
 #endif
-//#define USE_GX_SCREEN
 
 class SkCanvas;
 
 class SkOSMenu;
 
-class SkWindow : public SkView {
+class SkWindow : public SkView 
+{
 public:
             SkWindow();
     virtual ~SkWindow();
 
-    const SkBitmap& getBitmap() const { return fBitmap; }
-
-    void    setColorType(SkColorType);
-    void    resize(int width, int height, SkColorType = kUnknown_SkColorType);
+    void    setConfig(SkBitmap::Config);
+    void    resize(int width, int height, SkBitmap::Config config = SkBitmap::kNo_Config);
+    void    eraseARGB(U8CPU a, U8CPU r, U8CPU g, U8CPU b);
+    void    eraseRGB(U8CPU r, U8CPU g, U8CPU b);
 
     bool    isDirty() const { return !fDirtyRgn.isEmpty(); }
     bool    update(SkIRect* updateArea);
@@ -61,8 +61,6 @@ public:
 
     virtual SkCanvas* createCanvas();
 
-    virtual void onPDFSaved(const char title[], const char desc[],
-        const char path[]) {}
 protected:
     virtual bool onEvent(const SkEvent&);
     virtual bool onDispatchClick(int x, int y, Click::State, void* owner, unsigned modi);
@@ -81,14 +79,10 @@ protected:
     virtual bool onSetFocusView(SkView* focus);
 
 private:
-    SkColorType fColorType;
-    SkBitmap    fBitmap;
+    SkBitmap::Config fConfig;
     SkRegion    fDirtyRgn;
-
     SkTDArray<Click*>       fClicks; // to track clicks
-
     SkTDArray<SkOSMenu*>    fMenus;
-
     SkView* fFocusView;
     bool    fWaitingOnInval;
 

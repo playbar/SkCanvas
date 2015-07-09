@@ -28,7 +28,7 @@ public:
     SK_DEFINE_FLATTENABLE_TYPE(SkUnitMapper)
 
 protected:
-    SkUnitMapper(SkReadBuffer& rb) : SkFlattenable(rb) {}
+    SkUnitMapper(SkFlattenableReadBuffer& rb) : SkFlattenable(rb) {}
 
 private:
     typedef SkFlattenable INHERITED;

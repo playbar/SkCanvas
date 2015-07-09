@@ -19,7 +19,8 @@
 class SkBBoxRecord : public SkPictureRecord {
 public:
 
-    SkBBoxRecord(const SkISize& size, uint32_t recordFlags) : INHERITED(size, recordFlags) {}
+    SkBBoxRecord(uint32_t recordFlags, SkBaseDevice* device)
+            : INHERITED(recordFlags, device) { }
     virtual ~SkBBoxRecord() { }
 
     /**
@@ -36,9 +37,9 @@ public:
                             const SkPaint& paint) SK_OVERRIDE;
     virtual void drawPaint(const SkPaint& paint) SK_OVERRIDE;
     virtual void clear(SkColor) SK_OVERRIDE;
-    virtual void drawText(const void* text, size_t byteLength, SkScalar x, SkScalar y,
+    virtual void drawText(const void* text, size_t byteLength, float x, float y,
                           const SkPaint& paint) SK_OVERRIDE;
-    virtual void drawBitmap(const SkBitmap& bitmap, SkScalar left, SkScalar top,
+    virtual void drawBitmap(const SkBitmap& bitmap, float left, float top,
                             const SkPaint* paint = NULL) SK_OVERRIDE;
     virtual void drawBitmapRectToRect(const SkBitmap& bitmap, const SkRect* src,
                                       const SkRect& dst, const SkPaint* paint,
@@ -50,7 +51,7 @@ public:
     virtual void drawPosText(const void* text, size_t byteLength,
                              const SkPoint pos[], const SkPaint& paint) SK_OVERRIDE;
     virtual void drawPosTextH(const void* text, size_t byteLength,
-                              const SkScalar xpos[], SkScalar constY,
+                              const float xpos[], float constY,
                               const SkPaint& paint) SK_OVERRIDE;
     virtual void drawSprite(const SkBitmap& bitmap, int left, int top,
                             const SkPaint* paint) SK_OVERRIDE;
@@ -63,9 +64,6 @@ public:
                               const uint16_t indices[], int indexCount,
                               const SkPaint& paint) SK_OVERRIDE;
     virtual void drawPicture(SkPicture& picture) SK_OVERRIDE;
-
-protected:
-    virtual void onDrawDRRect(const SkRRect&, const SkRRect&, const SkPaint&) SK_OVERRIDE;
 
 private:
     /**

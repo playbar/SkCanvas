@@ -50,8 +50,6 @@ private:
 
     static void DeleteBlock(BlockHeader* block);
 
-    void validate();
-
     struct BlockHeader {
         BlockHeader* fNext;      ///< doubly-linked list of blocks.
         BlockHeader* fPrev;

@@ -30,8 +30,8 @@ struct SkDQuad {
         fPts[2] = pts[2];
     }
 
-    const SkDPoint& operator[](int n) const { SkASSERT(n >= 0 && n < 3); return fPts[n]; }
-    SkDPoint& operator[](int n) { SkASSERT(n >= 0 && n < 3); return fPts[n]; }
+    const SkDPoint& operator[](int n) const { return fPts[n]; }
+    SkDPoint& operator[](int n) {return fPts[n]; }
 
     static int AddValidTs(double s[], int realRoots, double* t);
     void align(int endIndex, SkDPoint* dstPt) const;

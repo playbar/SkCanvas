@@ -55,7 +55,6 @@ public:
 
     void remove(U16CPU index, U16CPU count = 1)
     {
-        SkASSERT(index + count <= fCount);
         fCount = SkToU16(fCount - count);
         memmove(fArray + index, fArray + index + count, sizeof(int32_t) * (fCount - index));
     }
@@ -66,14 +65,8 @@ public:
         {
             sk_free(fArray);
             fArray = NULL;
-#ifdef SK_DEBUG
-            fData = NULL;
-#endif
+
             fReserve = fCount = 0;
-        }
-        else
-        {
-            SkASSERT(fReserve == 0 && fCount == 0);
         }
     }
 
@@ -85,29 +78,24 @@ public:
             fCount = SkToU16(count);
     }
 protected:
-#ifdef SK_DEBUG
-    enum {
-        kDebugArraySize = 24
-    };
-    int32_t(* fData)[kDebugArraySize];
-#endif
+
     int32_t*    fArray;
     uint16_t    fReserve, fCount;
     void growBy(U16CPU extra);
 };
 
-#ifdef SK_DEBUG
-    #define SYNC() fTData = (T (*)[kDebugArraySize]) fArray
-#else
-    #define SYNC()
-#endif
-
 template <typename T> class SkTDS32Array : public SkDS32Array {
 public:
-    SkTDS32Array() { SkDEBUGCODE(fTData=NULL); SkASSERT(sizeof(T) == sizeof(int32_t)); }
+    SkTDS32Array()
+	{ 
+
+	}
     SkTDS32Array(const SkTDS32Array<T>& src) : SkDS32Array(src) {}
     ~SkTDS32Array() { sk_free(fArray); }
-    T&  operator[](int index) const { SYNC(); SkASSERT((unsigned)index < fCount); return ((T*) fArray)[index]; }
+    T&  operator[](int index) const 
+	{ 
+		return ((T*) fArray)[index];
+	}
     SkTDS32Array<T>& operator=(const SkTDS32Array<T>& src) {
         return (SkTDS32Array<T>&) SkDS32Array::operator=(src); }
     friend int operator==(const SkTDS32Array<T>& a, const SkTDS32Array<T>& b) {
@@ -115,7 +103,7 @@ public:
     T* append() { return (T*) SkDS32Array::append(); }
     T* appendClear() { return (T*) SkDS32Array::appendClear(); }
     T* append(U16CPU count, const T* src = NULL) { return (T*) SkDS32Array::append(count, (const int32_t*) src); }
-    T*  begin() const { SYNC(); return (T*) fArray; }
+    T*  begin() const { return (T*) fArray; }
     T*  end() const { return (T*) (fArray ? fArray + fCount : NULL); }
     int find(const T& elem) const { return SkDS32Array::find((const int32_t&) elem); }
     T* insert(U16CPU index) { return this->insert(index, 1, NULL); }
@@ -128,10 +116,7 @@ public:
     T&          top() { return (*this)[fCount - 1]; }
     void        pop(T* elem) { if (elem) *elem = (*this)[fCount - 1]; --fCount; }
     void        pop() { --fCount; }
-private:
-#ifdef SK_DEBUG
-    mutable T(* fTData)[kDebugArraySize];
-#endif
+
 };
 
 #define SkIntArray(type) SkTDS32Array<type> // holds 32 bit data types

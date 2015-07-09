@@ -48,7 +48,6 @@ static inline bool is_hex(int c)
 
 static const char* skip_ws(const char str[])
 {
-    SkASSERT(str);
     while (is_ws(*str))
         str++;
     return str;
@@ -56,7 +55,6 @@ static const char* skip_ws(const char str[])
 
 static const char* skip_sep(const char str[])
 {
-    SkASSERT(str);
     while (is_sep(*str))
         str++;
     return str;
@@ -106,7 +104,6 @@ goHome:
 
 const char* SkParse::FindHex(const char str[], uint32_t* value)
 {
-    SkASSERT(str);
     str = skip_ws(str);
 
     if (!is_hex(*str))
@@ -135,7 +132,6 @@ const char* SkParse::FindHex(const char str[], uint32_t* value)
 
 const char* SkParse::FindS32(const char str[], int32_t* value)
 {
-    SkASSERT(str);
     str = skip_ws(str);
 
     int sign = 0;
@@ -161,7 +157,6 @@ const char* SkParse::FindS32(const char str[], int32_t* value)
 
 const char* SkParse::FindMSec(const char str[], SkMSec* value)
 {
-    SkASSERT(str);
     str = skip_ws(str);
 
     int sign = 0;
@@ -198,8 +193,7 @@ const char* SkParse::FindMSec(const char str[], SkMSec* value)
     return str;
 }
 
-const char* SkParse::FindScalar(const char str[], SkScalar* value) {
-    SkASSERT(str);
+const char* SkParse::FindScalar(const char str[], float* value) {
     str = skip_ws(str);
 
     char* stop;
@@ -213,9 +207,8 @@ const char* SkParse::FindScalar(const char str[], SkScalar* value) {
     return stop;
 }
 
-const char* SkParse::FindScalars(const char str[], SkScalar value[], int count)
+const char* SkParse::FindScalars(const char str[], float value[], int count)
 {
-    SkASSERT(count >= 0);
 
     if (count > 0)
     {

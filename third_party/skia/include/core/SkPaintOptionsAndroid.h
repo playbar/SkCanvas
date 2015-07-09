@@ -13,8 +13,8 @@
 #include "SkTypes.h"
 #include "SkString.h"
 
-class SkReadBuffer;
-class SkWriteBuffer;
+class SkFlattenableReadBuffer;
+class SkFlattenableWriteBuffer;
 
 /** \class SkLanguage
 
@@ -80,8 +80,8 @@ public:
                fUseFontFallbacks != b.fUseFontFallbacks;
     }
 
-    void flatten(SkWriteBuffer&) const;
-    void unflatten(SkReadBuffer&);
+    void flatten(SkFlattenableWriteBuffer&) const;
+    void unflatten(SkFlattenableReadBuffer&);
 
     /** Return the paint's language value used for drawing text.
         @return the paint's language value used for drawing text.
@@ -111,7 +111,6 @@ public:
       @param fontVariant set the paint's font variant for choosing fonts
     */
     void setFontVariant(FontVariant fontVariant) {
-        SkASSERT((unsigned)fontVariant <= kLast_Variant);
         fFontVariant = fontVariant;
     }
 

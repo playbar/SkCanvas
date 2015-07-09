@@ -24,16 +24,14 @@ public:
 
     virtual size_t getPosition() const SK_OVERRIDE { return fOffset; }
 
-    virtual bool hasLength() const SK_OVERRIDE { return fHasLength; }
+    virtual bool hasLength() const SK_OVERRIDE;
 
-    virtual size_t getLength() const SK_OVERRIDE { return fLength; }
+    virtual size_t getLength() const SK_OVERRIDE;
 
     virtual SkStreamRewindable* duplicate() const SK_OVERRIDE { return NULL; }
 
 private:
     SkAutoTUnref<SkStream>  fStream;
-    const bool              fHasLength;
-    const size_t            fLength;
     // Current offset into the stream. Always >= 0.
     size_t                  fOffset;
     // Amount that has been buffered by calls to read. Will always be less than
@@ -72,8 +70,6 @@ SkStreamRewindable* SkFrontBufferedStream::Create(SkStream* stream, size_t buffe
 
 FrontBufferedStream::FrontBufferedStream(SkStream* stream, size_t bufferSize)
     : fStream(SkRef(stream))
-    , fHasLength(stream->hasPosition() && stream->hasLength())
-    , fLength(stream->getLength() - stream->getPosition())
     , fOffset(0)
     , fBufferedSoFar(0)
     , fBufferSize(bufferSize)
@@ -98,8 +94,15 @@ bool FrontBufferedStream::rewind() {
     return false;
 }
 
+bool FrontBufferedStream::hasLength() const {
+    return fStream->hasLength();
+}
+
+size_t FrontBufferedStream::getLength() const {
+    return fStream->getLength();
+}
+
 size_t FrontBufferedStream::readFromBuffer(char* dst, size_t size) {
-    SkASSERT(fOffset < fBufferedSoFar);
     // Some data has already been copied to fBuffer. Read up to the
     // lesser of the size requested and the remainder of the buffered
     // data.
@@ -111,14 +114,11 @@ size_t FrontBufferedStream::readFromBuffer(char* dst, size_t size) {
     // Update fOffset to the new position. It is guaranteed to be
     // within the buffered data.
     fOffset += bytesToCopy;
-    SkASSERT(fOffset <= fBufferedSoFar);
 
     return bytesToCopy;
 }
 
 size_t FrontBufferedStream::bufferAndWriteTo(char* dst, size_t size) {
-    SkASSERT(size > 0);
-    SkASSERT(fOffset >= fBufferedSoFar);
     // Data needs to be buffered. Buffer up to the lesser of the size requested
     // and the remainder of the max buffer size.
     const size_t bytesToBuffer = SkTMin(size, fBufferSize - fBufferedSoFar);
@@ -127,7 +127,6 @@ size_t FrontBufferedStream::bufferAndWriteTo(char* dst, size_t size) {
 
     fBufferedSoFar += buffered;
     fOffset = fBufferedSoFar;
-    SkASSERT(fBufferedSoFar <= fBufferSize);
 
     // Copy the buffer to the destination buffer and update the amount read.
     if (dst != NULL) {
@@ -138,9 +137,7 @@ size_t FrontBufferedStream::bufferAndWriteTo(char* dst, size_t size) {
 }
 
 size_t FrontBufferedStream::readDirectlyFromStream(char* dst, size_t size) {
-    SkASSERT(size > 0);
     // If we get here, we have buffered all that can be buffered.
-    SkASSERT(fBufferSize == fBufferedSoFar && fOffset >= fBufferSize);
 
     const size_t bytesReadDirectly = fStream->read(dst, size);
     fOffset += bytesReadDirectly;
@@ -157,7 +154,6 @@ size_t FrontBufferedStream::readDirectlyFromStream(char* dst, size_t size) {
 size_t FrontBufferedStream::read(void* voidDst, size_t size) {
     // Cast voidDst to a char* for easy addition.
     char* dst = reinterpret_cast<char*>(voidDst);
-    SkDEBUGCODE(const size_t totalSize = size;)
     const size_t start = fOffset;
 
     // First, read any data that was previously buffered.
@@ -167,7 +163,6 @@ size_t FrontBufferedStream::read(void* voidDst, size_t size) {
         // Update the remaining number of bytes needed to read
         // and the destination buffer.
         size -= bytesCopied;
-        SkASSERT(size + (fOffset - start) == totalSize);
         if (dst != NULL) {
             dst += bytesCopied;
         }
@@ -181,16 +176,13 @@ size_t FrontBufferedStream::read(void* voidDst, size_t size) {
         // Update the remaining number of bytes needed to read
         // and the destination buffer.
         size -= buffered;
-        SkASSERT(size + (fOffset - start) == totalSize);
         if (dst != NULL) {
             dst += buffered;
         }
     }
 
     if (size > 0 && !fStream->isAtEnd()) {
-        SkDEBUGCODE(const size_t bytesReadDirectly =) this->readDirectlyFromStream(dst, size);
-        SkDEBUGCODE(size -= bytesReadDirectly;)
-        SkASSERT(size + (fOffset - start) == totalSize);
+        this->readDirectlyFromStream(dst, size);
     }
 
     return fOffset - start;

@@ -21,7 +21,7 @@ class SkTextOnPath : public SkBoundable {
     SkTextOnPath();
     virtual bool draw(SkAnimateMaker& );
 private:
-    SkScalar offset;
+    float offset;
     SkDrawPath* path;
     SkText* text;
     typedef SkBoundable INHERITED;

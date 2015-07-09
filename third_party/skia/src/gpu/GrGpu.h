@@ -21,7 +21,8 @@ class GrResource;
 class GrStencilBuffer;
 class GrVertexBufferAllocPool;
 
-class GrGpu : public GrDrawTarget {
+class GrGpu : public GrDrawTarget
+{
 public:
 
     /**
@@ -44,7 +45,7 @@ public:
      * not supported (at compile-time or run-time) this returns NULL. The context will not be
      * fully constructed and should not be used by GrGpu until after this function returns.
      */
-    static GrGpu* Create(GrBackend, GrBackendContext, GrContext* context);
+    static GrGpu* Create( GrContext* context);
 
     ////////////////////////////////////////////////////////////////////////////
 
@@ -359,8 +360,7 @@ protected:
     // prepares clip flushes gpu state before a draw
     bool setupClipAndFlushState(DrawType,
                                 const GrDeviceCoordTexture* dstCopy,
-                                GrDrawState::AutoRestoreEffects* are,
-                                const SkRect* devBounds);
+                                GrDrawState::AutoRestoreEffects* are);
 
     // Functions used to map clip-respecting stencil tests into normal
     // stencil funcs supported by GPUs.

@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2006 The Android Open Source Project
  *
@@ -5,9 +6,11 @@
  * found in the LICENSE file.
  */
 
+
 #ifndef SkRandom_DEFINED
 #define SkRandom_DEFINED
 
+#include "Sk64.h"
 #include "SkScalar.h"
 
 /** \class SkLCGRandom
@@ -57,7 +60,6 @@ public:
         @param bitCount The maximum number of bits to be returned
     */
     uint32_t nextBits(unsigned bitCount) {
-        SkASSERT(bitCount > 0 && bitCount <= 32);
         return this->nextU() >> (32 - bitCount);
     }
 
@@ -65,7 +67,6 @@ public:
         [min, max] inclusive.
     */
     uint32_t nextRangeU(uint32_t min, uint32_t max) {
-        SkASSERT(min <= max);
         uint32_t range = max - min + 1;
         if (0 == range) {
             return this->nextU();
@@ -78,7 +79,6 @@ public:
         [0, count).
      */
     uint32_t nextULessThan(uint32_t count) {
-        SkASSERT(count > 0);
         return this->nextRangeU(0, count - 1);
     }
 
@@ -95,19 +95,19 @@ public:
     /** Return the next pseudo random number expressed as a SkScalar
         in the range [0..SK_Scalar1).
     */
-    SkScalar nextUScalar1() { return SkFixedToScalar(this->nextUFixed1()); }
+    float nextUScalar1() { return SkFixedToScalar(this->nextUFixed1()); }
 
     /** Return the next pseudo random number expressed as a SkScalar
         in the range [min..max).
     */
-    SkScalar nextRangeScalar(SkScalar min, SkScalar max) {
-        return this->nextUScalar1() * (max - min) + min;
+    float nextRangeScalar(float min, float max) {
+        return SkScalarMul(this->nextUScalar1(), (max - min)) + min;
     }
 
     /** Return the next pseudo random number expressed as a SkScalar
         in the range (-SK_Scalar1..SK_Scalar1).
     */
-    SkScalar nextSScalar1() { return SkFixedToScalar(this->nextSFixed1()); }
+    float nextSScalar1() { return SkFixedToScalar(this->nextSFixed1()); }
 
     /** Return the next pseudo random number as a bool.
     */
@@ -115,17 +115,14 @@ public:
 
     /** A biased version of nextBool().
      */
-    bool nextBiasedBool(SkScalar fractionTrue) {
-        SkASSERT(fractionTrue >= 0 && fractionTrue <= SK_Scalar1);
+    bool nextBiasedBool(float fractionTrue) {
         return this->nextUScalar1() <= fractionTrue;
     }
 
-    /**
-     *  Return the next pseudo random number as a signed 64bit value.
-     */
-    int64_t next64() {
-        int64_t hi = this->nextS();
-        return (hi << 32) | this->nextU();
+    /** Return the next pseudo random number as a signed 64bit value.
+    */
+    void next64(Sk64* a) {
+        a->set(this->nextS(), this->nextU());
     }
 
     /**
@@ -211,7 +208,6 @@ public:
      @param bitCount The maximum number of bits to be returned
      */
     uint32_t nextBits(unsigned bitCount) {
-        SkASSERT(bitCount > 0 && bitCount <= 32);
         return this->nextU() >> (32 - bitCount);
     }
 
@@ -219,7 +215,6 @@ public:
      [min, max] inclusive.
      */
     uint32_t nextRangeU(uint32_t min, uint32_t max) {
-        SkASSERT(min <= max);
         uint32_t range = max - min + 1;
         if (0 == range) {
             return this->nextU();
@@ -232,7 +227,6 @@ public:
      [0, count).
      */
     uint32_t nextULessThan(uint32_t count) {
-        SkASSERT(count > 0);
         return this->nextRangeU(0, count - 1);
     }
 
@@ -249,19 +243,19 @@ public:
     /** Return the next pseudo random number expressed as a SkScalar
      in the range [0..SK_Scalar1).
      */
-    SkScalar nextUScalar1() { return SkFixedToScalar(this->nextUFixed1()); }
+    float nextUScalar1() { return SkFixedToScalar(this->nextUFixed1()); }
 
     /** Return the next pseudo random number expressed as a SkScalar
      in the range [min..max).
      */
-    SkScalar nextRangeScalar(SkScalar min, SkScalar max) {
-        return this->nextUScalar1() * (max - min) + min;
+    float nextRangeScalar(float min, float max) {
+        return SkScalarMul(this->nextUScalar1(), (max - min)) + min;
     }
 
     /** Return the next pseudo random number expressed as a SkScalar
      in the range (-SK_Scalar1..SK_Scalar1).
      */
-    SkScalar nextSScalar1() { return SkFixedToScalar(this->nextSFixed1()); }
+    float nextSScalar1() { return SkFixedToScalar(this->nextSFixed1()); }
 
     /** Return the next pseudo random number as a bool.
      */
@@ -269,17 +263,14 @@ public:
 
     /** A biased version of nextBool().
      */
-    bool nextBiasedBool(SkScalar fractionTrue) {
-        SkASSERT(fractionTrue >= 0 && fractionTrue <= SK_Scalar1);
+    bool nextBiasedBool(float fractionTrue) {
         return this->nextUScalar1() <= fractionTrue;
     }
 
-    /**
-     *  Return the next pseudo random number as a signed 64bit value.
+    /** Return the next pseudo random number as a signed 64bit value.
      */
-    int64_t next64() {
-        int64_t hi = this->nextS();
-        return (hi << 32) | this->nextU();
+    void next64(Sk64* a) {
+        a->set(this->nextS(), this->nextU());
     }
 
     /** Reset the random object.
@@ -299,7 +290,6 @@ private:
         if (0 == fJ) {
             fJ = NextLCG(fJ);
         }
-        SkASSERT(0 != fK && 0 != fJ);
     }
     static uint32_t NextLCG(uint32_t seed) { return kMul*seed + kAdd; }
 

@@ -41,7 +41,6 @@ bool SkDisplayList::draw(SkAnimateMaker& maker, SkMSec inTime) {
         for (int index = 0; index < fDrawList.count(); index++) {
             SkDrawable* draw = fDrawList[index];
             draw->initialize(); // allow matrices to reset themselves
-            SkASSERT(draw->isDrawable());
             validate();
             result |= draw->draw(maker);
         }
@@ -125,9 +124,7 @@ void SkDisplayList::reset() {
 
 void SkDisplayList::remove(SkActive* active) {
     int index = fActiveList.find(active);
-    SkASSERT(index >= 0);
     fActiveList.remove(index);  // !!! could use shuffle instead
-    SkASSERT(fActiveList.find(active) < 0);
 }
 
 #ifdef SK_DUMP_ENABLED

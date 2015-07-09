@@ -159,11 +159,6 @@ static bool is_linear_inner(const SkDQuad& q1, double t1s, double t1e, const SkD
         int roots = rootTs.intersect(q2, *testLines[index]);
         for (int idx2 = 0; idx2 < roots; ++idx2) {
             double t = rootTs[0][idx2];
-#ifdef SK_DEBUG
-            SkDPoint qPt = q2.ptAtT(t);
-            SkDPoint lPt = testLines[index]->ptAtT(rootTs[1][idx2]);
-            SkASSERT(qPt.approximatelyPEqual(lPt));
-#endif
             if (approximately_negative(t - t2s) || approximately_positive(t - t2e)) {
                 continue;
             }
@@ -178,7 +173,6 @@ static bool is_linear_inner(const SkDQuad& q1, double t1s, double t1e, const SkD
     if (tCount == 1) {
         tMin = tMax = tsFound[0];
     } else {
-        SkASSERT(tCount > 1);
         SkTQSort<double>(tsFound.begin(), tsFound.end() - 1);
         tMin = tsFound[0];
         tMax = tsFound[tsFound.count() - 1];
@@ -404,7 +398,6 @@ int SkIntersections::intersect(const SkDQuad& q1, const SkDQuad& q2) {
             }
         }
     }
-    SkASSERT(fUsed < 3);
     if (only_end_pts_in_common(q1, q2)) {
         return fUsed;
     }
@@ -430,7 +423,6 @@ int SkIntersections::intersect(const SkDQuad& q1, const SkDQuad& q2) {
     lookNearEnd(q2, q1, 1, *this, true, &copyI);
     int innerEqual = 0;
     if (copyI.fUsed >= 2) {
-        SkASSERT(copyI.fUsed <= 4);
         double width = copyI[0][1] - copyI[0][0];
         int midEnd = 1;
         for (int index = 2; index < copyI.fUsed; ++index) {

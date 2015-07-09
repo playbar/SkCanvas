@@ -49,8 +49,6 @@ SkDisplayable* SkAdd::deepCopy(SkAnimateMaker* maker) {
 }
 
 bool SkAdd::draw(SkAnimateMaker& maker) {
-    SkASSERT(use);
-    SkASSERT(use->isDrawable());
     if (mode == kMode_indirect)
         use->draw(maker);
     return false;
@@ -84,8 +82,7 @@ bool SkAdd::enable(SkAnimateMaker& maker ) {
             return true;
     }
     bool skipAddToParent = true;
-    SkASSERT(type != SkType_Replace || where);
-    SkTDDrawableArray* grandList SK_INIT_TO_AVOID_WARNING;
+    SkTDDrawableArray* grandList =0;
     SkGroup* parentGroup = NULL;
     SkGroup* thisGroup = NULL;
     int index = where ? displayList.findGroup(where, &parentList, &parentGroup,
@@ -174,7 +171,7 @@ noHelperNeeded:
                 thisGroup->markCopySet(index);
             break;
         default:
-            SkASSERT(0);
+			break;
     }
     if (type == SkType_Remove)
         return true;

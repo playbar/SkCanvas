@@ -34,7 +34,7 @@ public:
     };
 
     SK_ATTR_DEPRECATED("use sigma version")
-    static SkMaskFilter* Create(SkScalar radius, BlurStyle style,
+    static SkMaskFilter* Create(float radius, BlurStyle style,
                                 uint32_t flags = kNone_BlurFlag);
 
     /** Create a blur maskfilter.
@@ -43,7 +43,7 @@ public:
         @param flags    Flags to use - defaults to none
         @return The new blur maskfilter
     */
-    static SkMaskFilter* Create(BlurStyle style, SkScalar sigma,
+    static SkMaskFilter* Create(BlurStyle style, float sigma,
                                 uint32_t flags = kNone_BlurFlag);
 
     /** Create an emboss maskfilter
@@ -54,13 +54,13 @@ public:
         @param specular     coefficient for specular highlights (e.g. 8)
         @return the emboss maskfilter
     */
-    static SkMaskFilter* CreateEmboss(SkScalar blurSigma, const SkScalar direction[3],
-                                      SkScalar ambient, SkScalar specular);
+    static SkMaskFilter* CreateEmboss(float blurSigma, const float direction[3],
+                                      float ambient, float specular);
 
     SK_ATTR_DEPRECATED("use sigma version")
-    static SkMaskFilter* CreateEmboss(const SkScalar direction[3],
-                                      SkScalar ambient, SkScalar specular,
-                                      SkScalar blurRadius);
+    static SkMaskFilter* CreateEmboss(const float direction[3],
+                                      float ambient, float specular,
+                                      float blurRadius);
 
     SK_DECLARE_FLATTENABLE_REGISTRAR_GROUP()
 

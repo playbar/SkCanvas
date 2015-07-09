@@ -14,9 +14,6 @@
  *  given each step is followed by x0 += dx
  */
 static int chop(int64_t x0, SkFixed edge, int64_t x1, int64_t dx, int count) {
-    SkASSERT(dx > 0);
-    SkASSERT(count >= 0);
-
     if (x0 >= edge) {
         return 0;
     }
@@ -24,8 +21,6 @@ static int chop(int64_t x0, SkFixed edge, int64_t x1, int64_t dx, int count) {
         return count;
     }
     int64_t n = (edge - x0 + dx - 1) / dx;
-    SkASSERT(n >= 0);
-    SkASSERT(n <= count);
     return (int)n;
 }
 
@@ -46,8 +41,6 @@ void SkClampRange::initFor1(SkFixed fx) {
 }
 
 void SkClampRange::init(SkFixed fx0, SkFixed dx0, int count, int v0, int v1) {
-    SkASSERT(count > 0);
-
     fV0 = v0;
     fV1 = v1;
     fOverflowed = false;
@@ -101,7 +94,6 @@ void SkClampRange::init(SkFixed fx0, SkFixed dx0, int count, int v0, int v1) {
             dx = -dx;
             fx = -fx;
         }
-        SkASSERT(ccount > 0 && ccount <= SK_FixedMax);
 
         count = (int)ccount;
         if (0 == count) {
@@ -130,22 +122,9 @@ void SkClampRange::init(SkFixed fx0, SkFixed dx0, int count, int v0, int v1) {
     fCount0 = chop(fx, 0, ex, dx, count);
     count -= fCount0;
     fx += fCount0 * dx;
-    SkASSERT(fx >= 0);
-    SkASSERT(fCount0 == 0 || (fx - dx) < 0);
     fCount1 = chop(fx, 0xFFFF, ex, dx, count);
     count -= fCount1;
     fCount2 = count;
-
-#ifdef SK_DEBUG
-    fx += fCount1 * dx;
-    SkASSERT(fx <= ex);
-    if (fCount2 > 0) {
-        SkASSERT(fx >= 0xFFFF);
-        if (fCount1 > 0) {
-            SkASSERT(fx - dx < 0xFFFF);
-        }
-    }
-#endif
 
     if (doSwap) {
         SkTSwap(fCount0, fCount2);

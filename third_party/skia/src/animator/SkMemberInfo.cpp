@@ -67,7 +67,7 @@ size_t SkMemberInfo::GetSize(SkDisplayTypes type) { // size of simple types only
             byteSize = sizeof(int32_t);
             break;
         case SkType_Float:
-            byteSize = sizeof(SkScalar);
+            byteSize = sizeof(float);
             break;
         case SkType_DynamicString:
         case SkType_String:
@@ -81,7 +81,6 @@ size_t SkMemberInfo::GetSize(SkDisplayTypes type) { // size of simple types only
 }
 
 bool SkMemberInfo::getArrayValue(const SkDisplayable* displayable, int index, SkOperand* value) const {
-    SkASSERT(fType != SkType_String && fType != SkType_MemberProperty);
     char* valuePtr = (char*) *(SkOperand**) memberData(displayable);
     SkDisplayTypes type = (SkDisplayTypes) 0;
     if (displayable->getType() == SkType_Array) {
@@ -90,7 +89,6 @@ bool SkMemberInfo::getArrayValue(const SkDisplayable* displayable, int index, Sk
             return false;
         type = dispArray->values.getType();
     } else {
-        SkASSERT(0); // incomplete
     }
     size_t byteSize = GetSize(type);
     memcpy(value, valuePtr + index * byteSize, byteSize);
@@ -125,22 +123,16 @@ void SkMemberInfo::getString(const SkDisplayable* displayable, SkString** string
     if (fType == SkType_MemberProperty) {
         SkScriptValue value;
         displayable->getProperty(propertyIndex(), &value);
-        SkASSERT(value.fType == SkType_String);
         *string = value.fOperand.fString;
         return;
     }
-    SkASSERT(fCount == sizeof(SkString) / sizeof(SkScalar));
-    SkASSERT(fType == SkType_String || fType == SkType_DynamicString);
     void* valuePtr = memberData(displayable);
     *string = (SkString*) valuePtr;
 }
 
 void SkMemberInfo::getValue(const SkDisplayable* displayable, SkOperand value[], int count) const {
-    SkASSERT(fType != SkType_String && fType != SkType_MemberProperty);
-    SkASSERT(count == fCount);
     void* valuePtr = memberData(displayable);
     size_t byteSize = getSize(displayable);
-    SkASSERT(sizeof(value[0].fScalar) == sizeof(value[0])); // no support for 64 bit pointers, yet
     memcpy(value, valuePtr, byteSize);
 }
 
@@ -152,7 +144,6 @@ void SkMemberInfo::setString(SkDisplayable* displayable, SkString* value) const 
 
 void SkMemberInfo::setValue(SkDisplayable* displayable, const SkOperand values[],
                             int count) const {
-    SkASSERT(sizeof(values[0].fScalar) == sizeof(values[0]));   // no support for 64 bit pointers, yet
     char* dst = (char*) memberData(displayable);
     if (fType == SkType_Array) {
         SkTDScalarArray* array = (SkTDScalarArray* ) dst;
@@ -224,19 +215,6 @@ bool SkMemberInfo::setValue(SkAnimateMaker& maker, SkTDOperandArray* arrayStorag
         goto scriptCommon;
     switch (type) {
         case SkType_String:
-#if 0
-            if (displayable && displayable->isAnimate()) {
-
-                goto noScriptString;
-            }
-            if (strncmp(rawValue, "#string:", sizeof("#string:") - 1) == 0) {
-                SkASSERT(sizeof("string") == sizeof("script"));
-                char* stringHeader = valueStr.writable_str();
-                memcpy(&stringHeader[1], "script", sizeof("script") - 1);
-                rawValue = valueStr.c_str();
-                goto noScriptString;
-            } else
-#endif
             if (strncmp(rawValue, "#script:", sizeof("#script:") - 1) != 0)
                 goto noScriptString;
             valueStr.remove(0, 8);
@@ -255,7 +233,6 @@ scriptCommon: {
                     return false;
                 }
             }
-            SkASSERT(success);
             if (scriptValue.fType == SkType_Displayable) {
                 if (type == SkType_String) {
                     const char* charPtr = NULL;
@@ -265,7 +242,6 @@ scriptCommon: {
                     engine.SkScriptEngine::track(scriptValue.fOperand.fString);
                     break;
                 }
-                SkASSERT(SkDisplayType::IsDisplayable(&maker, type));
                 if (displayable)
                     displayable->setReference(this, scriptValue.fOperand.fDisplayable);
                 else
@@ -291,7 +267,6 @@ scriptCommon: {
                     case SkType_Array:
                         success = engine.convertTo(arrayType(), &scriptValue);
                         // !!! incomplete; create array of appropriate type and add scriptValue to it
-                        SkASSERT(0);
                         break;
                     case SkType_Displayable:
                     case SkType_Drawable:
@@ -318,7 +293,6 @@ scriptCommon: {
                 SkString* string = (SkString*) memberData(displayable);
                 string->set(rawValue, rawValueLen);
             } else {
-                SkASSERT(arrayStorage->count() == 1);
                 arrayStorage->begin()->fString->set(rawValue, rawValueLen);
             }
             goto dirty;
@@ -328,7 +302,6 @@ scriptCommon: {
             *(SkBase64* ) untypedStorage = base64;
             } goto dirty;
         default:
-            SkASSERT(0);
             break;
     }
 //  if (SkDisplayType::IsStruct(type) == false)
@@ -366,45 +339,39 @@ bool SkMemberInfo::writeValue(SkDisplayable* displayable, SkTDOperandArray* arra
         if(displayable)
             displayable->setProperty(propertyIndex(), scriptValue);
         else {
-            SkASSERT(storageOffset < arrayStorage->count());
             switch (scriptValue.fType) {
                 case SkType_Boolean:
                 case SkType_Float:
                 case SkType_Int:
-                    memcpy(&storage->fScalar, &scriptValue.fOperand.fScalar, sizeof(SkScalar));
+                    memcpy(&storage->fScalar, &scriptValue.fOperand.fScalar, sizeof(float));
                     break;
                 case SkType_Array:
-                    memcpy(&storage->fScalar, scriptValue.fOperand.fArray->begin(), scriptValue.fOperand.fArray->count() * sizeof(SkScalar));
+                    memcpy(&storage->fScalar, scriptValue.fOperand.fArray->begin(), scriptValue.fOperand.fArray->count() * sizeof(float));
                     break;
                 case SkType_String:
                     storage->fString->set(*scriptValue.fOperand.fString);
                     break;
                 default:
-                    SkASSERT(0);    // type isn't handled yet
+					break;
             }
         }
     } else if (fType == SkType_MemberFunction) {
-        SkASSERT(scriptValue.fType == SkType_Array);
         if (displayable)
             displayable->executeFunction(displayable, this, scriptValue.fOperand.fArray, NULL);
         else {
             int count = scriptValue.fOperand.fArray->count();
-    //      SkASSERT(maxStorage == 0 || count == maxStorage);
             if (arrayStorage->count() == 2)
                 arrayStorage->setCount(2 * count);
             else {
                 storageOffset *= count;
-                SkASSERT(count + storageOffset <= arrayStorage->count());
             }
             memcpy(&(*arrayStorage)[storageOffset], scriptValue.fOperand.fArray->begin(), count * sizeof(SkOperand));
         }
 
     } else if (fType == SkType_Array) {
         SkTypedArray* destArray = (SkTypedArray*) (untypedStorage ? untypedStorage : arrayStorage);
-        SkASSERT(destArray);
     //  destArray->setCount(0);
         if (scriptValue.fType != SkType_Array) {
-            SkASSERT(type == scriptValue.fType);
     //      SkASSERT(storageOffset + 1 <= maxStorage);
             destArray->setCount(storageOffset + 1);
             (*destArray)[storageOffset] = scriptValue.fOperand;
@@ -413,9 +380,7 @@ bool SkMemberInfo::writeValue(SkDisplayable* displayable, SkTDOperandArray* arra
                 type = scriptValue.fOperand.fArray->getType();
                 destArray->setType(type);
             }
-            SkASSERT(type == scriptValue.fOperand.fArray->getType());
             int count = scriptValue.fOperand.fArray->count();
-    //      SkASSERT(storageOffset + count <= maxStorage);
             destArray->setCount(storageOffset + count);
             memcpy(destArray->begin() + storageOffset, scriptValue.fOperand.fArray->begin(), sizeof(SkOperand) * count);
         }
@@ -424,13 +389,8 @@ bool SkMemberInfo::writeValue(SkDisplayable* displayable, SkTDOperandArray* arra
         string->set(*scriptValue.fOperand.fString);
     } else if (type == SkType_ARGB && outType == SkType_Float) {
         SkTypedArray* array = scriptValue.fOperand.fArray;
-        SkASSERT(scriptValue.fType == SkType_Int || scriptValue.fType == SkType_ARGB ||
-            scriptValue.fType == SkType_Array);
-        SkASSERT(scriptValue.fType != SkType_Array || (array != NULL &&
-            array->getType() == SkType_Int));
         int numberOfColors = scriptValue.fType == SkType_Array ? array->count() : 1;
         int numberOfComponents = numberOfColors * 4;
-    //  SkASSERT(maxStorage == 0 || maxStorage == numberOfComponents);
         if (maxStorage == 0)
             arrayStorage->setCount(numberOfComponents);
         for (int index = 0; index < numberOfColors; index++) {
@@ -445,15 +405,11 @@ bool SkMemberInfo::writeValue(SkDisplayable* displayable, SkTDOperandArray* arra
     } else if (SkDisplayType::IsStruct(NULL /* !!! maker*/, type)) {
         if (scriptValue.fType != SkType_Array)
             return true;    // error
-        SkASSERT(sizeof(SkScalar) == sizeof(SkOperand)); // !!! no 64 bit pointer support yet
         int count = scriptValue.fOperand.fArray->count();
         if (count > 0) {
-            SkASSERT(fCount == count);
             memcpy(storage, scriptValue.fOperand.fArray->begin(), count * sizeof(SkOperand));
         }
     } else if (scriptValue.fType == SkType_Array) {
-        SkASSERT(scriptValue.fOperand.fArray->getType() == type);
-        SkASSERT(scriptValue.fOperand.fArray->count() == getCount());
         memcpy(storage, scriptValue.fOperand.fArray->begin(), getCount() * sizeof(SkOperand));
     } else {
         memcpy(storage, &scriptValue.fOperand, sizeof(SkOperand));
@@ -462,27 +418,8 @@ bool SkMemberInfo::writeValue(SkDisplayable* displayable, SkTDOperandArray* arra
 }
 
 
-//void SkMemberInfo::setValue(SkDisplayable* displayable, const char value[], const char name[]) const {
-//  void* valuePtr = (void*) ((char*) displayable + fOffset);
-//  switch (fType) {
-//      case SkType_Point3D: {
-//          static const char xyz[] = "x|y|z";
-//          int index = find_one(xyz, name);
-//          SkASSERT(index >= 0);
-//          valuePtr = (void*) ((char*) valuePtr + index * sizeof(SkScalar));
-//          } break;
-//      default:
-//          SkASSERT(0);
-//  }
-//  SkParse::FindScalar(value, (SkScalar*) valuePtr);
-//  displayable->dirty();
-//}
-
-#if SK_USE_CONDENSED_INFO == 0
-
 // Find Nth memberInfo
 const SkMemberInfo* SkMemberInfo::Find(const SkMemberInfo info[], int count, int* index) {
-    SkASSERT(*index >= 0);
     if (info->fType == SkType_BaseClassInfo) {
         const SkMemberInfo* inherited = (SkMemberInfo*) info->fName;
         const SkMemberInfo* result = SkMemberInfo::Find(inherited, info->fCount, index);
@@ -492,8 +429,6 @@ const SkMemberInfo* SkMemberInfo::Find(const SkMemberInfo info[], int count, int
             return NULL;
         info++;
     }
-    SkASSERT(info->fName);
-    SkASSERT(info->fType != SkType_BaseClassInfo);
     if (*index >= count) {
         *index -= count;
         return NULL;
@@ -513,8 +448,6 @@ const SkMemberInfo* SkMemberInfo::Find(const SkMemberInfo info[], int count, con
             return NULL;
         info++;
     }
-    SkASSERT(info->fName);
-    SkASSERT(info->fType != SkType_BaseClassInfo);
     int index = SkStrSearch(&info->fName, count, match, sizeof(*info));
     if (index < 0 || index >= count)
         return NULL;
@@ -525,35 +458,4 @@ const SkMemberInfo* SkMemberInfo::getInherited() const {
     return (SkMemberInfo*) fName;
 }
 
-#endif // SK_USE_CONDENSED_INFO == 0
 
-#if 0
-bool SkMemberInfo::SetValue(void* valuePtr, const char value[], SkDisplayTypes type,
-                            int count) {
-    switch (type) {
-        case SkType_Animate:
-        case SkType_BaseBitmap:
-        case SkType_Bitmap:
-        case SkType_Dash:
-        case SkType_Displayable:
-        case SkType_Drawable:
-        case SkType_Matrix:
-        case SkType_Path:
-        case SkType_Text:
-        case SkType_3D_Patch:
-            return false; // ref to object; caller must resolve
-        case SkType_MSec: {
-            SkParse::FindMSec(value, (SkMSec*) valuePtr);
-            } break;
-        case SkType_3D_Point:
-        case SkType_Point:
-    //  case SkType_PointArray:
-        case SkType_ScalarArray:
-            SkParse::FindScalars(value, (SkScalar*) valuePtr, count);
-            break;
-        default:
-            SkASSERT(0);
-    }
-    return true;
-}
-#endif

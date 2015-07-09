@@ -59,7 +59,6 @@ public:
      *  resulting region is non-empty.
      */
     bool set(const SkRegion& src) {
-        SkASSERT(&src);
         *this = src;
         return !this->isEmpty();
     }
@@ -194,7 +193,6 @@ public:
      */
     bool quickContains(int32_t left, int32_t top, int32_t right,
                        int32_t bottom) const {
-        SkASSERT(this->isEmpty() == fBounds.isEmpty()); // valid region
 
         return left < right && top < bottom &&
                fRunHead == SkRegion_gRectRunHeadPtr &&  // this->isRect()

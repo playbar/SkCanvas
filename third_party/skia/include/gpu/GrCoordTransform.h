@@ -62,20 +62,16 @@ public:
     }
 
     void reset(GrCoordSet sourceCoords, const GrTexture* texture) {
-        SkASSERT(!fInEffect);
-        SkASSERT(NULL != texture);
         this->reset(sourceCoords, GrEffect::MakeDivByTextureWHMatrix(texture), texture);
     }
 
     void reset(GrCoordSet sourceCoords, const SkMatrix& m, const GrTexture* texture = NULL) {
-        SkASSERT(!fInEffect);
         fSourceCoords = sourceCoords;
         fMatrix = m;
         fReverseY = NULL != texture && kBottomLeft_GrSurfaceOrigin == texture->origin();
     }
 
     GrCoordTransform& operator= (const GrCoordTransform& other) {
-        SkASSERT(!fInEffect);
         fSourceCoords = other.fSourceCoords;
         fMatrix = other.fMatrix;
         fReverseY = other.fReverseY;
@@ -87,7 +83,6 @@ public:
      * effect, since effects are immutable.
      */
     SkMatrix* accessMatrix() {
-        SkASSERT(!fInEffect);
         return &fMatrix;
     }
 

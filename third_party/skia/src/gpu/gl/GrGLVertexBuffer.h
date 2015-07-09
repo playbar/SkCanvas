@@ -10,23 +10,25 @@
 
 #include "GrVertexBuffer.h"
 #include "GrGLBufferImpl.h"
-#include "gl/GrGLInterface.h"
+#include "gl/glew.h"
 
 class GrGpuGL;
 
-class GrGLVertexBuffer : public GrVertexBuffer {
+class GrGLVertexBuffer : public GrVertexBuffer
+{
 
 public:
     typedef GrGLBufferImpl::Desc Desc;
-
     GrGLVertexBuffer(GrGpuGL* gpu, const Desc& desc);
     virtual ~GrGLVertexBuffer() { this->release(); }
 
-    GrGLuint bufferID() const { return fImpl.bufferID(); }
+    GLuint bufferID() const { return fImpl.bufferID(); }
     size_t baseOffset() const { return fImpl.baseOffset(); }
 
-    void bind() const {
-        if (this->isValid()) {
+    void bind() const 
+	{
+        if (this->isValid())
+		{
             fImpl.bind(this->getGpuGL());
         }
     }
@@ -44,8 +46,8 @@ protected:
     virtual void onRelease() SK_OVERRIDE;
 
 private:
-    GrGpuGL* getGpuGL() const {
-        SkASSERT(this->isValid());
+    GrGpuGL* getGpuGL() const 
+	{
         return (GrGpuGL*)(this->getGpu());
     }
 

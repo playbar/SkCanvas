@@ -21,7 +21,8 @@ class SkPaint;
  *  used for the actual drawing. Note: this modification only lasts for the
  *  current draw, as a temporary copy of the paint is used.
  */
-class SK_API SkDrawFilter : public SkRefCnt {
+class SK_API SkDrawFilter : public SkRefCnt 
+{
 public:
     SK_DECLARE_INST_COUNT(SkDrawFilter)
 

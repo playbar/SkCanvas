@@ -45,7 +45,6 @@ enum DrawOps {
     kDrawBitmapRectToRect_DrawOp,
     kDrawClear_DrawOp,
     kDrawData_DrawOp,
-    kDrawDRRect_DrawOp,
     kDrawOval_DrawOp,
     kDrawPaint_DrawOp,
     kDrawPath_DrawOp,
@@ -117,9 +116,6 @@ static inline unsigned DrawOp_unpackData(uint32_t op32) {
 }
 
 static inline uint32_t DrawOp_packOpFlagData(DrawOps op, unsigned flags, unsigned data) {
-    SkASSERT(0 == (op & ~DRAWOPS_OP_MASK));
-    SkASSERT(0 == (flags & ~DRAWOPS_FLAG_MASK));
-    SkASSERT(0 == (data & ~DRAWOPS_DATA_MASK));
 
     return (op << (DRAWOPS_FLAG_BITS + DRAWOPS_DATA_BITS)) |
            (flags << DRAWOPS_DATA_BITS) |
@@ -143,7 +139,6 @@ enum {
     kDrawVertices_HasTexs_DrawOpFlag     = 1 << 0,
     kDrawVertices_HasColors_DrawOpFlag   = 1 << 1,
     kDrawVertices_HasIndices_DrawOpFlag  = 1 << 2,
-    kDrawVertices_HasXfermode_DrawOpFlag = 1 << 3,
 };
 enum {
     kDrawBitmap_HasPaint_DrawOpFlag   = 1 << 0,
@@ -171,7 +166,6 @@ public:
     {}
 
     ~BitmapInfo() {
-        SkASSERT(0 == fToBeDrawnCount);
         SkDELETE(fBitmap);
     }
 
@@ -262,22 +256,16 @@ static inline unsigned PaintOp_unpackData(uint32_t op32) {
 }
 
 static inline uint32_t PaintOp_packOp(PaintOps op) {
-    SkASSERT(0 == (op & ~PAINTOPS_OP_MASK));
 
     return op << (PAINTOPS_FLAG_BITS + PAINTOPS_DATA_BITS);
 }
 
 static inline uint32_t PaintOp_packOpData(PaintOps op, unsigned data) {
-    SkASSERT(0 == (op & ~PAINTOPS_OP_MASK));
-    SkASSERT(0 == (data & ~PAINTOPS_DATA_MASK));
 
     return (op << (PAINTOPS_FLAG_BITS + PAINTOPS_DATA_BITS)) | data;
 }
 
 static inline uint32_t PaintOp_packOpFlagData(PaintOps op, unsigned flags, unsigned data) {
-    SkASSERT(0 == (op & ~PAINTOPS_OP_MASK));
-    SkASSERT(0 == (flags & ~PAINTOPS_FLAG_MASK));
-    SkASSERT(0 == (data & ~PAINTOPS_DATA_MASK));
 
     return (op << (PAINTOPS_FLAG_BITS + PAINTOPS_DATA_BITS)) |
     (flags << PAINTOPS_DATA_BITS) |

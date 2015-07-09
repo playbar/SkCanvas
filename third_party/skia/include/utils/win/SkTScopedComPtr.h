@@ -51,7 +51,7 @@ public:
      * Must only be used on instances currently pointing to NULL,
      * and only to initialize the instance.
      */
-    T **operator&() { SkASSERT(fPtr == NULL); return &fPtr; }
+    T **operator&() { return &fPtr; }
     T *get() const { return fPtr; }
     void reset() {
         if (NULL != this->fPtr) {

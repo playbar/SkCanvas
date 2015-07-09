@@ -17,7 +17,7 @@
 #include "SkGPipePriv.h"
 #include "SkImageFilter.h"
 #include "SkMaskFilter.h"
-#include "SkWriteBuffer.h"
+#include "SkOrderedWriteBuffer.h"
 #include "SkPaint.h"
 #include "SkPathEffect.h"
 #include "SkPictureFlat.h"
@@ -38,7 +38,6 @@ static bool isCrossProcess(uint32_t flags) {
 }
 
 static SkFlattenable* get_paintflat(const SkPaint& paint, unsigned paintFlat) {
-    SkASSERT(paintFlat < kCount_PaintFlats);
     switch (paintFlat) {
         case kColorFilter_PaintFlat:    return paint.getColorFilter();
         case kDrawLooper_PaintFlat:     return paint.getLooper();
@@ -49,12 +48,10 @@ static SkFlattenable* get_paintflat(const SkPaint& paint, unsigned paintFlat) {
         case kImageFilter_PaintFlat:    return paint.getImageFilter();
         case kXfermode_PaintFlat:       return paint.getXfermode();
     }
-    SkDEBUGFAIL("never gets here");
     return NULL;
 }
 
 static size_t writeTypeface(SkWriter32* writer, SkTypeface* typeface) {
-    SkASSERT(typeface);
     SkDynamicMemoryWStream stream;
     typeface->serialize(&stream);
     size_t size = stream.getOffset();
@@ -71,11 +68,10 @@ static size_t writeTypeface(SkWriter32* writer, SkTypeface* typeface) {
 class FlattenableHeap : public SkFlatController {
 public:
     FlattenableHeap(int numFlatsToKeep, SkNamedFactorySet* fset, bool isCrossProcess)
-    : INHERITED(isCrossProcess ? SkWriteBuffer::kCrossProcess_Flag : 0)
-    , fNumFlatsToKeep(numFlatsToKeep) {
-        SkASSERT((isCrossProcess && fset != NULL) || (!isCrossProcess && NULL == fset));
+    : fNumFlatsToKeep(numFlatsToKeep) {
         if (isCrossProcess) {
             this->setNamedFactorySet(fset);
+            this->setWriteBufferFlags(SkFlattenableWriteBuffer::kCrossProcess_Flag);
         }
     }
 
@@ -109,8 +105,6 @@ private:
     SkTDArray<int>   fFlatsThatMustBeKept;
     SkTDArray<void*> fPointers;
     const int        fNumFlatsToKeep;
-
-    typedef SkFlatController INHERITED;
 };
 
 void FlattenableHeap::unalloc(void* ptr) {
@@ -152,13 +146,20 @@ const SkFlatData* FlattenableHeap::flatToReplace() const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct SkFlattenableTraits {
-    static void Flatten(SkWriteBuffer& buffer, const SkFlattenable& flattenable) {
-        buffer.writeFlattenable(&flattenable);
+class FlatDictionary : public SkFlatDictionary<SkFlattenable> {
+public:
+    FlatDictionary(FlattenableHeap* heap)
+            : SkFlatDictionary<SkFlattenable>(heap) {
+        fFlattenProc = &flattenFlattenableProc;
+        // No need to define fUnflattenProc since the writer will never
+        // unflatten the data.
     }
-    // No need to define unflatten if we never call it.
+    static void flattenFlattenableProc(SkOrderedWriteBuffer& buffer,
+                                       const void* obj) {
+        buffer.writeFlattenable((SkFlattenable*)obj);
+    }
+
 };
-typedef SkFlatDictionary<SkFlattenable, SkFlattenableTraits> FlatDictionary;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -229,7 +230,22 @@ public:
     }
 
     // overrides from SkCanvas
+    virtual int save(SaveFlags) SK_OVERRIDE;
+    virtual int saveLayer(const SkRect* bounds, const SkPaint*,
+                          SaveFlags) SK_OVERRIDE;
+    virtual void restore() SK_OVERRIDE;
     virtual bool isDrawingToLayer() const SK_OVERRIDE;
+    virtual bool translate(float dx, float dy) SK_OVERRIDE;
+    virtual bool scale(float sx, float sy) SK_OVERRIDE;
+    virtual bool rotate(float degrees) SK_OVERRIDE;
+    virtual bool skew(float sx, float sy) SK_OVERRIDE;
+    virtual bool concat(const SkMatrix& matrix) SK_OVERRIDE;
+    virtual void setMatrix(const SkMatrix& matrix) SK_OVERRIDE;
+    virtual bool clipRect(const SkRect&, SkRegion::Op op, bool doAntiAlias = false) SK_OVERRIDE;
+    virtual bool clipRRect(const SkRRect&, SkRegion::Op op, bool doAntiAlias = false) SK_OVERRIDE;
+    virtual bool clipPath(const SkPath& path, SkRegion::Op op,
+                          bool doAntiAlias = false) SK_OVERRIDE;
+    virtual bool clipRegion(const SkRegion& region, SkRegion::Op op) SK_OVERRIDE;
     virtual void clear(SkColor) SK_OVERRIDE;
     virtual void drawPaint(const SkPaint& paint) SK_OVERRIDE;
     virtual void drawPoints(PointMode, size_t count, const SkPoint pts[],
@@ -238,7 +254,7 @@ public:
     virtual void drawRect(const SkRect& rect, const SkPaint&) SK_OVERRIDE;
     virtual void drawRRect(const SkRRect&, const SkPaint&) SK_OVERRIDE;
     virtual void drawPath(const SkPath& path, const SkPaint&) SK_OVERRIDE;
-    virtual void drawBitmap(const SkBitmap&, SkScalar left, SkScalar top,
+    virtual void drawBitmap(const SkBitmap&, float left, float top,
                             const SkPaint*) SK_OVERRIDE;
     virtual void drawBitmapRectToRect(const SkBitmap&, const SkRect* src,
                                       const SkRect& dst, const SkPaint* paint,
@@ -249,12 +265,12 @@ public:
                                 const SkRect& dst, const SkPaint* paint = NULL) SK_OVERRIDE;
     virtual void drawSprite(const SkBitmap&, int left, int top,
                             const SkPaint*) SK_OVERRIDE;
-    virtual void drawText(const void* text, size_t byteLength, SkScalar x,
-                          SkScalar y, const SkPaint&) SK_OVERRIDE;
+    virtual void drawText(const void* text, size_t byteLength, float x,
+                          float y, const SkPaint&) SK_OVERRIDE;
     virtual void drawPosText(const void* text, size_t byteLength,
                              const SkPoint pos[], const SkPaint&) SK_OVERRIDE;
     virtual void drawPosTextH(const void* text, size_t byteLength,
-                              const SkScalar xpos[], SkScalar constY,
+                              const float xpos[], float constY,
                               const SkPaint&) SK_OVERRIDE;
     virtual void drawTextOnPath(const void* text, size_t byteLength,
                             const SkPath& path, const SkMatrix* matrix,
@@ -275,26 +291,6 @@ public:
      * according to slot.
      */
     bool shuttleBitmap(const SkBitmap&, int32_t slot);
-
-protected:
-    virtual void willSave(SaveFlags) SK_OVERRIDE;
-    virtual SaveLayerStrategy willSaveLayer(const SkRect*, const SkPaint*, SaveFlags) SK_OVERRIDE;
-    virtual void willRestore() SK_OVERRIDE;
-
-    virtual void didTranslate(SkScalar, SkScalar) SK_OVERRIDE;
-    virtual void didScale(SkScalar, SkScalar) SK_OVERRIDE;
-    virtual void didRotate(SkScalar) SK_OVERRIDE;
-    virtual void didSkew(SkScalar, SkScalar) SK_OVERRIDE;
-    virtual void didConcat(const SkMatrix&) SK_OVERRIDE;
-    virtual void didSetMatrix(const SkMatrix&) SK_OVERRIDE;
-
-    virtual void onDrawDRRect(const SkRRect&, const SkRRect&, const SkPaint&) SK_OVERRIDE;
-
-    virtual void onClipRect(const SkRect&, SkRegion::Op, ClipEdgeStyle) SK_OVERRIDE;
-    virtual void onClipRRect(const SkRRect&, SkRegion::Op, ClipEdgeStyle) SK_OVERRIDE;
-    virtual void onClipPath(const SkPath&, SkRegion::Op, ClipEdgeStyle) SK_OVERRIDE;
-    virtual void onClipRegion(const SkRegion&, SkRegion::Op) SK_OVERRIDE;
-
 private:
     enum {
         kNoSaveLayer = -1,
@@ -376,12 +372,11 @@ void SkGPipeCanvas::flattenFactoryNames() {
 }
 
 bool SkGPipeCanvas::shuttleBitmap(const SkBitmap& bm, int32_t slot) {
-    SkASSERT(shouldFlattenBitmaps(fFlags));
-    SkWriteBuffer buffer;
+    SkOrderedWriteBuffer buffer(1024);
     buffer.setNamedFactoryRecorder(fFactorySet);
     buffer.writeBitmap(bm);
     this->flattenFactoryNames();
-    uint32_t size = buffer.bytesWritten();
+    uint32_t size = buffer.size();
     if (this->needOpBytes(size)) {
         this->writeOp(kDef_Bitmap_DrawOp, 0, slot);
         void* dst = static_cast<void*>(fWriter.reserve(size));
@@ -394,7 +389,6 @@ bool SkGPipeCanvas::shuttleBitmap(const SkBitmap& bm, int32_t slot) {
 // return 0 for NULL (or unflattenable obj), or index-base-1
 // return ~(index-base-1) if an old flattenable was replaced
 int SkGPipeCanvas::flattenToIndex(SkFlattenable* obj, PaintFlats paintflat) {
-    SkASSERT(!fDone && fBitmapHeap != NULL);
     if (NULL == obj) {
         return 0;
     }
@@ -430,19 +424,24 @@ int SkGPipeCanvas::flattenToIndex(SkFlattenable* obj, PaintFlats paintflat) {
 SkGPipeCanvas::SkGPipeCanvas(SkGPipeController* controller,
                              SkWriter32* writer, uint32_t flags,
                              uint32_t width, uint32_t height)
-    : SkCanvas(width, height)
-    , fFactorySet(isCrossProcess(flags) ? SkNEW(SkNamedFactorySet) : NULL)
-    , fWriter(*writer)
-    , fFlags(flags)
-    , fFlattenableHeap(FLATTENABLES_TO_KEEP, fFactorySet, isCrossProcess(flags))
-    , fFlatDictionary(&fFlattenableHeap)
-{
+: fFactorySet(isCrossProcess(flags) ? SkNEW(SkNamedFactorySet) : NULL)
+, fWriter(*writer)
+, fFlags(flags)
+, fFlattenableHeap(FLATTENABLES_TO_KEEP, fFactorySet, isCrossProcess(flags))
+, fFlatDictionary(&fFlattenableHeap) {
     fController = controller;
     fDone = false;
     fBlockSize = 0; // need first block from controller
     fBytesNotified = 0;
     fFirstSaveLayerStackLevel = kNoSaveLayer;
     sk_bzero(fCurrFlatIndex, sizeof(fCurrFlatIndex));
+
+    // we need a device to limit our clip
+    // We don't allocate pixels for the bitmap
+    SkBitmap bitmap;
+    bitmap.setConfig(SkBitmap::kARGB_8888_Config, width, height);
+    SkBaseDevice* device = SkNEW_ARGS(SkBitmapDevice, (bitmap));
+    this->setDevice(device)->unref();
 
     // Tell the reader the appropriate flags to use.
     if (this->needOpBytes()) {
@@ -487,7 +486,6 @@ bool SkGPipeCanvas::needOpBytes(size_t needed) {
             this->finish(false);
             return false;
         }
-        SkASSERT(SkIsAlign4(fBlockSize));
         fWriter.reset(block, fBlockSize);
         fBytesNotified = 0;
     }
@@ -515,17 +513,16 @@ uint32_t SkGPipeCanvas::getTypefaceID(SkTypeface* face) {
 #define NOTIFY_SETUP(canvas)    \
     AutoPipeNotify apn(canvas)
 
-void SkGPipeCanvas::willSave(SaveFlags flags) {
+int SkGPipeCanvas::save(SaveFlags flags) {
     NOTIFY_SETUP(this);
     if (this->needOpBytes()) {
         this->writeOp(kSave_DrawOp, 0, flags);
     }
-
-    this->INHERITED::willSave(flags);
+    return this->INHERITED::save(flags);
 }
 
-SkCanvas::SaveLayerStrategy SkGPipeCanvas::willSaveLayer(const SkRect* bounds, const SkPaint* paint,
-                                                         SaveFlags saveFlags) {
+int SkGPipeCanvas::saveLayer(const SkRect* bounds, const SkPaint* paint,
+                             SaveFlags saveFlags) {
     NOTIFY_SETUP(this);
     size_t size = 0;
     unsigned opFlags = 0;
@@ -549,77 +546,75 @@ SkCanvas::SaveLayerStrategy SkGPipeCanvas::willSaveLayer(const SkRect* bounds, c
     if (kNoSaveLayer == fFirstSaveLayerStackLevel){
         fFirstSaveLayerStackLevel = this->getSaveCount();
     }
-
-    this->INHERITED::willSaveLayer(bounds, paint, saveFlags);
-    // we don't create a layer
-    return kNoLayer_SaveLayerStrategy;
+    // we just pass on the save, so we don't create a layer
+    return this->INHERITED::save(saveFlags);
 }
 
-void SkGPipeCanvas::willRestore() {
+void SkGPipeCanvas::restore() {
     NOTIFY_SETUP(this);
     if (this->needOpBytes()) {
         this->writeOp(kRestore_DrawOp);
     }
 
-    if (this->getSaveCount() - 1 == fFirstSaveLayerStackLevel){
+    this->INHERITED::restore();
+
+    if (this->getSaveCount() == fFirstSaveLayerStackLevel){
         fFirstSaveLayerStackLevel = kNoSaveLayer;
     }
-
-    this->INHERITED::willRestore();
 }
 
 bool SkGPipeCanvas::isDrawingToLayer() const {
     return kNoSaveLayer != fFirstSaveLayerStackLevel;
 }
 
-void SkGPipeCanvas::didTranslate(SkScalar dx, SkScalar dy) {
+bool SkGPipeCanvas::translate(float dx, float dy) {
     if (dx || dy) {
         NOTIFY_SETUP(this);
-        if (this->needOpBytes(2 * sizeof(SkScalar))) {
+        if (this->needOpBytes(2 * sizeof(float))) {
             this->writeOp(kTranslate_DrawOp);
             fWriter.writeScalar(dx);
             fWriter.writeScalar(dy);
         }
     }
-    this->INHERITED::didTranslate(dx, dy);
+    return this->INHERITED::translate(dx, dy);
 }
 
-void SkGPipeCanvas::didScale(SkScalar sx, SkScalar sy) {
+bool SkGPipeCanvas::scale(float sx, float sy) {
     if (sx || sy) {
         NOTIFY_SETUP(this);
-        if (this->needOpBytes(2 * sizeof(SkScalar))) {
+        if (this->needOpBytes(2 * sizeof(float))) {
             this->writeOp(kScale_DrawOp);
             fWriter.writeScalar(sx);
             fWriter.writeScalar(sy);
         }
     }
-    this->INHERITED::didScale(sx, sy);
+    return this->INHERITED::scale(sx, sy);
 }
 
-void SkGPipeCanvas::didRotate(SkScalar degrees) {
+bool SkGPipeCanvas::rotate(float degrees) {
     if (degrees) {
         NOTIFY_SETUP(this);
-        if (this->needOpBytes(sizeof(SkScalar))) {
+        if (this->needOpBytes(sizeof(float))) {
             this->writeOp(kRotate_DrawOp);
             fWriter.writeScalar(degrees);
         }
     }
-    this->INHERITED::didRotate(degrees);
+    return this->INHERITED::rotate(degrees);
 }
 
-void SkGPipeCanvas::didSkew(SkScalar sx, SkScalar sy) {
+bool SkGPipeCanvas::skew(float sx, float sy) {
     if (sx || sy) {
         NOTIFY_SETUP(this);
-        if (this->needOpBytes(2 * sizeof(SkScalar))) {
+        if (this->needOpBytes(2 * sizeof(float))) {
             this->writeOp(kSkew_DrawOp);
             fWriter.writeScalar(sx);
             fWriter.writeScalar(sy);
         }
     }
-    this->INHERITED::didSkew(sx, sy);
+    return this->INHERITED::skew(sx, sy);
 }
 
-void SkGPipeCanvas::didConcat(const SkMatrix& matrix) {
+bool SkGPipeCanvas::concat(const SkMatrix& matrix) {
     if (!matrix.isIdentity()) {
         NOTIFY_SETUP(this);
         if (this->needOpBytes(matrix.writeToMemory(NULL))) {
@@ -627,68 +622,59 @@ void SkGPipeCanvas::didConcat(const SkMatrix& matrix) {
             fWriter.writeMatrix(matrix);
         }
     }
-    this->INHERITED::didConcat(matrix);
+    return this->INHERITED::concat(matrix);
 }
 
-void SkGPipeCanvas::didSetMatrix(const SkMatrix& matrix) {
+void SkGPipeCanvas::setMatrix(const SkMatrix& matrix) {
     NOTIFY_SETUP(this);
     if (this->needOpBytes(matrix.writeToMemory(NULL))) {
         this->writeOp(kSetMatrix_DrawOp);
         fWriter.writeMatrix(matrix);
     }
-    this->INHERITED::didSetMatrix(matrix);
+    this->INHERITED::setMatrix(matrix);
 }
 
-void SkGPipeCanvas::onClipRect(const SkRect& rect, SkRegion::Op rgnOp,
-                               ClipEdgeStyle edgeStyle) {
+bool SkGPipeCanvas::clipRect(const SkRect& rect, SkRegion::Op rgnOp,
+                             bool doAntiAlias) {
     NOTIFY_SETUP(this);
     if (this->needOpBytes(sizeof(SkRect))) {
-        unsigned flags = 0;
-        if (kSoft_ClipEdgeStyle == edgeStyle) {
-            flags = kClip_HasAntiAlias_DrawOpFlag;
-        }
+        unsigned flags = doAntiAlias & kClip_HasAntiAlias_DrawOpFlag;
         this->writeOp(kClipRect_DrawOp, flags, rgnOp);
         fWriter.writeRect(rect);
     }
-    this->INHERITED::onClipRect(rect, rgnOp, edgeStyle);
+    return this->INHERITED::clipRect(rect, rgnOp, doAntiAlias);
 }
 
-void SkGPipeCanvas::onClipRRect(const SkRRect& rrect, SkRegion::Op rgnOp,
-                                ClipEdgeStyle edgeStyle) {
+bool SkGPipeCanvas::clipRRect(const SkRRect& rrect, SkRegion::Op rgnOp,
+                              bool doAntiAlias) {
     NOTIFY_SETUP(this);
     if (this->needOpBytes(kSizeOfFlatRRect)) {
-        unsigned flags = 0;
-        if (kSoft_ClipEdgeStyle == edgeStyle) {
-            flags = kClip_HasAntiAlias_DrawOpFlag;
-        }
+        unsigned flags = doAntiAlias & kClip_HasAntiAlias_DrawOpFlag;
         this->writeOp(kClipRRect_DrawOp, flags, rgnOp);
         fWriter.writeRRect(rrect);
     }
-    this->INHERITED::onClipRRect(rrect, rgnOp, edgeStyle);
+    return this->INHERITED::clipRRect(rrect, rgnOp, doAntiAlias);
 }
 
-void SkGPipeCanvas::onClipPath(const SkPath& path, SkRegion::Op rgnOp,
-                               ClipEdgeStyle edgeStyle) {
+bool SkGPipeCanvas::clipPath(const SkPath& path, SkRegion::Op rgnOp,
+                             bool doAntiAlias) {
     NOTIFY_SETUP(this);
     if (this->needOpBytes(path.writeToMemory(NULL))) {
-        unsigned flags = 0;
-        if (kSoft_ClipEdgeStyle == edgeStyle) {
-            flags = kClip_HasAntiAlias_DrawOpFlag;
-        }
+        unsigned flags = doAntiAlias & kClip_HasAntiAlias_DrawOpFlag;
         this->writeOp(kClipPath_DrawOp, flags, rgnOp);
         fWriter.writePath(path);
     }
     // we just pass on the bounds of the path
-    this->INHERITED::onClipRect(path.getBounds(), rgnOp, edgeStyle);
+    return this->INHERITED::clipRect(path.getBounds(), rgnOp, doAntiAlias);
 }
 
-void SkGPipeCanvas::onClipRegion(const SkRegion& region, SkRegion::Op rgnOp) {
+bool SkGPipeCanvas::clipRegion(const SkRegion& region, SkRegion::Op rgnOp) {
     NOTIFY_SETUP(this);
     if (this->needOpBytes(region.writeToMemory(NULL))) {
         this->writeOp(kClipRegion_DrawOp, 0, rgnOp);
         fWriter.writeRegion(region);
     }
-    this->INHERITED::onClipRegion(region, rgnOp);
+    return this->INHERITED::clipRegion(region, rgnOp);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -755,17 +741,6 @@ void SkGPipeCanvas::drawRRect(const SkRRect& rrect, const SkPaint& paint) {
     }
 }
 
-void SkGPipeCanvas::onDrawDRRect(const SkRRect& outer, const SkRRect& inner,
-                                 const SkPaint& paint) {
-    NOTIFY_SETUP(this);
-    this->writePaint(paint);
-    if (this->needOpBytes(kSizeOfFlatRRect * 2)) {
-        this->writeOp(kDrawDRRect_DrawOp);
-        fWriter.writeRRect(outer);
-        fWriter.writeRRect(inner);
-    }
-}
-
 void SkGPipeCanvas::drawPath(const SkPath& path, const SkPaint& paint) {
     NOTIFY_SETUP(this);
     this->writePaint(paint);
@@ -784,7 +759,6 @@ bool SkGPipeCanvas::commonDrawBitmap(const SkBitmap& bm, DrawOps op,
         this->writePaint(*paint);
     }
     if (this->needOpBytes(opBytesNeeded)) {
-        SkASSERT(fBitmapHeap != NULL);
         int32_t bitmapIndex = fBitmapHeap->insert(bm);
         if (SkBitmapHeap::INVALID_SLOT == bitmapIndex) {
             return false;
@@ -795,10 +769,10 @@ bool SkGPipeCanvas::commonDrawBitmap(const SkBitmap& bm, DrawOps op,
     return false;
 }
 
-void SkGPipeCanvas::drawBitmap(const SkBitmap& bm, SkScalar left, SkScalar top,
+void SkGPipeCanvas::drawBitmap(const SkBitmap& bm, float left, float top,
                                const SkPaint* paint) {
     NOTIFY_SETUP(this);
-    size_t opBytesNeeded = sizeof(SkScalar) * 2;
+    size_t opBytesNeeded = sizeof(float) * 2;
 
     if (this->commonDrawBitmap(bm, kDrawBitmap_DrawOp, 0, opBytesNeeded, paint)) {
         fWriter.writeScalar(left);
@@ -866,12 +840,12 @@ void SkGPipeCanvas::drawSprite(const SkBitmap& bm, int left, int top,
     }
 }
 
-void SkGPipeCanvas::drawText(const void* text, size_t byteLength, SkScalar x,
-                                 SkScalar y, const SkPaint& paint) {
+void SkGPipeCanvas::drawText(const void* text, size_t byteLength, float x,
+                                 float y, const SkPaint& paint) {
     if (byteLength) {
         NOTIFY_SETUP(this);
         this->writePaint(paint);
-        if (this->needOpBytes(4 + SkAlign4(byteLength) + 2 * sizeof(SkScalar))) {
+        if (this->needOpBytes(4 + SkAlign4(byteLength) + 2 * sizeof(float))) {
             this->writeOp(kDrawText_DrawOp);
             fWriter.write32(byteLength);
             fWriter.writePad(text, byteLength);
@@ -898,18 +872,18 @@ void SkGPipeCanvas::drawPosText(const void* text, size_t byteLength,
 }
 
 void SkGPipeCanvas::drawPosTextH(const void* text, size_t byteLength,
-                                 const SkScalar xpos[], SkScalar constY,
+                                 const float xpos[], float constY,
                                  const SkPaint& paint) {
     if (byteLength) {
         NOTIFY_SETUP(this);
         this->writePaint(paint);
         int count = paint.textToGlyphs(text, byteLength, NULL);
-        if (this->needOpBytes(4 + SkAlign4(byteLength) + 4 + count * sizeof(SkScalar) + 4)) {
+        if (this->needOpBytes(4 + SkAlign4(byteLength) + 4 + count * sizeof(float) + 4)) {
             this->writeOp(kDrawPosTextH_DrawOp);
             fWriter.write32(byteLength);
             fWriter.writePad(text, byteLength);
             fWriter.write32(count);
-            fWriter.write(xpos, count * sizeof(SkScalar));
+            fWriter.write(xpos, count * sizeof(float));
             fWriter.writeScalar(constY);
         }
     }
@@ -946,9 +920,9 @@ void SkGPipeCanvas::drawPicture(SkPicture& picture) {
     this->INHERITED::drawPicture(picture);
 }
 
-void SkGPipeCanvas::drawVertices(VertexMode vmode, int vertexCount,
+void SkGPipeCanvas::drawVertices(VertexMode mode, int vertexCount,
                                  const SkPoint vertices[], const SkPoint texs[],
-                                 const SkColor colors[], SkXfermode* xfer,
+                                 const SkColor colors[], SkXfermode*,
                                  const uint16_t indices[], int indexCount,
                                  const SkPaint& paint) {
     if (0 == vertexCount) {
@@ -971,14 +945,10 @@ void SkGPipeCanvas::drawVertices(VertexMode vmode, int vertexCount,
         flags |= kDrawVertices_HasIndices_DrawOpFlag;
         size += 4 + SkAlign4(indexCount * sizeof(uint16_t));
     }
-    if (xfer && !SkXfermode::IsMode(xfer, SkXfermode::kModulate_Mode)) {
-        flags |= kDrawVertices_HasXfermode_DrawOpFlag;
-        size += sizeof(int32_t);    // mode enum
-    }
 
     if (this->needOpBytes(size)) {
         this->writeOp(kDrawVertices_DrawOp, flags, 0);
-        fWriter.write32(vmode);
+        fWriter.write32(mode);
         fWriter.write32(vertexCount);
         fWriter.write(vertices, vertexCount * sizeof(SkPoint));
         if (texs) {
@@ -987,11 +957,9 @@ void SkGPipeCanvas::drawVertices(VertexMode vmode, int vertexCount,
         if (colors) {
             fWriter.write(colors, vertexCount * sizeof(SkColor));
         }
-        if (flags & kDrawVertices_HasXfermode_DrawOpFlag) {
-            SkXfermode::Mode mode = SkXfermode::kModulate_Mode;
-            (void)xfer->asMode(&mode);
-            fWriter.write32(mode);
-        }
+
+        // TODO: flatten xfermode
+
         if (indices && indexCount > 0) {
             fWriter.write32(indexCount);
             fWriter.writePad(indices, indexCount * sizeof(uint16_t));
@@ -1146,7 +1114,6 @@ void SkGPipeCanvas::writePaint(const SkPaint& paint) {
         if (index > 0) {
             fFlattenableHeap.markFlatForKeeping(index);
         }
-        SkASSERT(index >= 0 && index <= fFlatDictionary.count());
         if (index != fCurrFlatIndex[i] || replaced) {
             *ptr++ = PaintOp_packOpFlagData(kFlatIndex_PaintOp, i, index);
             fCurrFlatIndex[i] = index;
@@ -1171,7 +1138,7 @@ void SkGPipeCanvas::writePaint(const SkPaint& paint) {
                 this->writeOp(kSetAnnotation_DrawOp, 0, 0);
             }
         } else {
-            SkWriteBuffer buffer;
+            SkOrderedWriteBuffer buffer(1024);
             paint.getAnnotation()->writeToBuffer(buffer);
             const size_t size = buffer.bytesWritten();
             if (this->needOpBytes(size)) {
@@ -1244,7 +1211,6 @@ size_t SkGPipeWriter::storageAllocatedForRecording() const {
 ///////////////////////////////////////////////////////////////////////////////
 
 BitmapShuttle::BitmapShuttle(SkGPipeCanvas* canvas) {
-    SkASSERT(canvas != NULL);
     fCanvas = canvas;
     fCanvas->ref();
 }
@@ -1254,7 +1220,6 @@ BitmapShuttle::~BitmapShuttle() {
 }
 
 bool BitmapShuttle::insert(const SkBitmap& bitmap, int32_t slot) {
-    SkASSERT(fCanvas != NULL);
     return fCanvas->shuttleBitmap(bitmap, slot);
 }
 

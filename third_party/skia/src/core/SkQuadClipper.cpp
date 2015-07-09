@@ -19,17 +19,17 @@ void SkQuadClipper::setClip(const SkIRect& clip) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool chopMonoQuadAt(SkScalar c0, SkScalar c1, SkScalar c2,
-                           SkScalar target, SkScalar* t) {
+static bool chopMonoQuadAt(float c0, float c1, float c2,
+                           float target, float* t) {
     /* Solve F(t) = y where F(t) := [0](1-t)^2 + 2[1]t(1-t) + [2]t^2
      *  We solve for t, using quadratic equation, hence we have to rearrange
      * our cooefficents to look like At^2 + Bt + C
      */
-    SkScalar A = c0 - c1 - c1 + c2;
-    SkScalar B = 2*(c1 - c0);
-    SkScalar C = c0 - target;
+    float A = c0 - c1 - c1 + c2;
+    float B = 2*(c1 - c0);
+    float C = c0 - target;
 
-    SkScalar roots[2];  // we only expect one, but make room for 2 for safety
+    float roots[2];  // we only expect one, but make room for 2 for safety
     int count = SkFindUnitQuadRoots(A, B, C, roots);
     if (count) {
         *t = roots[0];
@@ -38,7 +38,7 @@ static bool chopMonoQuadAt(SkScalar c0, SkScalar c1, SkScalar c2,
     return false;
 }
 
-static bool chopMonoQuadAtY(SkPoint pts[3], SkScalar y, SkScalar* t) {
+static bool chopMonoQuadAtY(SkPoint pts[3], float y, float* t) {
     return chopMonoQuadAt(pts[0].fY, pts[1].fY, pts[2].fY, y, t);
 }
 
@@ -63,13 +63,13 @@ bool SkQuadClipper::clipQuad(const SkPoint srcPts[3], SkPoint dst[3]) {
     }
 
     // are we completely above or below
-    const SkScalar ctop = fClip.fTop;
-    const SkScalar cbot = fClip.fBottom;
+    const float ctop = fClip.fTop;
+    const float cbot = fClip.fBottom;
     if (dst[2].fY <= ctop || dst[0].fY >= cbot) {
         return false;
     }
 
-    SkScalar t;
+    float t;
     SkPoint tmp[5]; // for SkChopQuadAt
 
     // are we partially above

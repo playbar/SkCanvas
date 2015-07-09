@@ -8,8 +8,7 @@
 #include "SkFilterShader.h"
 
 #include "SkColorFilter.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkShader.h"
 #include "SkString.h"
 
@@ -21,7 +20,7 @@ SkFilterShader::SkFilterShader(SkShader* shader, SkColorFilter* filter) {
     filter->ref();
 }
 
-SkFilterShader::SkFilterShader(SkReadBuffer& buffer)
+SkFilterShader::SkFilterShader(SkFlattenableReadBuffer& buffer)
     : INHERITED(buffer) {
     fShader = buffer.readShader();
     fFilter = buffer.readColorFilter();
@@ -32,7 +31,7 @@ SkFilterShader::~SkFilterShader() {
     fShader->unref();
 }
 
-void SkFilterShader::flatten(SkWriteBuffer& buffer) const {
+void SkFilterShader::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writeFlattenable(fShader);
     buffer.writeFlattenable(fFilter);
@@ -80,14 +79,11 @@ void SkFilterShader::shadeSpan(int x, int y, SkPMColor result[], int count) {
 }
 
 void SkFilterShader::shadeSpan16(int x, int y, uint16_t result[], int count) {
-    SkASSERT(fShader->getFlags() & SkShader::kHasSpan16_Flag);
-    SkASSERT(fFilter->getFlags() & SkColorFilter::kHasFilter16_Flag);
-
     fShader->shadeSpan16(x, y, result, count);
     fFilter->filterSpan16(result, count, result);
 }
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkFilterShader::toString(SkString* str) const {
     str->append("SkFilterShader: (");
 

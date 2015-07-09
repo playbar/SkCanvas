@@ -13,7 +13,7 @@
 
 class SkSweepGradient : public SkGradientShaderBase {
 public:
-    SkSweepGradient(SkScalar cx, SkScalar cy, const Descriptor&);
+    SkSweepGradient(float cx, float cy, const Descriptor&);
     virtual void shadeSpan(int x, int y, SkPMColor dstC[], int count) SK_OVERRIDE;
     virtual void shadeSpan16(int x, int y, uint16_t dstC[], int count) SK_OVERRIDE;
 
@@ -25,12 +25,12 @@ public:
 
     virtual GrEffectRef* asNewEffect(GrContext* context, const SkPaint&) const SK_OVERRIDE;
 
-    SK_TO_STRING_OVERRIDE()
+    SK_DEVELOPER_TO_STRING()
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkSweepGradient)
 
 protected:
-    SkSweepGradient(SkReadBuffer& buffer);
-    virtual void flatten(SkWriteBuffer& buffer) const SK_OVERRIDE;
+    SkSweepGradient(SkFlattenableReadBuffer& buffer);
+    virtual void flatten(SkFlattenableWriteBuffer& buffer) const SK_OVERRIDE;
 
 private:
     typedef SkGradientShaderBase INHERITED;

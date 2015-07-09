@@ -26,7 +26,6 @@ SkTypefacePlayback::~SkTypefacePlayback() {
 
 void SkTypefacePlayback::reset(const SkRefCntSet* rec) {
     for (int i = 0; i < fCount; i++) {
-        SkASSERT(fArray[i]);
         fArray[i]->unref();
     }
     SkDELETE_ARRAY(fArray);
@@ -53,19 +52,18 @@ void SkTypefacePlayback::setCount(int count) {
 }
 
 SkRefCnt* SkTypefacePlayback::set(int index, SkRefCnt* obj) {
-    SkASSERT((unsigned)index < (unsigned)fCount);
     SkRefCnt_SafeAssign(fArray[index], obj);
     return obj;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-SkFlatController::SkFlatController(uint32_t writeBufferFlags)
+SkFlatController::SkFlatController()
 : fBitmapHeap(NULL)
 , fTypefaceSet(NULL)
 , fTypefacePlayback(NULL)
 , fFactorySet(NULL)
-, fWriteBufferFlags(writeBufferFlags) {}
+, fWriteBufferFlags(0) {}
 
 SkFlatController::~SkFlatController() {
     SkSafeUnref(fBitmapHeap);
@@ -88,4 +86,51 @@ void SkFlatController::setTypefacePlayback(SkTypefacePlayback* playback) {
 SkNamedFactorySet* SkFlatController::setNamedFactorySet(SkNamedFactorySet* set) {
     SkRefCnt_SafeAssign(fFactorySet, set);
     return set;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+SkFlatData* SkFlatData::Create(SkFlatController* controller,
+                               const void* obj,
+                               int index,
+                               void (*flattenProc)(SkOrderedWriteBuffer&, const void*)) {
+    // a buffer of 256 bytes should be sufficient for most paints, regions,
+    // and matrices.
+    intptr_t storage[256];
+    SkOrderedWriteBuffer buffer(256, storage, sizeof(storage));
+
+    buffer.setBitmapHeap(controller->getBitmapHeap());
+    buffer.setTypefaceRecorder(controller->getTypefaceSet());
+    buffer.setNamedFactoryRecorder(controller->getNamedFactorySet());
+    buffer.setFlags(controller->getWriteBufferFlags());
+
+    flattenProc(buffer, obj);
+    uint32_t size = buffer.size();
+
+    // Allocate enough memory to hold SkFlatData struct and the flat data itself.
+    size_t allocSize = sizeof(SkFlatData) + size;
+    SkFlatData* result = (SkFlatData*) controller->allocThrow(allocSize);
+
+    // Put the serialized contents into the data section of the new allocation.
+    buffer.writeToMemory(result->data());
+    // Stamp the index, size and checksum in the header.
+    result->stampHeader(index, size);
+    return result;
+}
+
+void SkFlatData::unflatten(void* result,
+        void (*unflattenProc)(SkOrderedReadBuffer&, void*),
+        SkBitmapHeap* bitmapHeap,
+        SkTypefacePlayback* facePlayback) const {
+
+    SkOrderedReadBuffer buffer(this->data(), fFlatSize);
+
+    if (bitmapHeap) {
+        buffer.setBitmapStorage(bitmapHeap);
+    }
+    if (facePlayback) {
+        facePlayback->setupBuffer(buffer);
+    }
+
+    unflattenProc(buffer, result);
 }

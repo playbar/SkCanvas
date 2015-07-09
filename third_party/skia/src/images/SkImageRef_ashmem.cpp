@@ -7,8 +7,7 @@
 
 #include "SkImageRef_ashmem.h"
 #include "SkImageDecoder.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkThread.h"
 
 #include "android/ashmem.h"
@@ -160,7 +159,7 @@ bool SkImageRef_ashmem::onDecode(SkImageDecoder* codec, SkStreamRewindable* stre
     }
 }
 
-bool SkImageRef_ashmem::onNewLockPixels(LockRec* rec) {
+void* SkImageRef_ashmem::onLockPixels(SkColorTable** ct) {
     SkASSERT(fBitmap.getPixels() == NULL);
     SkASSERT(fBitmap.getColorTable() == NULL);
 
@@ -186,13 +185,17 @@ bool SkImageRef_ashmem::onNewLockPixels(LockRec* rec) {
 #endif
         } else {
             SkDebugf("===== ashmem pin_region(%d) returned %d\n", fRec.fFD, pin);
-            return false;
+            // return null result for failure
+            if (ct) {
+                *ct = NULL;
+            }
+            return NULL;
         }
     } else {
         // no FD, will create an ashmem region in allocator
     }
 
-    return this->INHERITED::onNewLockPixels(rec);
+    return this->INHERITED::onLockPixels(ct);
 }
 
 void SkImageRef_ashmem::onUnlockPixels() {
@@ -211,12 +214,12 @@ void SkImageRef_ashmem::onUnlockPixels() {
     fBitmap.setPixels(NULL, NULL);
 }
 
-void SkImageRef_ashmem::flatten(SkWriteBuffer& buffer) const {
+void SkImageRef_ashmem::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writeString(getURI());
 }
 
-SkImageRef_ashmem::SkImageRef_ashmem(SkReadBuffer& buffer)
+SkImageRef_ashmem::SkImageRef_ashmem(SkFlattenableReadBuffer& buffer)
         : INHERITED(buffer) {
     fRec.fFD = -1;
     fRec.fAddr = NULL;

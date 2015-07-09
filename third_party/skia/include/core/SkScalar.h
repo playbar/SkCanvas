@@ -11,10 +11,7 @@
 #include "SkFixed.h"
 #include "SkFloatingPoint.h"
 
-//#define SK_SUPPORT_DEPRECATED_SCALARROUND
-
 typedef float   SkScalar;
-
 /** SK_Scalar1 is defined to be 1.0 represented as an SkScalar
 */
 #define SK_Scalar1              (1.0f)
@@ -63,10 +60,7 @@ static inline bool SkScalarIsFinite(float x) {
 #define SkScalarToFixed(x)      SkFloatToFixed(x)
 
 #define SkScalarToFloat(n)      (n)
-#ifndef SK_SCALAR_TO_FLOAT_EXCLUDED
 #define SkFloatToScalar(n)      (n)
-#endif
-
 #define SkScalarToDouble(n)      (double)(n)
 #define SkDoubleToScalar(n)      (float)(n)
 
@@ -91,17 +85,17 @@ static inline bool SkScalarIsFinite(float x) {
 #define SkScalarCopySign(x, y)  sk_float_copysign(x, y)
 /** Returns the value pinned between 0 and max inclusive
 */
-inline SkScalar SkScalarClampMax(SkScalar x, SkScalar max) {
+inline float SkScalarClampMax(float x, float max) {
     return x < 0 ? 0 : x > max ? max : x;
 }
 /** Returns the value pinned between min and max inclusive
 */
-inline SkScalar SkScalarPin(SkScalar x, SkScalar min, SkScalar max) {
+inline float SkScalarPin(float x, float min, float max) {
     return x < min ? min : x > max ? max : x;
 }
 /** Returns the specified SkScalar squared (x*x)
 */
-inline SkScalar SkScalarSquare(SkScalar x) { return x * x; }
+inline float SkScalarSquare(float x) { return x * x; }
 /** Returns the product of two SkScalars
 */
 #define SkScalarMul(a, b)       ((float)(a) * (b))
@@ -140,8 +134,7 @@ inline SkScalar SkScalarSquare(SkScalar x) { return x * x; }
 #define SK_ScalarRoot2Over2     0.707106781f
 
 #define SkDegreesToRadians(degrees) ((degrees) * (SK_ScalarPI / 180))
-#define SkRadiansToDegrees(radians) ((radians) * (180 / SK_ScalarPI))
-float SkScalarSinCos(SkScalar radians, SkScalar* cosValue);
+float SkScalarSinCos(float radians, float* cosValue);
 #define SkScalarSin(radians)    (float)sk_float_sin(radians)
 #define SkScalarCos(radians)    (float)sk_float_cos(radians)
 #define SkScalarTan(radians)    (float)sk_float_tan(radians)
@@ -151,78 +144,42 @@ float SkScalarSinCos(SkScalar radians, SkScalar* cosValue);
 #define SkScalarExp(x)  (float)sk_float_exp(x)
 #define SkScalarLog(x)  (float)sk_float_log(x)
 
-inline SkScalar SkMaxScalar(SkScalar a, SkScalar b) { return a > b ? a : b; }
-inline SkScalar SkMinScalar(SkScalar a, SkScalar b) { return a < b ? a : b; }
+inline float SkMaxScalar(float a, float b) { return a > b ? a : b; }
+inline float SkMinScalar(float a, float b) { return a < b ? a : b; }
 
-static inline bool SkScalarIsInt(SkScalar x) {
+static inline bool SkScalarIsInt(float x) {
     return x == (float)(int)x;
 }
 
-// DEPRECATED : use ToInt or ToScalar variant
-#ifdef SK_SUPPORT_DEPRECATED_SCALARROUND
-#   define SkScalarFloor(x)    SkScalarFloorToInt(x)
-#   define SkScalarCeil(x)     SkScalarCeilToInt(x)
-#   define SkScalarRound(x)    SkScalarRoundToInt(x)
-#endif
-
-/**
- *  Returns -1 || 0 || 1 depending on the sign of value:
- *  -1 if x < 0
- *   0 if x == 0
- *   1 if x > 0
- */
-static inline int SkScalarSignAsInt(SkScalar x) {
+static inline int SkScalarSignAsInt(float x) {
     return x < 0 ? -1 : (x > 0);
 }
 
 // Scalar result version of above
-static inline SkScalar SkScalarSignAsScalar(SkScalar x) {
+static inline float SkScalarSignAsScalar(float x) {
     return x < 0 ? -SK_Scalar1 : ((x > 0) ? SK_Scalar1 : 0);
 }
 
 #define SK_ScalarNearlyZero         (SK_Scalar1 / (1 << 12))
 
-static inline bool SkScalarNearlyZero(SkScalar x,
-                                    SkScalar tolerance = SK_ScalarNearlyZero) {
-    SkASSERT(tolerance >= 0);
+static inline bool SkScalarNearlyZero(float x,
+                                    float tolerance = SK_ScalarNearlyZero) {
     return SkScalarAbs(x) <= tolerance;
 }
 
-static inline bool SkScalarNearlyEqual(SkScalar x, SkScalar y,
-                                     SkScalar tolerance = SK_ScalarNearlyZero) {
-    SkASSERT(tolerance >= 0);
+static inline bool SkScalarNearlyEqual(float x, float y,
+                                     float tolerance = SK_ScalarNearlyZero) {
     return SkScalarAbs(x-y) <= tolerance;
 }
 
-/** Linearly interpolate between A and B, based on t.
-    If t is 0, return A
-    If t is 1, return B
-    else interpolate.
-    t must be [0..SK_Scalar1]
-*/
-static inline SkScalar SkScalarInterp(SkScalar A, SkScalar B, SkScalar t) {
-    SkASSERT(t >= 0 && t <= SK_Scalar1);
-    return A + (B - A) * t;
+static inline float SkScalarInterp(float A, float B, float t) {
+    return A + SkScalarMul(B - A, t);
 }
 
-/** Interpolate along the function described by (keys[length], values[length])
-    for the passed searchKey.  SearchKeys outside the range keys[0]-keys[Length]
-    clamp to the min or max value.  This function was inspired by a desire
-    to change the multiplier for thickness in fakeBold; therefore it assumes
-    the number of pairs (length) will be small, and a linear search is used.
-    Repeated keys are allowed for discontinuous functions (so long as keys is
-    monotonically increasing), and if key is the value of a repeated scalar in
-    keys, the first one will be used.  However, that may change if a binary
-    search is used.
-*/
-SkScalar SkScalarInterpFunc(SkScalar searchKey, const SkScalar keys[],
-                            const SkScalar values[], int length);
+float SkScalarInterpFunc(float searchKey, const float keys[],
+                            const float values[], int length);
 
-/*
- *  Helper to compare an array of scalars.
- */
-static inline bool SkScalarsEqual(const SkScalar a[], const SkScalar b[], int n) {
-    SkASSERT(n >= 0);
+static inline bool SkScalarsEqual(const float a[], const float b[], int n) {
     for (int i = 0; i < n; ++i) {
         if (a[i] != b[i]) {
             return false;

@@ -41,26 +41,19 @@ class GrVertexBufferAllocPool;
 class GrSoftwarePathRenderer;
 class SkStrokeRec;
 
-class SK_API GrContext : public SkRefCnt {
+class SK_API GrContext : public SkRefCnt
+{
 public:
     SK_DECLARE_INST_COUNT(GrContext)
 
     /**
      * Creates a GrContext for a backend context.
      */
-    static GrContext* Create(GrBackend, GrBackendContext);
+    static GrContext* Create( );
 
     virtual ~GrContext();
 
-    /**
-     * The GrContext normally assumes that no outsider is setting state
-     * within the underlying 3D API's context/device/whatever. This call informs
-     * the context that the state was modified and it should resend. Shouldn't
-     * be called frequently for good performance.
-     * The flag bits, state, is dpendent on which backend is used by the
-     * context, either GL or D3D (possible in future).
-     */
-    void resetContext(uint32_t state = kAll_GrBackendState);
+	void resetContext(uint32_t state = kAll_GrBackendState);
 
     /**
      * Callback function to allow classes to cleanup on GrContext destruction.
@@ -163,7 +156,8 @@ public:
      * Enum that determines how closely a returned scratch texture must match
      * a provided GrTextureDesc.
      */
-    enum ScratchTexMatch {
+    enum ScratchTexMatch 
+	{
         /**
          * Finds a texture that exactly matches the descriptor.
          */
@@ -305,19 +299,6 @@ public:
      * is not supported.
      */
     int getMaxSampleCount() const;
-
-    /**
-     * Returns the recommended sample count for a render target when using this
-     * context.
-     *
-     * @param  config the configuration of the render target.
-     * @param  dpi the display density in dots per inch.
-     *
-     * @return sample count that should be perform well and have good enough
-     *         rendering quality for the display. Alternatively returns 0 if
-     *         MSAA is not supported or recommended to be used by default.
-     */
-    int getRecommendedSampleCount(GrPixelConfig config, SkScalar dpi) const;
 
     ///////////////////////////////////////////////////////////////////////////
     // Backend Surfaces
@@ -502,27 +483,13 @@ public:
 
     ///////////////////////////////////////////////////////////////////////////
     // Misc.
-
-    /**
-     * Flags that affect flush() behavior.
-     */
-    enum FlushBits {
-        /**
-         * A client may reach a point where it has partially rendered a frame
-         * through a GrContext that it knows the user will never see. This flag
-         * causes the flush to skip submission of deferred content to the 3D API
-         * during the flush.
-         */
-        kDiscard_FlushBit                    = 0x2,
-    };
-
     /**
      * Call to ensure all drawing to the context has been issued to the
      * underlying 3D API.
      * @param flagsBitfield     flags that control the flushing behavior. See
      *                          FlushBits.
      */
-    void flush(int flagsBitfield = 0);
+    void flush( );
 
    /**
     * These flags can be used with the read/write pixels functions below.
@@ -705,8 +672,6 @@ public:
          * Initializes by pre-concat'ing the context's current matrix with the preConcat param.
          */
         void setPreConcat(GrContext* context, const SkMatrix& preConcat, GrPaint* paint = NULL) {
-            SkASSERT(NULL != context);
-
             this->restore();
 
             fContext = context;
@@ -719,7 +684,6 @@ public:
          * update a paint but the matrix cannot be inverted.
          */
         bool setIdentity(GrContext* context, GrPaint* paint = NULL) {
-            SkASSERT(NULL != context);
 
             this->restore();
 
@@ -799,7 +763,6 @@ public:
 
         AutoClip(GrContext* context, InitialClip initialState)
         : fContext(context) {
-            SkASSERT(kWideOpen_InitialClip == initialState);
             fNewClipData.fClipStack = &fNewClipStack;
 
             fOldClip = context->getClip();
@@ -835,7 +798,6 @@ public:
             , fAutoRT(ctx, rt) {
             fAutoMatrix.setIdentity(ctx);
             // should never fail with no paint param.
-            SkASSERT(fAutoMatrix.succeeded());
         }
 
     private:
@@ -919,7 +881,7 @@ private:
     int                             fMaxTextureSizeOverride;
 
     GrContext(); // init must be called after the constructor.
-    bool init(GrBackend, GrBackendContext);
+    bool init( );
 
     void setupDrawBuffer();
 
@@ -1031,10 +993,8 @@ public:
         // The cache also has a ref which we are lending to the caller of detach(). When the caller
         // lets go of the ref and the ref count goes to 0 internal_dispose will see this flag is
         // set and re-ref the texture, thereby restoring the cache's ref.
-        SkASSERT(texture->getRefCnt() > 1);
         texture->setFlag((GrTextureFlags) GrTexture::kReturnToCache_FlagBit);
         texture->unref();
-        SkASSERT(NULL != texture->getCacheEntry());
 
         return texture;
     }

@@ -37,8 +37,6 @@ static const size_t kBufferSize = 1024;
 ///////////////////////////////////////////////////////////////////////////////
 
 bool SkStrEndsWith(const char string[], const char suffixStr[]) {
-    SkASSERT(string);
-    SkASSERT(suffixStr);
     size_t  strLen = strlen(string);
     size_t  suffixLen = strlen(suffixStr);
     return  strLen >= suffixLen &&
@@ -46,7 +44,6 @@ bool SkStrEndsWith(const char string[], const char suffixStr[]) {
 }
 
 bool SkStrEndsWith(const char string[], const char suffixChar) {
-    SkASSERT(string);
     size_t  strLen = strlen(string);
     if (0 == strLen) {
         return false;
@@ -69,7 +66,6 @@ int SkStrStartsWithOneOf(const char string[], const char prefixes[]) {
 }
 
 char* SkStrAppendU32(char string[], uint32_t dec) {
-    SkDEBUGCODE(char* start = string;)
 
     char    buffer[SkStrAppendU32_MaxSize];
     char*   p = buffer + sizeof(buffer);
@@ -79,12 +75,10 @@ char* SkStrAppendU32(char string[], uint32_t dec) {
         dec /= 10;
     } while (dec != 0);
 
-    SkASSERT(p >= buffer);
     char* stop = buffer + sizeof(buffer);
     while (p < stop) {
         *string++ = *p++;
     }
-    SkASSERT(string - start <= SkStrAppendU32_MaxSize);
     return string;
 }
 
@@ -97,8 +91,6 @@ char* SkStrAppendS32(char string[], int32_t dec) {
 }
 
 char* SkStrAppendU64(char string[], uint64_t dec, int minDigits) {
-    SkDEBUGCODE(char* start = string;)
-
     char    buffer[SkStrAppendU64_MaxSize];
     char*   p = buffer + sizeof(buffer);
 
@@ -113,12 +105,10 @@ char* SkStrAppendU64(char string[], uint64_t dec, int minDigits) {
         minDigits--;
     }
 
-    SkASSERT(p >= buffer);
     size_t cp_len = buffer + sizeof(buffer) - p;
     memcpy(string, p, cp_len);
     string += cp_len;
 
-    SkASSERT(string - start <= SkStrAppendU64_MaxSize);
     return string;
 }
 
@@ -137,12 +127,10 @@ char* SkStrAppendFloat(char string[], float value) {
     char buffer[SkStrAppendScalar_MaxSize + 1];
     int len = SNPRINTF(buffer, sizeof(buffer), gFormat, value);
     memcpy(string, buffer, len);
-    SkASSERT(len <= SkStrAppendScalar_MaxSize);
     return string + len;
 }
 
 char* SkStrAppendFixed(char string[], SkFixed x) {
-    SkDEBUGCODE(char* start = string;)
     if (x < 0) {
         *string++ = '-';
         x = -x;
@@ -162,8 +150,7 @@ char* SkStrAppendFixed(char string[], SkFixed x) {
         static const uint16_t   gTens[] = { 1000, 100, 10, 1 };
         const uint16_t*         tens = gTens;
 
-        x = SkFixedRoundToInt(frac * 10000);
-        SkASSERT(x <= 10000);
+        x = SkFixedRound(frac * 10000);
         if (x == 10000) {
             x -= 1;
         }
@@ -175,7 +162,6 @@ char* SkStrAppendFixed(char string[], SkFixed x) {
         } while (x != 0);
     }
 
-    SkASSERT(string - start <= SkStrAppendScalar_MaxSize);
     return string;
 }
 
@@ -196,7 +182,6 @@ static uint32_t trim_size_t_to_u32(size_t value) {
 }
 
 static size_t check_add32(size_t base, size_t extra) {
-    SkASSERT(base <= SK_MaxU32);
     if (sizeof(size_t) > sizeof(uint32_t)) {
         if (base + extra > SK_MaxU32) {
             extra = SK_MaxU32 - base;
@@ -232,67 +217,35 @@ SkString::Rec* SkString::RefRec(Rec* src) {
     return src;
 }
 
-#ifdef SK_DEBUG
-void SkString::validate() const {
-    // make sure know one has written over our global
-    SkASSERT(0 == gEmptyRec.fLength);
-    SkASSERT(0 == gEmptyRec.fRefCnt);
-    SkASSERT(0 == gEmptyRec.data()[0]);
-
-    if (fRec != &gEmptyRec) {
-        SkASSERT(fRec->fLength > 0);
-        SkASSERT(fRec->fRefCnt > 0);
-        SkASSERT(0 == fRec->data()[fRec->fLength]);
-    }
-    SkASSERT(fStr == c_str());
-}
-#endif
-
 ///////////////////////////////////////////////////////////////////////////////
 
-SkString::SkString() : fRec(const_cast<Rec*>(&gEmptyRec)) {
-#ifdef SK_DEBUG
-    fStr = fRec->data();
-#endif
+SkString::SkString() : fRec(const_cast<Rec*>(&gEmptyRec)) 
+{
+
 }
 
-SkString::SkString(size_t len) {
+SkString::SkString(size_t len) 
+{
     fRec = AllocRec(NULL, len);
-#ifdef SK_DEBUG
-    fStr = fRec->data();
-#endif
 }
 
 SkString::SkString(const char text[]) {
     size_t  len = text ? strlen(text) : 0;
-
     fRec = AllocRec(text, len);
-#ifdef SK_DEBUG
-    fStr = fRec->data();
-#endif
+
 }
 
 SkString::SkString(const char text[], size_t len) {
     fRec = AllocRec(text, len);
-#ifdef SK_DEBUG
-    fStr = fRec->data();
-#endif
 }
 
 SkString::SkString(const SkString& src) {
-    src.validate();
-
     fRec = RefRec(src.fRec);
-#ifdef SK_DEBUG
-    fStr = fRec->data();
-#endif
 }
 
 SkString::~SkString() {
-    this->validate();
 
     if (fRec->fLength) {
-        SkASSERT(fRec->fRefCnt > 0);
         if (sk_atomic_dec(&fRec->fRefCnt) == 1) {
             sk_free(fRec);
         }
@@ -308,13 +261,11 @@ bool SkString::equals(const char text[]) const {
 }
 
 bool SkString::equals(const char text[], size_t len) const {
-    SkASSERT(len == 0 || text != NULL);
 
     return fRec->fLength == len && !memcmp(fRec->data(), text, len);
 }
 
 SkString& SkString::operator=(const SkString& src) {
-    this->validate();
 
     if (fRec != src.fRec) {
         SkString    tmp(src);
@@ -324,8 +275,6 @@ SkString& SkString::operator=(const SkString& src) {
 }
 
 SkString& SkString::operator=(const char text[]) {
-    this->validate();
-
     SkString tmp(text);
     this->swap(tmp);
 
@@ -333,23 +282,19 @@ SkString& SkString::operator=(const char text[]) {
 }
 
 void SkString::reset() {
-    this->validate();
 
     if (fRec->fLength) {
-        SkASSERT(fRec->fRefCnt > 0);
         if (sk_atomic_dec(&fRec->fRefCnt) == 1) {
             sk_free(fRec);
         }
     }
 
     fRec = const_cast<Rec*>(&gEmptyRec);
-#ifdef SK_DEBUG
-    fStr = fRec->data();
-#endif
+
 }
 
-char* SkString::writable_str() {
-    this->validate();
+char* SkString::writable_str()
+{
 
     if (fRec->fLength) {
         if (fRec->fRefCnt > 1) {
@@ -361,9 +306,7 @@ char* SkString::writable_str() {
                 sk_free(fRec);
             }
             fRec = rec;
-        #ifdef SK_DEBUG
-            fStr = fRec->data();
-        #endif
+  
         }
     }
     return fRec->data();
@@ -545,11 +488,10 @@ void SkString::insertHex(size_t offset, uint32_t hex, int minDigits) {
         *--p = '0';
     }
 
-    SkASSERT(p >= buffer);
     this->insert(offset, p, buffer + sizeof(buffer) - p);
 }
 
-void SkString::insertScalar(size_t offset, SkScalar value) {
+void SkString::insertScalar(size_t offset, float value) {
     char    buffer[SkStrAppendScalar_MaxSize];
     char*   stop = SkStrAppendScalar(buffer, value);
     this->insert(offset, buffer, stop - buffer);
@@ -593,35 +535,25 @@ void SkString::remove(size_t offset, size_t length) {
             length = size - offset;
         }
         if (length > 0) {
-            SkASSERT(size > length);
             SkString    tmp(size - length);
             char*       dst = tmp.writable_str();
             const char* src = this->c_str();
 
             if (offset) {
-                SkASSERT(offset <= tmp.size());
                 memcpy(dst, src, offset);
             }
             size_t tail = size - offset - length;
-            SkASSERT((int32_t)tail >= 0);
             if (tail) {
-        //      SkASSERT(offset + length <= tmp.size());
                 memcpy(dst + offset, src + offset + length, tail);
             }
-            SkASSERT(dst[tmp.size()] == 0);
             this->swap(tmp);
         }
     }
 }
 
-void SkString::swap(SkString& other) {
-    this->validate();
-    other.validate();
-
+void SkString::swap(SkString& other)
+{
     SkTSwap<Rec*>(fRec, other.fRec);
-#ifdef SK_DEBUG
-    SkTSwap<const char*>(fStr, other.fStr);
-#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////

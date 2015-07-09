@@ -8,6 +8,7 @@
 #include "SkMathPriv.h"
 #include "SkFloatBits.h"
 #include "SkFloatingPoint.h"
+#include "Sk64.h"
 #include "SkScalar.h"
 
 const uint32_t gIEEENotANumber = 0x7FFFFFFF;
@@ -44,10 +45,10 @@ int SkCLZ_portable(uint32_t x) {
 }
 
 int32_t SkMulDiv(int32_t numer1, int32_t numer2, int32_t denom) {
-    SkASSERT(denom);
-
-    int64_t tmp = sk_64_mul(numer1, numer2) / denom;
-    return sk_64_asS32(tmp);
+    Sk64 tmp;
+    tmp.setMul(numer1, numer2);
+    tmp.div(denom, Sk64::kTrunc_DivOption);
+    return tmp.get32();
 }
 
 SkFixed SkFixedMul_portable(SkFixed a, SkFixed b) {
@@ -79,7 +80,6 @@ SkFixed SkFixedMul_portable(SkFixed a, SkFixed b) {
             result |= 1 << (n - 1); else numer += denom
 
 int32_t SkDivBits(int32_t numer, int32_t denom, int shift_bias) {
-    SkASSERT(denom != 0);
     if (numer == 0) {
         return 0;
     }
@@ -142,7 +142,6 @@ int32_t SkDivBits(int32_t numer, int32_t denom, int shift_bias) {
 /* www.worldserver.com/turk/computergraphics/FixedSqrt.pdf
 */
 int32_t SkSqrtBits(int32_t x, int count) {
-    SkASSERT(x >= 0 && count > 0 && (unsigned)count <= 30);
 
     uint32_t    root = 0;
     uint32_t    remHi = 0;
@@ -206,15 +205,10 @@ float SkScalarSinCos(float radians, float* cosValue) {
 
 #ifdef INTERP_SINTABLE
 static SkFixed interp_table(const uint16_t table[], int index, int partial255) {
-    SkASSERT((unsigned)index < kTableSize);
-    SkASSERT((unsigned)partial255 <= 255);
 
     SkFixed lower = table[index];
     SkFixed upper = (index == kTableSize - 1) ? SK_Fixed1 : table[index + 1];
 
-    SkASSERT(lower < upper);
-    SkASSERT(lower >= 0);
-    SkASSERT(upper <= SK_Fixed1);
 
     partial255 += (partial255 >> 7);
     return lower + ((upper - lower) * partial255 >> 8);
@@ -222,7 +216,6 @@ static SkFixed interp_table(const uint16_t table[], int index, int partial255) {
 #endif
 
 SkFixed SkFixedSinCos(SkFixed radians, SkFixed* cosValuePtr) {
-    SkASSERT(SK_ARRAY_COUNT(gSkSinTable) == kTableSize);
 
 #ifdef BUILD_TABLE_AT_RUNTIME
     static bool gFirstTime = true;
@@ -279,15 +272,6 @@ SkFixed SkFixedSinCos(SkFixed radians, SkFixed* cosValuePtr) {
     // restore the sign for negative angles
     sinValue = SkApplySign(sinValue, sinSign);
     cosValue = SkApplySign(cosValue, cosSign);
-
-#ifdef SK_DEBUG
-    if (1) {
-        SkFixed sin2 = SkFixedMul(sinValue, sinValue);
-        SkFixed cos2 = SkFixedMul(cosValue, cosValue);
-        int diff = cos2 + sin2 - SK_Fixed1;
-        SkASSERT(SkAbs32(diff) <= 7);
-    }
-#endif
 
     if (cosValuePtr) {
         *cosValuePtr = cosValue;

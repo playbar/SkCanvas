@@ -12,6 +12,7 @@
 #include "SkColorPriv.h"
 #include "SkDither.h"
 #include "SkShader.h"
+#include "SkTemplatesPriv.h"
 #include "SkUtils.h"
 #include "SkXfermode.h"
 
@@ -162,10 +163,6 @@ private:
 #ifdef USE_BLACK_BLITTER
 SkRGB16_Black_Blitter::SkRGB16_Black_Blitter(const SkBitmap& device, const SkPaint& paint)
     : INHERITED(device, paint) {
-    SkASSERT(paint.getShader() == NULL);
-    SkASSERT(paint.getColorFilter() == NULL);
-    SkASSERT(paint.getXfermode() == NULL);
-    SkASSERT(paint.getColor() == SK_ColorBLACK);
 }
 
 #if 1
@@ -213,11 +210,6 @@ void SkRGB16_Black_Blitter::blitMask(const SkMask& mask,
         size_t deviceRB = fDevice.rowBytes() - (width << 1);
         unsigned maskRB = mask.fRowBytes - width;
 
-        SkASSERT((int)height > 0);
-        SkASSERT((int)width > 0);
-        SkASSERT((int)deviceRB >= 0);
-        SkASSERT((int)maskRB >= 0);
-
         do {
             unsigned w = width;
             do {
@@ -238,7 +230,6 @@ void SkRGB16_Black_Blitter::blitAntiH(int x, int y,
 
     for (;;) {
         int count = runs[0];
-        SkASSERT(count >= 0);
         if (count <= 0) {
             return;
         }
@@ -271,12 +262,9 @@ SkRGB16_Opaque_Blitter::SkRGB16_Opaque_Blitter(const SkBitmap& device,
 : INHERITED(device, paint) {}
 
 void SkRGB16_Opaque_Blitter::blitH(int x, int y, int width) {
-    SkASSERT(width > 0);
-    SkASSERT(x + width <= fDevice.width());
     uint16_t* SK_RESTRICT device = fDevice.getAddr16(x, y);
     uint16_t srcColor = fColor16;
 
-    SkASSERT(fRawColor16 == srcColor);
     if (fDoDither) {
         uint16_t ditherColor = fRawDither16;
         if ((x ^ y) & 1) {
@@ -307,7 +295,6 @@ void SkRGB16_Opaque_Blitter::blitAntiH(int x, int y,
     }
     for (;;) {
         int count = runs[0];
-        SkASSERT(count >= 0);
         if (count <= 0) {
             return;
         }
@@ -484,7 +471,6 @@ void SkRGB16_Opaque_Blitter::blitV(int x, int y, int height, SkAlpha alpha) {
 }
 
 void SkRGB16_Opaque_Blitter::blitRect(int x, int y, int width, int height) {
-    SkASSERT(x + width <= fDevice.width() && y + height <= fDevice.height());
     uint16_t* SK_RESTRICT device = fDevice.getAddr16(x, y);
     size_t      deviceRB = fDevice.rowBytes();
     uint16_t    color16 = fColor16;
@@ -549,7 +535,6 @@ static uint32_t pmcolor_to_expand16(SkPMColor c) {
 }
 
 static inline void blend32_16_row(SkPMColor src, uint16_t dst[], int count) {
-    SkASSERT(count > 0);
     uint32_t src_expand = pmcolor_to_expand16(src);
     unsigned scale = SkAlpha255To256(0xFF - SkGetPackedA32(src)) >> 3;
     do {
@@ -560,8 +545,6 @@ static inline void blend32_16_row(SkPMColor src, uint16_t dst[], int count) {
 }
 
 void SkRGB16_Blitter::blitH(int x, int y, int width) {
-    SkASSERT(width > 0);
-    SkASSERT(x + width <= fDevice.width());
     uint16_t* SK_RESTRICT device = fDevice.getAddr16(x, y);
 
     // TODO: respect fDoDither
@@ -578,7 +561,6 @@ void SkRGB16_Blitter::blitAntiH(int x, int y,
     // TODO: respect fDoDither
     for (;;) {
         int count = runs[0];
-        SkASSERT(count >= 0);
         if (count <= 0) {
             return;
         }
@@ -665,7 +647,6 @@ void SkRGB16_Blitter::blitV(int x, int y, int height, SkAlpha alpha) {
 }
 
 void SkRGB16_Blitter::blitRect(int x, int y, int width, int height) {
-    SkASSERT(x + width <= fDevice.width() && y + height <= fDevice.height());
     uint16_t* SK_RESTRICT device = fDevice.getAddr16(x, y);
     size_t    deviceRB = fDevice.rowBytes();
     SkPMColor src32 = fSrcColor32;
@@ -681,11 +662,9 @@ void SkRGB16_Blitter::blitRect(int x, int y, int width, int height) {
 SkRGB16_Shader16_Blitter::SkRGB16_Shader16_Blitter(const SkBitmap& device,
                                                    const SkPaint& paint)
     : SkRGB16_Shader_Blitter(device, paint) {
-    SkASSERT(SkShader::CanCallShadeSpan16(fShaderFlags));
 }
 
 void SkRGB16_Shader16_Blitter::blitH(int x, int y, int width) {
-    SkASSERT(x + width <= fDevice.width());
 
     uint16_t* SK_RESTRICT device = fDevice.getAddr16(x, y);
     SkShader*   shader = fShader;
@@ -761,7 +740,6 @@ void SkRGB16_Shader16_Blitter::blitAntiH(int x, int y,
             if (count <= 0) {
                 break;
             }
-            SkASSERT(count <= fDevice.width()); // don't overrun fBuffer
 
             int aa = *antialias;
             if (aa == 255) {
@@ -783,7 +761,6 @@ void SkRGB16_Shader16_Blitter::blitAntiH(int x, int y,
             if (count <= 0) {
                 break;
             }
-            SkASSERT(count <= fDevice.width()); // don't overrun fBuffer
 
             int aa = SkAlphaMul(*antialias, alpha);
             if (aa) {
@@ -803,8 +780,8 @@ void SkRGB16_Shader16_Blitter::blitAntiH(int x, int y,
 
 SkRGB16_Shader_Blitter::SkRGB16_Shader_Blitter(const SkBitmap& device,
                                                const SkPaint& paint)
-: INHERITED(device, paint) {
-    SkASSERT(paint.getXfermode() == NULL);
+: INHERITED(device, paint) 
+{
 
     fBuffer = (SkPMColor*)sk_malloc_throw(device.width() * sizeof(SkPMColor));
 
@@ -832,7 +809,6 @@ SkRGB16_Shader_Blitter::~SkRGB16_Shader_Blitter() {
 }
 
 void SkRGB16_Shader_Blitter::blitH(int x, int y, int width) {
-    SkASSERT(x + width <= fDevice.width());
 
     fShader->shadeSpan(x, y, fBuffer, width);
     // shaders take care of global alpha, so we pass 0xFF (should be ignored)
@@ -900,7 +876,6 @@ void SkRGB16_Shader_Blitter::blitAntiH(int x, int y,
 
         int nonZeroCount = count + count_nonzero_span(runs + count, antialias + count);
 
-        SkASSERT(nonZeroCount <= fDevice.width()); // don't overrun fBuffer
         shader->shadeSpan(x, y, span, nonZeroCount);
 
         SkPMColor* localSpan = span;
@@ -917,9 +892,7 @@ void SkRGB16_Shader_Blitter::blitAntiH(int x, int y,
                 break;
             }
             localSpan += count;
-            SkASSERT(nonZeroCount > 0);
             count = *runs;
-            SkASSERT(count > 0);
             aa = *antialias;
         }
     }
@@ -931,7 +904,6 @@ SkRGB16_Shader_Xfermode_Blitter::SkRGB16_Shader_Xfermode_Blitter(
                                 const SkBitmap& device, const SkPaint& paint)
 : INHERITED(device, paint) {
     fXfermode = paint.getXfermode();
-    SkASSERT(fXfermode);
     fXfermode->ref();
 
     int width = device.width();
@@ -945,8 +917,6 @@ SkRGB16_Shader_Xfermode_Blitter::~SkRGB16_Shader_Xfermode_Blitter() {
 }
 
 void SkRGB16_Shader_Xfermode_Blitter::blitH(int x, int y, int width) {
-    SkASSERT(x + width <= fDevice.width());
-
     uint16_t*   device = fDevice.getAddr16(x, y);
     SkPMColor*  span = fBuffer;
 
@@ -980,7 +950,6 @@ void SkRGB16_Shader_Xfermode_Blitter::blitAntiH(int x, int y,
         int nonZeroCount = count + count_nonzero_span(runs + count,
                                                       antialias + count);
 
-        SkASSERT(nonZeroCount <= fDevice.width()); // don't overrun fBuffer
         shader->shadeSpan(x, y, span, nonZeroCount);
 
         x += nonZeroCount;
@@ -989,7 +958,6 @@ void SkRGB16_Shader_Xfermode_Blitter::blitAntiH(int x, int y,
             if (aa == 0xFF) {
                 mode->xfer16(device, localSpan, count, NULL);
             } else {
-                SkASSERT(aa);
                 memset(aaExpand, aa, count);
                 mode->xfer16(device, localSpan, count, aaExpand);
             }
@@ -1001,9 +969,7 @@ void SkRGB16_Shader_Xfermode_Blitter::blitAntiH(int x, int y,
                 break;
             }
             localSpan += count;
-            SkASSERT(nonZeroCount > 0);
             count = *runs;
-            SkASSERT(count > 0);
             aa = *antialias;
         }
     }
@@ -1012,37 +978,40 @@ void SkRGB16_Shader_Xfermode_Blitter::blitAntiH(int x, int y,
 ///////////////////////////////////////////////////////////////////////////////
 
 SkBlitter* SkBlitter_ChooseD565(const SkBitmap& device, const SkPaint& paint,
-        SkTBlitterAllocator* allocator) {
-    SkASSERT(allocator != NULL);
-
+                                void* storage, size_t storageSize) {
     SkBlitter* blitter;
     SkShader* shader = paint.getShader();
     SkXfermode* mode = paint.getXfermode();
 
     // we require a shader if there is an xfermode, handled by our caller
-    SkASSERT(NULL == mode || NULL != shader);
 
     if (shader) {
         if (mode) {
-            blitter = allocator->createT<SkRGB16_Shader_Xfermode_Blitter>(device, paint);
+            SK_PLACEMENT_NEW_ARGS(blitter, SkRGB16_Shader_Xfermode_Blitter,
+                                  storage, storageSize, (device, paint));
         } else if (shader->canCallShadeSpan16()) {
-            blitter = allocator->createT<SkRGB16_Shader16_Blitter>(device, paint);
+            SK_PLACEMENT_NEW_ARGS(blitter, SkRGB16_Shader16_Blitter,
+                                  storage, storageSize, (device, paint));
         } else {
-            blitter = allocator->createT<SkRGB16_Shader_Blitter>(device, paint);
+            SK_PLACEMENT_NEW_ARGS(blitter, SkRGB16_Shader_Blitter,
+                                  storage, storageSize, (device, paint));
         }
     } else {
         // no shader, no xfermode, (and we always ignore colorfilter)
         SkColor color = paint.getColor();
         if (0 == SkColorGetA(color)) {
-            blitter = allocator->createT<SkNullBlitter>();
+            SK_PLACEMENT_NEW(blitter, SkNullBlitter, storage, storageSize);
 #ifdef USE_BLACK_BLITTER
         } else if (SK_ColorBLACK == color) {
-            blitter = allocator->createT<SkRGB16_Black_Blitter>(device, paint);
+            SK_PLACEMENT_NEW_ARGS(blitter, SkRGB16_Black_Blitter, storage,
+                                  storageSize, (device, paint));
 #endif
         } else if (0xFF == SkColorGetA(color)) {
-            blitter = allocator->createT<SkRGB16_Opaque_Blitter>(device, paint);
+            SK_PLACEMENT_NEW_ARGS(blitter, SkRGB16_Opaque_Blitter, storage,
+                                  storageSize, (device, paint));
         } else {
-            blitter = allocator->createT<SkRGB16_Blitter>(device, paint);
+            SK_PLACEMENT_NEW_ARGS(blitter, SkRGB16_Blitter, storage,
+                                  storageSize, (device, paint));
         }
     }
 

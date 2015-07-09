@@ -46,7 +46,7 @@ public:
         @param  mapper  May be NULL. Callback to modify the spread of the colors.
     */
     static SkShader* CreateLinear(const SkPoint pts[2],
-                                  const SkColor colors[], const SkScalar pos[], int count,
+                                  const SkColor colors[], const float pos[], int count,
                                   SkShader::TileMode mode,
                                   SkUnitMapper* mapper = NULL,
                                   uint32_t flags = 0);
@@ -68,8 +68,8 @@ public:
         @param  mode    The tiling mode
         @param  mapper  May be NULL. Callback to modify the spread of the colors.
     */
-    static SkShader* CreateRadial(const SkPoint& center, SkScalar radius,
-                                  const SkColor colors[], const SkScalar pos[], int count,
+    static SkShader* CreateRadial(const SkPoint& center, float radius,
+                                  const SkColor colors[], const float pos[], int count,
                                   SkShader::TileMode mode,
                                   SkUnitMapper* mapper = NULL,
                                   uint32_t flags = 0);
@@ -95,11 +95,11 @@ public:
         @param  mapper  May be NULL. Callback to modify the spread of the colors.
     */
     static SkShader* CreateTwoPointRadial(const SkPoint& start,
-                                          SkScalar startRadius,
+                                          float startRadius,
                                           const SkPoint& end,
-                                          SkScalar endRadius,
+                                          float endRadius,
                                           const SkColor colors[],
-                                          const SkScalar pos[], int count,
+                                          const float pos[], int count,
                                           SkShader::TileMode mode,
                                           SkUnitMapper* mapper = NULL,
                                           uint32_t flags = 0);
@@ -111,11 +111,11 @@ public:
      *  http://dev.w3.org/html5/2dcontext/#dom-context-2d-createradialgradient
      */
     static SkShader* CreateTwoPointConical(const SkPoint& start,
-                                           SkScalar startRadius,
+                                           float startRadius,
                                            const SkPoint& end,
-                                           SkScalar endRadius,
+                                           float endRadius,
                                            const SkColor colors[],
-                                           const SkScalar pos[], int count,
+                                           const float pos[], int count,
                                            SkShader::TileMode mode,
                                            SkUnitMapper* mapper = NULL,
                                            uint32_t flags = 0);
@@ -136,8 +136,8 @@ public:
         @param  count   Must be >= 2. The number of colors (and pos if not NULL) entries
         @param  mapper  May be NULL. Callback to modify the spread of the colors.
     */
-    static SkShader* CreateSweep(SkScalar cx, SkScalar cy,
-                                 const SkColor colors[], const SkScalar pos[],
+    static SkShader* CreateSweep(float cx, float cy,
+                                 const SkColor colors[], const float pos[],
                                  int count, SkUnitMapper* mapper = NULL,
                                  uint32_t flags = 0);
 

@@ -67,15 +67,13 @@ void SkSet::onEndElement(SkAnimateMaker& maker) {
         fValues.setType(outType);
         fValues.setCount(comps);
         if (outType == SkType_String || outType == SkType_DynamicString)
-            fValues[0].fString = SkNEW(SkString);
+            fValues[0].fString = new SkString;
         else
             memset(fValues.begin(), 0, fValues.count() * sizeof(fValues.begin()[0]));
     } else {
-        SkASSERT(fValues.getType() == outType);
         if (fFieldInfo->fType == SkType_Array)
             comps = fValues.count();
         else {
-            SkASSERT(fValues.count() == comps);
         }
     }
     if (formula.size() > 0) {

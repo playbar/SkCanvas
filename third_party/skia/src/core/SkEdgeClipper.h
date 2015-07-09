@@ -35,7 +35,7 @@ private:
 
     void clipMonoQuad(const SkPoint srcPts[3], const SkRect& clip);
     void clipMonoCubic(const SkPoint srcPts[4], const SkRect& clip);
-    void appendVLine(SkScalar x, SkScalar y0, SkScalar y1, bool reverse);
+	void appendVLine(float x, float y0, float y1, bool reverse);
     void appendQuad(const SkPoint pts[3], bool reverse);
     void appendCubic(const SkPoint pts[4], bool reverse);
 };

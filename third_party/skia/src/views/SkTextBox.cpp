@@ -14,7 +14,7 @@ static inline int is_ws(int c)
 }
 
 static size_t linebreak(const char text[], const char stop[],
-                        const SkPaint& paint, SkScalar margin,
+                        const SkPaint& paint, float margin,
                         size_t* trailing = NULL)
 {
     size_t lengthBreak = paint.breakText(text, stop - text, margin);
@@ -95,7 +95,7 @@ static size_t linebreak(const char text[], const char stop[],
     return text - start;
 }
 
-int SkTextLineBreaker::CountLines(const char text[], size_t len, const SkPaint& paint, SkScalar width)
+int SkTextLineBreaker::CountLines(const char text[], size_t len, const SkPaint& paint, float width)
 {
     const char* stop = text + len;
     int         count = 0;
@@ -123,13 +123,11 @@ SkTextBox::SkTextBox()
 
 void SkTextBox::setMode(Mode mode)
 {
-    SkASSERT((unsigned)mode < kModeCount);
     fMode = SkToU8(mode);
 }
 
 void SkTextBox::setSpacingAlign(SpacingAlign align)
 {
-    SkASSERT((unsigned)align < kSpacingAlignCount);
     fSpacingAlign = SkToU8(align);
 }
 
@@ -144,12 +142,12 @@ void SkTextBox::setBox(const SkRect& box)
     fBox = box;
 }
 
-void SkTextBox::setBox(SkScalar left, SkScalar top, SkScalar right, SkScalar bottom)
+void SkTextBox::setBox(float left, float top, float right, float bottom)
 {
     fBox.set(left, top, right, bottom);
 }
 
-void SkTextBox::getSpacing(SkScalar* mul, SkScalar* add) const
+void SkTextBox::getSpacing(float* mul, float* add) const
 {
     if (mul)
         *mul = fSpacingMul;
@@ -157,7 +155,7 @@ void SkTextBox::getSpacing(SkScalar* mul, SkScalar* add) const
         *add = fSpacingAdd;
 }
 
-void SkTextBox::setSpacing(SkScalar mul, SkScalar add)
+void SkTextBox::setSpacing(float mul, float add)
 {
     fSpacingMul = mul;
     fSpacingAdd = add;
@@ -167,16 +165,14 @@ void SkTextBox::setSpacing(SkScalar mul, SkScalar add)
 
 void SkTextBox::draw(SkCanvas* canvas, const char text[], size_t len, const SkPaint& paint)
 {
-    SkASSERT(canvas && &paint && (text || len == 0));
-
-    SkScalar marginWidth = fBox.width();
+    float marginWidth = fBox.width();
 
     if (marginWidth <= 0 || len == 0)
         return;
 
     const char* textStop = text + len;
 
-    SkScalar                x, y, scaledSpacing, height, fontHeight;
+    float                x, y, scaledSpacing, height, fontHeight;
     SkPaint::FontMetrics    metrics;
 
     switch (paint.getTextAlign()) {
@@ -198,12 +194,11 @@ void SkTextBox::draw(SkCanvas* canvas, const char text[], size_t len, const SkPa
 
     //  compute Y position for first line
     {
-        SkScalar textHeight = fontHeight;
+        float textHeight = fontHeight;
 
         if (fMode == kLineBreak_Mode && fSpacingAlign != kStart_SpacingAlign)
         {
             int count = SkTextLineBreaker::CountLines(text, textStop - text, paint, marginWidth);
-            SkASSERT(count > 0);
             textHeight += scaledSpacing * (count - 1);
         }
 
@@ -215,7 +210,6 @@ void SkTextBox::draw(SkCanvas* canvas, const char text[], size_t len, const SkPa
             y = SkScalarHalf(height - textHeight);
             break;
         default:
-            SkASSERT(fSpacingAlign == kEnd_SpacingAlign);
             y = height - textHeight;
             break;
         }
@@ -253,7 +247,7 @@ int SkTextBox::countLines() const {
     return SkTextLineBreaker::CountLines(fText, fLen, *fPaint, fBox.width());
 }
 
-SkScalar SkTextBox::getTextHeight() const {
-    SkScalar spacing = SkScalarMul(fPaint->getTextSize(), fSpacingMul) + fSpacingAdd;
+float SkTextBox::getTextHeight() const {
+    float spacing = SkScalarMul(fPaint->getTextSize(), fSpacingMul) + fSpacingAdd;
     return this->countLines() * spacing;
 }

@@ -8,17 +8,20 @@
 #ifndef GrGLSL_DEFINED
 #define GrGLSL_DEFINED
 
-#include "gl/GrGLInterface.h"
+#include "gl/glew.h"
 #include "GrColor.h"
 #include "GrTypesPriv.h"
 #include "SkString.h"
+#include "GrGLUtil.h"
 
 class GrGLContextInfo;
 class GrGLShaderVar;
 
 // Limited set of GLSL versions we build shaders for. Caller should round
 // down the GLSL version to one of these enums.
-enum GrGLSLGeneration {
+
+enum GrGLSLGeneration 
+{
     /**
      * Desktop GLSL 1.10 and ES2 shading language (based on desktop GLSL 1.20)
      */
@@ -40,7 +43,7 @@ enum GrGLSLGeneration {
 /**
  * Gets the most recent GLSL Generation compatible with the OpenGL context.
  */
-GrGLSLGeneration GrGetGLSLGeneration(const GrGLInterface* gl);
+GrGLSLGeneration GrGetGLSLGeneration(GrGLBinding binding );
 
 /**
  * Returns a string to include at the beginning of a shader to declare the GLSL
@@ -94,7 +97,6 @@ public:
         } else if (kOnes_ExprType == fType) {
             return Self::OnesStr();
         }
-        SkASSERT(!fExpr.isEmpty()); // Empty expressions should not be used.
         return fExpr.c_str();
     }
 
@@ -105,7 +107,6 @@ protected:
     GrGLSLExpr()
         : fType(kFullExpr_ExprType) {
         // The only constructor that is allowed to build an empty expression.
-        SkASSERT(!this->isValid());
     }
 
     /** Constructs an expression with all components as value v */
@@ -130,7 +131,6 @@ protected:
             fType = kFullExpr_ExprType;
             fExpr = expr;
         }
-        SkASSERT(this->isValid());
     }
 
     /** Constructs an expression from a string.
@@ -143,7 +143,6 @@ protected:
             fType = kFullExpr_ExprType;
             fExpr = expr;
         }
-        SkASSERT(this->isValid());
     }
 
     /** Constructs an expression from a string with one substitution. */

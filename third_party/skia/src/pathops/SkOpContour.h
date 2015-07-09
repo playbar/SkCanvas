@@ -41,11 +41,6 @@ public:
     void addCoincidentPoints();
 
     void addCross(const SkOpContour* crosser) {
-#ifdef DEBUG_CROSS
-        for (int index = 0; index < fCrosses.count(); ++index) {
-            SkASSERT(fCrosses[index] != crosser);
-        }
-#endif
         fCrosses.push_back(crosser);
     }
 

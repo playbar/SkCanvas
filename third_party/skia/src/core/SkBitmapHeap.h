@@ -111,7 +111,7 @@ public:
      */
     SkBitmapHeap(ExternalStorage* externalStorage, int32_t heapSize = UNLIMITED_SIZE);
 
-    virtual ~SkBitmapHeap();
+    ~SkBitmapHeap();
 
     /**
      * Makes a shallow copy of all bitmaps currently in the heap and returns them as an array. The
@@ -127,7 +127,6 @@ public:
      * @return  The bitmap located at that slot or NULL if external storage is being used.
      */
     virtual SkBitmap* getBitmap(int32_t slot) const SK_OVERRIDE {
-        SkASSERT(fExternalStorage == NULL);
         SkBitmapHeapEntry* entry = getEntry(slot);
         if (entry) {
             return &entry->fBitmap;
@@ -141,7 +140,6 @@ public:
      * @return  The bitmap located at that slot or NULL if external storage is being used.
      */
     virtual void releaseRef(int32_t slot) SK_OVERRIDE {
-        SkASSERT(fExternalStorage == NULL);
         if (fOwnerCount != IGNORE_OWNERS) {
             SkBitmapHeapEntry* entry = getEntry(slot);
             if (entry) {
@@ -169,7 +167,6 @@ public:
      * @return  a SkBitmapHeapEntry that wraps the bitmap or NULL if external storage is used.
      */
     SkBitmapHeapEntry* getEntry(int32_t slot) const {
-        SkASSERT(slot <= fStorage.count());
         if (fExternalStorage != NULL) {
             return NULL;
         }
@@ -180,8 +177,6 @@ public:
      * Returns a count of the number of items currently in the heap
      */
     int count() const {
-        SkASSERT(fExternalStorage != NULL ||
-                 fStorage.count() - fUnusedSlots.count() == fLookupTable.count());
         return fLookupTable.count();
     }
 
@@ -220,14 +215,14 @@ private:
     struct LookupEntry {
         LookupEntry(const SkBitmap& bm)
         : fGenerationId(bm.getGenerationID())
-        , fPixelOrigin(bm.pixelRefOrigin())
+        , fPixelOffset(bm.pixelRefOffset())
         , fWidth(bm.width())
         , fHeight(bm.height())
         , fMoreRecentlyUsed(NULL)
         , fLessRecentlyUsed(NULL){}
 
         const uint32_t fGenerationId; // SkPixelRef GenerationID.
-        const SkIPoint fPixelOrigin;
+        const size_t   fPixelOffset;
         const uint32_t fWidth;
         const uint32_t fHeight;
 

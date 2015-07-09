@@ -45,7 +45,7 @@ bool SkStippleMaskFilter::filterMask(SkMask* dst,
     return true;
 }
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkStippleMaskFilter::toString(SkString* str) const {
     str->append("SkStippleMaskFilter: ()");
 }

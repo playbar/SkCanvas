@@ -31,8 +31,8 @@ public:
     };
 
     Style getStyle() const;
-    SkScalar getWidth() const { return fWidth; }
-    SkScalar getMiter() const { return fMiterLimit; }
+    float getWidth() const { return fWidth; }
+    float getMiter() const { return fMiterLimit; }
     SkPaint::Cap getCap() const { return fCap; }
     SkPaint::Join getJoin() const { return fJoin; }
 
@@ -52,9 +52,9 @@ public:
      *      strokeAndFill==true -> new style will be Fill
      *      strokeAndFill==false -> new style will be Hairline
      */
-    void setStrokeStyle(SkScalar width, bool strokeAndFill = false);
+    void setStrokeStyle(float width, bool strokeAndFill = false);
 
-    void setStrokeParams(SkPaint::Cap cap, SkPaint::Join join, SkScalar miterLimit) {
+    void setStrokeParams(SkPaint::Cap cap, SkPaint::Join join, float miterLimit) {
         fCap = cap;
         fJoin = join;
         fMiterLimit = miterLimit;
@@ -90,8 +90,8 @@ public:
     }
 
 private:
-    SkScalar        fWidth;
-    SkScalar        fMiterLimit;
+    float        fWidth;
+    float        fMiterLimit;
     SkPaint::Cap    fCap;
     SkPaint::Join   fJoin;
     bool            fStrokeAndFill;

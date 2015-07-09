@@ -59,7 +59,7 @@ class SkDrawRadialGradient : public SkDrawGradient {
     virtual SkShader* getShader();
 protected:
     SkPoint center;
-    SkScalar radius;
+    float radius;
 private:
     typedef SkDrawGradient INHERITED;
 };

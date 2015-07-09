@@ -10,8 +10,6 @@
 #include "SkTypes.h"
 
 size_t CopyStreamToStorage(SkAutoMalloc* storage, SkStream* stream) {
-    SkASSERT(storage != NULL);
-    SkASSERT(stream != NULL);
 
     if (stream->hasLength()) {
         const size_t length = stream->getLength();
@@ -31,7 +29,6 @@ size_t CopyStreamToStorage(SkAutoMalloc* storage, SkStream* stream) {
         size_t bytesRead = stream->read(buffer, bufferSize);
         tempStream.write(buffer, bytesRead);
         SkDEBUGCODE(debugLength += bytesRead);
-        SkASSERT(tempStream.bytesWritten() == debugLength);
     } while (!stream->isAtEnd());
     const size_t length = tempStream.bytesWritten();
     void* dst = storage->reset(length);

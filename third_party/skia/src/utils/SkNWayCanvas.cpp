@@ -7,8 +7,14 @@
  */
 #include "SkNWayCanvas.h"
 
+static SkBitmap make_noconfig_bm(int width, int height) {
+    SkBitmap bm;
+    bm.setConfig(SkBitmap::kNo_Config, width, height);
+    return bm;
+}
+
 SkNWayCanvas::SkNWayCanvas(int width, int height)
-        : INHERITED(width, height) {}
+        : INHERITED(make_noconfig_bm(width, height)) {}
 
 SkNWayCanvas::~SkNWayCanvas() {
     this->removeAll();
@@ -57,113 +63,109 @@ private:
     SkCanvas* fCanvas;
 };
 
-void SkNWayCanvas::willSave(SaveFlags flags) {
+int SkNWayCanvas::save(SaveFlags flags) {
     Iter iter(fList);
     while (iter.next()) {
         iter->save(flags);
     }
-
-    this->INHERITED::willSave(flags);
+    return this->INHERITED::save(flags);
 }
 
-SkCanvas::SaveLayerStrategy SkNWayCanvas::willSaveLayer(const SkRect* bounds, const SkPaint* paint,
-                                                        SaveFlags flags) {
+int SkNWayCanvas::saveLayer(const SkRect* bounds, const SkPaint* paint,
+                                    SaveFlags flags) {
     Iter iter(fList);
     while (iter.next()) {
         iter->saveLayer(bounds, paint, flags);
     }
-
-    this->INHERITED::willSaveLayer(bounds, paint, flags);
-    // No need for a layer.
-    return kNoLayer_SaveLayerStrategy;
+    return this->INHERITED::saveLayer(bounds, paint, flags);
 }
 
-void SkNWayCanvas::willRestore() {
+void SkNWayCanvas::restore() {
     Iter iter(fList);
     while (iter.next()) {
         iter->restore();
     }
-    this->INHERITED::willRestore();
+    this->INHERITED::restore();
 }
 
-void SkNWayCanvas::didTranslate(SkScalar dx, SkScalar dy) {
+bool SkNWayCanvas::translate(float dx, float dy) {
     Iter iter(fList);
     while (iter.next()) {
         iter->translate(dx, dy);
     }
-    this->INHERITED::didTranslate(dx, dy);
+    return this->INHERITED::translate(dx, dy);
 }
 
-void SkNWayCanvas::didScale(SkScalar sx, SkScalar sy) {
+bool SkNWayCanvas::scale(float sx, float sy) {
     Iter iter(fList);
     while (iter.next()) {
         iter->scale(sx, sy);
     }
-    this->INHERITED::didScale(sx, sy);
+    return this->INHERITED::scale(sx, sy);
 }
 
-void SkNWayCanvas::didRotate(SkScalar degrees) {
+bool SkNWayCanvas::rotate(float degrees) {
     Iter iter(fList);
     while (iter.next()) {
         iter->rotate(degrees);
     }
-    this->INHERITED::didRotate(degrees);
+    return this->INHERITED::rotate(degrees);
 }
 
-void SkNWayCanvas::didSkew(SkScalar sx, SkScalar sy) {
+bool SkNWayCanvas::skew(float sx, float sy) {
     Iter iter(fList);
     while (iter.next()) {
         iter->skew(sx, sy);
     }
-    this->INHERITED::didSkew(sx, sy);
+    return this->INHERITED::skew(sx, sy);
 }
 
-void SkNWayCanvas::didConcat(const SkMatrix& matrix) {
+bool SkNWayCanvas::concat(const SkMatrix& matrix) {
     Iter iter(fList);
     while (iter.next()) {
         iter->concat(matrix);
     }
-    this->INHERITED::didConcat(matrix);
+    return this->INHERITED::concat(matrix);
 }
 
-void SkNWayCanvas::didSetMatrix(const SkMatrix& matrix) {
+void SkNWayCanvas::setMatrix(const SkMatrix& matrix) {
     Iter iter(fList);
     while (iter.next()) {
         iter->setMatrix(matrix);
     }
-    this->INHERITED::didSetMatrix(matrix);
+    this->INHERITED::setMatrix(matrix);
 }
 
-void SkNWayCanvas::onClipRect(const SkRect& rect, SkRegion::Op op, ClipEdgeStyle edgeStyle) {
+bool SkNWayCanvas::clipRect(const SkRect& rect, SkRegion::Op op, bool doAA) {
     Iter iter(fList);
     while (iter.next()) {
-        iter->clipRect(rect, op, kSoft_ClipEdgeStyle == edgeStyle);
+        iter->clipRect(rect, op, doAA);
     }
-    this->INHERITED::onClipRect(rect, op, edgeStyle);
+    return this->INHERITED::clipRect(rect, op, doAA);
 }
 
-void SkNWayCanvas::onClipRRect(const SkRRect& rrect, SkRegion::Op op, ClipEdgeStyle edgeStyle) {
+bool SkNWayCanvas::clipRRect(const SkRRect& rrect, SkRegion::Op op, bool doAA) {
     Iter iter(fList);
     while (iter.next()) {
-        iter->clipRRect(rrect, op, kSoft_ClipEdgeStyle == edgeStyle);
+        iter->clipRRect(rrect, op, doAA);
     }
-    this->INHERITED::onClipRRect(rrect, op, edgeStyle);
+    return this->INHERITED::clipRRect(rrect, op, doAA);
 }
 
-void SkNWayCanvas::onClipPath(const SkPath& path, SkRegion::Op op, ClipEdgeStyle edgeStyle) {
+bool SkNWayCanvas::clipPath(const SkPath& path, SkRegion::Op op, bool doAA) {
     Iter iter(fList);
     while (iter.next()) {
-        iter->clipPath(path, op, kSoft_ClipEdgeStyle == edgeStyle);
+        iter->clipPath(path, op, doAA);
     }
-    this->INHERITED::onClipPath(path, op, edgeStyle);
+    return this->INHERITED::clipPath(path, op, doAA);
 }
 
-void SkNWayCanvas::onClipRegion(const SkRegion& deviceRgn, SkRegion::Op op) {
+bool SkNWayCanvas::clipRegion(const SkRegion& deviceRgn, SkRegion::Op op) {
     Iter iter(fList);
     while (iter.next()) {
         iter->clipRegion(deviceRgn, op);
     }
-    this->INHERITED::onClipRegion(deviceRgn, op);
+    return this->INHERITED::clipRegion(deviceRgn, op);
 }
 
 void SkNWayCanvas::clear(SkColor color) {
@@ -209,14 +211,6 @@ void SkNWayCanvas::drawRRect(const SkRRect& rrect, const SkPaint& paint) {
     }
 }
 
-void SkNWayCanvas::onDrawDRRect(const SkRRect& outer, const SkRRect& inner,
-                                const SkPaint& paint) {
-    Iter iter(fList);
-    while (iter.next()) {
-        iter->drawDRRect(outer, inner, paint);
-    }
-}
-
 void SkNWayCanvas::drawPath(const SkPath& path, const SkPaint& paint) {
     Iter iter(fList);
     while (iter.next()) {
@@ -224,7 +218,7 @@ void SkNWayCanvas::drawPath(const SkPath& path, const SkPaint& paint) {
     }
 }
 
-void SkNWayCanvas::drawBitmap(const SkBitmap& bitmap, SkScalar x, SkScalar y,
+void SkNWayCanvas::drawBitmap(const SkBitmap& bitmap, float x, float y,
                               const SkPaint* paint) {
     Iter iter(fList);
     while (iter.next()) {
@@ -265,8 +259,8 @@ void SkNWayCanvas::drawSprite(const SkBitmap& bitmap, int x, int y,
     }
 }
 
-void SkNWayCanvas::drawText(const void* text, size_t byteLength, SkScalar x,
-                            SkScalar y, const SkPaint& paint) {
+void SkNWayCanvas::drawText(const void* text, size_t byteLength, float x,
+                            float y, const SkPaint& paint) {
     Iter iter(fList);
     while (iter.next()) {
         iter->drawText(text, byteLength, x, y, paint);
@@ -282,7 +276,7 @@ void SkNWayCanvas::drawPosText(const void* text, size_t byteLength,
 }
 
 void SkNWayCanvas::drawPosTextH(const void* text, size_t byteLength,
-                                const SkScalar xpos[], SkScalar constY,
+                                const float xpos[], float constY,
                                 const SkPaint& paint) {
     Iter iter(fList);
     while (iter.next()) {

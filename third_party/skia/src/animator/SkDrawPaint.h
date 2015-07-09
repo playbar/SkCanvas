@@ -54,13 +54,13 @@ public:
     SkBool stroke;
     int /*SkPaint::Cap*/ strokeCap;
     int /*SkPaint::Join */ strokeJoin;
-    SkScalar strokeMiter;
-    SkScalar strokeWidth;
+    float strokeMiter;
+    float strokeWidth;
     int /* SkPaint::Style */ style;
     int /* SkPaint::Align */ textAlign;
-    SkScalar textScaleX;
-    SkScalar textSize;
-    SkScalar textSkewX;
+    float textScaleX;
+    float textSize;
+    float textSkewX;
     SkDrawTypeface* typeface;
     SkBool underline;
     int /*SkXfermode::Modes*/ xfermode;

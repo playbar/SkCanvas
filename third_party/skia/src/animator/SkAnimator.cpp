@@ -104,8 +104,7 @@ bool SkAnimator::doCharEvent(SkUnichar code) {
     return result;
 }
 
-bool SkAnimator::doClickEvent(int clickState, SkScalar x, SkScalar y) {
-    SkASSERT(clickState >= 0 && clickState <= 2);
+bool SkAnimator::doClickEvent(int clickState, float x, float y) {
     struct SkEventState state;
     state.fX = x;
     state.fY = y;
@@ -168,7 +167,7 @@ void SkAnimator::eventDone(const SkEvent& ) {
 }
 #endif
 
-bool SkAnimator::findClickEvent(SkScalar x, SkScalar y) {
+bool SkAnimator::findClickEvent(float x, float y) {
     struct SkEventState state;
     state.fDisable = true;
     state.fX = x;
@@ -229,7 +228,6 @@ static bool getArrayCommon(const SkDisplayable* ae, const SkMemberInfo* ai,
                            int index, SkOperand* operand) {
     const SkDisplayable* element = (const SkDisplayable*) ae;
     const SkMemberInfo* info = (const SkMemberInfo*) ai;
-    SkASSERT(info->fType == SkType_Array);
     return info->getArrayValue(element, index, operand);
 }
 
@@ -250,14 +248,14 @@ int32_t SkAnimator::getArrayInt(const char* id, const char* fieldID, int index) 
     return getArrayInt(element, field, index);
 }
 
-SkScalar SkAnimator::getArrayScalar(const SkDisplayable* ae,
+float SkAnimator::getArrayScalar(const SkDisplayable* ae,
         const SkMemberInfo* ai, int index) {
     SkOperand operand;
     bool result = getArrayCommon(ae, ai, index, &operand);
     return result ? operand.fScalar : SK_ScalarNaN;
 }
 
-SkScalar SkAnimator::getArrayScalar(const char* id, const char* fieldID, int index) {
+float SkAnimator::getArrayScalar(const char* id, const char* fieldID, int index) {
     const SkDisplayable* element = getElement(id);
     if (element == NULL)
         return SK_ScalarNaN;
@@ -336,7 +334,7 @@ int32_t SkAnimator::getInt(const char* id, const char* fieldID) {
     return getInt(element, field);
 }
 
-SkScalar SkAnimator::getScalar(const SkDisplayable* element, const SkMemberInfo* info) {
+float SkAnimator::getScalar(const SkDisplayable* element, const SkMemberInfo* info) {
     if (info->fType != SkType_MemberProperty) {
         SkOperand operand;
         if (info->getType() == SkType_Float) {
@@ -352,7 +350,7 @@ SkScalar SkAnimator::getScalar(const SkDisplayable* element, const SkMemberInfo*
     return SK_ScalarNaN;
 }
 
-SkScalar SkAnimator::getScalar(const char* id, const char* fieldID) {
+float SkAnimator::getScalar(const char* id, const char* fieldID) {
     const SkDisplayable* element = getElement(id);
     if (element == NULL)
         return SK_ScalarNaN;
@@ -411,10 +409,8 @@ bool SkAnimator::onEvent(const SkEvent& evt) {
 #endif
     if (evt.isType(SK_EventType_OnEnd)) {
         SkEventState eventState;
-        SkDEBUGCODE(bool success =) evt.findPtr("anim", (void**) &eventState.fDisplayable);
-        SkASSERT(success);
-        SkDEBUGCODE(success =) evt.findS32("time", (int32_t*) &fMaker->fEnableTime);
-        SkASSERT(success);
+        evt.findPtr("anim", (void**) &eventState.fDisplayable);
+        evt.findS32("time", (int32_t*) &fMaker->fEnableTime);
         fMaker->fAdjustedStart = fMaker->getAppTime() - fMaker->fEnableTime;
         fMaker->fEvents.doEvent(*fMaker, SkDisplayEvent::kOnEnd, &eventState);
         fMaker->fAdjustedStart = 0;
@@ -438,28 +434,13 @@ bool SkAnimator::onEvent(const SkEvent& evt) {
             SkDisplayable* event;
             if (fMaker->find(id, &event) == false)
                 return false;
-    #if defined SK_DEBUG && defined SK_DEBUG_ANIMATION_TIMING
-            SkString debugOut;
-            SkMSec realTime = fMaker->getAppTime();
-            debugOut.appendS32(realTime - fMaker->fDebugTimeBase);
-            debugOut.append(" onEvent id=");
-            debugOut.append(id);
-    #endif
+
             SkMSec time = evt.getFast32();
             if (time != 0) {
                 SkMSec app  = fMaker->getAppTime();
                 fMaker->setEnableTime(app, time);
-    #if defined SK_DEBUG && defined SK_DEBUG_ANIMATION_TIMING
-                debugOut.append(" time=");
-                debugOut.appendS32(time - fMaker->fDebugTimeBase);
-                debugOut.append(" adjust=");
-                debugOut.appendS32(fMaker->fAdjustedStart);
-    #endif
+
             }
-    #if defined SK_DEBUG && defined SK_DEBUG_ANIMATION_TIMING
-            SkDebugf("%s\n", debugOut.c_str());
-    #endif
-            SkASSERT(event->isEvent());
             SkDisplayEvent* displayEvent = (SkDisplayEvent*) event;
             displayEvent->populateInput(*fMaker, evt);
             displayEvent->enableEvent(*fMaker);
@@ -478,8 +459,6 @@ void SkAnimator::onEventPost(SkEvent* evt, SkEventSinkID sinkID)
         root->onEventPost(evt, sinkID);
         return;
     }
-#else
-    SkASSERT(sinkID == this->getSinkID() || this->getHostEventSinkID() == sinkID);
 #endif
     evt->setTargetID(sinkID)->post();
 }
@@ -492,8 +471,6 @@ void SkAnimator::onEventPostTime(SkEvent* evt, SkEventSinkID sinkID, SkMSec time
         root->onEventPostTime(evt, sinkID, time);
         return;
     }
-#else
-    SkASSERT(sinkID == this->getSinkID() || this->getHostEventSinkID() == sinkID);
 #endif
     evt->setTargetID(sinkID)->postTime(time);
 }
@@ -570,7 +547,6 @@ bool SkAnimator::setInt(SkDisplayable* element, const SkMemberInfo* info, int32_
     if (info->fType != SkType_MemberProperty) {
         SkOperand operand;
         operand.fS32 = s32;
-        SkASSERT(info->getType() == SkType_Int);
         info->setValue(element, &operand, 1);
     } else {
         SkScriptValue scriptValue;
@@ -591,11 +567,10 @@ bool SkAnimator::setInt(const char* id, const char* fieldID, int32_t s32) {
     return setInt(element, field, s32);
 }
 
-bool SkAnimator::setScalar(SkDisplayable* element, const SkMemberInfo* info, SkScalar scalar) {
+bool SkAnimator::setScalar(SkDisplayable* element, const SkMemberInfo* info, float scalar) {
     if (info->fType != SkType_MemberProperty) {
         SkOperand operand;
         operand.fScalar = scalar;
-        SkASSERT(info->getType() == SkType_Float);
         info->setValue(element, &operand, 1);
     } else {
         SkScriptValue scriptValue;
@@ -606,7 +581,7 @@ bool SkAnimator::setScalar(SkDisplayable* element, const SkMemberInfo* info, SkS
     return true;
 }
 
-bool SkAnimator::setScalar(const char* id, const char* fieldID, SkScalar scalar) {
+bool SkAnimator::setScalar(const char* id, const char* fieldID, float scalar) {
     SkDisplayable* element = (SkDisplayable*) getElement(id);
     if (element == NULL)
         return false;

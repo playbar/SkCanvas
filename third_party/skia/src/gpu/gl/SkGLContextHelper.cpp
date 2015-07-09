@@ -1,135 +1,116 @@
 
 /*
- * Copyright 2013 Google Inc.
- *
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
+* Copyright 2013 Google Inc.
+*
+* Use of this source code is governed by a BSD-style license that can be
+* found in the LICENSE file.
+*/
 #include "gl/SkGLContextHelper.h"
 #include "GrGLUtil.h"
 
 SkGLContextHelper::SkGLContextHelper()
-    : fFBO(0)
-    , fColorBufferID(0)
-    , fDepthStencilBufferID(0)
-    , fGL(NULL) {
+	: fFBO(0)
+	, fColorBufferID(0)
+	, fDepthStencilBufferID(0)
+{
 }
 
-SkGLContextHelper::~SkGLContextHelper() {
+SkGLContextHelper::~SkGLContextHelper()
+{
+	// TODO: determine why DeleteFramebuffers is generating a GL error in tests
+	glDeleteFramebuffers(1, &fFBO);
+	glDeleteRenderbuffers(1, &fColorBufferID);
+	glDeleteRenderbuffers(1, &fDepthStencilBufferID);
 
-    if (fGL) {
-        // TODO: determine why DeleteFramebuffers is generating a GL error in tests
-        SK_GL_NOERRCHECK(*this, DeleteFramebuffers(1, &fFBO));
-        SK_GL_NOERRCHECK(*this, DeleteRenderbuffers(1, &fColorBufferID));
-        SK_GL_NOERRCHECK(*this, DeleteRenderbuffers(1, &fDepthStencilBufferID));
-    }
-
-    SkSafeUnref(fGL);
 }
 
-bool SkGLContextHelper::init(int width, int height) {
-    if (fGL) {
-        fGL->unref();
-        this->destroyGLContext();
-    }
+bool SkGLContextHelper::init(int width, int height)
+{
+	destroyGLContext();
+	createGLContext();
+	GrGLBinding bindingInUse = GrGLGetBindingInUse();
 
-    fGL = this->createGLContext();
-    if (fGL) {
-        const GrGLubyte* temp;
+	// clear any existing GL erorrs
+	GLenum error;
+	do {
+		error = glGetError();
+	} while (GL_NO_ERROR != error);
 
-        if (!fGL->validate()) {
-            fGL = NULL;
-            this->destroyGLContext();
-            return false;
-        }
+	glGenFramebuffers(1, &fFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, fFBO);
+	glGenRenderbuffers(1, &fColorBufferID);
+	glBindRenderbuffer(GL_RENDERBUFFER, fColorBufferID);
+	if (kES_GrGLBinding == bindingInUse)
+	{
+		glRenderbufferStorage(GL_RENDERBUFFER,
+			GL_RGBA8,
+			width, height);
+	}
+	else {
+		glRenderbufferStorage(GL_RENDERBUFFER,
+			GL_RGBA,
+			width, height);
+	}
 
-        SK_GL_RET(*this, temp, GetString(GR_GL_VERSION));
-        const char* versionStr = reinterpret_cast<const char*>(temp);
-        GrGLVersion version = GrGLGetVersionFromString(versionStr);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+		GL_COLOR_ATTACHMENT0,
+		GL_RENDERBUFFER,
+		fColorBufferID);
+	glGenRenderbuffers(1, &fDepthStencilBufferID);
+	glBindRenderbuffer(GL_RENDERBUFFER, fDepthStencilBufferID);
 
-        // clear any existing GL erorrs
-        GrGLenum error;
-        do {
-            SK_GL_RET(*this, error, GetError());
-        } while (GR_GL_NO_ERROR != error);
+	// Some drivers that support packed depth stencil will only succeed
+	// in binding a packed format an FBO. However, we can't rely on packed
+	// depth stencil being available.
+	bool supportsPackedDepthStencil = true;
 
-        SK_GL(*this, GenFramebuffers(1, &fFBO));
-        SK_GL(*this, BindFramebuffer(GR_GL_FRAMEBUFFER, fFBO));
-        SK_GL(*this, GenRenderbuffers(1, &fColorBufferID));
-        SK_GL(*this, BindRenderbuffer(GR_GL_RENDERBUFFER, fColorBufferID));
-        if (kGLES_GrGLStandard == this->gl()->fStandard) {
-            SK_GL(*this, RenderbufferStorage(GR_GL_RENDERBUFFER,
-                                             GR_GL_RGBA8,
-                                             width, height));
-        } else {
-            SK_GL(*this, RenderbufferStorage(GR_GL_RENDERBUFFER,
-                                             GR_GL_RGBA,
-                                             width, height));
-        }
-        SK_GL(*this, FramebufferRenderbuffer(GR_GL_FRAMEBUFFER,
-                                             GR_GL_COLOR_ATTACHMENT0,
-                                             GR_GL_RENDERBUFFER,
-                                             fColorBufferID));
-        SK_GL(*this, GenRenderbuffers(1, &fDepthStencilBufferID));
-        SK_GL(*this, BindRenderbuffer(GR_GL_RENDERBUFFER, fDepthStencilBufferID));
+	if (supportsPackedDepthStencil)
+	{
+		// ES2 requires sized internal formats for RenderbufferStorage
+		// On Desktop we let the driver decide.
+		GLenum format = kES_GrGLBinding == bindingInUse ?
+		GL_DEPTH24_STENCIL8 :
+							GL_DEPTH_STENCIL;
+		glRenderbufferStorage(GL_RENDERBUFFER,
+			format,
+			width, height);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+			GL_DEPTH_ATTACHMENT,
+			GL_RENDERBUFFER,
+			fDepthStencilBufferID);
+	}
+	else {
+		GLenum format = kES_GrGLBinding == bindingInUse ?
+		GL_STENCIL_INDEX8 :
+						  GL_STENCIL_INDEX;
+		glRenderbufferStorage(GL_RENDERBUFFER,
+			format,
+			width, height);
+	}
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+		GL_STENCIL_ATTACHMENT,
+		GL_RENDERBUFFER,
+		fDepthStencilBufferID);
+	glViewport(0, 0, width, height);
+	glClearStencil(0);
+	glClear(GL_STENCIL_BUFFER_BIT);
 
-        // Some drivers that support packed depth stencil will only succeed
-        // in binding a packed format an FBO. However, we can't rely on packed
-        // depth stencil being available.
-        bool supportsPackedDepthStencil;
-        if (kGLES_GrGLStandard == this->gl()->fStandard) {
-            supportsPackedDepthStencil = version >= GR_GL_VER(3,0) ||
-                                         this->hasExtension("GL_OES_packed_depth_stencil");
-        } else {
-            supportsPackedDepthStencil = version >= GR_GL_VER(3,0) ||
-                                         this->hasExtension("GL_EXT_packed_depth_stencil") ||
-                                         this->hasExtension("GL_ARB_framebuffer_object");
-        }
+	error = glGetError();
+	GLenum status;
+	status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
-        if (supportsPackedDepthStencil) {
-            // ES2 requires sized internal formats for RenderbufferStorage
-            // On Desktop we let the driver decide.
-            GrGLenum format = kGLES_GrGLStandard == this->gl()->fStandard ?
-                                    GR_GL_DEPTH24_STENCIL8 :
-                                    GR_GL_DEPTH_STENCIL;
-            SK_GL(*this, RenderbufferStorage(GR_GL_RENDERBUFFER,
-                                             format,
-                                             width, height));
-            SK_GL(*this, FramebufferRenderbuffer(GR_GL_FRAMEBUFFER,
-                                                 GR_GL_DEPTH_ATTACHMENT,
-                                                 GR_GL_RENDERBUFFER,
-                                                 fDepthStencilBufferID));
-        } else {
-            GrGLenum format = kGLES_GrGLStandard == this->gl()->fStandard ? GR_GL_STENCIL_INDEX8 :
-                                                                          GR_GL_STENCIL_INDEX;
-            SK_GL(*this, RenderbufferStorage(GR_GL_RENDERBUFFER,
-                                             format,
-                                             width, height));
-        }
-        SK_GL(*this, FramebufferRenderbuffer(GR_GL_FRAMEBUFFER,
-                                             GR_GL_STENCIL_ATTACHMENT,
-                                             GR_GL_RENDERBUFFER,
-                                             fDepthStencilBufferID));
-        SK_GL(*this, Viewport(0, 0, width, height));
-        SK_GL(*this, ClearStencil(0));
-        SK_GL(*this, Clear(GR_GL_STENCIL_BUFFER_BIT));
+	if (GL_FRAMEBUFFER_COMPLETE != status ||
+		GL_NO_ERROR != error)
+	{
+		fFBO = 0;
+		fColorBufferID = 0;
+		fDepthStencilBufferID = 0;
 
-        SK_GL_RET(*this, error, GetError());
-        GrGLenum status;
-        SK_GL_RET(*this, status, CheckFramebufferStatus(GR_GL_FRAMEBUFFER));
-
-        if (GR_GL_FRAMEBUFFER_COMPLETE != status ||
-            GR_GL_NO_ERROR != error) {
-            fFBO = 0;
-            fColorBufferID = 0;
-            fDepthStencilBufferID = 0;
-            fGL->unref();
-            fGL = NULL;
-            this->destroyGLContext();
-            return false;
-        } else {
-            return true;
-        }
-    }
-    return false;
+		this->destroyGLContext();
+		return false;
+	}
+	else {
+		return true;
+	}
+	return false;
 }

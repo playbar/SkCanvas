@@ -22,13 +22,14 @@ static inline void dummy_function_to_avoid_unused_var_warning() {
 }
 #endif
 
-GrCacheID::Domain GrCacheID::GenerateDomain() {
-    static int32_t gNextDomain = kInvalid_Domain + 1;
+uint8_t GrCacheID::GenerateDomain() 
+{
+    static int32_t gNextDomain =  1;
 
     int32_t domain = sk_atomic_inc(&gNextDomain);
-    if (domain >= 1 << (8 * sizeof(Domain))) {
+    if (domain >= 1 << (8 * sizeof(uint8_t))) {
         GrCrash("Too many Cache Domains");
     }
 
-    return static_cast<Domain>(domain);
+    return static_cast<uint8_t>(domain);
 }

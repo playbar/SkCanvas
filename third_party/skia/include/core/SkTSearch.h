@@ -38,12 +38,9 @@
 template <typename T, typename K, typename LESS>
 int SkTSearch(const T base[], int count, const K& key, size_t elemSize, LESS& less)
 {
-    SkASSERT(count >= 0);
     if (count <= 0) {
         return ~0;
     }
-
-    SkASSERT(base != NULL); // base may be NULL if count is zero
 
     int lo = 0;
     int hi = count - 1;

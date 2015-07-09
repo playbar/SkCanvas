@@ -103,7 +103,7 @@ public:
 protected:
     virtual bool onEvent(const SkEvent&);
     virtual void onDraw(SkCanvas*);
-    virtual Click* onFindClickHandler(SkScalar x, SkScalar y, unsigned modi) SK_OVERRIDE;
+    virtual Click* onFindClickHandler(float x, float y, unsigned modi) SK_OVERRIDE;
     virtual bool onClick(Click* click);
 
 private:
@@ -146,7 +146,7 @@ public:
     void    setSpacingAlign(SkTextBox::SpacingAlign);
 
     void    getMargin(SkPoint* margin) const;
-    void    setMargin(SkScalar dx, SkScalar dy);
+    void    setMargin(float dx, float dy);
 
     size_t  getText(SkString* text = NULL) const;
     size_t  getText(char text[] = NULL) const;
@@ -291,8 +291,8 @@ public:
             SkListView(uint32_t flags = 0);
     virtual ~SkListView();
 
-    SkScalar    getRowHeight() const { return fRowHeight; }
-    void        setRowHeight(SkScalar);
+    float    getRowHeight() const { return fRowHeight; }
+    void        setRowHeight(float);
 
     /** Return the index of the selected row, or -1 if none
     */
@@ -339,7 +339,7 @@ protected:
 private:
     SkPaint         fPaint[kAttrCount];
     SkListSource*   fSource;
-    SkScalar        fRowHeight;
+    float        fRowHeight;
     int             fCurrIndex;     // logical index
     int             fScrollIndex;   // logical index of top-most visible row
     int             fVisibleRowCount;
@@ -364,7 +364,7 @@ public:
     virtual ~SkGridView();
 
     void    getCellSize(SkPoint*) const;
-    void    setCellSize(SkScalar x, SkScalar y);
+    void    setCellSize(float x, float y);
 
     /** Return the index of the selected item, or -1 if none
     */

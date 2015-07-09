@@ -56,9 +56,6 @@ struct SkMask {
         x,y are in the same coordiate space as fBounds.
     */
     uint8_t* getAddr1(int x, int y) const {
-        SkASSERT(kBW_Format == fFormat);
-        SkASSERT(fBounds.contains(x, y));
-        SkASSERT(fImage != NULL);
         return fImage + ((x - fBounds.fLeft) >> 3) + (y - fBounds.fTop) * fRowBytes;
     }
 
@@ -67,9 +64,6 @@ struct SkMask {
         x,y are in the same coordiate space as fBounds.
     */
     uint8_t* getAddr8(int x, int y) const {
-        SkASSERT(kA8_Format == fFormat);
-        SkASSERT(fBounds.contains(x, y));
-        SkASSERT(fImage != NULL);
         return fImage + x - fBounds.fLeft + (y - fBounds.fTop) * fRowBytes;
     }
 
@@ -79,9 +73,6 @@ struct SkMask {
      *  are contained in the mask's fBounds.
      */
     uint16_t* getAddrLCD16(int x, int y) const {
-        SkASSERT(kLCD16_Format == fFormat);
-        SkASSERT(fBounds.contains(x, y));
-        SkASSERT(fImage != NULL);
         uint16_t* row = (uint16_t*)(fImage + (y - fBounds.fTop) * fRowBytes);
         return row + (x - fBounds.fLeft);
     }
@@ -92,9 +83,6 @@ struct SkMask {
      *  are contained in the mask's fBounds.
      */
     uint32_t* getAddrLCD32(int x, int y) const {
-        SkASSERT(kLCD32_Format == fFormat);
-        SkASSERT(fBounds.contains(x, y));
-        SkASSERT(fImage != NULL);
         uint32_t* row = (uint32_t*)(fImage + (y - fBounds.fTop) * fRowBytes);
         return row + (x - fBounds.fLeft);
     }
@@ -105,9 +93,6 @@ struct SkMask {
      *  are contained in the mask's fBounds.
      */
     uint32_t* getAddr32(int x, int y) const {
-        SkASSERT(kLCD32_Format == fFormat || kARGB32_Format == fFormat);
-        SkASSERT(fBounds.contains(x, y));
-        SkASSERT(fImage != NULL);
         uint32_t* row = (uint32_t*)(fImage + (y - fBounds.fTop) * fRowBytes);
         return row + (x - fBounds.fLeft);
     }

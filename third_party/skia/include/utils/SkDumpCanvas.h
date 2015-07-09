@@ -40,7 +40,6 @@ public:
         kDrawOval_Verb,
         kDrawRect_Verb,
         kDrawRRect_Verb,
-        kDrawDRRect_Verb,
         kDrawPath_Verb,
         kDrawBitmap_Verb,
         kDrawText_Verb,
@@ -50,9 +49,7 @@ public:
 
         kBeginCommentGroup_Verb,
         kAddComment_Verb,
-        kEndCommentGroup_Verb,
-
-        kCull_Verb
+        kEndCommentGroup_Verb
     };
 
     /** Subclasses of this are installed on the DumpCanvas, and then called for
@@ -74,6 +71,24 @@ public:
 
     int getNestLevel() const { return fNestLevel; }
 
+    virtual int save(SaveFlags) SK_OVERRIDE;
+    virtual int saveLayer(const SkRect* bounds, const SkPaint* paint,
+                          SaveFlags) SK_OVERRIDE;
+    virtual void restore() SK_OVERRIDE;
+
+    virtual bool translate(float dx, float dy) SK_OVERRIDE;
+    virtual bool scale(float sx, float sy) SK_OVERRIDE;
+    virtual bool rotate(float degrees) SK_OVERRIDE;
+    virtual bool skew(float sx, float sy) SK_OVERRIDE;
+    virtual bool concat(const SkMatrix& matrix) SK_OVERRIDE;
+    virtual void setMatrix(const SkMatrix& matrix) SK_OVERRIDE;
+
+    virtual bool clipRect(const SkRect&, SkRegion::Op, bool) SK_OVERRIDE;
+    virtual bool clipRRect(const SkRRect&, SkRegion::Op, bool) SK_OVERRIDE;
+    virtual bool clipPath(const SkPath&, SkRegion::Op, bool) SK_OVERRIDE;
+    virtual bool clipRegion(const SkRegion& deviceRgn,
+                            SkRegion::Op) SK_OVERRIDE;
+
     virtual void drawPaint(const SkPaint& paint) SK_OVERRIDE;
     virtual void drawPoints(PointMode mode, size_t count, const SkPoint pts[],
                             const SkPaint& paint) SK_OVERRIDE;
@@ -81,7 +96,7 @@ public:
     virtual void drawRect(const SkRect&, const SkPaint& paint) SK_OVERRIDE;
     virtual void drawRRect(const SkRRect&, const SkPaint& paint) SK_OVERRIDE;
     virtual void drawPath(const SkPath& path, const SkPaint& paint) SK_OVERRIDE;
-    virtual void drawBitmap(const SkBitmap& bitmap, SkScalar left, SkScalar top,
+    virtual void drawBitmap(const SkBitmap& bitmap, float left, float top,
                             const SkPaint* paint) SK_OVERRIDE;
     virtual void drawBitmapRectToRect(const SkBitmap& bitmap, const SkRect* src,
                                       const SkRect& dst, const SkPaint* paint,
@@ -90,12 +105,12 @@ public:
                                   const SkPaint* paint) SK_OVERRIDE;
     virtual void drawSprite(const SkBitmap& bitmap, int left, int top,
                             const SkPaint* paint) SK_OVERRIDE;
-    virtual void drawText(const void* text, size_t byteLength, SkScalar x,
-                          SkScalar y, const SkPaint& paint) SK_OVERRIDE;
+    virtual void drawText(const void* text, size_t byteLength, float x,
+                          float y, const SkPaint& paint) SK_OVERRIDE;
     virtual void drawPosText(const void* text, size_t byteLength,
                              const SkPoint pos[], const SkPaint& paint) SK_OVERRIDE;
     virtual void drawPosTextH(const void* text, size_t byteLength,
-                              const SkScalar xpos[], SkScalar constY,
+                              const float xpos[], float constY,
                               const SkPaint& paint) SK_OVERRIDE;
     virtual void drawTextOnPath(const void* text, size_t byteLength,
                                 const SkPath& path, const SkMatrix* matrix,
@@ -110,29 +125,6 @@ public:
     virtual void beginCommentGroup(const char* description) SK_OVERRIDE;
     virtual void addComment(const char* kywd, const char* value) SK_OVERRIDE;
     virtual void endCommentGroup() SK_OVERRIDE;
-
-protected:
-    virtual void willSave(SaveFlags) SK_OVERRIDE;
-    virtual SaveLayerStrategy willSaveLayer(const SkRect*, const SkPaint*, SaveFlags) SK_OVERRIDE;
-    virtual void willRestore() SK_OVERRIDE;
-
-    virtual void didTranslate(SkScalar, SkScalar) SK_OVERRIDE;
-    virtual void didScale(SkScalar, SkScalar) SK_OVERRIDE;
-    virtual void didRotate(SkScalar) SK_OVERRIDE;
-    virtual void didSkew(SkScalar, SkScalar) SK_OVERRIDE;
-    virtual void didConcat(const SkMatrix&) SK_OVERRIDE;
-    virtual void didSetMatrix(const SkMatrix&) SK_OVERRIDE;
-
-    virtual void onDrawDRRect(const SkRRect&, const SkRRect&, const SkPaint&) SK_OVERRIDE;
-    virtual void onPushCull(const SkRect& cullRect) SK_OVERRIDE;
-    virtual void onPopCull() SK_OVERRIDE;
-
-    virtual void onClipRect(const SkRect&, SkRegion::Op, ClipEdgeStyle) SK_OVERRIDE;
-    virtual void onClipRRect(const SkRRect&, SkRegion::Op, ClipEdgeStyle) SK_OVERRIDE;
-    virtual void onClipPath(const SkPath&, SkRegion::Op, ClipEdgeStyle) SK_OVERRIDE;
-    virtual void onClipRegion(const SkRegion&, SkRegion::Op) SK_OVERRIDE;
-
-    static const char* EdgeStyleToAAString(ClipEdgeStyle edgeStyle);
 
 private:
     Dumper* fDumper;

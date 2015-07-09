@@ -116,7 +116,6 @@ int SkEdgeBuilder::buildPoly(const SkPath& path, const SkIRect* iclip,
                 case SkPath::kLine_Verb: {
                     SkPoint lines[SkLineClipper::kMaxPoints];
                     int lineCount = SkLineClipper::ClipLine(pts, clip, lines);
-                    SkASSERT(lineCount <= SkLineClipper::kMaxClippedLineSegments);
                     for (int i = 0; i < lineCount; i++) {
                         if (edge->setLine(lines[i], lines[i + 1], shiftUp)) {
                             *edgePtr++ = edge++;
@@ -125,7 +124,6 @@ int SkEdgeBuilder::buildPoly(const SkPath& path, const SkIRect* iclip,
                     break;
                 }
                 default:
-                    SkDEBUGFAIL("unexpected verb");
                     break;
             }
         }
@@ -143,14 +141,11 @@ int SkEdgeBuilder::buildPoly(const SkPath& path, const SkIRect* iclip,
                     }
                     break;
                 default:
-                    SkDEBUGFAIL("unexpected verb");
                     break;
             }
         }
     }
-    SkASSERT((char*)edge <= (char*)fEdgeList);
-    SkASSERT(edgePtr - fEdgeList <= maxEdgeCount);
-    return SkToInt(edgePtr - fEdgeList);
+    return edgePtr - fEdgeList;
 }
 
 static void handle_quad(SkEdgeBuilder* builder, const SkPoint pts[3]) {
@@ -167,7 +162,7 @@ int SkEdgeBuilder::build(const SkPath& path, const SkIRect* iclip,
     fList.reset();
     fShiftUp = shiftUp;
 
-    SkScalar conicTol = SK_ScalarHalf * (1 << shiftUp);
+    float conicTol = SK_ScalarHalf * (1 << shiftUp);
 
     if (SkPath::kLine_SegmentMask == path.getSegmentMasks()) {
         return this->buildPoly(path, iclip, shiftUp);
@@ -213,7 +208,6 @@ int SkEdgeBuilder::build(const SkPath& path, const SkIRect* iclip,
                     int pow2 = conic.computeQuadPOW2(conicTol);
                     pow2 = SkMin32(pow2, MAX_POW2);
                     int quadCount = conic.chopIntoQuadsPOW2(storage, pow2);
-                    SkASSERT(quadCount <= MAX_QUADS);
                     for (int i = 0; i < quadCount; ++i) {
                         if (clipper.clipQuad(&storage[i * 2], clip)) {
                             this->addClipper(&clipper);
@@ -226,7 +220,6 @@ int SkEdgeBuilder::build(const SkPath& path, const SkIRect* iclip,
                     }
                     break;
                 default:
-                    SkDEBUGFAIL("unexpected verb");
                     break;
             }
         }
@@ -256,7 +249,6 @@ int SkEdgeBuilder::build(const SkPath& path, const SkIRect* iclip,
                     int pow2 = conic.computeQuadPOW2(conicTol);
                     pow2 = SkMin32(pow2, MAX_POW2);
                     int quadCount = conic.chopIntoQuadsPOW2(storage, pow2);
-                    SkASSERT(quadCount <= MAX_QUADS);
                     for (int i = 0; i < quadCount; ++i) {
                         handle_quad(this, &storage[i * 2]);
                     }
@@ -270,7 +262,6 @@ int SkEdgeBuilder::build(const SkPath& path, const SkIRect* iclip,
                     break;
                 }
                 default:
-                    SkDEBUGFAIL("unexpected verb");
                     break;
             }
         }

@@ -23,7 +23,7 @@ class SkInput : public SkDisplayable {
 protected:
     SkString name;
     int32_t  fInt;
-    SkScalar fFloat;
+    float fFloat;
     SkString string;
 private:
     friend class SkDisplayEvent;

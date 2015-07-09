@@ -14,7 +14,6 @@
 class SkSurface_Base : public SkSurface {
 public:
     SkSurface_Base(int width, int height);
-    explicit SkSurface_Base(const SkImageInfo&);
     virtual ~SkSurface_Base();
 
     /**
@@ -44,7 +43,7 @@ public:
      *      image->unref();
      *  }
      */
-    virtual void onDraw(SkCanvas*, SkScalar x, SkScalar y, const SkPaint*);
+	virtual void onDraw(SkCanvas*, float x, float y, const SkPaint*);
 
     /**
      *  If the surface is about to change, we call this so that our subclass

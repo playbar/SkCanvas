@@ -52,8 +52,6 @@ static bool skip(SkStream* stream, size_t amount) {
     On an error, return 0 for number of tables, and ignore offsetToDir
  */
 static int count_tables(SkStream* stream, int ttcIndex, size_t* offsetToDir) {
-    SkASSERT(ttcIndex >= 0);
-
     SkAutoSMalloc<1024> storage(sizeof(SkSharedTTHeader));
     SkSharedTTHeader* header = (SkSharedTTHeader*)storage.get();
 

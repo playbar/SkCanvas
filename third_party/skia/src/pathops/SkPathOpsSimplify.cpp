@@ -22,7 +22,6 @@ static bool bridgeWinding(SkTArray<SkOpContour*, true>& contourList, SkPathWrite
         if (!current) {
             if (topUnsortable || !topDone) {
                 topUnsortable = false;
-                SkASSERT(topLeft.fX != SK_ScalarMin && topLeft.fY != SK_ScalarMin);
                 topLeft.fX = topLeft.fY = SK_ScalarMin;
                 continue;
             }
@@ -41,7 +40,6 @@ static bool bridgeWinding(SkTArray<SkOpContour*, true>& contourList, SkPathWrite
                             break;
                         }
                     }
-                    SkASSERT(unsortable || !current->done());
                     int nextStart = index;
                     int nextEnd = endIndex;
                     SkOpSegment* next = current->findNextWinding(&chaseArray, &nextStart, &nextEnd,
@@ -51,7 +49,6 @@ static bool bridgeWinding(SkTArray<SkOpContour*, true>& contourList, SkPathWrite
                                 && current->verb() != SkPath::kLine_Verb
                                 && !simple->isClosed()) {
                             current->addCurveTo(index, endIndex, simple, true);
-                            SkASSERT(simple->isClosed());
                         }
                         break;
                     }
@@ -67,7 +64,6 @@ static bool bridgeWinding(SkTArray<SkOpContour*, true>& contourList, SkPathWrite
                 } while (!simple->isClosed() && (!unsortable
                         || !current->done(SkMin32(index, endIndex))));
                 if (current->activeWinding(index, endIndex) && !simple->isClosed()) {
-                    SkASSERT(unsortable || simple->isEmpty());
                     int min = SkMin32(index, endIndex);
                     if (!current->done(min)) {
                         current->addCurveTo(index, endIndex, simple, true);
@@ -106,7 +102,6 @@ static bool bridgeXor(SkTArray<SkOpContour*, true>& contourList, SkPathWriter* s
                 DebugShowActiveSpans(contourList);
             }
     #endif
-            SkASSERT(unsortable || !current->done());
             int nextStart = start;
             int nextEnd = end;
             SkOpSegment* next = current->findNextXor(&nextStart, &nextEnd, &unsortable);
@@ -115,7 +110,6 @@ static bool bridgeXor(SkTArray<SkOpContour*, true>& contourList, SkPathWriter* s
                         && current->verb() != SkPath::kLine_Verb
                         && !simple->isClosed()) {
                     current->addCurveTo(start, end, simple, true);
-                    SkASSERT(simple->isClosed());
                 }
                 break;
             }
@@ -130,7 +124,6 @@ static bool bridgeXor(SkTArray<SkOpContour*, true>& contourList, SkPathWriter* s
             end = nextEnd;
         } while (!simple->isClosed() && (!unsortable || !current->done(SkMin32(start, end))));
         if (!simple->isClosed()) {
-            SkASSERT(unsortable);
             int min = SkMin32(start, end);
             if (!current->done(min)) {
                 current->addCurveTo(start, end, simple, true);

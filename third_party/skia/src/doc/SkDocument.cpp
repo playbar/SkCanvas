@@ -18,7 +18,7 @@ SkDocument::~SkDocument() {
     this->close();
 }
 
-SkCanvas* SkDocument::beginPage(SkScalar width, SkScalar height,
+SkCanvas* SkDocument::beginPage(float width, float height,
                                 const SkRect* content) {
     if (width <= 0 || height <= 0) {
         return NULL;
@@ -47,7 +47,6 @@ SkCanvas* SkDocument::beginPage(SkScalar width, SkScalar height,
                 return NULL;
         }
     }
-    SkDEBUGFAIL("never get here");
     return NULL;
 }
 

@@ -77,7 +77,6 @@ protected:
         // atomic inc returns the old value not the incremented value. So we add
         // 1 to the returned value.
         int32_t id = sk_atomic_inc(&fCurrEffectClassID) + 1;
-        SkASSERT(id < (1 << kClassIDBits));
         return static_cast<EffectKey>(id);
     }
 

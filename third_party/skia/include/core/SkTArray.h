@@ -53,7 +53,8 @@ public:
     /**
      * Creates an empty array with no initial storage
      */
-    SkTArray() {
+    SkTArray()
+	{
         fCount = 0;
         fReserveCount = gMIN_ALLOC_COUNT;
         fAllocCount = 0;
@@ -117,7 +118,6 @@ public:
      * Resets to count() = n newly constructed T objects.
      */
     void reset(int n) {
-        SkASSERT(n >= 0);
         for (int i = 0; i < fCount; ++i) {
             fItemArray[i].~T();
         }
@@ -181,7 +181,6 @@ public:
      * call made on the array that might add or remove elements.
      */
     T* push_back_n(int n) {
-        SkASSERT(n >= 0);
         T* newTs = reinterpret_cast<T*>(this->push_back_raw(n));
         for (int i = 0; i < n; ++i) {
             SkNEW_PLACEMENT(newTs + i, T);
@@ -194,7 +193,6 @@ public:
      * to the same T.
      */
     T* push_back_n(int n, const T& t) {
-        SkASSERT(n >= 0);
         T* newTs = reinterpret_cast<T*>(this->push_back_raw(n));
         for (int i = 0; i < n; ++i) {
             SkNEW_PLACEMENT_ARGS(newTs[i], T, (t));
@@ -207,7 +205,6 @@ public:
      * to separate T values.
      */
     T* push_back_n(int n, const T t[]) {
-        SkASSERT(n >= 0);
         this->checkRealloc(n);
         for (int i = 0; i < n; ++i) {
             SkNEW_PLACEMENT_ARGS(fItemArray + fCount + i, T, (t[i]));
@@ -220,7 +217,6 @@ public:
      * Removes the last element. Not safe to call when count() == 0.
      */
     void pop_back() {
-        SkASSERT(fCount > 0);
         --fCount;
         fItemArray[fCount].~T();
         this->checkRealloc(0);
@@ -230,8 +226,6 @@ public:
      * Removes the last n elements. Not safe to call when count() < n.
      */
     void pop_back_n(int n) {
-        SkASSERT(n >= 0);
-        SkASSERT(fCount >= n);
         fCount -= n;
         for (int i = 0; i < n; ++i) {
             fItemArray[fCount + i].~T();
@@ -244,8 +238,6 @@ public:
      * initialized.
      */
     void resize_back(int newCount) {
-        SkASSERT(newCount >= 0);
-
         if (newCount > fCount) {
             this->push_back_n(newCount - fCount);
         } else if (newCount < fCount) {
@@ -270,43 +262,35 @@ public:
      * Get the i^th element.
      */
     T& operator[] (int i) {
-        SkASSERT(i < fCount);
-        SkASSERT(i >= 0);
         return fItemArray[i];
     }
 
     const T& operator[] (int i) const {
-        SkASSERT(i < fCount);
-        SkASSERT(i >= 0);
         return fItemArray[i];
     }
 
     /**
      * equivalent to operator[](0)
      */
-    T& front() { SkASSERT(fCount > 0); return fItemArray[0];}
+    T& front() { return fItemArray[0];}
 
-    const T& front() const { SkASSERT(fCount > 0); return fItemArray[0];}
+    const T& front() const { return fItemArray[0];}
 
     /**
      * equivalent to operator[](count() - 1)
      */
-    T& back() { SkASSERT(fCount); return fItemArray[fCount - 1];}
+    T& back() { return fItemArray[fCount - 1];}
 
-    const T& back() const { SkASSERT(fCount > 0); return fItemArray[fCount - 1];}
+    const T& back() const { return fItemArray[fCount - 1];}
 
     /**
      * equivalent to operator[](count()-1-i)
      */
     T& fromBack(int i) {
-        SkASSERT(i >= 0);
-        SkASSERT(i < fCount);
         return fItemArray[fCount - i - 1];
     }
 
     const T& fromBack(int i) const {
-        SkASSERT(i >= 0);
-        SkASSERT(i < fCount);
         return fItemArray[fCount - i - 1];
     }
 
@@ -359,8 +343,6 @@ protected:
 
     void init(const T* array, int count,
                void* preAllocStorage, int preAllocOrReserveCount) {
-        SkASSERT(count >= 0);
-        SkASSERT(preAllocOrReserveCount >= 0);
         fCount              = count;
         fReserveCount       = (preAllocOrReserveCount > 0) ?
                                     preAllocOrReserveCount :
@@ -392,10 +374,6 @@ private:
     }
 
     inline void checkRealloc(int delta) {
-        SkASSERT(fCount >= 0);
-        SkASSERT(fAllocCount >= 0);
-
-        SkASSERT(-delta <= fCount);
 
         int newCount = fCount + delta;
         int newAllocCount = fAllocCount;
@@ -448,8 +426,6 @@ template <typename T, bool MEM_COPY>
 void* operator new(size_t, SkTArray<T, MEM_COPY>* array, int atIndex) {
     // Currently, we only support adding to the end of the array. When the array class itself
     // supports random insertion then this should be updated.
-    // SkASSERT(atIndex >= 0 && atIndex <= array->count());
-    SkASSERT(atIndex == array->count());
     return array->push_back_raw(1);
 }
 
@@ -470,7 +446,8 @@ void operator delete(void*, SkTArray<T, MEM_COPY>* array, int atIndex) {
  * Subclass of SkTArray that contains a preallocated memory block for the array.
  */
 template <int N, typename T, bool MEM_COPY = false>
-class SkSTArray : public SkTArray<T, MEM_COPY> {
+class SkSTArray : public SkTArray<T, MEM_COPY> 
+{
 private:
     typedef SkTArray<T, MEM_COPY> INHERITED;
 

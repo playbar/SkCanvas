@@ -31,6 +31,8 @@ class SK_API SkPathEffect : public SkFlattenable {
 public:
     SK_DECLARE_INST_COUNT(SkPathEffect)
 
+    SkPathEffect() {}
+
     /**
      *  Given a src path (input) and a stroke-rec (input and output), apply
      *  this effect to the src path, returning the new path in dst, and return
@@ -107,8 +109,7 @@ public:
     SK_DEFINE_FLATTENABLE_TYPE(SkPathEffect)
 
 protected:
-    SkPathEffect() {}
-    SkPathEffect(SkReadBuffer& buffer) : INHERITED(buffer) {}
+    SkPathEffect(SkFlattenableReadBuffer& buffer) : INHERITED(buffer) {}
 
 private:
     // illegal
@@ -126,12 +127,12 @@ private:
 */
 class SkPairPathEffect : public SkPathEffect {
 public:
+    SkPairPathEffect(SkPathEffect* pe0, SkPathEffect* pe1);
     virtual ~SkPairPathEffect();
 
 protected:
-    SkPairPathEffect(SkPathEffect* pe0, SkPathEffect* pe1);
-    SkPairPathEffect(SkReadBuffer&);
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
+    SkPairPathEffect(SkFlattenableReadBuffer&);
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
 
     // these are visible to our subclasses
     SkPathEffect* fPE0, *fPE1;
@@ -152,9 +153,8 @@ public:
         The reference counts for outer and inner are both incremented in the constructor,
         and decremented in the destructor.
     */
-    static SkComposePathEffect* Create(SkPathEffect* outer, SkPathEffect* inner) {
-        return SkNEW_ARGS(SkComposePathEffect, (outer, inner));
-    }
+    SkComposePathEffect(SkPathEffect* outer, SkPathEffect* inner)
+        : INHERITED(outer, inner) {}
 
     virtual bool filterPath(SkPath* dst, const SkPath& src,
                             SkStrokeRec*, const SkRect*) const SK_OVERRIDE;
@@ -162,13 +162,7 @@ public:
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkComposePathEffect)
 
 protected:
-    SkComposePathEffect(SkReadBuffer& buffer) : INHERITED(buffer) {}
-
-#ifdef SK_SUPPORT_LEGACY_PUBLICEFFECTCONSTRUCTORS
-public:
-#endif
-    SkComposePathEffect(SkPathEffect* outer, SkPathEffect* inner)
-        : INHERITED(outer, inner) {}
+    SkComposePathEffect(SkFlattenableReadBuffer& buffer) : INHERITED(buffer) {}
 
 private:
     // illegal
@@ -190,9 +184,8 @@ public:
         The reference counts for first and second are both incremented in the constructor,
         and decremented in the destructor.
     */
-    static SkSumPathEffect* Create(SkPathEffect* first, SkPathEffect* second) {
-        return SkNEW_ARGS(SkSumPathEffect, (first, second));
-    }
+    SkSumPathEffect(SkPathEffect* first, SkPathEffect* second)
+        : INHERITED(first, second) {}
 
     virtual bool filterPath(SkPath* dst, const SkPath& src,
                             SkStrokeRec*, const SkRect*) const SK_OVERRIDE;
@@ -200,13 +193,7 @@ public:
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkSumPathEffect)
 
 protected:
-    SkSumPathEffect(SkReadBuffer& buffer) : INHERITED(buffer) {}
-
-#ifdef SK_SUPPORT_LEGACY_PUBLICEFFECTCONSTRUCTORS
-public:
-#endif
-    SkSumPathEffect(SkPathEffect* first, SkPathEffect* second)
-        : INHERITED(first, second) {}
+    SkSumPathEffect(SkFlattenableReadBuffer& buffer) : INHERITED(buffer) {}
 
 private:
     // illegal

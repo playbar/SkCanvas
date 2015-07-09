@@ -7,14 +7,12 @@
  */
 
 #include "SkPaintOptionsAndroid.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkTDict.h"
 #include "SkThread.h"
 #include <cstring>
 
 SkLanguage SkLanguage::getParent() const {
-    SkASSERT(!fTag.isEmpty());
     const char* tag = fTag.c_str();
 
     // strip off the rightmost "-.*"
@@ -26,13 +24,13 @@ SkLanguage SkLanguage::getParent() const {
     return SkLanguage(tag, parentTagLen);
 }
 
-void SkPaintOptionsAndroid::flatten(SkWriteBuffer& buffer) const {
+void SkPaintOptionsAndroid::flatten(SkFlattenableWriteBuffer& buffer) const {
     buffer.writeUInt(fFontVariant);
     buffer.writeString(fLanguage.getTag().c_str());
     buffer.writeBool(fUseFontFallbacks);
 }
 
-void SkPaintOptionsAndroid::unflatten(SkReadBuffer& buffer) {
+void SkPaintOptionsAndroid::unflatten(SkFlattenableReadBuffer& buffer) {
     fFontVariant = (FontVariant)buffer.readUInt();
     SkString tag;
     buffer.readString(&tag);

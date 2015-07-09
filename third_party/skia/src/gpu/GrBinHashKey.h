@@ -55,7 +55,6 @@ public:
     }
 
     bool operator==(const GrBinHashKey<KEY_SIZE>& key) const {
-        SkASSERT(fIsValid && key.fIsValid);
         if (fHash != key.fHash) {
             return false;
         }
@@ -68,7 +67,6 @@ public:
     }
 
     bool operator<(const GrBinHashKey<KEY_SIZE>& key) const {
-        SkASSERT(fIsValid && key.fIsValid);
         for (size_t i = 0; i < SK_ARRAY_COUNT(fData); ++i) {
             if (fData[i] < key.fData[i]) {
                 return true;
@@ -80,12 +78,10 @@ public:
     }
 
     uint32_t getHash() const {
-        SkASSERT(fIsValid);
         return fHash;
     }
 
     const uint8_t* getData() const {
-        SkASSERT(fIsValid);
         return reinterpret_cast<const uint8_t*>(fData);
     }
 

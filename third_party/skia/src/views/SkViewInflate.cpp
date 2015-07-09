@@ -108,7 +108,6 @@ SkView* SkViewInflate::inflate(const char xml[], size_t len, SkView* root)
 
 SkView* SkViewInflate::findViewByID(const char id[]) const
 {
-    SkASSERT(id);
     SkView* view;
     return fIDs.find(id, &view) ? view : NULL;
 }

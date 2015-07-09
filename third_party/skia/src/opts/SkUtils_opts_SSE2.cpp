@@ -12,11 +12,6 @@
 
 void sk_memset16_SSE2(uint16_t *dst, uint16_t value, int count)
 {
-    SkASSERT(dst != NULL && count >= 0);
-
-    // dst must be 2-byte aligned.
-    SkASSERT((((size_t) dst) & 0x01) == 0);
-
     if (count >= 32) {
         while (((size_t)dst) & 0x0F) {
             *dst++ = value;
@@ -42,11 +37,6 @@ void sk_memset16_SSE2(uint16_t *dst, uint16_t value, int count)
 
 void sk_memset32_SSE2(uint32_t *dst, uint32_t value, int count)
 {
-    SkASSERT(dst != NULL && count >= 0);
-
-    // dst must be 4-byte aligned.
-    SkASSERT((((size_t) dst) & 0x03) == 0);
-
     if (count >= 16) {
         while (((size_t)dst) & 0x0F) {
             *dst++ = value;

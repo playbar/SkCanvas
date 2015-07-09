@@ -59,7 +59,6 @@ public:
     const char* atStr(int index) const {
         size_t size;
         const char* str = this->atT<const char>(index, &size);
-        SkASSERT(strlen(str) + 1 == size);
         return str;
     }
 

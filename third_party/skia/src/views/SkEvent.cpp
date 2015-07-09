@@ -41,7 +41,6 @@ SkEvent::SkEvent(const SkString& type, SkEventSinkID targetID)
 
 SkEvent::SkEvent(const char type[], SkEventSinkID targetID)
 {
-    SkASSERT(type);
     initialize(type, strlen(type), targetID);
 }
 
@@ -106,7 +105,6 @@ void SkEvent::setType(const char type[], size_t typeLen)
     } else {
 useCharStar:
         fType = (char*) sk_malloc_throw(typeLen + 1);
-        SkASSERT(((size_t) fType & 1) == 0);
         memcpy(fType, type, typeLen);
         fType[typeLen] = 0;
     }
@@ -158,7 +156,7 @@ void SkEvent::inflate(const SkDOM& dom, const SkDOM::Node* node)
         }
         else if ((value = dom.findAttr(node, "scalar")) != NULL)
         {
-            SkScalar x;
+            float x;
             if (SkParse::FindScalar(value, &x))
                 this->setScalar(name, x);
         }
@@ -196,8 +194,6 @@ void SkEvent::inflate(const SkDOM& dom, const SkDOM::Node* node)
 
         while ((name = iter.next(&mtype, &count)) != NULL)
         {
-            SkASSERT(count > 0);
-
             SkDebugf(" <%s>=", name);
             switch (mtype) {
             case SkMetaData::kS32_Type:     // vector version???
@@ -209,7 +205,7 @@ void SkEvent::inflate(const SkDOM& dom, const SkDOM::Node* node)
                 break;
             case SkMetaData::kScalar_Type:
                 {
-                    const SkScalar* values = md.findScalars(name, &count, NULL);
+                    const float* values = md.findScalars(name, &count, NULL);
                     SkDebugf("%f", SkScalarToFloat(values[0]));
                     for (int i = 1; i < count; i++)
                         SkDebugf(", %f", SkScalarToFloat(values[i]));
@@ -219,7 +215,6 @@ void SkEvent::inflate(const SkDOM& dom, const SkDOM::Node* node)
             case SkMetaData::kString_Type:
                 {
                     const char* value = md.findString(name);
-                    SkASSERT(value);
                     SkDebugf("<%s> ", value);
                 }
                 break;
@@ -238,7 +233,6 @@ void SkEvent::inflate(const SkDOM& dom, const SkDOM::Node* node)
                 }
                 break;
             default:
-                SkDEBUGFAIL("unknown metadata type returned from iterator");
                 break;
             }
         }
@@ -335,8 +329,6 @@ void SkEvent::postTime(SkMSec time) {
 bool SkEvent::Enqueue(SkEvent* evt) {
     SkEvent_Globals& globals = getGlobals();
     //  gEventMutex acquired by caller
-
-    SkASSERT(evt);
 
     bool wasEmpty = globals.fEventQHead == NULL;
 

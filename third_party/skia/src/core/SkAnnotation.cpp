@@ -7,8 +7,7 @@
 
 #include "SkAnnotation.h"
 #include "SkData.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkPoint.h"
 #include "SkStream.h"
 
@@ -29,12 +28,12 @@ SkData* SkAnnotation::find(const char key[]) const {
     return fKey.equals(key) ? fData : NULL;
 }
 
-SkAnnotation::SkAnnotation(SkReadBuffer& buffer) {
+SkAnnotation::SkAnnotation(SkFlattenableReadBuffer& buffer) {
     buffer.readString(&fKey);
     fData = buffer.readByteArrayAsData();
 }
 
-void SkAnnotation::writeToBuffer(SkWriteBuffer& buffer) const {
+void SkAnnotation::writeToBuffer(SkFlattenableWriteBuffer& buffer) const {
     buffer.writeString(fKey.c_str());
     buffer.writeDataAsByteArray(fData);
 }
@@ -56,7 +55,7 @@ const char* SkAnnotationKeys::Link_Named_Dest_Key() {
 #include "SkCanvas.h"
 
 static void annotate_paint(SkPaint& paint, const char* key, SkData* value) {
-    paint.setAnnotation(SkAnnotation::Create(key, value))->unref();
+    paint.setAnnotation(SkNEW_ARGS(SkAnnotation, (key, value)))->unref();
 }
 
 void SkAnnotateRectWithURL(SkCanvas* canvas, const SkRect& rect, SkData* value) {

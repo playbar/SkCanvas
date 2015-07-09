@@ -69,7 +69,6 @@ public:
 
     GrGLShaderVar(const char* name, GrSLType type, int arrayCount = kNonArray,
                   Precision precision = kDefault_Precision) {
-        SkASSERT(kVoid_GrSLType != type);
         fType = type;
         fTypeModifier = kNone_TypeModifier;
         fCount = arrayCount;
@@ -87,7 +86,6 @@ public:
         , fPrecision(var.fPrecision)
         , fOrigin(var.fOrigin)
         , fUseUniformFloatArrays(var.fUseUniformFloatArrays) {
-        SkASSERT(kVoid_GrSLType != var.fType);
     }
 
     /**
@@ -107,7 +105,6 @@ public:
              Precision precision = kDefault_Precision,
              Origin origin = kDefault_Origin,
              bool useUniformFloatArrays = USE_UNIFORM_FLOAT_ARRAYS) {
-        SkASSERT(kVoid_GrSLType != type);
         fType = type;
         fTypeModifier = typeModifier;
         fName = name;
@@ -126,7 +123,6 @@ public:
              Precision precision = kDefault_Precision,
              Origin origin = kDefault_Origin,
              bool useUniformFloatArrays = USE_UNIFORM_FLOAT_ARRAYS) {
-        SkASSERT(kVoid_GrSLType != type);
         fType = type;
         fTypeModifier = typeModifier;
         fName = name;
@@ -146,7 +142,6 @@ public:
              Precision precision = kDefault_Precision,
              Origin origin = kDefault_Origin,
              bool useUniformFloatArrays = USE_UNIFORM_FLOAT_ARRAYS) {
-        SkASSERT(kVoid_GrSLType != type);
         fType = type;
         fTypeModifier = typeModifier;
         fName = name;
@@ -166,7 +161,6 @@ public:
              Precision precision = kDefault_Precision,
              Origin origin = kDefault_Origin,
              bool useUniformFloatArrays = USE_UNIFORM_FLOAT_ARRAYS) {
-        SkASSERT(kVoid_GrSLType != type);
         fType = type;
         fTypeModifier = typeModifier;
         fName = name;
@@ -267,7 +261,7 @@ public:
                                           ctxInfo.glslGeneration()));
            out->append(" ");
         }
-        out->append(PrecisionString(fPrecision, ctxInfo.standard()));
+        out->append(PrecisionString(fPrecision, ctxInfo.binding()));
         GrSLType effectiveType = this->getType();
         if (this->isArray()) {
             if (this->isUnsizedArray()) {
@@ -275,7 +269,6 @@ public:
                              GrGLSLTypeString(effectiveType),
                              this->getName().c_str());
             } else {
-                SkASSERT(this->getArrayCount() > 0);
                 out->appendf("%s %s[%d]",
                              GrGLSLTypeString(effectiveType),
                              this->getName().c_str(),
@@ -302,9 +295,9 @@ public:
                      fUseUniformFloatArrays ? "" : ".x");
     }
 
-    static const char* PrecisionString(Precision p, GrGLStandard standard) {
+    static const char* PrecisionString(Precision p, GrGLBinding binding) {
         // Desktop GLSL has added precision qualifiers but they don't do anything.
-        if (kGLES_GrGLStandard == standard) {
+        if (kES_GrGLBinding == binding) {
             switch (p) {
                 case kLow_Precision:
                     return "lowp ";

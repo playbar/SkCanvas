@@ -33,14 +33,12 @@ static inline int to_upper(int c) {
 }
 
 static const char* skip_ws(const char str[]) {
-    SkASSERT(str);
     while (is_ws(*str))
         str++;
     return str;
 }
 
 static const char* skip_sep(const char str[]) {
-    SkASSERT(str);
     while (is_sep(*str))
         str++;
     return str;
@@ -58,8 +56,8 @@ static const char* find_points(const char str[], SkPoint value[], int count,
     return str;
 }
 
-static const char* find_scalar(const char str[], SkScalar* value,
-                               bool isRelative, SkScalar relative) {
+static const char* find_scalar(const char str[], float* value,
+                               bool isRelative, float relative) {
     str = SkParse::FindScalar(str, value);
     if (isRelative) {
         *value += relative;
@@ -109,13 +107,13 @@ bool SkParsePath::FromSVGString(const char data[], SkPath* result) {
                 c = points[0];
                 break;
             case 'H': {
-                SkScalar x;
+                float x;
                 data = find_scalar(data, &x, relative, c.fX);
                 path.lineTo(x, c.fY);
                 c.fX = x;
             } break;
             case 'V': {
-                SkScalar y;
+                float y;
                 data = find_scalar(data, &y, relative, c.fY);
                 path.lineTo(c.fX, y);
                 c.fY = y;
@@ -187,7 +185,7 @@ bool SkParsePath::FromSVGString(const char data[], SkPath* result) {
 #include "SkString.h"
 #include "SkStream.h"
 
-static void write_scalar(SkWStream* stream, SkScalar value) {
+static void write_scalar(SkWStream* stream, float value) {
     char buffer[64];
 #ifdef SK_BUILD_FOR_WIN32
     int len = _snprintf(buffer, sizeof(buffer), "%g", value);
@@ -198,7 +196,7 @@ static void write_scalar(SkWStream* stream, SkScalar value) {
     stream->write(buffer, stop - buffer);
 }
 
-static void append_scalars(SkWStream* stream, char verb, const SkScalar data[],
+static void append_scalars(SkWStream* stream, char verb, const float data[],
                            int count) {
     stream->write(&verb, 1);
     write_scalar(stream, data[0]);
@@ -217,7 +215,6 @@ void SkParsePath::ToSVGString(const SkPath& path, SkString* str) {
     for (;;) {
         switch (iter.next(pts, false)) {
              case SkPath::kConic_Verb:
-                SkASSERT(0);
                 break;
            case SkPath::kMove_Verb:
                 append_scalars(&stream, 'M', &pts[0].fX, 2);

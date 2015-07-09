@@ -41,7 +41,6 @@ bool SkOpAngle::calcSlop(double x, double y, double rx, double ry, bool* result)
     (void) frexp(length, &exponent);
     double epsilon = ldexp(FLT_EPSILON, exponent);
     SkPath::Verb verb = fSegment->verb();
-    SkASSERT(verb == SkPath::kQuad_Verb || verb == SkPath::kCubic_Verb);
     // FIXME: the quad and cubic factors are made up ; determine actual values
     double slop = verb == SkPath::kQuad_Verb ? 4 * epsilon : 512 * epsilon;
     double xSlop = slop;
@@ -92,7 +91,6 @@ bool SkOpAngle::operator<(const SkOpAngle& rh) const {  // this/lh: left-hand; r
         if (y >= 0 && ry >= 0) {  // if y's are zero or positive, lh x is smaller if negative
             return COMPARE_RESULT("3 x_rx < 0 && y >= 0 ...", x < 0);
         }
-        SkASSERT((y == 0) ^ (ry == 0));  // if one y is zero and one is negative, neg y is smaller
         return COMPARE_RESULT("4 x_rx < 0 && y == 0 ...", y < 0);
     }
     // at this point, both x's must be the same sign, or one (or both) is zero
@@ -104,7 +102,6 @@ bool SkOpAngle::operator<(const SkOpAngle& rh) const {  // this/lh: left-hand; r
             return COMPARE_RESULT("6 y_ry == 0 && y + ry > 0", (x + rx > 0) ^ (y == 0));
         }
         // at this point, both y's are zero, so lines are coincident or one is degenerate
-        SkASSERT(x * rx != 0);  // and a degenerate line should haven't gotten this far
     }
     // see if either curve can be lengthened before trying the tangent
     if (fSegment->other(fEnd) != rh.fSegment  // tangents not absolutely identical
@@ -176,8 +173,6 @@ bool SkOpAngle::operator<(const SkOpAngle& rh) const {  // this/lh: left-hand; r
         fUnsortable = true;
         return COMPARE_RESULT("13 verb == fSegment->isTiny(this) ...", this < &rh);
     }
-    SkASSERT(verb >= SkPath::kQuad_Verb);
-    SkASSERT(rVerb >= SkPath::kQuad_Verb);
     // FIXME: until I can think of something better, project a ray from the
     // end of the shorter tangent to midway between the end points
     // through both curves and use the resulting angle to sort
@@ -197,7 +192,6 @@ bool SkOpAngle::operator<(const SkOpAngle& rh) const {  // this/lh: left-hand; r
         ray[0] = partVerb == SkPath::kCubic_Verb && part[0].approximatelyEqual(part[1]) ?
             part[2] : part[1];
         ray[1] = SkDPoint::Mid(part[0], part[SkPathOpsVerbToPoints(partVerb)]);
-        SkASSERT(ray[0] != ray[1]);
         roots = (i.*CurveRay[SkPathOpsVerbToPoints(verb)])(fSegment->pts(), ray);
         rroots = (ri.*CurveRay[SkPathOpsVerbToPoints(rVerb)])(rh.fSegment->pts(), ray);
     } while ((roots == 0 || rroots == 0) && (flip ^= true));
@@ -208,7 +202,6 @@ bool SkOpAngle::operator<(const SkOpAngle& rh) const {  // this/lh: left-hand; r
         fUnsortable = true;
         return COMPARE_RESULT("roots == 0 || rroots == 0", this < &rh);
     }
-    SkASSERT(fSide != 0 && rh.fSide != 0);
     if (fSide * rh.fSide < 0) {
         fUnsortable = true;
         return COMPARE_RESULT("14 fSide * rh.fSide < 0", this < &rh);
@@ -294,7 +287,6 @@ void SkOpAngle::setSpans() {
     // fCurvePart.round(fSegment->verb());
     switch (fSegment->verb()) {
     case SkPath::kLine_Verb: {
-        SkASSERT(fStart != fEnd);
         fCurvePart[0].set(pts[fStart > fEnd]);
         fCurvePart[1].set(pts[fStart < fEnd]);
         fComputed = false;
@@ -360,7 +352,6 @@ void SkOpAngle::setSpans() {
             }
         }
         fSide = -bestSide;  // compare sign only
-        SkASSERT(fSide == 0 || fSide2 != 0);
         if (fComputed && dx() > 0 && approximately_zero(dy())) {
             SkDCubic origCurve; // can't use segment's curve in place since it may be flipped
             int last = fSegment->count() - 1;
@@ -382,7 +373,7 @@ void SkOpAngle::setSpans() {
         }
         } break;
     default:
-        SkASSERT(0);
+		break;
     }
     if ((fUnsortable = approximately_zero(dx()) && approximately_zero(dy()))) {
         return;
@@ -390,7 +381,6 @@ void SkOpAngle::setSpans() {
     if (fSegment->verb() == SkPath::kLine_Verb) {
         return;
     }
-    SkASSERT(fStart != fEnd);
     int smaller = SkMin32(fStart, fEnd);
     int larger = SkMax32(fStart, fEnd);
     while (smaller < larger && fSegment->span(smaller).fTiny) {

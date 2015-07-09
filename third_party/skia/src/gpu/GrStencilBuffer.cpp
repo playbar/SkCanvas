@@ -13,15 +13,14 @@
 #include "GrResourceCache.h"
 
 void GrStencilBuffer::transferToCache() {
-    SkASSERT(NULL == this->getCacheEntry());
-
     this->getGpu()->getContext()->addStencilBuffer(this);
 }
 
-namespace {
+namespace 
+{
 // we should never have more than one stencil buffer with same combo of (width,height,samplecount)
 void gen_cache_id(int width, int height, int sampleCnt, GrCacheID* cacheID) {
-    static const GrCacheID::Domain gStencilBufferDomain = GrCacheID::GenerateDomain();
+    static const uint8_t gStencilBufferDomain = GrCacheID::GenerateDomain();
     GrCacheID::Key key;
     uint32_t* keyData = key.fData32;
     keyData[0] = width;
@@ -35,7 +34,8 @@ void gen_cache_id(int width, int height, int sampleCnt, GrCacheID* cacheID) {
 
 GrResourceKey GrStencilBuffer::ComputeKey(int width,
                                           int height,
-                                          int sampleCnt) {
+                                          int sampleCnt) 
+{
     // All SBs are created internally to attach to RTs so they all use the same domain.
     static const GrResourceKey::ResourceType gStencilBufferResourceType =
         GrResourceKey::GenerateResourceType();

@@ -64,7 +64,7 @@
       <PreprocessorDefinitions>_DEBUG;V8_DEPRECATION_WARNINGS;BLINK_SCALE_FILTERS_AT_RECORD_TIME;_WIN32_WINNT=0x0602;WINVER=0x0602;WIN32;_WINDOWS;NOMINMAX;PSAPI_VERSION=1;_CRT_RAND_S;CERT_CHAIN_PARA_HAS_EXTRA_FIELDS;WIN32_LEAN_AND_MEAN;_ATL_NO_OPENGL;_SECURE_ATL;CHROMIUM_BUILD;COMPONENT_BUILD;TOOLKIT_VIEWS=1;USE_AURA=1;USE_ASH=1;USE_DEFAULT_RENDER_THEME=1;USE_LIBJPEG_TURBO=1;ENABLE_ONE_CLICK_SIGNIN;ENABLE_REMOTING=1;ENABLE_WEBRTC=1;ENABLE_PEPPER_CDMS;ENABLE_CONFIGURATION_POLICY;ENABLE_INPUT_SPEECH;ENABLE_NOTIFICATIONS;ENABLE_HIDPI=1;ENABLE_NEW_GAMEPAD_API=1;NO_TCMALLOC;ENABLE_EGLIMAGE=1;__STD_C;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NTDDI_VERSION=0x06020000;_USING_V110_SDK71_;ENABLE_TASK_MANAGER=1;ENABLE_EXTENSIONS=1;ENABLE_PLUGIN_INSTALLATION=1;ENABLE_PLUGINS=1;ENABLE_SESSION_SERVICE=1;ENABLE_THEMES=1;ENABLE_AUTOFILL_DIALOG=1;ENABLE_BACKGROUND=1;ENABLE_AUTOMATION=1;ENABLE_GOOGLE_NOW=1;CLD_VERSION=2;ENABLE_FULL_PRINTING=1;ENABLE_PRINTING=1;ENABLE_SPELLCHECK=1;ENABLE_CAPTIVE_PORTAL_DETECTION=1;ENABLE_APP_LIST=1;ENABLE_SETTINGS_APP=1;ENABLE_MANAGED_USERS=1;ENABLE_MDNS=1;SKIA_DLL;SKIA_IMPLEMENTATION=1;GR_GL_IGNORE_ES3_MSAA=0;SK_ENABLE_INST_COUNT=0;SK_SUPPORT_GPU=1;GR_GL_CUSTOM_SETUP_HEADER="GrGLConfig_chrome.h";SK_ENABLE_LEGACY_API_ALIASING=1;SK_ATTR_DEPRECATED=SK_NOTHING_ARG1;SK_SUPPORT_LEGACY_LAYERRASTERIZER_API=1;SK_WILL_NEVER_DRAW_PERSPECTIVE_TEXT;SK_SUPPORT_LEGACY_COMPATIBLEDEVICE_CONFIG=1;SK_SUPPORT_LEGACY_PUBLICEFFECTCONSTRUCTORS=1;SK_SUPPORT_LEGACY_WRITEPIXELSCONFIG;SK_SUPPORT_LEGACY_GETCLIPTYPE;SK_SUPPORT_LEGACY_GETTOTALCLIP;SK_SUPPORT_LEGACY_GETTOPDEVICE;SK_SUPPORT_LEGACY_GETDEVICECAPABILITIES;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=0;SK_DISABLE_OFFSETIMAGEFILTER_OPTIMIZATION;SK_DISABLE_PIXELREF_LOCKCOUNT_BALANCE_CHECK;IGNORE_ROT_AA_RECT_OPT;SK_IGNORE_BLURRED_RRECT_OPT;SK_IGNORE_QUAD_RR_CORNERS_OPT;SK_GDI_ALWAYS_USE_TEXTMETRICS_FOR_FONT_METRICS;SK_DEFAULT_FONT_CACHE_LIMIT=(20%2A1024%2A1024);SK_USE_DISCARDABLE_SCALEDIMAGECACHE;SK_DEFAULT_FONT_CACHE_COUNT_LIMIT=256;SK_GAMMA_SRGB;SK_GAMMA_CONTRAST=0.5;SK_HIGH_QUALITY_IS_LANCZOS;SK_DEFERRED_CANVAS_USES_FACTORIES=1;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;DYNAMIC_ANNOTATIONS_ENABLED=1;WTF_USE_DYNAMIC_ANNOTATIONS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Lib>
@@ -271,12 +271,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="skia.gyp" />
-    <None Include="ext\skia_utils_ios.mm">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </None>
-    <None Include="ext\skia_utils_mac.mm">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\third_party\skia\src\images\SkScaledBitmapSampler.h" />
@@ -322,7 +316,6 @@
     <ClInclude Include="..\third_party\skia\src\core\SkConvolver.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkCoreBlitters.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkCubicClipper.h" />
-    <ClInclude Include="..\third_party\skia\src\core\SkDistanceFieldGen.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkDrawProcs.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkEdge.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkErrorInternals.h" />
@@ -333,9 +326,7 @@
     <ClInclude Include="..\third_party\skia\src\core\SkGlyphCache.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkGlyphCache_Globals.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkMaskGamma.h" />
-    <ClInclude Include="..\third_party\skia\src\core\SkMatrixClipStateMgr.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkMessageBus.h" />
-    <ClInclude Include="..\third_party\skia\src\core\SkOffsetTable.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkPaintPriv.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkPathHeap.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkPictureFlat.h" />
@@ -343,8 +334,6 @@
     <ClInclude Include="..\third_party\skia\src\core\SkPictureRecord.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkPictureStateTree.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkQuadClipper.h" />
-    <ClInclude Include="..\third_party\skia\src\core\SkQuadTree.h" />
-    <ClInclude Include="..\third_party\skia\src\core\SkQuadTreePicture.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkRegionPriv.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkRTree.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkScalerContext.h" />
@@ -358,7 +347,6 @@
     <ClInclude Include="..\third_party\skia\src\core\SkTextFormatParams.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkTileGrid.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkTLList.h" />
-    <ClInclude Include="..\third_party\skia\src\core\SkTraceEvent.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkTSort.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkTypefaceCache.h" />
     <ClInclude Include="..\third_party\skia\include\core\SkAdvancedTypefaceMetrics.h" />
@@ -530,34 +518,11 @@
     <ClInclude Include="..\third_party\skia\include\effects\SkMagnifierImageFilter.h" />
     <ClInclude Include="..\third_party\skia\include\pdf\SkPDFDevice.h" />
     <ClInclude Include="..\third_party\skia\include\pdf\SkPDFDocument.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFCatalog.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFDeviceFlattener.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFFont.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFFontImpl.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFFormXObject.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFGraphicState.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFImage.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFPage.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFResourceDict.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFShader.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFStream.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFTypes.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkPDFUtils.h" />
-    <ClInclude Include="..\third_party\skia\src\pdf\SkTSet.h" />
-    <ClInclude Include="ext\analysis_canvas.h" />
-    <ClInclude Include="ext\benchmarking_canvas.h" />
-    <ClInclude Include="ext\bitmap_platform_device.h" />
-    <ClInclude Include="ext\bitmap_platform_device_cairo.h" />
-    <ClInclude Include="ext\bitmap_platform_device_mac.h" />
-    <ClInclude Include="ext\bitmap_platform_device_skia.h" />
-    <ClInclude Include="ext\bitmap_platform_device_win.h" />
     <ClInclude Include="ext\convolver.h" />
-    <ClInclude Include="ext\event_tracer_impl.h" />
     <ClInclude Include="ext\image_operations.h" />
     <ClInclude Include="ext\lazy_pixel_ref.h" />
     <ClInclude Include="ext\opacity_draw_filter.h" />
     <ClInclude Include="ext\paint_simplifier.h" />
-    <ClInclude Include="ext\pixel_ref_utils.h" />
     <ClInclude Include="ext\platform_canvas.h" />
     <ClInclude Include="ext\platform_device.h" />
     <ClInclude Include="ext\recursive_gaussian_convolution.h" />
@@ -565,12 +530,7 @@
     <ClInclude Include="ext\SkDiscardableMemory_chrome.h" />
     <ClInclude Include="ext\skia_trace_shim.h" />
     <ClInclude Include="ext\skia_utils_base.h" />
-    <ClInclude Include="ext\skia_utils_ios.h" />
-    <ClInclude Include="ext\skia_utils_mac.h" />
     <ClInclude Include="ext\skia_utils_win.h" />
-    <ClInclude Include="ext\vector_canvas.h" />
-    <ClInclude Include="ext\vector_platform_device_emf_win.h" />
-    <ClInclude Include="ext\vector_platform_device_skia.h" />
     <ClInclude Include="..\third_party\skia\include\gpu\gl\SkNullGLContext.h" />
     <ClInclude Include="..\third_party\skia\include\gpu\GrBackendEffectFactory.h" />
     <ClInclude Include="..\third_party\skia\include\gpu\GrClipData.h" />
@@ -612,7 +572,6 @@
     <ClInclude Include="..\third_party\skia\src\gpu\GrBlend.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\GrBufferAllocPool.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\GrDefaultPathRenderer.h" />
-    <ClInclude Include="..\third_party\skia\src\gpu\GrDistanceFieldTextContext.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\GrDrawState.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\GrDrawTarget.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\GrDrawTargetCaps.h" />
@@ -623,7 +582,6 @@
     <ClInclude Include="..\third_party\skia\src\gpu\GrIndexBuffer.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\GrInOrderDrawBuffer.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\GrMemoryPool.h" />
-    <ClInclude Include="..\third_party\skia\src\gpu\GrOrderedSet.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\GrOvalRenderer.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\GrPath.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\GrPathRenderer.h" />
@@ -649,11 +607,9 @@
     <ClInclude Include="..\third_party\skia\src\gpu\effects\GrConfigConversionEffect.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\effects\GrBezierEffect.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\effects\GrConvolutionEffect.h" />
-    <ClInclude Include="..\third_party\skia\src\gpu\effects\GrConvexPolyEffect.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\effects\GrBicubicEffect.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\effects\GrCustomCoordsTextureEffect.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\effects\GrDistanceFieldTextureEffect.h" />
-    <ClInclude Include="..\third_party\skia\src\gpu\effects\GrRRectEffect.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\effects\GrSimpleTextureEffect.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\effects\GrSingleTextureEffect.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\effects\GrTextureDomain.h" />
@@ -661,12 +617,10 @@
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLBufferImpl.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLCaps.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLContext.h" />
-    <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLDefines.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLEffect.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLVertexEffect.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLIndexBuffer.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLIRect.h" />
-    <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLNoOpInterface.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLPath.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLProgram.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLProgramDesc.h" />
@@ -696,6 +650,7 @@
   <ItemGroup>
     <ClCompile Include="..\third_party\skia\src\core\SkFlate.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkPaintOptionsAndroid.cpp" />
+    <ClCompile Include="..\third_party\skia\src\gpu\glew.c" />
     <ClCompile Include="..\third_party\skia\src\ports\SkImageDecoder_empty.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkScaledBitmapSampler.cpp" />
     <ClCompile Include="..\third_party\skia\src\opts\opts_check_SSE2.cpp" />
@@ -716,7 +671,6 @@
     <ClCompile Include="..\third_party\skia\src\utils\SkBitSet.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkCanvasStack.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkCanvasStateUtils.cpp" />
-    <ClCompile Include="..\third_party\skia\src\utils\SkEventTracer.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkDeferredCanvas.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkMatrix44.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkNullCanvas.cpp" />
@@ -770,7 +724,6 @@
     <ClCompile Include="..\third_party\skia\src\core\SkDeviceProfile.cpp" />
     <ClCompile Include="..\third_party\skia\src\lazy\SkDiscardableMemoryPool.cpp" />
     <ClCompile Include="..\third_party\skia\src\lazy\SkDiscardablePixelRef.cpp" />
-    <ClCompile Include="..\third_party\skia\src\core\SkDistanceFieldGen.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkDither.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkDraw.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkDrawLooper.cpp" />
@@ -800,7 +753,6 @@
     <ClCompile Include="..\third_party\skia\src\core\SkMaskGamma.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkMath.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkMatrix.cpp" />
-    <ClCompile Include="..\third_party\skia\src\core\SkMatrixClipStateMgr.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkMetaData.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkMipMap.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkPackBits.cpp" />
@@ -821,11 +773,8 @@
     <ClCompile Include="..\third_party\skia\src\core\SkProcSpriteBlitter.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkPtrRecorder.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkQuadClipper.cpp" />
-    <ClCompile Include="..\third_party\skia\src\core\SkQuadTree.cpp" />
-    <ClCompile Include="..\third_party\skia\src\core\SkQuadTreePicture.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkRasterClip.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkRasterizer.cpp" />
-    <ClCompile Include="..\third_party\skia\src\core\SkReadBuffer.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkRect.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkRefDict.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkRegion.cpp" />
@@ -858,7 +807,6 @@
     <ClCompile Include="..\third_party\skia\src\core\SkUnPreMultiply.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkUtils.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkValidatingReadBuffer.cpp" />
-    <ClCompile Include="..\third_party\skia\src\core\SkWriteBuffer.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkWriter32.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkXfermode.cpp" />
     <ClCompile Include="..\third_party\skia\src\doc\SkDocument.cpp" />
@@ -903,7 +851,6 @@
     <ClCompile Include="..\third_party\skia\src\pathops\SkReduceOrder.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\Sk1DPathEffect.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\Sk2DPathEffect.cpp" />
-    <ClCompile Include="..\third_party\skia\src\effects\SkAlphaThresholdFilter.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\SkArithmeticMode.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\SkAvoidXfermode.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\SkBicubicImageFilter.cpp" />
@@ -942,7 +889,6 @@
     <ClCompile Include="..\third_party\skia\src\effects\SkPixelXorXfermode.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\SkPorterDuff.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\SkRectShaderImageFilter.cpp" />
-    <ClCompile Include="..\third_party\skia\src\effects\SkResizeImageFilter.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\SkStippleMaskFilter.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\SkTableColorFilter.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\SkTableMaskFilter.cpp" />
@@ -958,31 +904,12 @@
     <ClCompile Include="..\third_party\skia\src\effects\gradients\SkTwoPointRadialGradient.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\gradients\SkTwoPointConicalGradient.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\gradients\SkSweepGradient.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFCatalog.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFDevice.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFDeviceFlattener.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFDocument.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFFont.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFFormXObject.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFGraphicState.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFImage.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFPage.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFResourceDict.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFShader.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFStream.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFTypes.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pdf\SkPDFUtils.cpp" />
-    <ClCompile Include="ext\analysis_canvas.cc" />
-    <ClCompile Include="ext\benchmarking_canvas.cc" />
-    <ClCompile Include="ext\bitmap_platform_device_win.cc" />
     <ClCompile Include="ext\convolver.cc" />
-    <ClCompile Include="ext\event_tracer_impl.cc" />
     <ClCompile Include="ext\google_logging.cc" />
     <ClCompile Include="ext\image_operations.cc" />
     <ClCompile Include="ext\lazy_pixel_ref.cc" />
     <ClCompile Include="ext\opacity_draw_filter.cc" />
     <ClCompile Include="ext\paint_simplifier.cc" />
-    <ClCompile Include="ext\pixel_ref_utils.cc" />
     <ClCompile Include="ext\platform_canvas.cc" />
     <ClCompile Include="ext\platform_device.cc" />
     <ClCompile Include="ext\platform_device_win.cc" />
@@ -991,10 +918,6 @@
     <ClCompile Include="ext\SkMemory_new_handler.cpp" />
     <ClCompile Include="ext\skia_utils_base.cc" />
     <ClCompile Include="ext\skia_utils_win.cc" />
-    <ClCompile Include="ext\vector_platform_device_emf_win.cc" />
-    <ClCompile Include="ext\vector_platform_device_skia.cc" />
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLCreateNullInterface.cpp" />
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\SkNullGLContext.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrAAHairLinePathRenderer.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrAAConvexPathRenderer.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrAARectRenderer.cpp" />
@@ -1008,14 +931,12 @@
     <ClCompile Include="..\third_party\skia\src\gpu\GrClipData.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrContext.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrDefaultPathRenderer.cpp" />
-    <ClCompile Include="..\third_party\skia\src\gpu\GrDistanceFieldTextContext.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrDrawState.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrDrawTarget.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrEffect.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrClipMaskCache.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrClipMaskManager.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrGpu.cpp" />
-    <ClCompile Include="..\third_party\skia\src\gpu\GrGpuFactory.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrInOrderDrawBuffer.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrMemoryPool.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrOvalRenderer.cpp" />
@@ -1043,11 +964,9 @@
     <ClCompile Include="..\third_party\skia\src\gpu\effects\GrConfigConversionEffect.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\effects\GrBezierEffect.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\effects\GrConvolutionEffect.cpp" />
-    <ClCompile Include="..\third_party\skia\src\gpu\effects\GrConvexPolyEffect.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\effects\GrBicubicEffect.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\effects\GrCustomCoordsTextureEffect.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\effects\GrDistanceFieldTextureEffect.cpp" />
-    <ClCompile Include="..\third_party\skia\src\gpu\effects\GrRRectEffect.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\effects\GrSimpleTextureEffect.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\effects\GrSingleTextureEffect.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\effects\GrTextureDomain.cpp" />
@@ -1055,12 +974,7 @@
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLBufferImpl.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLCaps.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLContext.cpp" />
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLCreateNativeInterface_none.cpp" />
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLDefaultInterface_none.cpp" />
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLExtensions.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLIndexBuffer.cpp" />
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLInterface.cpp" />
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLNoOpInterface.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLPath.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLProgram.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLProgramDesc.cpp" />
@@ -1080,9 +994,6 @@
     <ClCompile Include="..\third_party\skia\src\gpu\SkGr.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\SkGrFontScaler.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\SkGrPixelRef.cpp" />
-    <ClCompile Include="..\third_party\skia\src\gpu\SkGrTexturePixelRef.cpp" />
-    <ClCompile Include="..\third_party\skia\src\image\SkImage_Gpu.cpp" />
-    <ClCompile Include="..\third_party\skia\src\image\SkSurface_Gpu.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\SkGLContextHelper.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkFontConfigInterface_android.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
@@ -1118,21 +1029,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\utils\mac\SkCreateCGImageRef.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ext\bitmap_platform_device_cairo.cc">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ext\bitmap_platform_device_mac.cc">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ext\bitmap_platform_device_skia.cc">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ext\platform_device_linux.cc">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ext\platform_device_mac.cc">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>

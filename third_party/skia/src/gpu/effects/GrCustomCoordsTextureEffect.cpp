@@ -25,7 +25,6 @@ public:
                           const char* inputColor,
                           const TransformedCoordsArray&,
                           const TextureSamplerArray& samplers) SK_OVERRIDE {
-        SkASSERT(1 == drawEffect.castEffect<GrCustomCoordsTextureEffect>().numVertexAttribs());
 
         SkString fsCoordName;
         const char* vsVaryingName;

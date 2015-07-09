@@ -13,9 +13,9 @@
 #define GL_GLEXT_PROTOTYPES
 #include "osmesa_wrapper.h"
 
-#define GR_GL_GET_PROC(F) interface->fFunctions.f ## F = (GrGL ## F ## Proc) \
+#define GR_GL_GET_PROC(F) interface->f ## F = (GrGL ## F ## Proc) \
         OSMesaGetProcAddress("gl" #F);
-#define GR_GL_GET_PROC_SUFFIX(F, S) interface->fFunctions.f ## F = (GrGL ## F ## Proc) \
+#define GR_GL_GET_PROC_SUFFIX(F, S) interface->f ## F = (GrGL ## F ## Proc) \
         OSMesaGetProcAddress("gl" #F #S);
 
 // We use OSMesaGetProcAddress for every gl function to avoid accidentally using
@@ -30,7 +30,7 @@ const GrGLInterface* GrGLCreateMesaInterface() {
             (GrGLGetIntegervProc) OSMesaGetProcAddress("glGetIntegerv");
 
         GrGLExtensions extensions;
-        if (!extensions.init(kGL_GrGLStandard, getString, getStringi, getIntegerv)) {
+        if (!extensions.init(kDesktop_GrGLBinding, getString, getStringi, getIntegerv)) {
             return NULL;
         }
 
@@ -41,7 +41,7 @@ const GrGLInterface* GrGLCreateMesaInterface() {
             // We must have array and element_array buffer objects.
             return NULL;
         }
-        GrGLInterface* interface = SkNEW(GrGLInterface());
+        GrGLInterface* interface = new GrGLInterface();
 
         GR_GL_GET_PROC(ActiveTexture);
         GR_GL_GET_PROC(BeginQuery);
@@ -63,6 +63,7 @@ const GrGLInterface* GrGLCreateMesaInterface() {
         GR_GL_GET_PROC(Clear);
         GR_GL_GET_PROC(ClearColor);
         GR_GL_GET_PROC(ClearStencil);
+        GR_GL_GET_PROC(ClientActiveTexture);
         GR_GL_GET_PROC(ColorMask);
         GR_GL_GET_PROC(CompileShader);
         GR_GL_GET_PROC(CompressedTexImage2D);
@@ -77,12 +78,14 @@ const GrGLInterface* GrGLCreateMesaInterface() {
         GR_GL_GET_PROC(DeleteTextures);
         GR_GL_GET_PROC(DepthMask);
         GR_GL_GET_PROC(Disable);
+        GR_GL_GET_PROC(DisableClientState);
         GR_GL_GET_PROC(DisableVertexAttribArray);
         GR_GL_GET_PROC(DrawArrays);
         GR_GL_GET_PROC(DrawBuffer);
         GR_GL_GET_PROC(DrawBuffers);
         GR_GL_GET_PROC(DrawElements);
         GR_GL_GET_PROC(Enable);
+        GR_GL_GET_PROC(EnableClientState);
         GR_GL_GET_PROC(EnableVertexAttribArray);
         GR_GL_GET_PROC(EndQuery);
         GR_GL_GET_PROC(Finish);
@@ -131,13 +134,14 @@ const GrGLInterface* GrGLCreateMesaInterface() {
         GR_GL_GET_PROC(StencilMaskSeparate);
         GR_GL_GET_PROC(StencilOp);
         GR_GL_GET_PROC(StencilOpSeparate);
+        GR_GL_GET_PROC(TexGenf);
         GR_GL_GET_PROC(TexGenfv);
         GR_GL_GET_PROC(TexGeni);
         GR_GL_GET_PROC(TexImage2D)
         GR_GL_GET_PROC(TexParameteri);
         GR_GL_GET_PROC(TexParameteriv);
         GR_GL_GET_PROC(TexStorage2D);
-        if (NULL == interface->fFunctions.fTexStorage2D) {
+        if (NULL == interface->fTexStorage2D) {
             GR_GL_GET_PROC_SUFFIX(TexStorage2D, EXT);
         }
         GR_GL_GET_PROC(TexSubImage2D);
@@ -164,6 +168,7 @@ const GrGLInterface* GrGLCreateMesaInterface() {
         GR_GL_GET_PROC(UseProgram);
         GR_GL_GET_PROC(VertexAttrib4fv);
         GR_GL_GET_PROC(VertexAttribPointer);
+        GR_GL_GET_PROC(VertexPointer);
         GR_GL_GET_PROC(Viewport);
 
         if (glVer >= GR_GL_VER(3,0) || extensions.has("GL_ARB_vertex_array_object")) {
@@ -215,16 +220,7 @@ const GrGLInterface* GrGLCreateMesaInterface() {
             return NULL;
         }
         GR_GL_GET_PROC(BindFragDataLocationIndexed);
-
-        if (extensions.has("GL_EXT_debug_marker")) {
-            GR_GL_GET_PROC_SUFFIX(InsertEventMarker, EXT);
-            GR_GL_GET_PROC_SUFFIX(PopGroupMarker, EXT);
-            GR_GL_GET_PROC_SUFFIX(PushGroupMarker, EXT);
-        }
-
-        interface->fStandard = kGL_GrGLStandard;
-        interface->fExtensions.swap(&extensions);
-
+        interface->fBindingsExported = kDesktop_GrGLBinding;
         return interface;
     } else {
         return NULL;

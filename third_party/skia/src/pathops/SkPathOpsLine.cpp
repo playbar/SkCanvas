@@ -87,7 +87,6 @@ double SkDLine::nearPoint(const SkDPoint& xy) const {
         return -1;
     }
     t = SkPinT(t);
-    SkASSERT(between(0, t, 1));
     return t;
 }
 
@@ -141,7 +140,6 @@ double SkDLine::NearPointH(const SkDPoint& xy, double left, double right, double
     }
     double t = (xy.fX - left) / (right - left);
     t = SkPinT(t);
-    SkASSERT(between(0, t, 1));
     double realPtX = (1 - t) * left + t * right;
     SkDVector distU = {xy.fY - y, xy.fX - realPtX};
     double distSq = distU.fX * distU.fX + distU.fY * distU.fY;
@@ -176,7 +174,6 @@ double SkDLine::NearPointV(const SkDPoint& xy, double top, double bottom, double
     }
     double t = (xy.fY - top) / (bottom - top);
     t = SkPinT(t);
-    SkASSERT(between(0, t, 1));
     double realPtY = (1 - t) * top + t * bottom;
     SkDVector distU = {xy.fX - x, xy.fY - realPtY};
     double distSq = distU.fX * distU.fX + distU.fY * distU.fY;

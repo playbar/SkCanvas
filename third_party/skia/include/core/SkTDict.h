@@ -33,8 +33,6 @@ public:
 
     bool set(const char name[], size_t len, const T& value)
     {
-        SkASSERT(name);
-
         int index = this->find_index(name, len);
 
         if (index >= 0)
@@ -146,8 +144,6 @@ private:
 
     int find_index(const char name[], size_t len) const
     {
-        SkASSERT(name);
-
         int count = fArray.count();
         int index = ~0;
 

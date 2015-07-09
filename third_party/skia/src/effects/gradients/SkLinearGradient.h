@@ -22,12 +22,12 @@ public:
     virtual GradientType asAGradient(GradientInfo* info) const SK_OVERRIDE;
     virtual GrEffectRef* asNewEffect(GrContext* context, const SkPaint&) const SK_OVERRIDE;
 
-    SK_TO_STRING_OVERRIDE()
+    SK_DEVELOPER_TO_STRING()
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkLinearGradient)
 
 protected:
-    SkLinearGradient(SkReadBuffer& buffer);
-    virtual void flatten(SkWriteBuffer& buffer) const SK_OVERRIDE;
+    SkLinearGradient(SkFlattenableReadBuffer& buffer);
+    virtual void flatten(SkFlattenableWriteBuffer& buffer) const SK_OVERRIDE;
 
 private:
     typedef SkGradientShaderBase INHERITED;

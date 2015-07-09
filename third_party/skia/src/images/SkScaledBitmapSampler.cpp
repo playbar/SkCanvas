@@ -577,7 +577,7 @@ SkScaledBitmapSampler::SkScaledBitmapSampler(int width, int height,
     fRowProc = NULL;
 
     if (width <= 0 || height <= 0) {
-        sk_throw();
+		abort();
     }
 
     SkDEBUGCODE(fSampleMode = kUninitialized_SampleMode);
@@ -596,20 +596,12 @@ SkScaledBitmapSampler::SkScaledBitmapSampler(int width, int height,
     fScaledWidth = width / dx;
     fScaledHeight = height / dy;
 
-    SkASSERT(fScaledWidth > 0);
-    SkASSERT(fScaledHeight > 0);
-
     fX0 = dx >> 1;
     fY0 = dy >> 1;
-
-    SkASSERT(fX0 >= 0 && fX0 < width);
-    SkASSERT(fY0 >= 0 && fY0 < height);
 
     fDX = dx;
     fDY = dy;
 
-    SkASSERT(fDX > 0 && (fX0 + fDX * (fScaledWidth - 1)) < width);
-    SkASSERT(fDY > 0 && (fY0 + fDY * (fScaledHeight - 1)) < height);
 }
 
 bool SkScaledBitmapSampler::begin(SkBitmap* dst, SrcConfig sc,
@@ -717,9 +709,7 @@ bool SkScaledBitmapSampler::begin(SkBitmap* dst, SrcConfig sc,
 }
 
 bool SkScaledBitmapSampler::next(const uint8_t* SK_RESTRICT src) {
-    SkASSERT(kInterlaced_SampleMode != fSampleMode);
     SkDEBUGCODE(fSampleMode = kConsecutive_SampleMode);
-    SkASSERT((unsigned)fCurrY < (unsigned)fScaledHeight);
 
     bool hadAlpha = fRowProc(fDstRow, src + fX0 * fSrcPixelSize, fScaledWidth,
                              fDX * fSrcPixelSize, fCurrY, fCTable);
@@ -729,7 +719,6 @@ bool SkScaledBitmapSampler::next(const uint8_t* SK_RESTRICT src) {
 }
 
 bool SkScaledBitmapSampler::sampleInterlaced(const uint8_t* SK_RESTRICT src, int srcY) {
-    SkASSERT(kConsecutive_SampleMode != fSampleMode);
     SkDEBUGCODE(fSampleMode = kInterlaced_SampleMode);
     // Any line that should be a part of the destination can be created by the formula:
     // fY0 + (some multiplier) * fDY
@@ -745,108 +734,8 @@ bool SkScaledBitmapSampler::sampleInterlaced(const uint8_t* SK_RESTRICT src, int
     // of the destination bitmap's pixels, which is used to calculate the destination row
     // each time this function is called.
     const int dstY = srcYMinusY0 / fDY;
-    SkASSERT(dstY < fScaledHeight);
     char* dstRow = fDstRow + dstY * fDstRowBytes;
     return fRowProc(dstRow, src + fX0 * fSrcPixelSize, fScaledWidth,
                     fDX * fSrcPixelSize, dstY, fCTable);
 }
 
-#ifdef SK_DEBUG
-// The following code is for a test to ensure that changing the method to get the right row proc
-// did not change the row proc unintentionally. Tested by ImageDecodingTest.cpp
-
-// friend of SkScaledBitmapSampler solely for the purpose of accessing fRowProc.
-class RowProcTester {
-public:
-    static SkScaledBitmapSampler::RowProc getRowProc(const SkScaledBitmapSampler& sampler) {
-        return sampler.fRowProc;
-    }
-};
-
-
-// Table showing the expected RowProc for each combination of inputs.
-// Table formated as follows:
-// Each group of 5 consecutive rows represents sampling from a single
-// SkScaledBitmapSampler::SrcConfig.
-// Within each set, each row represents a different destination SkBitmap::Config
-// Each column represents a different combination of dither and unpremul.
-// D = dither   ~D = no dither
-// U = unpremul ~U = no unpremul
-//  ~D~U                D~U                     ~DU                         DU
-SkScaledBitmapSampler::RowProc gTestProcs[] = {
-    // Gray
-    Sample_Gray_DA8,    Sample_Gray_DA8,        NULL,                       NULL,                       // to A8
-    NULL,               NULL,                   NULL,                       NULL,                       // to Index8
-    Sample_Gray_D565,   Sample_Gray_D565_D,     Sample_Gray_D565,           Sample_Gray_D565_D,         // to 565
-    Sample_Gray_D4444,  Sample_Gray_D4444_D,    Sample_Gray_D4444,          Sample_Gray_D4444_D,        // to 4444
-    Sample_Gray_D8888,  Sample_Gray_D8888,      Sample_Gray_D8888,          Sample_Gray_D8888,          // to 8888
-    // Index
-    NULL,               NULL,                   NULL,                       NULL,                       // to A8
-    Sample_Index_DI,    Sample_Index_DI,        NULL,                       NULL,                       // to Index8
-    Sample_Index_D565,  Sample_Index_D565_D,    Sample_Index_D565,          Sample_Index_D565_D,        // to 565
-    Sample_Index_D4444, Sample_Index_D4444_D,   NULL,                       NULL,                       // to 4444
-    Sample_Index_D8888, Sample_Index_D8888,     NULL,                       NULL,                       // to 8888
-    // RGB
-    NULL,               NULL,                   NULL,                       NULL,                       // to A8
-    NULL,               NULL,                   NULL,                       NULL,                       // to Index8
-    Sample_RGBx_D565,   Sample_RGBx_D565_D,     Sample_RGBx_D565,           Sample_RGBx_D565_D,         // to 565
-    Sample_RGBx_D4444,  Sample_RGBx_D4444_D,    Sample_RGBx_D4444,          Sample_RGBx_D4444_D,        // to 4444
-    Sample_RGBx_D8888,  Sample_RGBx_D8888,      Sample_RGBx_D8888,          Sample_RGBx_D8888,          // to 8888
-    // RGBx is the same as RGB
-    NULL,               NULL,                   NULL,                       NULL,                       // to A8
-    NULL,               NULL,                   NULL,                       NULL,                       // to Index8
-    Sample_RGBx_D565,   Sample_RGBx_D565_D,     Sample_RGBx_D565,           Sample_RGBx_D565_D,         // to 565
-    Sample_RGBx_D4444,  Sample_RGBx_D4444_D,    Sample_RGBx_D4444,          Sample_RGBx_D4444_D,        // to 4444
-    Sample_RGBx_D8888,  Sample_RGBx_D8888,      Sample_RGBx_D8888,          Sample_RGBx_D8888,          // to 8888
-    // RGBA
-    NULL,               NULL,                   NULL,                       NULL,                       // to A8
-    NULL,               NULL,                   NULL,                       NULL,                       // to Index8
-    Sample_RGBx_D565,   Sample_RGBx_D565_D,     Sample_RGBx_D565,           Sample_RGBx_D565_D,         // to 565
-    Sample_RGBA_D4444,  Sample_RGBA_D4444_D,    NULL,                       NULL,                       // to 4444
-    Sample_RGBA_D8888,  Sample_RGBA_D8888,      Sample_RGBA_D8888_Unpremul, Sample_RGBA_D8888_Unpremul, // to 8888
-    // RGB_565
-    NULL,               NULL,                   NULL,                       NULL,                       // to A8
-    NULL,               NULL,                   NULL,                       NULL,                       // to Index8
-    Sample_D565_D565,   Sample_D565_D565,       Sample_D565_D565,           Sample_D565_D565,           // to 565
-    NULL,               NULL,                   NULL,                       NULL,                       // to 4444
-    NULL,               NULL,                   NULL,                       NULL,                       // to 8888
-};
-
-// Dummy class that allows instantiation of an ImageDecoder, so begin can query its fields.
-class DummyDecoder : public SkImageDecoder {
-public:
-    DummyDecoder() {}
-protected:
-    virtual bool onDecode(SkStream*, SkBitmap*, SkImageDecoder::Mode) SK_OVERRIDE {
-        return false;
-    }
-};
-
-void test_row_proc_choice();
-void test_row_proc_choice() {
-    SkBitmap dummyBitmap;
-    DummyDecoder dummyDecoder;
-    size_t procCounter = 0;
-    for (int sc = SkScaledBitmapSampler::kGray; sc <= SkScaledBitmapSampler::kRGB_565; ++sc) {
-        for (int c = SkBitmap::kA8_Config; c <= SkBitmap::kARGB_8888_Config; ++c) {
-            for (int unpremul = 0; unpremul <= 1; ++unpremul) {
-                for (int dither = 0; dither <= 1; ++dither) {
-                    // Arbitrary width/height/sampleSize to allow SkScaledBitmapSampler to
-                    // be considered valid.
-                    SkScaledBitmapSampler sampler(10, 10, 1);
-                    dummyBitmap.setConfig((SkBitmap::Config) c, 10, 10);
-                    dummyDecoder.setDitherImage(SkToBool(dither));
-                    dummyDecoder.setRequireUnpremultipliedColors(SkToBool(unpremul));
-                    sampler.begin(&dummyBitmap, (SkScaledBitmapSampler::SrcConfig) sc,
-                                  dummyDecoder);
-                    SkScaledBitmapSampler::RowProc expected = gTestProcs[procCounter];
-                    SkScaledBitmapSampler::RowProc actual = RowProcTester::getRowProc(sampler);
-                    SkASSERT(expected == actual);
-                    procCounter++;
-                }
-            }
-        }
-    }
-    SkASSERT(SK_ARRAY_COUNT(gTestProcs) == procCounter);
-}
-#endif // SK_DEBUG

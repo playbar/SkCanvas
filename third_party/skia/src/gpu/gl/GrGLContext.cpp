@@ -8,68 +8,87 @@
 #include "GrGLContext.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-
-GrGLContextInfo& GrGLContextInfo::operator= (const GrGLContextInfo& that) {
-    fInterface.reset(SkSafeRef(that.fInterface.get()));
-    fGLVersion      = that.fGLVersion;
-    fGLSLGeneration = that.fGLSLGeneration;
-    fVendor         = that.fVendor;
-    fRenderer       = that.fRenderer;
-    fIsMesa         = that.fIsMesa;
-    fIsChromium     = that.fIsChromium;
-    *fGLCaps        = *that.fGLCaps.get();
+GrGLContextInfo& GrGLContextInfo::operator= (const GrGLContextInfo& ctxInfo)
+{
+    fBindingInUse = ctxInfo.fBindingInUse;
+    fGLVersion = ctxInfo.fGLVersion;
+    fGLSLGeneration = ctxInfo.fGLSLGeneration;
+    fIsMesa = ctxInfo.fIsMesa;
+    fIsChromium = ctxInfo.fIsChromium;
+    *fGLCaps = *ctxInfo.fGLCaps.get();
     return *this;
 }
 
-bool GrGLContextInfo::initialize(const GrGLInterface* interface) {
+bool GrGLContextInfo::initialize()
+{
     this->reset();
-    // We haven't validated the GrGLInterface yet, so check for GetString
+    // We haven't validated the GLinterface yet, so check for GetString
     // function pointer
-    if (interface->fFunctions.fGetString) {
-        const GrGLubyte* verUByte;
-        GR_GL_CALL_RET(interface, verUByte, GetString(GR_GL_VERSION));
-        const char* ver = reinterpret_cast<const char*>(verUByte);
+	const GLubyte* verUByte;
+	verUByte = glGetString(GL_VERSION);
+	const char* ver = reinterpret_cast<const char*>(verUByte);
 
-        const GrGLubyte* rendererUByte;
-        GR_GL_CALL_RET(interface, rendererUByte, GetString(GR_GL_RENDERER));
-        const char* renderer = reinterpret_cast<const char*>(rendererUByte);
+	const GLubyte* rendererUByte;
+	rendererUByte = glGetString(GL_RENDERER);
 
-        if (interface->validate()) {
+	const char* renderer = reinterpret_cast<const char*>(rendererUByte);
 
-            fGLVersion = GrGLGetVersionFromString(ver);
+	GrGLBinding binding = GrGLGetBindingInUseFromString(ver);
 
-            fGLSLGeneration = GrGetGLSLGeneration(interface);
+	fBindingInUse = binding;
 
-            fVendor = GrGLGetVendor(interface);
+	fGLVersion = GrGLGetVersionFromString(ver);
 
-            fRenderer = GrGLGetRendererFromString(renderer);
+	fGLSLGeneration = GrGetGLSLGeneration(fBindingInUse);
 
-            fIsMesa = GrGLIsMesaFromVersionString(ver);
+	fIsMesa = GrGLIsMesaFromVersionString(ver);
 
-            fIsChromium = GrGLIsChromiumFromRendererString(renderer);
+	fIsChromium = GrGLIsChromiumFromRendererString(renderer);
 
-            // This must occur before caps init.
-            fInterface.reset(SkRef(interface));
+	fGLCaps->init(*this);
+	return true;
 
-            fGLCaps->init(*this, interface);
-
-            return true;
-        }
-    }
-    return false;
 }
 
-bool GrGLContextInfo::isInitialized() const {
-    return NULL != fInterface.get();
+bool GrGLContextInfo::isInitialized() const
+{
+    return kNone_GrGLBinding != fBindingInUse;
 }
 
-void GrGLContextInfo::reset() {
-    fInterface.reset(NULL);
-    fGLVersion = GR_GL_VER(0, 0);
+void GrGLContextInfo::reset()
+{
+    fBindingInUse = kNone_GrGLBinding;
+	bBindingInUse = false;
+    fGLVersion = GL_VER(0, 0);
     fGLSLGeneration = static_cast<GrGLSLGeneration>(0);
-    fVendor = kOther_GrGLVendor;
-    fRenderer = kOther_GrGLRenderer;
     fIsMesa = false;
     fIsChromium = false;
     fGLCaps->reset();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+GrGLContext::GrGLContext() {
+    this->initialize();
+}
+
+GrGLContext::GrGLContext(const GrGLContext& ctx) {
+    *this = ctx;
+}
+
+GrGLContext& GrGLContext::operator = (const GrGLContext& ctx) {
+    fInfo = ctx.fInfo;
+    return *this;
+}
+
+void GrGLContext::reset() {
+    fInfo.reset();
+}
+
+bool GrGLContext::initialize()
+{
+    if (fInfo.initialize()) 
+	{
+		return true;
+    }
+    return false;
 }

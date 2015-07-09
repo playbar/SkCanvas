@@ -31,19 +31,19 @@ public:
 
     private:
         Context fOldContext;
-        GrGLint fOldWidth;
-        GrGLint fOldHeight;
-        GrGLint fOldFormat;
+        GLint fOldWidth;
+        GLint fOldHeight;
+        GLint fOldFormat;
         void*   fOldImage;
     };
 
 protected:
-    virtual const GrGLInterface* createGLContext() SK_OVERRIDE;
+    virtual const GLinterface* createGLContext() SK_OVERRIDE;
     virtual void destroyGLContext() SK_OVERRIDE;
 
 private:
     Context fContext;
-    GrGLubyte *fImage;
+    GLubyte *fImage;
 };
 
 #endif

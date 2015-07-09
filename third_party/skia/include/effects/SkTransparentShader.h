@@ -21,7 +21,7 @@ public:
     virtual void    shadeSpan(int x, int y, SkPMColor[], int count) SK_OVERRIDE;
     virtual void    shadeSpan16(int x, int y, uint16_t span[], int count) SK_OVERRIDE;
 
-    SK_TO_STRING_OVERRIDE()
+    SK_DEVELOPER_TO_STRING()
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkTransparentShader)
 
 private:
@@ -29,7 +29,7 @@ private:
     const SkBitmap* fDevice;
     uint8_t         fAlpha;
 
-    SkTransparentShader(SkReadBuffer& buffer) : INHERITED(buffer) {}
+    SkTransparentShader(SkFlattenableReadBuffer& buffer) : INHERITED(buffer) {}
 
     typedef SkShader INHERITED;
 };

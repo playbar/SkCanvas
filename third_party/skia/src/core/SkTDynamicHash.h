@@ -8,52 +8,26 @@
 #ifndef SkTDynamicHash_DEFINED
 #define SkTDynamicHash_DEFINED
 
-#include "SkMath.h"
-#include "SkTemplates.h"
 #include "SkTypes.h"
+#include "SkMath.h"
 
 template <typename T,
           typename Key,
           const Key& (GetKey)(const T&),
           uint32_t (Hash)(const Key&),
           bool (Equal)(const T&, const Key&),
-          int kGrowPercent = 75>  // Larger -> more memory efficient, but slower.
+          int kGrowPercent   = 75,  // Larger -> more memory efficient, but slower.
+          int kShrinkPercent = 25>
 class SkTDynamicHash {
+    static const int kMinCapacity = 4;  // Smallest capacity we allow.
 public:
-    SkTDynamicHash() : fCount(0), fDeleted(0), fCapacity(0), fArray(NULL) {
-        SkASSERT(this->validate());
+    SkTDynamicHash(int initialCapacity=64/sizeof(T*)) {
+        this->reset(SkNextPow2(initialCapacity > kMinCapacity ? initialCapacity : kMinCapacity));
     }
 
     ~SkTDynamicHash() {
         sk_free(fArray);
     }
-
-    class Iter {
-    public:
-        explicit Iter(SkTDynamicHash* hash) : fHash(hash), fCurrentIndex(-1) {
-            SkASSERT(hash);
-            ++(*this);
-        }
-        bool done() const {
-            SkASSERT(fCurrentIndex <= fHash->fCapacity);
-            return fCurrentIndex == fHash->fCapacity;
-        }
-        T& operator*() const {
-            SkASSERT(!this->done());
-            return *this->current();
-        }
-        void operator++() {
-            do {
-                fCurrentIndex++;
-            } while (!this->done() && (this->current() == Empty() || this->current() == Deleted()));
-        }
-
-    private:
-        T* current() const { return fHash->fArray[fCurrentIndex]; }
-
-        SkTDynamicHash* fHash;
-        int fCurrentIndex;
-    };
 
     int count() const { return fCount; }
 
@@ -70,23 +44,19 @@ public:
             }
             index = this->nextIndex(index, round);
         }
-        SkASSERT(fCapacity == 0);
         return NULL;
     }
 
     // Add an entry with this key.  We require that no entry with newEntry's key is already present.
     void add(T* newEntry) {
-        SkASSERT(NULL == this->find(GetKey(*newEntry)));
         this->maybeGrow();
         this->innerAdd(newEntry);
-        SkASSERT(this->validate());
     }
 
     // Remove the entry with this key.  We reqire that an entry with this key is present.
     void remove(const Key& key) {
-        SkASSERT(NULL != this->find(key));
         this->innerRemove(key);
-        SkASSERT(this->validate());
+        this->maybeShrink();
     }
 
 protected:
@@ -104,8 +74,7 @@ protected:
             }
             index = this->nextIndex(index, round);
         }
-        SkASSERT(fCapacity == 0);
-        return 0;
+        return -1;
     }
 
 private:
@@ -113,45 +82,62 @@ private:
     static T* Empty()   { return reinterpret_cast<T*>(0); }  // i.e. NULL
     static T* Deleted() { return reinterpret_cast<T*>(1); }  // Also an invalid pointer.
 
-    bool validate() const {
-        #define SKTDYNAMICHASH_CHECK(x) SkASSERT((x)); if (!(x)) return false
-        static const int kLarge = 50;  // Arbitrary, tweak to suit your patience.
+    static T** AllocArray(int capacity) {
+        return (T**)sk_calloc_throw(sizeof(T*) * capacity);  // All cells == Empty().
+    }
 
-        // O(1) checks, always done.
+    void reset(int capacity) {
+        fCount = 0;
+        fDeleted = 0;
+        fCapacity = capacity;
+        fArray = AllocArray(fCapacity);
+    }
+
+    bool validate() const {
+        #define SKTDYNAMICHASH_CHECK(x) if (!(x)) return false
+
         // Is capacity sane?
         SKTDYNAMICHASH_CHECK(SkIsPow2(fCapacity));
+        SKTDYNAMICHASH_CHECK(fCapacity >= kMinCapacity);
 
-        // O(N) checks, skipped when very large.
-        if (fCount < kLarge * kLarge) {
-            // Are fCount and fDeleted correct, and are all elements findable?
-            int count = 0, deleted = 0;
-            for (int i = 0; i < fCapacity; i++) {
-                if (Deleted() == fArray[i]) {
-                    deleted++;
-                } else if (Empty() != fArray[i]) {
-                    count++;
-                    SKTDYNAMICHASH_CHECK(NULL != this->find(GetKey(*fArray[i])));
-                }
+        // Is fCount correct?
+        int count = 0;
+        for (int i = 0; i < fCapacity; i++) {
+            if (Empty() != fArray[i] && Deleted() != fArray[i]) {
+                count++;
             }
-            SKTDYNAMICHASH_CHECK(count == fCount);
-            SKTDYNAMICHASH_CHECK(deleted == fDeleted);
+        }
+        SKTDYNAMICHASH_CHECK(count == fCount);
+
+        // Is fDeleted correct?
+        int deleted = 0;
+        for (int i = 0; i < fCapacity; i++) {
+            if (Deleted() == fArray[i]) {
+                deleted++;
+            }
+        }
+        SKTDYNAMICHASH_CHECK(deleted == fDeleted);
+
+        // Are all entries findable?
+        for (int i = 0; i < fCapacity; i++) {
+            if (Empty() == fArray[i] || Deleted() == fArray[i]) {
+                continue;
+            }
+            SKTDYNAMICHASH_CHECK(NULL != this->find(GetKey(*fArray[i])));
         }
 
-        // O(N^2) checks, skipped when large.
-        if (fCount < kLarge) {
-            // Are all entries unique?
-            for (int i = 0; i < fCapacity; i++) {
-                if (Empty() == fArray[i] || Deleted() == fArray[i]) {
+        // Are all entries unique?
+        for (int i = 0; i < fCapacity; i++) {
+            if (Empty() == fArray[i] || Deleted() == fArray[i]) {
+                continue;
+            }
+            for (int j = i+1; j < fCapacity; j++) {
+                if (Empty() == fArray[j] || Deleted() == fArray[j]) {
                     continue;
                 }
-                for (int j = i+1; j < fCapacity; j++) {
-                    if (Empty() == fArray[j] || Deleted() == fArray[j]) {
-                        continue;
-                    }
-                    SKTDYNAMICHASH_CHECK(fArray[i] != fArray[j]);
-                    SKTDYNAMICHASH_CHECK(!Equal(*fArray[i], GetKey(*fArray[j])));
-                    SKTDYNAMICHASH_CHECK(!Equal(*fArray[j], GetKey(*fArray[i])));
-                }
+                SKTDYNAMICHASH_CHECK(fArray[i] != fArray[j]);
+                SKTDYNAMICHASH_CHECK(!Equal(*fArray[i], GetKey(*fArray[j])));
+                SKTDYNAMICHASH_CHECK(!Equal(*fArray[j], GetKey(*fArray[i])));
             }
         }
         #undef SKTDYNAMICHASH_CHECK
@@ -173,7 +159,6 @@ private:
             }
             index = this->nextIndex(index, round);
         }
-        SkASSERT(fCapacity == 0);
     }
 
     void innerRemove(const Key& key) {
@@ -189,31 +174,34 @@ private:
             }
             index = this->nextIndex(index, round);
         }
-        SkASSERT(fCapacity == 0);
     }
 
     void maybeGrow() {
-        if (100 * (fCount + fDeleted + 1) > fCapacity * kGrowPercent) {
-            this->resize(fCapacity > 0 ? fCapacity * 2 : 4);
+        if (fCount + fDeleted + 1 > (fCapacity * kGrowPercent) / 100) {
+            resize(fCapacity * 2);
+        }
+    }
+
+    void maybeShrink() {
+        if (fCount < (fCapacity * kShrinkPercent) / 100 && fCapacity / 2 > kMinCapacity) {
+            resize(fCapacity / 2);
         }
     }
 
     void resize(int newCapacity) {
-        SkDEBUGCODE(int oldCount = fCount;)
         int oldCapacity = fCapacity;
-        SkAutoTMalloc<T*> oldArray(fArray);
+        T** oldArray = fArray;
 
-        fCount = fDeleted = 0;
-        fCapacity = newCapacity;
-        fArray = (T**)sk_calloc_throw(sizeof(T*) * fCapacity);
+        reset(newCapacity);
 
         for (int i = 0; i < oldCapacity; i++) {
             T* entry = oldArray[i];
             if (Empty() != entry && Deleted() != entry) {
-                this->innerAdd(entry);
+                this->add(entry);
             }
         }
-        SkASSERT(oldCount == fCount);
+
+        sk_free(oldArray);
     }
 
     // fCapacity is always a power of 2, so this masks the correct low bits to index into our hash.

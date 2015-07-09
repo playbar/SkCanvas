@@ -61,21 +61,11 @@ void SkImageRefPool::setRAMUsed(size_t limit) {
         // only purge it if its pixels are unlocked
         if (!ref->isLocked() && ref->fBitmap.getPixels()) {
             size_t size = ref->ramUsed();
-            SkASSERT(size <= fRAMUsed);
             fRAMUsed -= size;
-
-#ifdef DUMP_IMAGEREF_LIFECYCLE
-            SkDebugf("=== ImagePool: purge %s [%d %d %d] bytes=%d heap=%d\n",
-                     ref->getURI(),
-                     ref->fBitmap.width(), ref->fBitmap.height(),
-                     ref->fBitmap.bytesPerPixel(),
-                     (int)size, (int)fRAMUsed);
-#endif
 
             // remember the bitmap config (don't call reset),
             // just clear the pixel memory
             ref->fBitmap.setPixels(NULL);
-            SkASSERT(NULL == ref->fBitmap.getPixels());
         }
         ref = ref->fPrev;
     }
@@ -88,7 +78,6 @@ void SkImageRefPool::addToHead(SkImageRef* ref) {
     ref->fPrev = NULL;
 
     if (fHead) {
-        SkASSERT(NULL == fHead->fPrev);
         fHead->fPrev = ref;
     }
     fHead = ref;
@@ -97,7 +86,6 @@ void SkImageRefPool::addToHead(SkImageRef* ref) {
         fTail = ref;
     }
     fCount += 1;
-    SkASSERT(computeCount() == fCount);
 
     fRAMUsed += ref->ramUsed();
 }
@@ -107,7 +95,6 @@ void SkImageRefPool::addToTail(SkImageRef* ref) {
     ref->fPrev = fTail;
 
     if (fTail) {
-        SkASSERT(NULL == fTail->fNext);
         fTail->fNext = ref;
     }
     fTail = ref;
@@ -116,13 +103,11 @@ void SkImageRefPool::addToTail(SkImageRef* ref) {
         fHead = ref;
     }
     fCount += 1;
-    SkASSERT(computeCount() == fCount);
 
     fRAMUsed += ref->ramUsed();
 }
 
 void SkImageRefPool::detach(SkImageRef* ref) {
-    SkASSERT(fCount > 0);
 
     if (fHead == ref) {
         fHead = ref->fNext;
@@ -140,9 +125,7 @@ void SkImageRefPool::detach(SkImageRef* ref) {
     ref->fNext = ref->fPrev = NULL;
 
     fCount -= 1;
-    SkASSERT(computeCount() == fCount);
 
-    SkASSERT(fRAMUsed >= ref->ramUsed());
     fRAMUsed -= ref->ramUsed();
 }
 
@@ -154,17 +137,6 @@ int SkImageRefPool::computeCount() const {
         count += 1;
         ref = ref->fNext;
     }
-
-#ifdef SK_DEBUG
-    ref = fTail;
-    int count2 = 0;
-
-    while (ref != NULL) {
-        count2 += 1;
-        ref = ref->fPrev;
-    }
-    SkASSERT(count2 == count);
-#endif
 
     return count;
 }

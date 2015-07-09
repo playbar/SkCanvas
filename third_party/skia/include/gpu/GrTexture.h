@@ -16,7 +16,8 @@
 class GrResourceKey;
 class GrTextureParams;
 
-class GrTexture : public GrSurface {
+class GrTexture : public GrSurface 
+{
 
 public:
     SK_DECLARE_INST_COUNT(GrTexture)
@@ -100,11 +101,9 @@ public:
      * only.
      */
     GrFixed normalizeFixedX(GrFixed x) const {
-        SkASSERT(GrIsPow2(fDesc.fWidth));
         return x >> fShiftFixedX;
     }
     GrFixed normalizeFixedY(GrFixed y) const {
-        SkASSERT(GrIsPow2(fDesc.fHeight));
         return y >> fShiftFixedY;
     }
 
@@ -112,21 +111,13 @@ public:
      *  Return the native ID or handle to the texture, depending on the
      *  platform. e.g. on OpenGL, return the texture ID.
      */
-    virtual GrBackendObject getTextureHandle() const = 0;
+    virtual intptr_t getTextureHandle() const = 0;
 
     /**
      *  Call this when the state of the native API texture object is
      *  altered directly, without being tracked by skia.
      */
     virtual void invalidateCachedState() = 0;
-
-#ifdef SK_DEBUG
-    void validate() const {
-        this->INHERITED::validate();
-
-        this->validateDesc();
-    }
-#endif
 
     static GrResourceKey ComputeKey(const GrGpu* gpu,
                                     const GrTextureParams* params,

@@ -14,7 +14,7 @@ public:
     SkImage_Picture(SkPicture*);
     virtual ~SkImage_Picture();
 
-    virtual void onDraw(SkCanvas*, SkScalar, SkScalar, const SkPaint*) SK_OVERRIDE;
+    virtual void onDraw(SkCanvas*, float, float, const SkPaint*) SK_OVERRIDE;
     virtual void onDrawRectToRect(SkCanvas*, const SkRect*, const SkRect&, const SkPaint*) SK_OVERRIDE;
 
     SkPicture* getPicture() { return fPicture; }
@@ -37,7 +37,7 @@ SkImage_Picture::~SkImage_Picture() {
     fPicture->unref();
 }
 
-void SkImage_Picture::onDraw(SkCanvas* canvas, SkScalar x, SkScalar y,
+void SkImage_Picture::onDraw(SkCanvas* canvas, float x, float y,
                              const SkPaint* paint) {
     SkImagePrivDrawPicture(canvas, fPicture, x, y, paint);
 }

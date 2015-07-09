@@ -18,7 +18,7 @@ public:
     SkImage_Codec(SkData* encodedData, int width, int height);
     virtual ~SkImage_Codec();
 
-    virtual void onDraw(SkCanvas*, SkScalar, SkScalar, const SkPaint*) SK_OVERRIDE;
+    virtual void onDraw(SkCanvas*, float, float, const SkPaint*) SK_OVERRIDE;
     virtual void onDrawRectToRect(SkCanvas*, const SkRect*, const SkRect&, const SkPaint*) SK_OVERRIDE;
 
 private:
@@ -39,7 +39,7 @@ SkImage_Codec::~SkImage_Codec() {
     fEncodedData->unref();
 }
 
-void SkImage_Codec::onDraw(SkCanvas* canvas, SkScalar x, SkScalar y, const SkPaint* paint) {
+void SkImage_Codec::onDraw(SkCanvas* canvas, float x, float y, const SkPaint* paint) {
     if (!fBitmap.pixelRef()) {
         if (!SkImageDecoder::DecodeMemory(fEncodedData->bytes(), fEncodedData->size(),
                                           &fBitmap)) {

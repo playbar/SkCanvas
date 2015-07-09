@@ -62,7 +62,6 @@ SkDrawMatrix::~SkDrawMatrix() {
 }
 
 bool SkDrawMatrix::addChild(SkAnimateMaker& maker, SkDisplayable* child) {
-    SkASSERT(child && child->isMatrixPart());
     SkMatrixPart* part = (SkMatrixPart*) child;
     *fParts.append() = part;
     if (part->add())
@@ -77,7 +76,6 @@ bool SkDrawMatrix::childrenNeedDisposing() const {
 SkDisplayable* SkDrawMatrix::deepCopy(SkAnimateMaker* maker) {
     SkDrawMatrix* copy = (SkDrawMatrix*)
         SkDisplayType::CreateInstance(maker, SkType_Matrix);
-    SkASSERT(fParts.count() == 0);
     copy->fMatrix = fMatrix;
     copy->fConcat = fConcat;
     return copy;
@@ -100,7 +98,7 @@ void SkDrawMatrix::dump(SkAnimateMaker* maker) {
         SkDebugf("matrix=\"identity\"/>\n");
         return;
     }
-    SkScalar result;
+    float result;
     result = fMatrix[SkMatrix::kMScaleX];
     if (result != SK_Scalar1)
         SkDebugf("sx=\"%g\" ", SkScalarToFloat(result));
@@ -143,7 +141,7 @@ SkMatrix& SkDrawMatrix::getMatrix() {
 
 bool SkDrawMatrix::getProperty(int index, SkScriptValue* value) const {
     value->fType = SkType_Float;
-    SkScalar result;
+    float result;
     switch (index) {
         case SK_PROPERTY(perspectX):
             result = fMatrix.getPerspX();
@@ -170,7 +168,6 @@ bool SkDrawMatrix::getProperty(int index, SkScriptValue* value) const {
             result = fMatrix.getTranslateY();
             break;
         default:
-//          SkASSERT(0);
             return false;
     }
     value->fOperand.fScalar = result;
@@ -183,7 +180,7 @@ void SkDrawMatrix::initialize() {
 
 void SkDrawMatrix::onEndElement(SkAnimateMaker& ) {
     if (matrix.count() > 0) {
-        SkScalar* vals = matrix.begin();
+        float* vals = matrix.begin();
         fMatrix.setScaleX(vals[0]);
         fMatrix.setSkewX(vals[1]);
         fMatrix.setTranslateX(vals[2]);
@@ -212,13 +209,10 @@ void SkDrawMatrix::setChildHasID() {
 }
 
 bool SkDrawMatrix::setProperty(int index, SkScriptValue& scriptValue) {
-    SkScalar number = scriptValue.fOperand.fScalar;
+    float number = scriptValue.fOperand.fScalar;
     switch (index) {
         case SK_PROPERTY(translate):
     //      SkScalar xy[2];
-            SkASSERT(scriptValue.fType == SkType_Array);
-            SkASSERT(scriptValue.fOperand.fArray->getType() == SkType_Float);
-            SkASSERT(scriptValue.fOperand.fArray->count() == 2);
     //      SkParse::FindScalars(scriptValue.fOperand.fString->c_str(), xy, 2);
             fMatrix.setTranslateX((*scriptValue.fOperand.fArray)[0].fScalar);
             fMatrix.setTranslateY((*scriptValue.fOperand.fArray)[1].fScalar);
@@ -260,7 +254,6 @@ bool SkDrawMatrix::setProperty(int index, SkScriptValue& scriptValue) {
             fMatrix.setTranslateY(number);
             break;
         default:
-            SkASSERT(0);
             return false;
     }
     fConcat = fMatrix;

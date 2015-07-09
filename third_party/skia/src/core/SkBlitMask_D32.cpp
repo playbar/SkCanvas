@@ -88,7 +88,6 @@ static void D32_LCD16_Proc(void* SK_RESTRICT dst, size_t dstRB,
     SkBlitMask::BlitLCD16RowProc proc = NULL;
     bool isOpaque = (0xFF == SkColorGetA(color));
     proc = SkBlitMask::BlitLCD16RowFactory(isOpaque);
-    SkASSERT(proc != NULL);
 
     if (isOpaque) {
         opaqueDst = SkPreMultiplyColor(color);
@@ -189,7 +188,6 @@ static void blit_lcd32_row(SkPMColor* SK_RESTRICT dst,
 static void D32_LCD32_Blend(void* SK_RESTRICT dst, size_t dstRB,
                             const void* SK_RESTRICT mask, size_t maskRB,
                             SkColor color, int width, int height) {
-    SkASSERT(height > 0);
     SkPMColor* SK_RESTRICT dstRow = (SkPMColor*)dst;
     const SkPMColor* SK_RESTRICT srcRow = (const SkPMColor*)mask;
 
@@ -203,7 +201,6 @@ static void D32_LCD32_Blend(void* SK_RESTRICT dst, size_t dstRB,
 static void D32_LCD32_Opaque(void* SK_RESTRICT dst, size_t dstRB,
                              const void* SK_RESTRICT mask, size_t maskRB,
                              SkColor color, int width, int height) {
-    SkASSERT(height > 0);
     SkPMColor* SK_RESTRICT dstRow = (SkPMColor*)dst;
     const SkPMColor* SK_RESTRICT srcRow = (const SkPMColor*)mask;
 
@@ -583,7 +580,6 @@ SkBlitMask::RowProc SkBlitMask::RowFactory(SkBitmap::Config config,
             if (flags & kSrcIsOpaque_RowFlag) {
                 index |= 1;
             }
-            SkASSERT((size_t)index < SK_ARRAY_COUNT(gProcs));
             return gProcs[index];
         default:
             break;

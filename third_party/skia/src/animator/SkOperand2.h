@@ -26,7 +26,7 @@ union SkOperand2 {
     void* fObject;
     size_t fReference;
     int32_t fS32;
-    SkScalar fScalar;
+    float fScalar;
     SkString* fString;
 };
 
@@ -43,12 +43,12 @@ struct SkScriptValue2 {
     SkOperand2::OpType fType : 8;
     IsConstant fIsConstant : 8;
     IsWritten fIsWritten : 8;
-    SkOpArray* getArray() { SkASSERT(fType == SkOperand2::kArray); return fOperand.fArray; }
-    void* getObject() { SkASSERT(fType == SkOperand2::kObject); return fOperand.fObject; }
-    int32_t getS32() { SkASSERT(fType == SkOperand2::kS32); return fOperand.fS32; }
-    SkScalar getScalar() { SkASSERT(fType == SkOperand2::kScalar); return fOperand.fScalar; }
-    SkString* getString() { SkASSERT(fType == SkOperand2::kString); return fOperand.fString; }
-        bool isConstant() const { return fIsConstant == kConstant; }
+    SkOpArray* getArray() { return fOperand.fArray; }
+    void* getObject() { return fOperand.fObject; }
+    int32_t getS32() { return fOperand.fS32; }
+    float getScalar() { return fOperand.fScalar; }
+    SkString* getString() { return fOperand.fString; }
+	bool isConstant() const { return fIsConstant == kConstant; }
 };
 
 #endif // SkOperand2_DEFINED

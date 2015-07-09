@@ -69,8 +69,8 @@ bool SkMeshIndices::init(SkPoint tex[], uint16_t indices[],
     // compute texture coordinates
     {
         SkPoint* tex = fTex;
-        const SkScalar dx = SkIntToScalar(texW) / rows;
-        const SkScalar dy = SkIntToScalar(texH) / cols;
+        const float dx = SkIntToScalar(texW) / rows;
+        const float dy = SkIntToScalar(texH) / cols;
         for (int y = 0; y <= cols; y++) {
             for (int x = 0; x <= rows; x++) {
                 tex->set(x*dx, y*dy);

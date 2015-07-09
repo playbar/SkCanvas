@@ -14,37 +14,24 @@
 
 class SK_API SkMergeImageFilter : public SkImageFilter {
 public:
-    virtual ~SkMergeImageFilter();
-
-    static SkMergeImageFilter* Create(SkImageFilter* first, SkImageFilter* second,
-                                      SkXfermode::Mode mode = SkXfermode::kSrcOver_Mode,
-                                      const CropRect* cropRect = NULL) {
-        return SkNEW_ARGS(SkMergeImageFilter, (first, second, mode, cropRect));
-    }
-    static SkMergeImageFilter* Create(SkImageFilter* filters[], int count,
-                                      const SkXfermode::Mode modes[] = NULL,
-                                      const CropRect* cropRect = NULL) {
-        return SkNEW_ARGS(SkMergeImageFilter, (filters, count, modes, cropRect));
-    }
-
-    SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkMergeImageFilter)
-
-protected:
-    SkMergeImageFilter(SkReadBuffer& buffer);
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
-
-    virtual bool onFilterImage(Proxy*, const SkBitmap& src, const SkMatrix&,
-                               SkBitmap* result, SkIPoint* loc) const SK_OVERRIDE;
-
-#ifdef SK_SUPPORT_LEGACY_PUBLICEFFECTCONSTRUCTORS
-public:
-#endif
     SkMergeImageFilter(SkImageFilter* first, SkImageFilter* second,
                        SkXfermode::Mode = SkXfermode::kSrcOver_Mode,
                        const CropRect* cropRect = NULL);
     SkMergeImageFilter(SkImageFilter* filters[], int count,
                        const SkXfermode::Mode modes[] = NULL,
                        const CropRect* cropRect = NULL);
+    virtual ~SkMergeImageFilter();
+
+    SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkMergeImageFilter)
+
+protected:
+    SkMergeImageFilter(SkFlattenableReadBuffer& buffer);
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
+
+    virtual bool onFilterImage(Proxy*, const SkBitmap& src, const SkMatrix&,
+                               SkBitmap* result, SkIPoint* loc) SK_OVERRIDE;
+    virtual bool onFilterBounds(const SkIRect&, const SkMatrix&, SkIRect*) SK_OVERRIDE;
+
 private:
     uint8_t*            fModes; // SkXfermode::Mode
 

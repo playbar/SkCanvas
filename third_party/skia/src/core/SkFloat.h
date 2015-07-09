@@ -58,32 +58,6 @@ public:
     friend bool operator>(const SkFloat& a, const SkFloat& b) { return Cmp(a.fPacked, b.fPacked) > 0; }
     friend bool operator>=(const SkFloat& a, const SkFloat& b) { return Cmp(a.fPacked, b.fPacked) >= 0; }
 
-#ifdef SK_DEBUG
-    static void UnitTest();
-
-    void assertEquals(float f, int tolerance = 0)
-    {
-        union {
-            float   fFloat;
-            int32_t fPacked;
-        } tmp;
-
-        tmp.fFloat = f;
-        int d = tmp.fPacked - fPacked;
-        SkASSERT(SkAbs32(d) <= tolerance);
-    }
-    float getFloat() const
-    {
-        union {
-            float   fFloat;
-            int32_t fPacked;
-        } tmp;
-
-        tmp.fPacked = fPacked;
-        return tmp.fFloat;
-    }
-#endif
-
 private:
     int32_t fPacked;
 

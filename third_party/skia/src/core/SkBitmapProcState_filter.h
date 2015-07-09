@@ -22,8 +22,6 @@ static inline void Filter_32_opaque(unsigned x, unsigned y,
                                     SkPMColor a00, SkPMColor a01,
                                     SkPMColor a10, SkPMColor a11,
                                     SkPMColor* dstColor) {
-    SkASSERT((unsigned)x <= 0xF);
-    SkASSERT((unsigned)y <= 0xF);
 
     int xy = x * y;
     static const uint32_t mask = gMask_00FF00FF; //0xFF00FF;
@@ -51,10 +49,6 @@ static inline void Filter_32_alpha(unsigned x, unsigned y,
                                    SkPMColor a10, SkPMColor a11,
                                    SkPMColor* dstColor,
                                    unsigned alphaScale) {
-    SkASSERT((unsigned)x <= 0xF);
-    SkASSERT((unsigned)y <= 0xF);
-    SkASSERT(alphaScale <= 256);
-
     int xy = x * y;
     static const uint32_t mask = gMask_00FF00FF; //0xFF00FF;
 
@@ -84,8 +78,6 @@ static inline void Filter_32_opaque(unsigned t,
                                     SkPMColor color0,
                                     SkPMColor color1,
                                     SkPMColor* dstColor) {
-    SkASSERT((unsigned)t <= 0xF);
-
     static const uint32_t mask = gMask_00FF00FF; //0x00FF00FF;
 
     int scale = 256 - 16*t;
@@ -105,9 +97,6 @@ static inline void Filter_32_alpha(unsigned t,
                                    SkPMColor color1,
                                    SkPMColor* dstColor,
                                    unsigned alphaScale) {
-    SkASSERT((unsigned)t <= 0xF);
-    SkASSERT(alphaScale <= 256);
-
     static const uint32_t mask = gMask_00FF00FF; //0x00FF00FF;
 
     int scale = 256 - 16*t;

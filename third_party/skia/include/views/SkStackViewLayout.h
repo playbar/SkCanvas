@@ -28,8 +28,8 @@ public:
     void        getMargin(SkRect*) const;
     void        setMargin(const SkRect&);
 
-    SkScalar    getSpacer() const { return fSpacer; }
-    void        setSpacer(SkScalar);
+    float    getSpacer() const { return fSpacer; }
+    void        setSpacer(float);
 
     /** Controls the posititioning in the same direction as the orientation
     */
@@ -65,7 +65,7 @@ protected:
 
 private:
     SkRect      fMargin;
-    SkScalar    fSpacer;
+    float    fSpacer;
     uint8_t     fOrient, fPack, fAlign, fRound;
 };
 

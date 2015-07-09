@@ -88,16 +88,13 @@ DEFINE_GET_MEMBER(Sk3D_Patch);
 void Sk3D_Patch::executeFunction(SkDisplayable* target, int index,
         SkTDArray<SkScriptValue>& parameters, SkDisplayTypes type,
         SkScriptValue* ) {
-    SkASSERT(target == this);
     switch (index) {
         case SK_FUNCTION(rotateDegrees):
-            SkASSERT(parameters.count() == 3);
-            SkASSERT(type == SkType_Float);
             fPatch.rotateDegrees(parameters[0].fOperand.fScalar,
                 parameters[1].fOperand.fScalar, parameters[2].fOperand.fScalar);
             break;
         default:
-            SkASSERT(0);
+			break;
     }
 }
 

@@ -88,7 +88,6 @@ public:
      * Appends an additional color effect to the color computation.
      */
     const GrEffectRef* addColorEffect(const GrEffectRef* effect, int attr0 = -1, int attr1 = -1) {
-        SkASSERT(NULL != effect);
         if (!(*effect)->willUseInputColor()) {
             fColorStages.reset();
         }
@@ -100,7 +99,6 @@ public:
      * Appends an additional coverage effect to the coverage computation.
      */
     const GrEffectRef* addCoverageEffect(const GrEffectRef* effect, int attr0 = -1, int attr1 = -1) {
-        SkASSERT(NULL != effect);
         if (!(*effect)->willUseInputColor()) {
             fCoverageStages.reset();
         }

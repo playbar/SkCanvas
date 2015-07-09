@@ -64,8 +64,8 @@ public:
      * atlas and scaleFactor, returned by getVerticalScaleFactor(), is the y-scale of the row,
      * relative to the height of the overall atlas texture.
      */
-    SkScalar getYOffset(int row) const { return SkIntToScalar(row) / fNumRows; }
-    SkScalar getVerticalScaleFactor() const { return SkIntToScalar(fDesc.fRowHeight) / fDesc.fHeight; }
+    float getYOffset(int row) const { return SkIntToScalar(row) / fNumRows; }
+    float getVerticalScaleFactor() const { return SkIntToScalar(fDesc.fRowHeight) / fDesc.fHeight; }
 
     GrContext* getContext() const { return fDesc.fContext; }
     GrTexture* getTexture() const { return fTexture; }
@@ -123,10 +123,6 @@ private:
     static bool KeyLess(const AtlasRow& lhs, const AtlasRow& rhs) {
         return lhs.fKey < rhs.fKey;
     }
-
-#ifdef SK_DEBUG
-    void validate();
-#endif
 
     /**
      * Clean up callback registered with GrContext. Allows this class to

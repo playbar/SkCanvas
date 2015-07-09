@@ -5,20 +5,19 @@
  * found in the LICENSE file.
  */
 
-#include "SkBitmapProcShader.h"
-#include "SkReadBuffer.h"
-#include "SkMallocPixelRef.h"
-#include "SkPaint.h"
+
 #include "SkScalar.h"
 #include "SkShader.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
+#include "SkPaint.h"
+#include "SkMallocPixelRef.h"
 
 SkShader::SkShader() {
     fLocalMatrix.reset();
     SkDEBUGCODE(fInSetContext = false;)
 }
 
-SkShader::SkShader(SkReadBuffer& buffer)
+SkShader::SkShader(SkFlattenableReadBuffer& buffer)
         : INHERITED(buffer) {
     if (buffer.readBool()) {
         buffer.readMatrix(&fLocalMatrix);
@@ -30,10 +29,9 @@ SkShader::SkShader(SkReadBuffer& buffer)
 }
 
 SkShader::~SkShader() {
-    SkASSERT(!fInSetContext);
 }
 
-void SkShader::flatten(SkWriteBuffer& buffer) const {
+void SkShader::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     bool hasLocalM = this->hasLocalMatrix();
     buffer.writeBool(hasLocalM);
@@ -45,11 +43,11 @@ void SkShader::flatten(SkWriteBuffer& buffer) const {
 bool SkShader::setContext(const SkBitmap& device,
                           const SkPaint& paint,
                           const SkMatrix& matrix) {
-    SkASSERT(!this->setContextHasBeenCalled());
 
     const SkMatrix* m = &matrix;
     SkMatrix        total;
 
+    fDeviceConfig = SkToU8(device.config());
     fPaintAlpha = paint.getAlpha();
     if (this->hasLocalMatrix()) {
         total.setConcat(matrix, this->getLocalMatrix());
@@ -64,7 +62,6 @@ bool SkShader::setContext(const SkBitmap& device,
 }
 
 void SkShader::endContext() {
-    SkASSERT(fInSetContext);
     SkDEBUGCODE(fInSetContext = false;)
 }
 
@@ -75,12 +72,8 @@ SkShader::ShadeProc SkShader::asAShadeProc(void** ctx) {
 #include "SkColorPriv.h"
 
 void SkShader::shadeSpan16(int x, int y, uint16_t span16[], int count) {
-    SkASSERT(span16);
-    SkASSERT(count > 0);
-    SkASSERT(this->canCallShadeSpan16());
 
     // basically, if we get here, the subclass screwed up
-    SkDEBUGFAIL("kHasSpan16 flag is set, but shadeSpan16() not implemented");
 }
 
 #define kTempColorQuadCount 6   // balance between speed (larger) and saving stack-space
@@ -93,7 +86,6 @@ void SkShader::shadeSpan16(int x, int y, uint16_t span16[], int count) {
 #endif
 
 void SkShader::shadeSpanAlpha(int x, int y, uint8_t alpha[], int count) {
-    SkASSERT(count > 0);
 
     SkPMColor   colors[kTempColorCount];
 
@@ -115,8 +107,6 @@ void SkShader::shadeSpanAlpha(int x, int y, uint8_t alpha[], int count) {
             *alpha++ = SkToU8(a3);
         } while (--quads != 0);
     }
-    SkASSERT(count < 0);
-    SkASSERT(count + kTempColorCount >= 0);
     if (count += kTempColorCount) {
         this->shadeSpan(x, y, colors, count);
 
@@ -126,24 +116,7 @@ void SkShader::shadeSpanAlpha(int x, int y, uint8_t alpha[], int count) {
             srcA += 4;
         } while (--count != 0);
     }
-#if 0
-    do {
-        int n = count;
-        if (n > kTempColorCount)
-            n = kTempColorCount;
-        SkASSERT(n > 0);
-
-        this->shadeSpan(x, y, colors, n);
-        x += n;
-        count -= n;
-
-        const uint8_t* srcA = (const uint8_t*)colors + SkU32BitShiftToByteOffset(SK_A32_SHIFT);
-        do {
-            *alpha++ = *srcA;
-            srcA += 4;
-        } while (--n != 0);
-    } while (count > 0);
-#endif
+	return;
 }
 
 SkShader::MatrixClass SkShader::ComputeMatrixClass(const SkMatrix& mat) {
@@ -176,10 +149,10 @@ GrEffectRef* SkShader::asNewEffect(GrContext*, const SkPaint&) const {
 
 SkShader* SkShader::CreateBitmapShader(const SkBitmap& src,
                                        TileMode tmx, TileMode tmy) {
-    return ::CreateBitmapShader(src, tmx, tmy, NULL);
+    return SkShader::CreateBitmapShader(src, tmx, tmy, NULL, 0);
 }
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkShader::toString(SkString* str) const {
     if (this->hasLocalMatrix()) {
         str->append(" ");
@@ -213,7 +186,7 @@ bool SkColorShader::isOpaque() const {
     return SkColorGetA(fColor) == 255;
 }
 
-SkColorShader::SkColorShader(SkReadBuffer& b) : INHERITED(b) {
+SkColorShader::SkColorShader(SkFlattenableReadBuffer& b) : INHERITED(b) {
     fFlags = 0; // computed in setContext
 
     fInheritColor = b.readBool();
@@ -223,7 +196,7 @@ SkColorShader::SkColorShader(SkReadBuffer& b) : INHERITED(b) {
     fColor = b.readColor();
 }
 
-void SkColorShader::flatten(SkWriteBuffer& buffer) const {
+void SkColorShader::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writeBool(fInheritColor);
     if (fInheritColor) {
@@ -309,7 +282,7 @@ SkShader::GradientType SkColorShader::asAGradient(GradientInfo* info) const {
     return kColor_GradientType;
 }
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkColorShader::toString(SkString* str) const {
     str->append("SkColorShader: (");
 
@@ -337,18 +310,15 @@ bool SkEmptyShader::setContext(const SkBitmap&, const SkPaint&,
                                const SkMatrix&) { return false; }
 
 void SkEmptyShader::shadeSpan(int x, int y, SkPMColor span[], int count) {
-    SkDEBUGFAIL("should never get called, since setContext() returned false");
 }
 
 void SkEmptyShader::shadeSpan16(int x, int y, uint16_t span[], int count) {
-    SkDEBUGFAIL("should never get called, since setContext() returned false");
 }
 
 void SkEmptyShader::shadeSpanAlpha(int x, int y, uint8_t alpha[], int count) {
-    SkDEBUGFAIL("should never get called, since setContext() returned false");
 }
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkEmptyShader::toString(SkString* str) const {
     str->append("SkEmptyShader: (");
 

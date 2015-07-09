@@ -35,7 +35,6 @@ static float adjust_sigma(float sigma, int *scaleFactor, int *radius) {
         sigma *= 0.5f;
     }
     *radius = static_cast<int>(ceilf(sigma * 3.0f));
-    SkASSERT(*radius <= GrConvolutionEffect::kMaxKernelRadius);
     return sigma;
 }
 
@@ -74,8 +73,8 @@ static void convolve_gaussian(GrContext* context,
     SkRect lowerSrcRect = srcRect, lowerDstRect = dstRect;
     SkRect middleSrcRect = srcRect, middleDstRect = dstRect;
     SkRect upperSrcRect = srcRect, upperDstRect = dstRect;
-    SkScalar size;
-    SkScalar rad = SkIntToScalar(radius);
+    float size;
+    float rad = SkIntToScalar(radius);
     if (direction == Gr1DKernelEffect::kX_Direction) {
         bounds[0] = SkScalarToFloat(srcRect.left()) / texture->width();
         bounds[1] = SkScalarToFloat(srcRect.right()) / texture->width();
@@ -119,7 +118,6 @@ GrTexture* GaussianBlur(GrContext* context,
                         bool cropToRect,
                         float sigmaX,
                         float sigmaY) {
-    SkASSERT(NULL != context);
 
     GrContext::AutoRenderTarget art(context);
 
@@ -139,10 +137,6 @@ GrTexture* GaussianBlur(GrContext* context,
                          static_cast<float>(scaleFactorY));
 
     GrContext::AutoClip acs(context, SkRect::MakeWH(srcRect.width(), srcRect.height()));
-
-    SkASSERT(kBGRA_8888_GrPixelConfig == srcTexture->config() ||
-             kRGBA_8888_GrPixelConfig == srcTexture->config() ||
-             kAlpha_8_GrPixelConfig == srcTexture->config());
 
     GrTextureDesc desc;
     desc.fFlags = kRenderTarget_GrTextureFlagBit | kNoStencil_GrTextureFlagBit;

@@ -16,7 +16,8 @@
 // Gr headers
 #include "GrTypes.h"
 #include "GrContext.h"
-#include "GrFontScaler.h"
+#include "GrGlyph.h"
+#include "GrKey.h"
 
 // skia headers
 #include "SkBitmap.h"
@@ -50,7 +51,6 @@ GR_STATIC_ASSERT((int)kIDA_GrBlendCoeff  == (int)SkXfermode::kIDA_Coeff);
  *  kUnknown_PixelConfig if the conversion cannot be done.
  */
 GrPixelConfig SkBitmapConfig2GrPixelConfig(SkBitmap::Config);
-GrPixelConfig SkImageInfo2GrPixelConfig(SkColorType, SkAlphaType);
 bool GrPixelConfig2ColorType(GrPixelConfig, SkColorType*);
 
 static inline GrColor SkColor2GrColor(SkColor c) {
@@ -75,7 +75,8 @@ void GrUnlockAndUnrefCachedBitmapTexture(GrTexture*);
 
 class SkGlyphCache;
 
-class SkGrFontScaler : public GrFontScaler {
+class SkGrFontScaler : public SkRefCnt 
+{
 public:
     explicit SkGrFontScaler(SkGlyphCache* strike);
     virtual ~SkGrFontScaler();

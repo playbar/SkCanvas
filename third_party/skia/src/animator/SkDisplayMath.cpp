@@ -20,7 +20,7 @@ enum SkDisplayMath_Properties {
     SK_PROPERTY(SQRT2)
 };
 
-const SkScalar SkDisplayMath::gConstants[] = {
+const float SkDisplayMath::gConstants[] = {
     2.718281828f,   // E
     2.302585093f,   // LN10
     0.693147181f,   // LN2
@@ -133,11 +133,10 @@ void SkDisplayMath::executeFunction(SkDisplayable* target, int index,
         SkScriptValue* scriptValue) {
     if (scriptValue == NULL)
         return;
-    SkASSERT(target == this);
     SkScriptValue* array = parameters.begin();
     SkScriptValue* end = parameters.end();
-    SkScalar input = parameters[0].fOperand.fScalar;
-    SkScalar scalarResult;
+    float input = parameters[0].fOperand.fScalar;
+    float scalarResult;
     switch (index) {
         case SK_FUNCTION(abs):
             scalarResult = SkScalarAbs(input);
@@ -199,15 +198,12 @@ void SkDisplayMath::executeFunction(SkDisplayable* target, int index,
             scalarResult = SkScalarSin(input);
             break;
         case SK_FUNCTION(sqrt): {
-            SkASSERT(parameters.count() == 1);
-            SkASSERT(type == SkType_Float);
             scalarResult = SkScalarSqrt(input);
             } break;
         case SK_FUNCTION(tan):
             scalarResult = SkScalarTan(input);
             break;
         default:
-            SkASSERT(0);
             scalarResult = SK_ScalarNaN;
     }
     scriptValue->fOperand.fScalar = scalarResult;
@@ -224,6 +220,5 @@ bool SkDisplayMath::getProperty(int index, SkScriptValue* value) const {
         value->fType = SkType_Float;
         return true;
     }
-    SkASSERT(0);
     return false;
 }

@@ -70,7 +70,6 @@ const SkBitmap* SkARGB32_Blitter::justAnOpaqueColor(uint32_t* value) {
 #endif
 
 void SkARGB32_Blitter::blitH(int x, int y, int width) {
-    SkASSERT(x >= 0 && y >= 0 && x + width <= fDevice.width());
 
     uint32_t*   device = fDevice.getAddr32(x, y);
     fColor32Proc(device, device, width, fPMColor);
@@ -88,7 +87,6 @@ void SkARGB32_Blitter::blitAntiH(int x, int y, const SkAlpha antialias[],
 
     for (;;) {
         int count = runs[0];
-        SkASSERT(count >= 0);
         if (count <= 0) {
             return;
         }
@@ -148,8 +146,6 @@ void SkARGB32_Blitter::blitAntiH(int x, int y, const SkAlpha antialias[],
 #include "SkBlitBWMaskTemplate.h"
 
 void SkARGB32_Blitter::blitMask(const SkMask& mask, const SkIRect& clip) {
-    SkASSERT(mask.fBounds.contains(clip));
-    SkASSERT(fSrcA != 0xFF);
 
     if (fSrcA == 0) {
         return;
@@ -168,8 +164,6 @@ void SkARGB32_Blitter::blitMask(const SkMask& mask, const SkIRect& clip) {
 
 void SkARGB32_Opaque_Blitter::blitMask(const SkMask& mask,
                                        const SkIRect& clip) {
-    SkASSERT(mask.fBounds.contains(clip));
-
     if (SkBlitMask::BlitColor(fDevice, mask, clip, fColor)) {
         return;
     }
@@ -204,7 +198,6 @@ void SkARGB32_Blitter::blitV(int x, int y, int height, SkAlpha alpha) {
 }
 
 void SkARGB32_Blitter::blitRect(int x, int y, int width, int height) {
-    SkASSERT(x >= 0 && y >= 0 && x + width <= fDevice.width() && y + height <= fDevice.height());
 
     if (fSrcA == 0) {
         return;
@@ -237,7 +230,6 @@ void SkARGB32_Black_Blitter::blitAntiH(int x, int y, const SkAlpha antialias[],
 
     for (;;) {
         int count = runs[0];
-        SkASSERT(count >= 0);
         if (count <= 0) {
             return;
         }
@@ -314,7 +306,6 @@ SkARGB32_Shader_Blitter::~SkARGB32_Shader_Blitter() {
 }
 
 void SkARGB32_Shader_Blitter::blitH(int x, int y, int width) {
-    SkASSERT(x >= 0 && y >= 0 && x + width <= fDevice.width());
 
     uint32_t*   device = fDevice.getAddr32(x, y);
 
@@ -332,8 +323,6 @@ void SkARGB32_Shader_Blitter::blitH(int x, int y, int width) {
 }
 
 void SkARGB32_Shader_Blitter::blitRect(int x, int y, int width, int height) {
-    SkASSERT(x >= 0 && y >= 0 &&
-             x + width <= fDevice.width() && y + height <= fDevice.height());
 
     uint32_t*   device = fDevice.getAddr32(x, y);
     size_t      deviceRB = fDevice.rowBytes();
@@ -489,8 +478,6 @@ void SkARGB32_Shader_Blitter::blitMask(const SkMask& mask, const SkIRect& clip) 
         return;
     }
 
-    SkASSERT(mask.fBounds.contains(clip));
-
     SkBlitMask::RowProc proc = NULL;
     if (!fXfermode) {
         unsigned flags = 0;
@@ -519,7 +506,6 @@ void SkARGB32_Shader_Blitter::blitMask(const SkMask& mask, const SkIRect& clip) 
     SkPMColor* span = fBuffer;
 
     if (fXfermode) {
-        SkASSERT(SkMask::kA8_Format == mask.fFormat);
         SkXfermode* xfer = fXfermode;
         do {
             shader->shadeSpan(x, y, span, width);
@@ -540,7 +526,6 @@ void SkARGB32_Shader_Blitter::blitMask(const SkMask& mask, const SkIRect& clip) 
 }
 
 void SkARGB32_Shader_Blitter::blitV(int x, int y, int height, SkAlpha alpha) {
-    SkASSERT(x >= 0 && y >= 0 && y + height <= fDevice.height());
 
     uint32_t*   device = fDevice.getAddr32(x, y);
     size_t      deviceRB = fDevice.rowBytes();

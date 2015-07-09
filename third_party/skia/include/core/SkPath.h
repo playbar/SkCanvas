@@ -1,12 +1,3 @@
-
-/*
- * Copyright 2006 The Android Open Source Project
- *
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-
 #ifndef SkPath_DEFINED
 #define SkPath_DEFINED
 
@@ -22,11 +13,6 @@ class SkAutoPathBoundsUpdate;
 class SkString;
 class SkRRect;
 
-/** \class SkPath
-
-    The SkPath class encapsulates compound (multiple contour) geometric paths
-    consisting of straight line segments, quadratic curves, and cubic curves.
-*/
 class SK_API SkPath {
 public:
     SK_DECLARE_INST_COUNT_ROOT(SkPath);
@@ -41,60 +27,30 @@ public:
         return !(a == b);
     }
 
-    enum FillType {
-        /** Specifies that "inside" is computed by a non-zero sum of signed
-            edge crossings
-        */
+    enum FillType 
+	{
         kWinding_FillType,
-        /** Specifies that "inside" is computed by an odd number of edge
-            crossings
-        */
         kEvenOdd_FillType,
-        /** Same as Winding, but draws outside of the path, rather than inside
-        */
         kInverseWinding_FillType,
-        /** Same as EvenOdd, but draws outside of the path, rather than inside
-         */
         kInverseEvenOdd_FillType
     };
 
-    /** Return the path's fill type. This is used to define how "inside" is
-        computed. The default value is kWinding_FillType.
-
-        @return the path's fill type
-    */
     FillType getFillType() const { return (FillType)fFillType; }
-
-    /** Set the path's fill type. This is used to define how "inside" is
-        computed. The default value is kWinding_FillType.
-
-        @param ft The new fill type for this path
-    */
     void setFillType(FillType ft) {
         fFillType = SkToU8(ft);
     }
-
-    /** Returns true if the filltype is one of the Inverse variants */
     bool isInverseFillType() const { return IsInverseFillType((FillType)fFillType); }
 
-    /**
-     *  Toggle between inverse and normal filltypes. This reverse the return
-     *  value of isInverseFillType()
-     */
     void toggleInverseFillType() {
         fFillType ^= 2;
     }
 
-    enum Convexity {
+    enum Convexity 
+	{
         kUnknown_Convexity,
         kConvex_Convexity,
         kConcave_Convexity
     };
-
-    /**
-     *  Return the path's convexity, as stored in the path. If it is currently unknown,
-     *  then this function will attempt to compute the convexity (and cache the result).
-     */
     Convexity getConvexity() const {
         if (kUnknown_Convexity != fConvexity) {
             return static_cast<Convexity>(fConvexity);
@@ -102,13 +58,6 @@ public:
             return this->internalGetConvexity();
         }
     }
-
-    /**
-     *  Return the currently cached value for convexity, even if that is set to
-     *  kUnknown_Convexity. Note: getConvexity() will automatically call
-     *  ComputeConvexity and cache its return value if the current setting is
-     *  kUnknown.
-     */
     Convexity getConvexityOrUnknown() const { return (Convexity)fConvexity; }
 
     /**
@@ -171,7 +120,6 @@ public:
         @return true if the path is empty (contains no lines or curves)
     */
     bool isEmpty() const {
-        SkDEBUGCODE(this->validate();)
         return 0 == fPathRef->countVerbs();
     }
 
@@ -180,7 +128,6 @@ public:
      *  are no infinities and no NaNs.
      */
     bool isFinite() const {
-        SkDEBUGCODE(this->validate();)
         return fPathRef->isFinite();
     }
 
@@ -307,7 +254,7 @@ public:
         @param x    The x-coordinate of the start of a new contour
         @param y    The y-coordinate of the start of a new contour
     */
-    void moveTo(SkScalar x, SkScalar y);
+    void moveTo(float x, float y);
 
     /** Set the beginning of the next contour to the point
 
@@ -326,7 +273,7 @@ public:
         @param dy   The amount to add to the y-coordinate of the end of the
                     previous contour, to specify the start of a new contour
     */
-    void rMoveTo(SkScalar dx, SkScalar dy);
+    void rMoveTo(float dx, float dy);
 
     /** Add a line from the last point to the specified point (x,y). If no
         moveTo() call has been made for this contour, the first point is
@@ -335,7 +282,7 @@ public:
         @param x    The x-coordinate of the end of a line
         @param y    The y-coordinate of the end of a line
     */
-    void lineTo(SkScalar x, SkScalar y);
+    void lineTo(float x, float y);
 
     /** Add a line from the last point to the specified point. If no moveTo()
         call has been made for this contour, the first point is automatically
@@ -356,7 +303,7 @@ public:
         @param dy   The amount to add to the y-coordinate of the previous point
                     on this contour, to specify a line
     */
-    void rLineTo(SkScalar dx, SkScalar dy);
+    void rLineTo(float dx, float dy);
 
     /** Add a quadratic bezier from the last point, approaching control point
         (x1,y1), and ending at (x2,y2). If no moveTo() call has been made for
@@ -367,7 +314,7 @@ public:
         @param x2   The x-coordinate of the end point on a quadratic curve
         @param y2   The y-coordinate of the end point on a quadratic curve
     */
-    void quadTo(SkScalar x1, SkScalar y1, SkScalar x2, SkScalar y2);
+    void quadTo(float x1, float y1, float x2, float y2);
 
     /** Add a quadratic bezier from the last point, approaching control point
         p1, and ending at p2. If no moveTo() call has been made for this
@@ -393,15 +340,15 @@ public:
         @param dy2   The amount to add to the y-coordinate of the last point on
                      this contour, to specify the end point of a quadratic curve
     */
-    void rQuadTo(SkScalar dx1, SkScalar dy1, SkScalar dx2, SkScalar dy2);
+    void rQuadTo(float dx1, float dy1, float dx2, float dy2);
 
-    void conicTo(SkScalar x1, SkScalar y1, SkScalar x2, SkScalar y2,
-                 SkScalar w);
-    void conicTo(const SkPoint& p1, const SkPoint& p2, SkScalar w) {
+    void conicTo(float x1, float y1, float x2, float y2,
+                 float w);
+    void conicTo(const SkPoint& p1, const SkPoint& p2, float w) {
         this->conicTo(p1.fX, p1.fY, p2.fX, p2.fY, w);
     }
-    void rConicTo(SkScalar dx1, SkScalar dy1, SkScalar dx2, SkScalar dy2,
-                  SkScalar w);
+    void rConicTo(float dx1, float dy1, float dx2, float dy2,
+                  float w);
 
     /** Add a cubic bezier from the last point, approaching control points
         (x1,y1) and (x2,y2), and ending at (x3,y3). If no moveTo() call has been
@@ -414,8 +361,8 @@ public:
         @param x3   The x-coordinate of the end point on a cubic curve
         @param y3   The y-coordinate of the end point on a cubic curve
     */
-    void cubicTo(SkScalar x1, SkScalar y1, SkScalar x2, SkScalar y2,
-                 SkScalar x3, SkScalar y3);
+    void cubicTo(float x1, float y1, float x2, float y2,
+                 float x3, float y3);
 
     /** Add a cubic bezier from the last point, approaching control points p1
         and p2, and ending at p3. If no moveTo() call has been made for this
@@ -446,8 +393,8 @@ public:
         @param dy3   The amount to add to the y-coordinate of the last point on
                      this contour, to specify the end point of a cubic curve
     */
-    void rCubicTo(SkScalar x1, SkScalar y1, SkScalar x2, SkScalar y2,
-                  SkScalar x3, SkScalar y3);
+    void rCubicTo(float x1, float y1, float x2, float y2,
+                  float x3, float y3);
 
     /** Append the specified arc to the path as a new contour. If the start of
         the path is different from the path's current last point, then an
@@ -461,19 +408,19 @@ public:
                           treated mod 360.
         @param forceMoveTo If true, always begin a new contour with the arc
     */
-    void arcTo(const SkRect& oval, SkScalar startAngle, SkScalar sweepAngle,
+    void arcTo(const SkRect& oval, float startAngle, float sweepAngle,
                bool forceMoveTo);
 
     /** Append a line and arc to the current path. This is the same as the
         PostScript call "arct".
     */
-    void arcTo(SkScalar x1, SkScalar y1, SkScalar x2, SkScalar y2,
-               SkScalar radius);
+    void arcTo(float x1, float y1, float x2, float y2,
+               float radius);
 
     /** Append a line and arc to the current path. This is the same as the
         PostScript call "arct".
     */
-    void arcTo(const SkPoint p1, const SkPoint p2, SkScalar radius) {
+    void arcTo(const SkPoint p1, const SkPoint p2, float radius) {
         this->arcTo(p1.fX, p1.fY, p2.fX, p2.fY, radius);
     }
 
@@ -555,25 +502,6 @@ public:
         return computedDir == dir;
     }
 
-    enum PathAsRect {
-        /** The path can not draw the same as its bounds. */
-        kNone_PathAsRect,
-        /** The path draws the same as its bounds when filled. */
-        kFill_PathAsRect,
-        /** The path draws the same as its bounds when stroked or filled. */
-        kStroke_PathAsRect,
-    };
-
-    /** Returns kFill_PathAsRect or kStroke_PathAsRect if drawing the path (either filled or
-        stroked) will be equivalent to filling/stroking the path's bounding rect. If
-        either is true, and direction is not null, sets the direction of the contour. If the
-        path is not drawn equivalent to a rect, returns kNone_PathAsRect and ignores direction.
-
-        @param direction If not null, set to the contour's direction when it is drawn as a rect
-        @return the path's PathAsRect type
-     */
-    PathAsRect asRect(Direction* direction = NULL) const;
-
     /** Returns true if the path specifies a rectangle. If so, and if isClosed is
         not null, set isClosed to true if the path is closed. Also, if returning true
         and direction is not null, return the rect direction. If the path does not
@@ -620,7 +548,7 @@ public:
      *  @param dir  The direction to wind the rectangle's contour. Cannot be
      *              kUnknown_Direction.
      */
-    void addRect(SkScalar left, SkScalar top, SkScalar right, SkScalar bottom,
+    void addRect(float left, float top, float right, float bottom,
                  Direction dir = kCW_Direction);
 
     /**
@@ -644,7 +572,7 @@ public:
      *  @param dir  The direction to wind the circle's contour. Cannot be
      *              kUnknown_Direction.
      */
-    void addCircle(SkScalar x, SkScalar y, SkScalar radius,
+    void addCircle(float x, float y, float radius,
                    Direction dir = kCW_Direction);
 
     /** Add the specified arc to the path as a new contour.
@@ -653,7 +581,7 @@ public:
         @param startAngle Starting angle (in degrees) where the arc begins
         @param sweepAngle Sweep angle (in degrees) measured clockwise
     */
-    void addArc(const SkRect& oval, SkScalar startAngle, SkScalar sweepAngle);
+    void addArc(const SkRect& oval, float startAngle, float sweepAngle);
 
     /**
      *  Add a closed round-rectangle contour to the path
@@ -663,7 +591,7 @@ public:
      *  @param dir  The direction to wind the rectangle's contour. Cannot be
      *              kUnknown_Direction.
      */
-    void addRoundRect(const SkRect& rect, SkScalar rx, SkScalar ry,
+    void addRoundRect(const SkRect& rect, float rx, float ry,
                       Direction dir = kCW_Direction);
 
     /**
@@ -678,7 +606,7 @@ public:
      *       SkRRect radii (i.e., either radii at a corner being 0 implies a
      *       sqaure corner and oversized radii are proportionally scaled down).
      */
-    void addRoundRect(const SkRect& rect, const SkScalar radii[],
+    void addRoundRect(const SkRect& rect, const float radii[],
                       Direction dir = kCW_Direction);
 
     /**
@@ -702,41 +630,25 @@ public:
      */
     void addPoly(const SkPoint pts[], int count, bool close);
 
-    enum AddPathMode {
-        /** Source path contours are added as new contours.
-        */
-        kAppend_AddPathMode,
-        /** Path is added by extending the last contour of the destination path
-            with the first contour of the source path. If the last contour of
-            the destination path is closed, then it will not be extended.
-            Instead, the start of source path will be extended by a straight
-            line to the end point of the destination path.
-        */
-        kExtend_AddPathMode
-    };
-
     /** Add a copy of src to the path, offset by (dx,dy)
         @param src  The path to add as a new contour
         @param dx   The amount to translate the path in X as it is added
         @param dx   The amount to translate the path in Y as it is added
     */
-    void addPath(const SkPath& src, SkScalar dx, SkScalar dy,
-                 AddPathMode mode = kAppend_AddPathMode);
+    void addPath(const SkPath& src, float dx, float dy);
 
     /** Add a copy of src to the path
     */
-    void addPath(const SkPath& src, AddPathMode mode = kAppend_AddPathMode) {
+    void addPath(const SkPath& src) {
         SkMatrix m;
         m.reset();
-        this->addPath(src, m, mode);
+        this->addPath(src, m);
     }
 
     /** Add a copy of src to the path, transformed by matrix
         @param src  The path to add as a new contour
-        @param matrix  Transform applied to src
-        @param mode  Determines how path is added
     */
-    void addPath(const SkPath& src, const SkMatrix& matrix, AddPathMode mode = kAppend_AddPathMode);
+    void addPath(const SkPath& src, const SkMatrix& matrix);
 
     /**
      *  Same as addPath(), but reverses the src input
@@ -749,14 +661,14 @@ public:
         @param dy   The amount in the Y direction to offset the entire path
         @param dst  The translated path is written here
     */
-    void offset(SkScalar dx, SkScalar dy, SkPath* dst) const;
+    void offset(float dx, float dy, SkPath* dst) const;
 
     /** Offset the path by (dx,dy), returning true on success
 
         @param dx   The amount in the X direction to offset the entire path
         @param dy   The amount in the Y direction to offset the entire path
     */
-    void offset(SkScalar dx, SkScalar dy) {
+    void offset(float dx, float dy) {
         this->offset(dx, dy, this);
     }
 
@@ -790,7 +702,7 @@ public:
         @param x    The new x-coordinate for the last point
         @param y    The new y-coordinate for the last point
     */
-    void setLastPt(SkScalar x, SkScalar y);
+    void setLastPt(float x, float y);
 
     /** Set the last point on the path. If no points have been added, moveTo(p)
         is automatically called.
@@ -860,7 +772,7 @@ public:
          *  Return the weight for the current conic. Only valid if the current
          *  segment return by next() was a conic.
          */
-        SkScalar conicWeight() const { return *fConicWeights; }
+        float conicWeight() const { return *fConicWeights; }
 
         /** If next() returns kLine_Verb, then this query returns true if the
             line was the result of a close() command (i.e. the end point is the
@@ -881,7 +793,7 @@ public:
         const SkPoint*  fPts;
         const uint8_t*  fVerbs;
         const uint8_t*  fVerbStop;
-        const SkScalar* fConicWeights;
+        const float* fConicWeights;
         SkPoint         fMoveTo;
         SkPoint         fLastPt;
         SkBool8         fForceClose;
@@ -903,55 +815,25 @@ public:
         RawIter(const SkPath&);
 
         void setPath(const SkPath&);
-
-        /** Return the next verb in this iteration of the path. When all
-            segments have been visited, return kDone_Verb.
-
-            @param  pts The points representing the current verb and/or segment
-                        This must not be NULL.
-            @return The verb for the current segment
-        */
         Verb next(SkPoint pts[4]);
 
-        SkScalar conicWeight() const { return *fConicWeights; }
+        float conicWeight() const { return *fConicWeights; }
 
     private:
         const SkPoint*  fPts;
         const uint8_t*  fVerbs;
         const uint8_t*  fVerbStop;
-        const SkScalar* fConicWeights;
+        const float* fConicWeights;
         SkPoint         fMoveTo;
         SkPoint         fLastPt;
     };
 
-    /**
-     *  Returns true if the point { x, y } is contained by the path, taking into
-     *  account the FillType.
-     */
-    bool contains(SkScalar x, SkScalar y) const;
+    bool contains(float x, float y) const;
 
     void dump(bool forceClose, const char title[] = NULL) const;
     void dump() const;
-
-    /**
-     *  Write the path to the buffer, and return the number of bytes written.
-     *  If buffer is NULL, it still returns the number of bytes.
-     */
     size_t writeToMemory(void* buffer) const;
-    /**
-     * Initializes the path from the buffer
-     *
-     * @param buffer Memory to read from
-     * @param length Amount of memory available in the buffer
-     * @return number of bytes read (must be a multiple of 4) or
-     *         0 if there was not enough memory available
-     */
     size_t readFromMemory(const void* buffer, size_t length);
-
-    /** Returns a non-zero, globally unique value corresponding to the set of verbs
-        and points in the path (but not the fill type [except on Android skbug.com/1762]).
-        Each time the path is modified, a different generation ID will be returned.
-    */
     uint32_t getGenerationID() const;
 
 #ifdef SK_BUILD_FOR_ANDROID
@@ -962,18 +844,22 @@ public:
     static const int kPathRefGenIDBitCnt = 32;
 #endif
 
-    SkDEBUGCODE(void validate() const;)
-
 private:
     enum SerializationOffsets {
-        // 1 free bit at 29
+#ifndef DELETE_THIS_CODE_WHEN_SKPS_ARE_REBUILT_AT_V16_AND_ALL_OTHER_INSTANCES_TOO
+        kNewFormat_SerializationShift = 29, // requires 1 bit
+#endif
         kUnused1_SerializationShift = 28,    // 1 free bit
         kDirection_SerializationShift = 26, // requires 2 bits
         kUnused2_SerializationShift = 25,    // 1 free bit
-        // 1 free bit at 24
+#ifndef DELETE_THIS_CODE_WHEN_SKPS_ARE_REBUILT_AT_V16_AND_ALL_OTHER_INSTANCES_TOO
+        kOldIsOval_SerializationShift = 24,    // requires 1 bit
+#endif
         kConvexity_SerializationShift = 16, // requires 8 bits
         kFillType_SerializationShift = 8,   // requires 8 bits
-        // 8 free bits at 0
+#ifndef DELETE_THIS_CODE_WHEN_SKPS_ARE_REBUILT_AT_V16_AND_ALL_OTHER_INSTANCES_TOO
+        kOldSegmentMask_SerializationShift = 0 // requires 4 bits
+#endif
     };
 
     SkAutoTUnref<SkPathRef> fPathRef;
@@ -1023,22 +909,19 @@ private:
     bool isRectContour(bool allowPartial, int* currVerb, const SkPoint** pts,
                        bool* isClosed, Direction* direction) const;
 
-    /** Returns if the path can return a bound at no cost (true) or will have to
-        perform some computation (false).
-     */
     bool hasComputedBounds() const {
-        SkDEBUGCODE(this->validate();)
         return fPathRef->hasComputedBounds();
     }
 
-
-    // 'rect' needs to be sorted
     void setBounds(const SkRect& rect) {
         SkPathRef::Editor ed(&fPathRef);
 
         ed.setBounds(rect);
     }
 
+#ifndef DELETE_THIS_CODE_WHEN_SKPS_ARE_REBUILT_AT_V16_AND_ALL_OTHER_INSTANCES_TOO
+    friend class SkPathRef;     // just for SerializationOffsets
+#endif
     friend class SkAutoPathBoundsUpdate;
     friend class SkAutoDisableOvalCheck;
     friend class SkAutoDisableDirectionCheck;

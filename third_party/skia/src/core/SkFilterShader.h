@@ -24,12 +24,12 @@ public:
     virtual void shadeSpan(int x, int y, SkPMColor[], int count) SK_OVERRIDE;
     virtual void shadeSpan16(int x, int y, uint16_t[], int count) SK_OVERRIDE;
 
-    SK_TO_STRING_OVERRIDE()
+    SK_DEVELOPER_TO_STRING()
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkFilterShader)
 
 protected:
-    SkFilterShader(SkReadBuffer& );
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
+    SkFilterShader(SkFlattenableReadBuffer& );
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
 
 private:
     SkShader*       fShader;

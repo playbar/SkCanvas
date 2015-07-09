@@ -14,12 +14,17 @@
 #include "SkDevice.h"
 #include "SkXfermode.h"
 
+static SkBitmap make_noconfig_bm(int width, int height) {
+    SkBitmap bm;
+    bm.setConfig(SkBitmap::kNo_Config, width, height);
+    return bm;
+}
+
 SkDebugCanvas::SkDebugCanvas(int width, int height)
-        : INHERITED(width, height)
+        : INHERITED(make_noconfig_bm(width, height))
         , fWidth(width)
         , fHeight(height)
         , fFilter(false)
-        , fMegaVizMode(false)
         , fIndex(0)
         , fOverdrawViz(false)
         , fOverdrawFilter(NULL)
@@ -40,12 +45,7 @@ SkDebugCanvas::SkDebugCanvas(int width, int height)
     SkIRect largeIRect = SkIRect::MakeLargest();
     largeIRect.inset(1024, 1024);
     SkRect large = SkRect::Make(largeIRect);
-#ifdef SK_DEBUG
-    large.roundOut(&largeIRect);
-    SkASSERT(!largeIRect.isEmpty());
-#endif
-    // call the base class' version to avoid adding a draw command
-    this->INHERITED::onClipRect(large, SkRegion::kReplace_Op, kHard_ClipEdgeStyle);
+    INHERITED::clipRect(large, SkRegion::kReplace_Op, false);
 }
 
 SkDebugCanvas::~SkDebugCanvas() {
@@ -70,7 +70,8 @@ void SkDebugCanvas::applyUserTransform(SkCanvas* canvas) {
 
 int SkDebugCanvas::getCommandAtPoint(int x, int y, int index) {
     SkBitmap bitmap;
-    bitmap.allocPixels(SkImageInfo::MakeN32Premul(1, 1));
+    bitmap.setConfig(SkBitmap::kARGB_8888_Config, 1, 1);
+    bitmap.allocPixels();
 
     SkCanvas canvas(bitmap);
     canvas.translate(SkIntToScalar(-x), SkIntToScalar(-y));
@@ -120,7 +121,7 @@ static SkPMColor OverdrawXferModeProc(SkPMColor src, SkPMColor dst) {
 class SkOverdrawFilter : public SkDrawFilter {
 public:
     SkOverdrawFilter() {
-        fXferMode = SkProcXfermode::Create(OverdrawXferModeProc);
+        fXferMode = new SkProcXfermode(OverdrawXferModeProc);
     }
 
     virtual ~SkOverdrawFilter() {
@@ -162,74 +163,7 @@ private:
     typedef SkDrawFilter INHERITED;
 };
 
-class SkDebugClipVisitor : public SkCanvas::ClipVisitor {
-public:
-    SkDebugClipVisitor(SkCanvas* canvas) : fCanvas(canvas) {}
-
-    virtual void clipRect(const SkRect& r, SkRegion::Op, bool doAA) SK_OVERRIDE {
-        SkPaint p;
-        p.setColor(SK_ColorRED);
-        p.setStyle(SkPaint::kStroke_Style);
-        p.setAntiAlias(doAA);
-        fCanvas->drawRect(r, p);
-    }
-    virtual void clipRRect(const SkRRect& rr, SkRegion::Op, bool doAA) SK_OVERRIDE {
-        SkPaint p;
-        p.setColor(SK_ColorGREEN);
-        p.setStyle(SkPaint::kStroke_Style);
-        p.setAntiAlias(doAA);
-        fCanvas->drawRRect(rr, p);
-    }
-    virtual void clipPath(const SkPath& path, SkRegion::Op, bool doAA) SK_OVERRIDE {
-        SkPaint p;
-        p.setColor(SK_ColorBLUE);
-        p.setStyle(SkPaint::kStroke_Style);
-        p.setAntiAlias(doAA);
-        fCanvas->drawPath(path, p);
-    }
-
-protected:
-    SkCanvas* fCanvas;
-
-private:
-    typedef SkCanvas::ClipVisitor INHERITED;
-};
-
-// set up the saveLayer commands so that the active ones
-// return true in their 'active' method
-void SkDebugCanvas::markActiveCommands(int index) {
-    fActiveLayers.rewind();
-    fActiveCulls.rewind();
-
-    for (int i = 0; i < fCommandVector.count(); ++i) {
-        fCommandVector[i]->setActive(false);
-    }
-
-    for (int i = 0; i < index; ++i) {
-        SkDrawCommand::Action result = fCommandVector[i]->action();
-        if (SkDrawCommand::kPushLayer_Action == result) {
-            fActiveLayers.push(fCommandVector[i]);
-        } else if (SkDrawCommand::kPopLayer_Action == result) {
-            fActiveLayers.pop();
-        } else if (SkDrawCommand::kPushCull_Action == result) {
-            fActiveCulls.push(fCommandVector[i]);
-        } else if (SkDrawCommand::kPopCull_Action == result) {
-            fActiveCulls.pop();
-        }
-    }
-
-    for (int i = 0; i < fActiveLayers.count(); ++i) {
-        fActiveLayers[i]->setActive(true);
-    }
-
-    for (int i = 0; i < fActiveCulls.count(); ++i) {
-        fActiveCulls[i]->setActive(true);
-    }
-}
-
 void SkDebugCanvas::drawTo(SkCanvas* canvas, int index) {
-    SkASSERT(!fCommandVector.isEmpty());
-    SkASSERT(index < fCommandVector.count());
     int i = 0;
 
     // This only works assuming the canvas and device are the same ones that
@@ -237,7 +171,7 @@ void SkDebugCanvas::drawTo(SkCanvas* canvas, int index) {
     // and restores.
     // The visibility filter also requires a full re-draw - otherwise we can
     // end up drawing the filter repeatedly.
-    if (fIndex < index && !fFilter && !fMegaVizMode) {
+    if (fIndex < index && !fFilter) {
         i = fIndex + 1;
     } else {
         for (int j = 0; j < fOutstandingSaveCount; j++) {
@@ -276,10 +210,6 @@ void SkDebugCanvas::drawTo(SkCanvas* canvas, int index) {
         canvas->setDrawFilter(NULL);
     }
 
-    if (fMegaVizMode) {
-        this->markActiveCommands(index);
-    }
-
     for (; i <= index; i++) {
         if (i == index && fFilter) {
             SkPaint p;
@@ -296,68 +226,34 @@ void SkDebugCanvas::drawTo(SkCanvas* canvas, int index) {
         }
 
         if (fCommandVector[i]->isVisible()) {
-            if (fMegaVizMode && fCommandVector[i]->active()) {
-                // "active" commands execute their visualization behaviors:
-                //     All active saveLayers get replaced with saves so all draws go to the
-                //     visible canvas.
-                //     All active culls draw their cull box
-                fCommandVector[i]->vizExecute(canvas);
-            } else {
-                fCommandVector[i]->execute(canvas);
-            }
-
+            fCommandVector[i]->execute(canvas);
             fCommandVector[i]->trackSaveState(&fOutstandingSaveCount);
         }
     }
-
-    if (fMegaVizMode) {
-        SkRect r = SkRect::MakeWH(SkIntToScalar(fWidth), SkIntToScalar(fHeight));
-        r.outset(SK_Scalar1, SK_Scalar1);
-
-        canvas->save();
-        // nuke the CTM
-        canvas->setMatrix(SkMatrix::I());
-        // turn off clipping
-        canvas->clipRect(r, SkRegion::kReplace_Op);
-
-        // visualize existing clips
-        SkDebugClipVisitor visitor(canvas);
-
-        canvas->replayClips(&visitor);
-
-        canvas->restore();
-    }
     fMatrix = canvas->getTotalMatrix();
-    if (!canvas->getClipDeviceBounds(&fClip)) {
-        fClip.setEmpty();
-    }
+    fClip = canvas->getTotalClip().getBounds();
     fIndex = index;
 }
 
 void SkDebugCanvas::deleteDrawCommandAt(int index) {
-    SkASSERT(index < fCommandVector.count());
     delete fCommandVector[index];
     fCommandVector.remove(index);
 }
 
 SkDrawCommand* SkDebugCanvas::getDrawCommandAt(int index) {
-    SkASSERT(index < fCommandVector.count());
     return fCommandVector[index];
 }
 
 void SkDebugCanvas::setDrawCommandAt(int index, SkDrawCommand* command) {
-    SkASSERT(index < fCommandVector.count());
     delete fCommandVector[index];
     fCommandVector[index] = command;
 }
 
 SkTDArray<SkString*>* SkDebugCanvas::getCommandInfo(int index) {
-    SkASSERT(index < fCommandVector.count());
     return fCommandVector[index]->Info();
 }
 
 bool SkDebugCanvas::getDrawCommandVisibilityAt(int index) {
-    SkASSERT(index < fCommandVector.count());
     return fCommandVector[index]->isVisible();
 }
 
@@ -380,6 +276,10 @@ SkTArray<SkString>* SkDebugCanvas::getDrawCommandsAsStrings() const {
     return commandString;
 }
 
+void SkDebugCanvas::toggleFilter(bool toggle) {
+    fFilter = toggle;
+}
+
 void SkDebugCanvas::overrideTexFiltering(bool overrideTexFiltering, SkPaint::FilterLevel level) {
     if (NULL == fTexOverrideFilter) {
         fTexOverrideFilter = new SkTexOverrideFilter;
@@ -393,29 +293,33 @@ void SkDebugCanvas::clear(SkColor color) {
     addDrawCommand(new SkClearCommand(color));
 }
 
-void SkDebugCanvas::onClipPath(const SkPath& path, SkRegion::Op op, ClipEdgeStyle edgeStyle) {
-    this->addDrawCommand(new SkClipPathCommand(path, op, kSoft_ClipEdgeStyle == edgeStyle));
+bool SkDebugCanvas::clipPath(const SkPath& path, SkRegion::Op op, bool doAA) {
+    addDrawCommand(new SkClipPathCommand(path, op, doAA));
+    return true;
 }
 
-void SkDebugCanvas::onClipRect(const SkRect& rect, SkRegion::Op op, ClipEdgeStyle edgeStyle) {
-    this->addDrawCommand(new SkClipRectCommand(rect, op, kSoft_ClipEdgeStyle == edgeStyle));
+bool SkDebugCanvas::clipRect(const SkRect& rect, SkRegion::Op op, bool doAA) {
+    addDrawCommand(new SkClipRectCommand(rect, op, doAA));
+    return true;
 }
 
-void SkDebugCanvas::onClipRRect(const SkRRect& rrect, SkRegion::Op op, ClipEdgeStyle edgeStyle) {
-    this->addDrawCommand(new SkClipRRectCommand(rrect, op, kSoft_ClipEdgeStyle == edgeStyle));
+bool SkDebugCanvas::clipRRect(const SkRRect& rrect, SkRegion::Op op, bool doAA) {
+    addDrawCommand(new SkClipRRectCommand(rrect, op, doAA));
+    return true;
 }
 
-void SkDebugCanvas::onClipRegion(const SkRegion& region, SkRegion::Op op) {
-    this->addDrawCommand(new SkClipRegionCommand(region, op));
+bool SkDebugCanvas::clipRegion(const SkRegion& region, SkRegion::Op op) {
+    addDrawCommand(new SkClipRegionCommand(region, op));
+    return true;
 }
 
-void SkDebugCanvas::didConcat(const SkMatrix& matrix) {
+bool SkDebugCanvas::concat(const SkMatrix& matrix) {
     addDrawCommand(new SkConcatCommand(matrix));
-    this->INHERITED::didConcat(matrix);
+    return true;
 }
 
-void SkDebugCanvas::drawBitmap(const SkBitmap& bitmap, SkScalar left,
-                               SkScalar top, const SkPaint* paint = NULL) {
+void SkDebugCanvas::drawBitmap(const SkBitmap& bitmap, float left,
+                               float top, const SkPaint* paint = NULL) {
     addDrawCommand(new SkDrawBitmapCommand(bitmap, left, top, paint));
 }
 
@@ -479,7 +383,7 @@ void SkDebugCanvas::drawPosText(const void* text, size_t byteLength,
 }
 
 void SkDebugCanvas::drawPosTextH(const void* text, size_t byteLength,
-        const SkScalar xpos[], SkScalar constY, const SkPaint& paint) {
+        const float xpos[], float constY, const SkPaint& paint) {
     addDrawCommand(
         new SkDrawPosTextHCommand(text, byteLength, xpos, constY, paint));
 }
@@ -493,18 +397,13 @@ void SkDebugCanvas::drawRRect(const SkRRect& rrect, const SkPaint& paint) {
     addDrawCommand(new SkDrawRRectCommand(rrect, paint));
 }
 
-void SkDebugCanvas::onDrawDRRect(const SkRRect& outer, const SkRRect& inner,
-                                 const SkPaint& paint) {
-    this->addDrawCommand(new SkDrawDRRectCommand(outer, inner, paint));
-}
-
 void SkDebugCanvas::drawSprite(const SkBitmap& bitmap, int left, int top,
                                const SkPaint* paint = NULL) {
     addDrawCommand(new SkDrawSpriteCommand(bitmap, left, top, paint));
 }
 
-void SkDebugCanvas::drawText(const void* text, size_t byteLength, SkScalar x,
-        SkScalar y, const SkPaint& paint) {
+void SkDebugCanvas::drawText(const void* text, size_t byteLength, float x,
+        float y, const SkPaint& paint) {
     addDrawCommand(new SkDrawTextCommand(text, byteLength, x, y, paint));
 }
 
@@ -522,58 +421,45 @@ void SkDebugCanvas::drawVertices(VertexMode vmode, int vertexCount,
                    texs, colors, NULL, indices, indexCount, paint));
 }
 
-void SkDebugCanvas::onPushCull(const SkRect& cullRect) {
-    this->addDrawCommand(new SkPushCullCommand(cullRect));
+void SkDebugCanvas::restore() {
+    addDrawCommand(new SkRestoreCommand());
 }
 
-void SkDebugCanvas::onPopCull() {
-    this->addDrawCommand(new SkPopCullCommand());
-}
-
-void SkDebugCanvas::willRestore() {
-    this->addDrawCommand(new SkRestoreCommand());
-    this->INHERITED::willRestore();
-}
-
-void SkDebugCanvas::didRotate(SkScalar degrees) {
+bool SkDebugCanvas::rotate(float degrees) {
     addDrawCommand(new SkRotateCommand(degrees));
-    this->INHERITED::didRotate(degrees);
+    return true;
 }
 
-void SkDebugCanvas::willSave(SaveFlags flags) {
-    this->addDrawCommand(new SkSaveCommand(flags));
-    this->INHERITED::willSave(flags);
+int SkDebugCanvas::save(SaveFlags flags) {
+    addDrawCommand(new SkSaveCommand(flags));
+    return true;
 }
 
-SkCanvas::SaveLayerStrategy SkDebugCanvas::willSaveLayer(const SkRect* bounds, const SkPaint* paint,
-                                                         SaveFlags flags) {
-    this->addDrawCommand(new SkSaveLayerCommand(bounds, paint, flags));
-    this->INHERITED::willSaveLayer(bounds, paint, flags);
-    // No need for a full layer.
-    return kNoLayer_SaveLayerStrategy;
+int SkDebugCanvas::saveLayer(const SkRect* bounds, const SkPaint* paint,
+        SaveFlags flags) {
+    addDrawCommand(new SkSaveLayerCommand(bounds, paint, flags));
+    return true;
 }
 
-void SkDebugCanvas::didScale(SkScalar sx, SkScalar sy) {
+bool SkDebugCanvas::scale(float sx, float sy) {
     addDrawCommand(new SkScaleCommand(sx, sy));
-    this->INHERITED::didScale(sx, sy);
+    return true;
 }
 
-void SkDebugCanvas::didSetMatrix(const SkMatrix& matrix) {
+void SkDebugCanvas::setMatrix(const SkMatrix& matrix) {
     addDrawCommand(new SkSetMatrixCommand(matrix));
-    this->INHERITED::didSetMatrix(matrix);
 }
 
-void SkDebugCanvas::didSkew(SkScalar sx, SkScalar sy) {
+bool SkDebugCanvas::skew(float sx, float sy) {
     addDrawCommand(new SkSkewCommand(sx, sy));
-    this->INHERITED::didSkew(sx, sy);
+    return true;
 }
 
-void SkDebugCanvas::didTranslate(SkScalar dx, SkScalar dy) {
+bool SkDebugCanvas::translate(float dx, float dy) {
     addDrawCommand(new SkTranslateCommand(dx, dy));
-    this->INHERITED::didTranslate(dx, dy);
+    return true;
 }
 
 void SkDebugCanvas::toggleCommand(int index, bool toggle) {
-    SkASSERT(index < fCommandVector.count());
     fCommandVector[index]->setVisible(toggle);
 }

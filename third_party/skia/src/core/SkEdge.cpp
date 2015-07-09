@@ -83,19 +83,11 @@ int SkEdge::setLine(const SkPoint& p0, const SkPoint& p1, const SkIRect* clip,
 // called from a curve subclass
 int SkEdge::updateLine(SkFixed x0, SkFixed y0, SkFixed x1, SkFixed y1)
 {
-    SkASSERT(fWinding == 1 || fWinding == -1);
-    SkASSERT(fCurveCount != 0);
-//    SkASSERT(fCurveShift != 0);
-
     y0 >>= 10;
     y1 >>= 10;
 
-    SkASSERT(y0 <= y1);
-
     int top = SkFDot6Round(y0);
     int bot = SkFDot6Round(y1);
-
-//  SkASSERT(top >= fFirstY);
 
     // are we a zero-height line?
     if (top == bot)
@@ -119,12 +111,9 @@ void SkEdge::chopLineWithClip(const SkIRect& clip)
 {
     int top = fFirstY;
 
-    SkASSERT(top < clip.fBottom);
-
     // clip the line to the top
     if (top < clip.fTop)
     {
-        SkASSERT(fLastY >= clip.fTop);
         fX += fDX * (clip.fTop - top);
         fFirstY = clip.fTop;
     }
@@ -187,8 +176,6 @@ int SkQuadraticEdge::setQuadratic(const SkPoint pts[3], int shift)
         SkTSwap(y0, y2);
         winding = -1;
     }
-    SkASSERT(y0 <= y1 && y1 <= y2);
-
     int top = SkFDot6Round(y0);
     int bot = SkFDot6Round(y2);
 
@@ -201,7 +188,6 @@ int SkQuadraticEdge::setQuadratic(const SkPoint pts[3], int shift)
         SkFDot6 dx = ((x1 << 1) - x0 - x2) >> 2;
         SkFDot6 dy = ((y1 << 1) - y0 - y2) >> 2;
         shift = diff_to_shift(dx, dy);
-        SkASSERT(shift >= 0);
     }
     // need at least 1 subdivision for our bias trick
     if (shift == 0) {
@@ -265,8 +251,6 @@ int SkQuadraticEdge::updateQuadratic()
     SkFixed newx, newy;
     int     shift = fCurveShift;
 
-    SkASSERT(count > 0);
-
     do {
         if (--count > 0)
         {
@@ -296,7 +280,6 @@ int SkQuadraticEdge::updateQuadratic()
 /////////////////////////////////////////////////////////////////////////
 
 static inline int SkFDot6UpShift(SkFDot6 x, int upShift) {
-    SkASSERT((x << upShift >> upShift) == x);
     return x << upShift;
 }
 
@@ -364,7 +347,6 @@ int SkCubicEdge::setCubic(const SkPoint pts[4], const SkIRect* clip, int shift)
         shift = diff_to_shift(dx, dy) + 1;
     }
     // need at least 1 subdivision for our bias trick
-    SkASSERT(shift > 0);
     if (shift > MAX_COEFF_SHIFT) {
         shift = MAX_COEFF_SHIFT;
     }
@@ -428,8 +410,6 @@ int SkCubicEdge::updateCubic()
     SkFixed newx, newy;
     const int ddshift = fCurveShift;
     const int dshift = fCubicDShift;
-
-    SkASSERT(count < 0);
 
     do {
         if (++count < 0)

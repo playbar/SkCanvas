@@ -25,9 +25,9 @@ public:
     enum { kUnresolvableFBOID = 0 };
 
     struct Desc {
-        GrGLuint         fRTFBOID;
-        GrGLuint         fTexFBOID;
-        GrGLuint         fMSColorRenderbufferID;
+        GLuint         fRTFBOID;
+        GLuint         fTexFBOID;
+        GLuint         fMSColorRenderbufferID;
         bool             fIsWrapped;
         GrPixelConfig    fConfig;
         int              fSampleCnt;
@@ -56,15 +56,15 @@ public:
     // texture/render target is multisampled, and different IDs when
     // it is.
     // FBO ID used to render into
-    GrGLuint renderFBOID() const { return fRTFBOID; }
+    GLuint renderFBOID() const { return fRTFBOID; }
     // FBO ID that has texture ID attached.
-    GrGLuint textureFBOID() const { return fTexFBOID; }
+    GLuint textureFBOID() const { return fTexFBOID; }
 
     // override of GrRenderTarget
-    virtual GrBackendObject getRenderTargetHandle() const {
+    virtual intptr_t getRenderTargetHandle() const {
         return this->renderFBOID();
     }
-    virtual GrBackendObject getRenderTargetResolvedHandle() const {
+    virtual intptr_t getRenderTargetResolvedHandle() const {
         return this->textureFBOID();
     }
     virtual ResolveType getResolveType() const {
@@ -86,10 +86,10 @@ protected:
     virtual void onRelease() SK_OVERRIDE;
 
 private:
-    GrGLuint      fRTFBOID;
-    GrGLuint      fTexFBOID;
+    GLuint      fRTFBOID;
+    GLuint      fTexFBOID;
 
-    GrGLuint      fMSColorRenderbufferID;
+    GLuint      fMSColorRenderbufferID;
 
     // when we switch to this render target we want to set the viewport to
     // only render to to content area (as opposed to the whole allocation) and

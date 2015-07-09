@@ -13,7 +13,6 @@
 // cause memory leaks.
 int SkForceLinking(bool doNotPassTrue) {
     if (doNotPassTrue) {
-        SkASSERT(false);
         CreateJPEGImageDecoder();
         CreateWEBPImageDecoder();
         CreateBMPImageDecoder();

@@ -31,9 +31,9 @@ class SkRasterizer;
 struct SkScalerContextRec {
     uint32_t    fOrigFontID;
     uint32_t    fFontID;
-    SkScalar    fTextSize, fPreScaleX, fPreSkewX;
-    SkScalar    fPost2x2[2][2];
-    SkScalar    fFrameWidth, fMiterLimit;
+    float    fTextSize, fPreScaleX, fPreSkewX;
+    float    fPost2x2[2][2];
+    float    fFrameWidth, fMiterLimit;
 
     //These describe the parameters to create (uniquely identify) the pre-blend.
     uint32_t    fLumBits;
@@ -42,27 +42,24 @@ struct SkScalerContextRec {
     uint8_t     fContrast;    //0.8+1, [0.0, 1.0] artificial contrast
     uint8_t     fReservedAlign;
 
-    SkScalar getDeviceGamma() const {
+    float getDeviceGamma() const {
         return SkIntToScalar(fDeviceGamma) / (1 << 6);
     }
-    void setDeviceGamma(SkScalar dg) {
-        SkASSERT(0 <= dg && dg < SkIntToScalar(4));
+    void setDeviceGamma(float dg) {
         fDeviceGamma = SkScalarFloorToInt(dg * (1 << 6));
     }
 
-    SkScalar getPaintGamma() const {
+    float getPaintGamma() const {
         return SkIntToScalar(fPaintGamma) / (1 << 6);
     }
-    void setPaintGamma(SkScalar pg) {
-        SkASSERT(0 <= pg && pg < SkIntToScalar(4));
+    void setPaintGamma(float pg) {
         fPaintGamma = SkScalarFloorToInt(pg * (1 << 6));
     }
 
-    SkScalar getContrast() const {
+    float getContrast() const {
         return SkIntToScalar(fContrast) / ((1 << 8) - 1);
     }
-    void setContrast(SkScalar c) {
-        SkASSERT(0 <= c && c <= SK_Scalar1);
+    void setContrast(float c) {
         fContrast = SkScalarRoundToInt(c * ((1 << 8) - 1));
     }
 
@@ -122,7 +119,7 @@ public:
         kEmbeddedBitmapText_Flag  = 0x0004,
         kEmbolden_Flag            = 0x0008,
         kSubpixelPositioning_Flag = 0x0010,
-        kForceAutohinting_Flag    = 0x0020,  // Use auto instead of bytcode hinting if hinting.
+        kAutohinting_Flag         = 0x0020,
         kVertical_Flag            = 0x0040,
 
         // together, these two flags resulting in a two bit value which matches

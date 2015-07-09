@@ -116,27 +116,29 @@
 
 // Are we in GCC?
 #ifndef SK_CPU_SSE_LEVEL
-    // These checks must be done in descending order to ensure we set the highest
-    // available SSE level.
-    #if defined(__SSSE3__)
-        #define SK_CPU_SSE_LEVEL    SK_CPU_SSE_LEVEL_SSSE3
+    #if defined(__SSE2__)
+        #define SK_CPU_SSE_LEVEL    SK_CPU_SSE_LEVEL_SSE2
     #elif defined(__SSE3__)
         #define SK_CPU_SSE_LEVEL    SK_CPU_SSE_LEVEL_SSE3
-    #elif defined(__SSE2__)
-        #define SK_CPU_SSE_LEVEL    SK_CPU_SSE_LEVEL_SSE2
+    #elif defined(__SSSE3__)
+        #define SK_CPU_SSE_LEVEL    SK_CPU_SSE_LEVEL_SSSE3
     #endif
 #endif
 
 // Are we in VisualStudio?
 #ifndef SK_CPU_SSE_LEVEL
-    // These checks must be done in descending order to ensure we set the highest
-    // available SSE level.
-    #if defined (_M_IX86_FP)
-        #if _M_IX86_FP >= 2
-            #define SK_CPU_SSE_LEVEL    SK_CPU_SSE_LEVEL_SSE2
-        #elif _M_IX86_FP == 1
-            #define SK_CPU_SSE_LEVEL    SK_CPU_SSE_LEVEL_SSE1
-        #endif
+    #if _M_IX86_FP == 1
+        #define SK_CPU_SSE_LEVEL    SK_CPU_SSE_LEVEL_SSE1
+    #elif _M_IX86_FP >= 2
+        #define SK_CPU_SSE_LEVEL    SK_CPU_SSE_LEVEL_SSE2
+    #endif
+#endif
+
+// 64bit intel guarantees at least SSE2
+#if defined(__x86_64__) || defined(_WIN64)
+    #if !defined(SK_CPU_SSE_LEVEL) || (SK_CPU_SSE_LEVEL < SK_CPU_SSE_LEVEL_SSE2)
+        #undef SK_CPU_SSE_LEVEL
+        #define SK_CPU_SSE_LEVEL    SK_CPU_SSE_LEVEL_SSE2
     #endif
 #endif
 
@@ -180,7 +182,7 @@
     #define SKIA_IMPLEMENTATION 0
 #endif
 
-//#if defined(SKIA_DLL)
+#if defined(SKIA_DLL)
     #if defined(WIN32)
         #if SKIA_IMPLEMENTATION
             #define SK_API __declspec(dllexport)
@@ -190,9 +192,9 @@
     #else
         #define SK_API __attribute__((visibility("default")))
     #endif
-//#else
-//    #define SK_API
-//#endif
+#else
+    #define SK_API
+#endif
 
 //////////////////////////////////////////////////////////////////////
 

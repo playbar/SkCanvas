@@ -12,28 +12,25 @@
 #include "SkMaskGamma.h"
 
 class SkLinearColorSpaceLuminance : public SkColorSpaceLuminance {
-    virtual SkScalar toLuma(SkScalar SkDEBUGCODE(gamma), SkScalar luminance) const SK_OVERRIDE {
-        SkASSERT(SK_Scalar1 == gamma);
+    virtual float toLuma(float SkDEBUGCODE(gamma), float luminance) const SK_OVERRIDE {
         return luminance;
     }
-    virtual SkScalar fromLuma(SkScalar SkDEBUGCODE(gamma), SkScalar luma) const SK_OVERRIDE {
-        SkASSERT(SK_Scalar1 == gamma);
+    virtual float fromLuma(float SkDEBUGCODE(gamma), float luma) const SK_OVERRIDE {
         return luma;
     }
 };
 
 class SkGammaColorSpaceLuminance : public SkColorSpaceLuminance {
-    virtual SkScalar toLuma(SkScalar gamma, SkScalar luminance) const SK_OVERRIDE {
+    virtual float toLuma(float gamma, float luminance) const SK_OVERRIDE {
         return SkScalarPow(luminance, gamma);
     }
-    virtual SkScalar fromLuma(SkScalar gamma, SkScalar luma) const SK_OVERRIDE {
+    virtual float fromLuma(float gamma, float luma) const SK_OVERRIDE {
         return SkScalarPow(luma, SkScalarInvert(gamma));
     }
 };
 
 class SkSRGBColorSpaceLuminance : public SkColorSpaceLuminance {
-    virtual SkScalar toLuma(SkScalar SkDEBUGCODE(gamma), SkScalar luminance) const SK_OVERRIDE {
-        SkASSERT(0 == gamma);
+    virtual float toLuma(float SkDEBUGCODE(gamma), float luminance) const SK_OVERRIDE {
         //The magic numbers are derived from the sRGB specification.
         //See http://www.color.org/chardata/rgb/srgb.xalter .
         if (luminance <= 0.04045f) {
@@ -42,8 +39,7 @@ class SkSRGBColorSpaceLuminance : public SkColorSpaceLuminance {
         return SkScalarPow((luminance + 0.055f) / 1.055f,
                         2.4f);
     }
-    virtual SkScalar fromLuma(SkScalar SkDEBUGCODE(gamma), SkScalar luma) const SK_OVERRIDE {
-        SkASSERT(0 == gamma);
+    virtual float fromLuma(float SkDEBUGCODE(gamma), float luma) const SK_OVERRIDE {
         //The magic numbers are derived from the sRGB specification.
         //See http://www.color.org/chardata/rgb/srgb.xalter .
         if (luma <= 0.0031308f) {
@@ -54,7 +50,7 @@ class SkSRGBColorSpaceLuminance : public SkColorSpaceLuminance {
     }
 };
 
-/*static*/ const SkColorSpaceLuminance& SkColorSpaceLuminance::Fetch(SkScalar gamma) {
+/*static*/ const SkColorSpaceLuminance& SkColorSpaceLuminance::Fetch(float gamma) {
     static SkLinearColorSpaceLuminance gSkLinearColorSpaceLuminance;
     static SkGammaColorSpaceLuminance gSkGammaColorSpaceLuminance;
     static SkSRGBColorSpaceLuminance gSkSRGBColorSpaceLuminance;
@@ -72,9 +68,9 @@ static float apply_contrast(float srca, float contrast) {
     return srca + ((1.0f - srca) * contrast * srca);
 }
 
-void SkTMaskGamma_build_correcting_lut(uint8_t table[256], U8CPU srcI, SkScalar contrast,
-                                       const SkColorSpaceLuminance& srcConvert, SkScalar srcGamma,
-                                       const SkColorSpaceLuminance& dstConvert, SkScalar dstGamma) {
+void SkTMaskGamma_build_correcting_lut(uint8_t table[256], U8CPU srcI, float contrast,
+                                       const SkColorSpaceLuminance& srcConvert, float srcGamma,
+                                       const SkColorSpaceLuminance& dstConvert, float dstGamma) {
     const float src = (float)srcI / 255.0f;
     const float linSrc = srcConvert.toLuma(srcGamma, src);
     //Guess at the dst. The perceptual inverse provides smaller visual
@@ -106,17 +102,14 @@ void SkTMaskGamma_build_correcting_lut(uint8_t table[256], U8CPU srcI, SkScalar 
             // See http://code.google.com/p/chromium/issues/detail?id=146466
             float rawSrca = ii / 255.0f;
             float srca = apply_contrast(rawSrca, adjustedContrast);
-            SkASSERT(srca <= 1.0f);
             float dsta = 1.0f - srca;
 
             //Calculate the output we want.
             float linOut = (linSrc * srca + dsta * linDst);
-            SkASSERT(linOut <= 1.0f);
             float out = dstConvert.fromLuma(dstGamma, linOut);
 
             //Undo what the blit blend will do.
             float result = (out - dst) / (src - dst);
-            SkASSERT(sk_float_round2int(255.0f * result) <= 255);
 
             table[i] = SkToU8(sk_float_round2int(255.0f * result));
         }

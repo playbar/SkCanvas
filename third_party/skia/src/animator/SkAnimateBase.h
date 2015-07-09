@@ -38,7 +38,7 @@ public:
     SkOperand* getValues() { return fValues.begin(); }
     SkDisplayTypes getValuesType() { return fValues.getType(); }
     virtual void onEndElement(SkAnimateMaker& );
-    void packARGB(SkScalar [], int count, SkTDOperandArray* );
+    void packARGB(float [], int count, SkTDOperandArray* );
     virtual void refresh(SkAnimateMaker& );
     void setChanged(bool changed) { fChanged = changed; }
     void setHasEndEvent() { fHasEndEvent = true; }
@@ -55,7 +55,7 @@ protected:
     SkString formula;
     SkString from;
     SkString lval;
-    SkScalar repeat;
+    float repeat;
     SkString target;    // temporary; once target is known, this is reset
     SkString to;
     SkApply* fApply;

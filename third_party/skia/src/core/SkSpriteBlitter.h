@@ -10,11 +10,8 @@
 #ifndef SkSpriteBlitter_DEFINED
 #define SkSpriteBlitter_DEFINED
 
-#include "SkBitmap.h"
-#include "SkBitmapProcShader.h"
 #include "SkBlitter.h"
-#include "SkShader.h"
-#include "SkSmallAllocator.h"
+#include "SkBitmap.h"
 
 class SkPaint;
 
@@ -35,9 +32,9 @@ public:
 #endif
 
     static SkSpriteBlitter* ChooseD16(const SkBitmap& source, const SkPaint&,
-                                      SkTBlitterAllocator*);
+                                      void* storage, size_t storageSize);
     static SkSpriteBlitter* ChooseD32(const SkBitmap& source, const SkPaint&,
-                                      SkTBlitterAllocator*);
+                                      void* storage, size_t storageSize);
 
 protected:
     const SkBitmap* fDevice;

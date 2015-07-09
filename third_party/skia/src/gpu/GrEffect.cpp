@@ -60,7 +60,6 @@ int32_t GrBackendEffectFactory::fCurrEffectClassID = GrBackendEffectFactory::kIl
 ///////////////////////////////////////////////////////////////////////////////
 
 GrEffectRef::~GrEffectRef() {
-    SkASSERT(this->unique());
     fEffect->EffectRefDestroyed();
     fEffect->unref();
 }
@@ -76,7 +75,6 @@ void GrEffectRef::operator delete(void* target) {
 ///////////////////////////////////////////////////////////////////////////////
 
 GrEffect::~GrEffect() {
-    SkASSERT(NULL == fEffectRef);
 }
 
 const char* GrEffect::name() const {
@@ -99,16 +97,3 @@ void* GrEffect::operator new(size_t size) {
 void GrEffect::operator delete(void* target) {
     GrEffect_Globals::GetTLS()->release(target);
 }
-
-#ifdef SK_DEBUG
-void GrEffect::assertEquality(const GrEffect& other) const {
-    SkASSERT(this->numTransforms() == other.numTransforms());
-    for (int i = 0; i < this->numTransforms(); ++i) {
-        SkASSERT(this->coordTransform(i) == other.coordTransform(i));
-    }
-    SkASSERT(this->numTextures() == other.numTextures());
-    for (int i = 0; i < this->numTextures(); ++i) {
-        SkASSERT(this->textureAccess(i) == other.textureAccess(i));
-    }
-}
-#endif

@@ -18,22 +18,20 @@
  */
 class SK_API SkTableMaskFilter : public SkMaskFilter {
 public:
+    SkTableMaskFilter();
+    SkTableMaskFilter(const uint8_t table[256]);
     virtual ~SkTableMaskFilter();
 
     /** Utility that sets the gamma table
      */
-    static void MakeGammaTable(uint8_t table[256], SkScalar gamma);
+    static void MakeGammaTable(uint8_t table[256], float gamma);
 
     /** Utility that creates a clipping table: clamps values below min to 0
         and above max to 255, and rescales the remaining into 0..255
      */
     static void MakeClipTable(uint8_t table[256], uint8_t min, uint8_t max);
 
-    static SkTableMaskFilter* Create(const uint8_t table[256]) {
-        return SkNEW_ARGS(SkTableMaskFilter, (table));
-    }
-
-    static SkTableMaskFilter* CreateGamma(SkScalar gamma) {
+    static SkTableMaskFilter* CreateGamma(float gamma) {
         uint8_t table[256];
         MakeGammaTable(table, gamma);
         return SkNEW_ARGS(SkTableMaskFilter, (table));
@@ -49,18 +47,12 @@ public:
     virtual bool filterMask(SkMask*, const SkMask&, const SkMatrix&,
                             SkIPoint*) const SK_OVERRIDE;
 
-    SK_TO_STRING_OVERRIDE()
+    SkDEVCODE(virtual void toString(SkString* str) const SK_OVERRIDE;)
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkTableMaskFilter)
 
 protected:
-    SkTableMaskFilter(SkReadBuffer& rb);
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
-
-#ifdef SK_SUPPORT_LEGACY_PUBLICEFFECTCONSTRUCTORS
-public:
-#endif
-    SkTableMaskFilter();
-    SkTableMaskFilter(const uint8_t table[256]);
+    SkTableMaskFilter(SkFlattenableReadBuffer& rb);
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
 
 private:
     uint8_t fTable[256];

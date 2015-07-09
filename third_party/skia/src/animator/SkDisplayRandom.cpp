@@ -45,21 +45,19 @@ void SkDisplayRandom::dump(SkAnimateMaker* maker) {
 bool SkDisplayRandom::getProperty(int index, SkScriptValue* value) const {
     switch(index) {
         case SK_PROPERTY(random): {
-            SkScalar random = fRandom.nextUScalar1();
-            SkScalar relativeT = SkUnitCubicInterp(random, SK_Scalar1 - blend, 0, 0, SK_Scalar1 - blend);
+            float random = fRandom.nextUScalar1();
+            float relativeT = SkUnitCubicInterp(random, SK_Scalar1 - blend, 0, 0, SK_Scalar1 - blend);
             value->fOperand.fScalar = min + SkScalarMul(max - min, relativeT);
             value->fType = SkType_Float;
             return true;
         }
         default:
-            SkASSERT(0);
+			break;
     }
     return false;
 }
 
 bool SkDisplayRandom::setProperty(int index, SkScriptValue& value) {
-    SkASSERT(index == SK_PROPERTY(seed));
-    SkASSERT(value.fType == SkType_Int);
     fRandom.setSeed(value.fOperand.fS32);
     return true;
 }

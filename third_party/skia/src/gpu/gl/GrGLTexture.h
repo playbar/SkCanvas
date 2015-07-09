@@ -15,28 +15,29 @@
 /**
  * A ref counted tex id that deletes the texture in its destructor.
  */
-class GrGLTexID : public SkRefCnt {
+class GrGLTexID : public SkRefCnt 
+{
 public:
     SK_DECLARE_INST_COUNT(GrGLTexID)
 
-    GrGLTexID(const GrGLInterface* gl, GrGLuint texID, bool isWrapped)
-        : fGL(gl)
-        , fTexID(texID)
-        , fIsWrapped(isWrapped) {
+    GrGLTexID( GLuint texID, bool isWrapped):
+        fTexID(texID), fIsWrapped(isWrapped) 
+	{
     }
 
-    virtual ~GrGLTexID() {
-        if (0 != fTexID && !fIsWrapped) {
-            GR_GL_CALL(fGL, DeleteTextures(1, &fTexID));
+    virtual ~GrGLTexID()
+	{
+        if (0 != fTexID && !fIsWrapped) 
+		{
+            glDeleteTextures(1, &fTexID);
         }
     }
 
     void abandon() { fTexID = 0; }
-    GrGLuint id() const { return fTexID; }
+    GLuint id() const { return fTexID; }
 
 private:
-    const GrGLInterface* fGL;
-    GrGLuint             fTexID;
+    GLuint             fTexID;
     bool                 fIsWrapped;
 
     typedef SkRefCnt INHERITED;
@@ -45,20 +46,21 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 
-class GrGLTexture : public GrTexture {
+class GrGLTexture : public GrTexture 
+{
 
 public:
     struct TexParams {
-        GrGLenum fMinFilter;
-        GrGLenum fMagFilter;
-        GrGLenum fWrapS;
-        GrGLenum fWrapT;
-        GrGLenum fSwizzleRGBA[4];
+        GLenum fMinFilter;
+        GLenum fMagFilter;
+        GLenum fWrapS;
+        GLenum fWrapT;
+        GLenum fSwizzleRGBA[4];
         void invalidate() { memset(this, 0xff, sizeof(TexParams)); }
     };
 
     struct Desc : public GrTextureDesc {
-        GrGLuint        fTextureID;
+        GLuint        fTextureID;
         bool            fIsWrapped;
     };
 
@@ -73,7 +75,7 @@ public:
 
     virtual ~GrGLTexture() { this->release(); }
 
-    virtual GrBackendObject getTextureHandle() const SK_OVERRIDE;
+    virtual intptr_t getTextureHandle() const SK_OVERRIDE;
 
     virtual void invalidateCachedState() SK_OVERRIDE { fTexParams.invalidate(); }
 
@@ -89,7 +91,7 @@ public:
         fTexParamsTimestamp = timestamp;
     }
 
-    GrGLuint textureID() const { return (NULL != fTexIDObj.get()) ? fTexIDObj->id() : 0; }
+    GLuint textureID() const { return (NULL != fTexIDObj.get()) ? fTexIDObj->id() : 0; }
 
 protected:
     // overrides of GrTexture

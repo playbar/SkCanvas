@@ -25,7 +25,6 @@ SkDisplayable* SkMatrixPart::getParent() const {
 }
 
 bool SkMatrixPart::setParent(SkDisplayable* parent) {
-    SkASSERT(parent != NULL);
     if (parent->isMatrix() == false)
         return true;
     fMatrix = (SkDrawMatrix*) parent;
@@ -211,7 +210,6 @@ const SkMemberInfo* SkRectToRect::preferredChild(SkDisplayTypes ) {
     if (source == NULL)
         return getMember("source"); // !!! cwap! need to refer to member through enum like kScope instead
     else {
-        SkASSERT(destination == NULL);
         return getMember("destination");
     }
 }
@@ -235,8 +233,6 @@ SkPolyToPoly::~SkPolyToPoly() {
 }
 
 bool SkPolyToPoly::add() {
-    SkASSERT(source);
-    SkASSERT(destination);
     SkPoint src[4];
     SkPoint dst[4];
     SkPath& sourcePath = source->getPath();
@@ -276,8 +272,6 @@ void SkPolyToPoly::dump(SkAnimateMaker* maker) {
 #endif
 
 void SkPolyToPoly::onEndElement(SkAnimateMaker& ) {
-    SkASSERT(source);
-    SkASSERT(destination);
     if (source->childHasID() || destination->childHasID())
         fMatrix->setChildHasID();
 }
@@ -286,7 +280,6 @@ const SkMemberInfo* SkPolyToPoly::preferredChild(SkDisplayTypes ) {
     if (source == NULL)
         return getMember("source"); // !!! cwap! need to refer to member through enum like kScope instead
     else {
-        SkASSERT(destination == NULL);
         return getMember("destination");
     }
 }

@@ -69,7 +69,7 @@ public:
          * Helper functions for predefined types
          */
         void setBool(bool value) const;             //For Switch
-        void setScalar(SkScalar value) const;       //For Slider
+        void setScalar(float value) const;       //For Slider
         void setInt(int value) const;               //For List
         void setTriState(TriState value) const;     //For Tristate
         void setString(const char value[]) const;   //For TextField
@@ -131,8 +131,8 @@ public:
     int appendList(const char label[], const char slotName[],
                    SkEventSinkID target, int defaultIndex, const char[] ...);
     int appendSlider(const char label[], const char slotName[],
-                     SkEventSinkID target, SkScalar min, SkScalar max,
-                     SkScalar defaultValue);
+                     SkEventSinkID target, float min, float max,
+                     float defaultValue);
     int appendSwitch(const char label[], const char slotName[],
                      SkEventSinkID target, bool defaultState = false);
     int appendTriState(const char label[], const char slotName[],
@@ -151,8 +151,8 @@ public:
      * extracted using FindListItemCount
      */
     static bool FindListItems(const SkEvent& evt, SkString items[]);
-    static bool FindSliderMin(const SkEvent& evt, SkScalar* min);
-    static bool FindSliderMax(const SkEvent& evt, SkScalar* max);
+    static bool FindSliderMin(const SkEvent& evt, float* min);
+    static bool FindSliderMax(const SkEvent& evt, float* max);
 
     /**
      * Returns true if an action with the given label is found, false otherwise
@@ -165,7 +165,7 @@ public:
      * mismatch or slotName is incorrect
      */
     static bool FindListIndex(const SkEvent& evt, const char slotName[], int* value);
-    static bool FindSliderValue(const SkEvent& evt, const char slotName[], SkScalar* value);
+    static bool FindSliderValue(const SkEvent& evt, const char slotName[], float* value);
     static bool FindSwitchState(const SkEvent& evt, const char slotName[], bool* value);
     static bool FindTriState(const SkEvent& evt, const char slotName[], TriState* value);
     static bool FindText(const SkEvent& evt, const char slotName[], SkString* value);

@@ -43,11 +43,6 @@ bool SkDisplayable::addChild(SkAnimateMaker& , SkDisplayable* child) {
     return false;
 }
 
-//void SkDisplayable::apply(SkAnimateMaker& , const SkMemberInfo* ,
-//      SkDisplayable* , SkScalar [], int count) {
-//  SkASSERT(0);
-//}
-
 bool SkDisplayable::canContainDependents() const {
     return false;
 }
@@ -70,7 +65,6 @@ SkDisplayable* SkDisplayable::contains(const SkString& ) {
 SkDisplayable* SkDisplayable::deepCopy(SkAnimateMaker* maker) {
     SkDisplayTypes type = getType();
     if (type == SkType_Unknown) {
-        SkASSERT(0);
         return NULL;
     }
     SkDisplayable* copy = SkDisplayType::CreateInstance(maker, type);
@@ -395,7 +389,6 @@ void SkDisplayable::enableBounder() {
 
 void SkDisplayable::executeFunction(SkDisplayable* , int index,
         SkTDArray<SkScriptValue>& , SkDisplayTypes, SkScriptValue*  ) {
-    SkASSERT(0);
 }
 
 void SkDisplayable::executeFunction(SkDisplayable* target,
@@ -412,11 +405,9 @@ void SkDisplayable::executeFunction(SkDisplayable* target,
 
 void SkDisplayable::executeFunction2(SkDisplayable* , int index,
         SkOpArray* params, SkDisplayTypes, SkOperand2*  ) {
-    SkASSERT(0);
 }
 
 void SkDisplayable::getBounds(SkRect* rect) {
-    SkASSERT(rect);
     rect->fLeft = rect->fTop = SK_ScalarMax;
     rect->fRight= rect->fBottom = -SK_ScalarMax;
 }
@@ -436,7 +427,6 @@ const SkMemberInfo* SkDisplayable::getMember(const char name[]) {
 const SkFunctionParamType* SkDisplayable::getParameters(const SkMemberInfo* info,
         int* paramCount) {
     const SkFunctionParamType* params = getFunctionsParameters();
-    SkASSERT(params != NULL);
     int funcIndex = info->functionIndex();
     // !!! eventually break traversing params into an external function (maybe this whole function)
     int index = funcIndex;
@@ -460,12 +450,10 @@ SkDisplayable* SkDisplayable::getParent() const {
 }
 
 bool SkDisplayable::getProperty(int index, SkScriptValue* ) const {
-//  SkASSERT(0);
     return false;
 }
 
 bool SkDisplayable::getProperty2(int index, SkOperand2* value) const {
-    SkASSERT(0);
     return false;
 }
 
@@ -503,7 +491,6 @@ bool SkDisplayable::setParent(SkDisplayable* ) {
 }
 
 bool SkDisplayable::setProperty(int index, SkScriptValue& ) {
-    //SkASSERT(0);
     return false;
 }
 
@@ -514,7 +501,6 @@ void SkDisplayable::setReference(const SkMemberInfo* info, SkDisplayable* displa
         scriptValue.fType = displayable->getType();
         setProperty(info->propertyIndex(), scriptValue);
     } else if (info->fType == SkType_Array) {
-        SkASSERT(displayable->getType() == SkType_Array);
         SkDisplayArray* dispArray = (SkDisplayArray*) displayable;
         SkTDScalarArray* array = (SkTDScalarArray* ) info->memberData(this);
         array->setCount(dispArray->values.count());

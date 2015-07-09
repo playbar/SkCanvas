@@ -9,9 +9,8 @@
 #ifndef GrGLContext_DEFINED
 #define GrGLContext_DEFINED
 
-#include "gl/GrGLExtensions.h"
-#include "gl/GrGLInterface.h"
 #include "GrGLCaps.h"
+#include "gl/glew.h"
 #include "GrGLSL.h"
 #include "GrGLUtil.h"
 
@@ -19,9 +18,10 @@
 
 /**
  * Encapsulates information about an OpenGL context including the OpenGL
- * version, the GrGLStandard type of the context, and GLSL version.
+ * version, the GrGLBinding type of the context, and GLSL version.
  */
-class GrGLContextInfo {
+class GrGLContextInfo 
+{
 public:
     /**
      * Default constructor
@@ -31,25 +31,21 @@ public:
         this->reset();
     }
 
-    GrGLContextInfo(const GrGLContextInfo& that) {
-        fGLCaps.reset(SkNEW(GrGLCaps));
-        *this = that;
-    }
-
-    GrGLContextInfo& operator= (const GrGLContextInfo&);
+    /**
+     * Copies a GrGLContextInfo
+     */
+    GrGLContextInfo& operator= (const GrGLContextInfo& ctxInfo);
 
     /**
-     * Initializes a GrGLContextInfo from a GrGLInterface and the currently
-     * bound OpenGL context accessible by the GrGLInterface.
+     * Initializes a GrGLContextInfo from a GLinterface and the currently
+     * bound OpenGL context accessible by the GLinterface.
      */
-    bool initialize(const GrGLInterface* interface);
+    bool initialize();
     bool isInitialized() const;
 
-    GrGLStandard standard() const { return fInterface->fStandard; }
-    GrGLVersion version() const { return fGLVersion; }
+    GrGLBinding binding() const { return fBindingInUse; }
+    uint32_t version() const { return fGLVersion; }
     GrGLSLGeneration glslGeneration() const { return fGLSLGeneration; }
-    GrGLVendor vendor() const { return fVendor; }
-    GrGLRenderer renderer() const { return fRenderer; }
     /** Is this a mesa-based driver. Does not mean it is the osmesa software rasterizer. */
     bool isMesa() const { return fIsMesa; }
     /** Are we running inside Chromium (using the command buffer)? We make some different tradeoffs
@@ -58,53 +54,60 @@ public:
     bool isChromium() const { return fIsChromium; }
     const GrGLCaps* caps() const { return fGLCaps.get(); }
     GrGLCaps* caps() { return fGLCaps; }
-    bool hasExtension(const char* ext) const {
-        if (!this->isInitialized()) {
-            return false;
-        }
-        return fInterface->hasExtension(ext);
-    }
 
     /**
      * Reset the information
      */
     void reset();
 
-protected:
-    SkAutoTUnref<const GrGLInterface>   fInterface;
-    GrGLVersion                         fGLVersion;
-    GrGLSLGeneration                    fGLSLGeneration;
-    GrGLVendor                          fVendor;
-    GrGLRenderer                        fRenderer;
-    bool                                fIsMesa;
-    bool                                fIsChromium;
-    SkAutoTUnref<GrGLCaps>              fGLCaps;
+private:
+
+    GrGLBinding             fBindingInUse;
+	bool					bBindingInUse;
+    uint32_t             fGLVersion;
+    GrGLSLGeneration        fGLSLGeneration;
+    bool                    fIsMesa;
+    bool                    fIsChromium;
+    SkAutoTUnref<GrGLCaps>  fGLCaps;
 };
 
 /**
- * Extension of GrGLContextInfo that also provides access to GrGLInterface.
+ * Encapsulates the GLinterface used to make GL calls plus information
+ * about the context (via GrGLContextInfo).
  */
-class GrGLContext : public GrGLContextInfo {
+class GrGLContext 
+{
 public:
     /**
-     * Creates a GrGLContext from a GrGLInterface and the currently
-     * bound OpenGL context accessible by the GrGLInterface.
+     * Default constructor
      */
-    explicit GrGLContext(const GrGLInterface* interface) {
-        this->initialize(interface);
-    }
+	GrGLContext();
 
-    GrGLContext(const GrGLContext& that) : INHERITED(that) {}
+	/**
+     * Copies a GrGLContext
+     */
+    GrGLContext(const GrGLContext& ctx);
 
-    GrGLContext& operator= (const GrGLContext& that) {
-        this->INHERITED::operator=(that);
-        return *this;
-    }
+    ~GrGLContext() {  }
 
-    const GrGLInterface* interface() const { return fInterface.get(); }
+    /**
+     * Copies a GrGLContext
+     */
+    GrGLContext& operator= (const GrGLContext& ctx);
+
+    /**
+     * Initializes a GrGLContext from a GLinterface and the currently
+     * bound OpenGL context accessible by the GLinterface.
+     */
+    bool initialize();
+    bool isInitialized() const { return fInfo.isInitialized(); }
+
+    const GrGLContextInfo& info() const { return fInfo; }
+    GrGLContextInfo& info() { return fInfo; }
 
 private:
-    typedef GrGLContextInfo INHERITED;
+    void reset();
+    GrGLContextInfo      fInfo;
 };
 
 #endif

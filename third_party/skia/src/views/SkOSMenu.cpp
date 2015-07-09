@@ -100,27 +100,22 @@ SkOSMenu::Item::Item(const char label[], SkOSMenu::Type type,
 }
 
 void SkOSMenu::Item::setBool(bool value) const {
-    SkASSERT(SkOSMenu::kSwitch_Type == fType);
     fEvent->setBool(fSlotName.c_str(), value);
 }
 
-void SkOSMenu::Item::setScalar(SkScalar value) const {
-    SkASSERT(SkOSMenu::kSlider_Type == fType);
+void SkOSMenu::Item::setScalar(float value) const {
     fEvent->setScalar(fSlotName.c_str(), value);
 }
 
 void SkOSMenu::Item::setInt(int value) const {
-    SkASSERT(SkOSMenu::kList_Type == fType);
     fEvent->setS32(fSlotName.c_str(), value);
 }
 
 void SkOSMenu::Item::setTriState(TriState value) const {
-    SkASSERT(SkOSMenu::kTriState_Type == fType);
     fEvent->setS32(fSlotName.c_str(), value);
 }
 
 void SkOSMenu::Item::setString(const char value[]) const {
-    SkASSERT(SkOSMenu::kTextField_Type == fType);
     fEvent->setString(fSlotName.c_str(), value);
 }
 
@@ -169,8 +164,8 @@ int SkOSMenu::appendList(const char label[], const char slotName[],
 }
 
 int SkOSMenu::appendSlider(const char label[], const char slotName[],
-                           SkEventSinkID target, SkScalar min, SkScalar max,
-                           SkScalar defaultValue) {
+                           SkEventSinkID target, float min, float max,
+                           float defaultValue) {
     SkEvent* evt = new SkEvent(gMenuEventType, target);
     evt->setScalar(gSlider_Min_Scalar, min);
     evt->setScalar(gSlider_Max_Scalar, max);
@@ -221,11 +216,11 @@ bool SkOSMenu::FindListItems(const SkEvent& evt, SkString items[]) {
     return false;
 }
 
-bool SkOSMenu::FindSliderMin(const SkEvent& evt, SkScalar* min) {
+bool SkOSMenu::FindSliderMin(const SkEvent& evt, float* min) {
     return evt.isType(gMenuEventType) && evt.findScalar(gSlider_Min_Scalar, min);
 }
 
-bool SkOSMenu::FindSliderMax(const SkEvent& evt, SkScalar* max) {
+bool SkOSMenu::FindSliderMax(const SkEvent& evt, float* max) {
     return evt.isType(gMenuEventType) && evt.findScalar(gSlider_Max_Scalar, max);
 }
 
@@ -237,7 +232,7 @@ bool SkOSMenu::FindListIndex(const SkEvent& evt, const char slotName[], int* val
     return evt.isType(gMenuEventType) && evt.findS32(slotName, value);
 }
 
-bool SkOSMenu::FindSliderValue(const SkEvent& evt, const char slotName[], SkScalar* value) {
+bool SkOSMenu::FindSliderValue(const SkEvent& evt, const char slotName[], float* value) {
     return evt.isType(gMenuEventType) && evt.findScalar(slotName, value);
 }
 

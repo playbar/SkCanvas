@@ -35,7 +35,6 @@ public:
     bool empty() const { return fTotalCount == 0; }
 
     T* push() {
-        SkASSERT(fCount <= kSlotCount);
         if (fCount == kSlotCount) {
             Rec* rec = (Rec*)sk_malloc_throw(sizeof(Rec));
             rec->fNext = fRec;
@@ -49,22 +48,18 @@ public:
     void push(const T& elem) { *this->push() = elem; }
 
     const T& index(int idx) const {
-        SkASSERT(fRec && fCount > idx);
         return fRec->fSlots[fCount - idx - 1];
     }
 
     T& index(int idx) {
-        SkASSERT(fRec && fCount > idx);
         return fRec->fSlots[fCount - idx - 1];
     }
 
     const T& top() const {
-        SkASSERT(fRec && fCount > 0);
         return fRec->fSlots[fCount - 1];
     }
 
     T& top() {
-        SkASSERT(fRec && fCount > 0);
         return fRec->fSlots[fCount - 1];
     }
 
@@ -76,7 +71,6 @@ public:
     }
 
     void pop() {
-        SkASSERT(fCount > 0 && fRec);
         --fTotalCount;
         if (--fCount == 0) {
             if (fRec != &fInitialRec) {
@@ -85,7 +79,6 @@ public:
                 fCount = kSlotCount;
                 fRec = rec;
             } else {
-                SkASSERT(fTotalCount == 0);
             }
         }
     }

@@ -32,7 +32,7 @@ extern SkImage* SkNewImageFromPixelRef(const SkImageInfo&, SkPixelRef*,
 extern SkImage* SkNewImageFromBitmap(const SkBitmap&, bool canSharePixelRef);
 
 extern void SkImagePrivDrawPicture(SkCanvas*, SkPicture*,
-                                   SkScalar x, SkScalar y, const SkPaint*);
+	float x, float y, const SkPaint*);
 
 extern void SkImagePrivDrawPicture(SkCanvas*, SkPicture*,
                                    const SkRect*, const SkRect&, const SkPaint*);

@@ -18,18 +18,18 @@ SkBoundary* SkBoundaryPatch::setBoundary(SkBoundary* b) {
     return b;
 }
 
-static SkPoint SkMakePoint(SkScalar x, SkScalar y) {
+static SkPoint SkMakePoint(float x, float y) {
     SkPoint pt;
     pt.set(x, y);
     return pt;
 }
 
-static SkPoint SkPointInterp(const SkPoint& a, const SkPoint& b, SkScalar t) {
+static SkPoint SkPointInterp(const SkPoint& a, const SkPoint& b, float t) {
     return SkMakePoint(SkScalarInterp(a.fX, b.fX, t),
                        SkScalarInterp(a.fY, b.fY, t));
 }
 
-SkPoint SkBoundaryPatch::eval(SkScalar unitU, SkScalar unitV) {
+SkPoint SkBoundaryPatch::eval(float unitU, float unitV) {
     SkBoundary* b = fBoundary;
     SkPoint u = SkPointInterp(b->eval(SkBoundary::kLeft, SK_Scalar1 - unitV),
                               b->eval(SkBoundary::kRight, unitV),
@@ -46,11 +46,11 @@ bool SkBoundaryPatch::evalPatch(SkPoint verts[], int rows, int cols) {
         return false;
     }
 
-    const SkScalar invR = SkScalarInvert(SkIntToScalar(rows - 1));
-    const SkScalar invC = SkScalarInvert(SkIntToScalar(cols - 1));
+    const float invR = SkScalarInvert(SkIntToScalar(rows - 1));
+    const float invC = SkScalarInvert(SkIntToScalar(cols - 1));
 
     for (int y = 0; y < cols; y++) {
-        SkScalar yy = y * invC;
+        float yy = y * invC;
         for (int x = 0; x < rows; x++) {
             *verts++ = this->eval(x * invR, yy);
         }
@@ -62,14 +62,11 @@ bool SkBoundaryPatch::evalPatch(SkPoint verts[], int rows, int cols) {
 
 #include "SkGeometry.h"
 
-SkPoint SkLineBoundary::eval(Edge e, SkScalar t) {
-    SkASSERT((unsigned)e < 4);
+SkPoint SkLineBoundary::eval(Edge e, float t) {
     return SkPointInterp(fPts[e], fPts[(e + 1) & 3], t);
 }
 
-SkPoint SkCubicBoundary::eval(Edge e, SkScalar t) {
-    SkASSERT((unsigned)e < 4);
-
+SkPoint SkCubicBoundary::eval(Edge e, float t) {
     // ensure our 4th cubic wraps to the start of the first
     fPts[12] = fPts[0];
 

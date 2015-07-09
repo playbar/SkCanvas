@@ -17,12 +17,6 @@ void SCALE_FILTER_NAME(const SkBitmapProcState& s, int x, int y,
 
 void SCALE_FILTER_NAME(const SkBitmapProcState& s, int x, int y,
                        DSTTYPE* SK_RESTRICT colors, int count) {
-    SkASSERT((s.fInvType & ~(SkMatrix::kTranslate_Mask |
-                             SkMatrix::kScale_Mask)) == 0);
-    SkASSERT(s.fInvKy == 0);
-    SkASSERT(count > 0 && colors != NULL);
-    SkASSERT(s.fFilterLevel != SkPaint::kNone_FilterLevel);
-    SkDEBUGCODE(CHECKSTATE(s);)
 
     const unsigned maxX = s.fBitmap->width() - 1;
     const SkFixed oneX = s.fFilterOneX;

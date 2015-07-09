@@ -429,26 +429,12 @@ void SkDCubic::align(int endIndex, int ctrlIndex, SkDPoint* dstPt) const {
 
 void SkDCubic::subDivide(const SkDPoint& a, const SkDPoint& d,
                          double t1, double t2, SkDPoint dst[2]) const {
-    SkASSERT(t1 != t2);
-#if 0
-    double ex = interp_cubic_coords(&fPts[0].fX, (t1 * 2 + t2) / 3);
-    double ey = interp_cubic_coords(&fPts[0].fY, (t1 * 2 + t2) / 3);
-    double fx = interp_cubic_coords(&fPts[0].fX, (t1 + t2 * 2) / 3);
-    double fy = interp_cubic_coords(&fPts[0].fY, (t1 + t2 * 2) / 3);
-    double mx = ex * 27 - a.fX * 8 - d.fX;
-    double my = ey * 27 - a.fY * 8 - d.fY;
-    double nx = fx * 27 - a.fX - d.fX * 8;
-    double ny = fy * 27 - a.fY - d.fY * 8;
-    /* bx = */ dst[0].fX = (mx * 2 - nx) / 18;
-    /* by = */ dst[0].fY = (my * 2 - ny) / 18;
-    /* cx = */ dst[1].fX = (nx * 2 - mx) / 18;
-    /* cy = */ dst[1].fY = (ny * 2 - my) / 18;
-#else
+
     // this approach assumes that the control points computed directly are accurate enough
     SkDCubic sub = subDivide(t1, t2);
     dst[0] = sub[1] + (a - sub[0]);
     dst[1] = sub[2] + (d - sub[3]);
-#endif
+
     if (t1 == 0 || t2 == 0) {
         align(0, 1, t1 == 0 ? &dst[0] : &dst[1]);
     }

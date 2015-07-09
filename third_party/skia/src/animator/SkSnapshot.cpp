@@ -38,8 +38,6 @@ SkSnapshot::SkSnapshot()
 #include "SkDevice.h"
 
 bool SkSnapshot::draw(SkAnimateMaker& maker) {
-    SkASSERT(type >= 0);
-    SkASSERT(filename.size() > 0);
     SkImageEncoder* encoder = SkImageEncoder::Create((SkImageEncoder::Type) type);
     if (!encoder) {
         return false;

@@ -60,7 +60,7 @@ public:
      * If this RT is multisampled, this is the multisample buffer
      * @return the 3D API's handle to this object (e.g. FBO ID in OpenGL)
      */
-    virtual GrBackendObject getRenderTargetHandle() const = 0;
+    virtual intptr_t getRenderTargetHandle() const = 0;
 
     /**
      * If this RT is multisampled, this is the buffer it is resolved to.
@@ -68,7 +68,7 @@ public:
      * (In GL a separate FBO ID is used for the MSAA and resolved buffers)
      * @return the 3D API's handle to this object (e.g. FBO ID in OpenGL)
      */
-    virtual GrBackendObject getRenderTargetResolvedHandle() const = 0;
+    virtual intptr_t getRenderTargetResolvedHandle() const = 0;
 
     /**
      * @return true if the surface is multisampled, false otherwise
@@ -156,7 +156,6 @@ private:
     friend class GrTexture;
     // called by ~GrTexture to remove the non-ref'ed back ptr.
     void owningTextureDestroyed() {
-        SkASSERT(NULL != fTexture);
         fTexture = NULL;
     }
 

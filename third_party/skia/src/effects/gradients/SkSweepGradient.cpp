@@ -8,7 +8,7 @@
 
 #include "SkSweepGradient.h"
 
-SkSweepGradient::SkSweepGradient(SkScalar cx, SkScalar cy,
+SkSweepGradient::SkSweepGradient(float cx, float cy,
                                  const Descriptor& desc)
     : SkGradientShaderBase(desc)
     , fCenter(SkPoint::Make(cx, cy))
@@ -42,12 +42,12 @@ SkShader::GradientType SkSweepGradient::asAGradient(GradientInfo* info) const {
     return kSweep_GradientType;
 }
 
-SkSweepGradient::SkSweepGradient(SkReadBuffer& buffer)
+SkSweepGradient::SkSweepGradient(SkFlattenableReadBuffer& buffer)
     : INHERITED(buffer),
       fCenter(buffer.readPoint()) {
 }
 
-void SkSweepGradient::flatten(SkWriteBuffer& buffer) const {
+void SkSweepGradient::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writePoint(fCenter);
 }
@@ -61,11 +61,9 @@ static unsigned SkATan2_255(float y, float x) {
     if (result < 0) {
         result += 2 * SK_ScalarPI;
     }
-    SkASSERT(result >= 0);
     // since our value is always >= 0, we can cast to int, which is faster than
     // calling floorf()
     int ir = (int)(result * g255Over2PI);
-    SkASSERT(ir >= 0 && ir <= 255);
     return ir;
 }
 
@@ -80,8 +78,8 @@ void SkSweepGradient::shadeSpan(int x, int y, SkPMColor* SK_RESTRICT dstC,
     if (fDstToIndexClass != kPerspective_MatrixClass) {
         proc(matrix, SkIntToScalar(x) + SK_ScalarHalf,
                      SkIntToScalar(y) + SK_ScalarHalf, &srcPt);
-        SkScalar dx, fx = srcPt.fX;
-        SkScalar dy, fy = srcPt.fY;
+        float dx, fx = srcPt.fX;
+        float dy, fy = srcPt.fY;
 
         if (fDstToIndexClass == kFixedStepInX_MatrixClass) {
             SkFixed storage[2];
@@ -90,7 +88,6 @@ void SkSweepGradient::shadeSpan(int x, int y, SkPMColor* SK_RESTRICT dstC,
             dx = SkFixedToScalar(storage[0]);
             dy = SkFixedToScalar(storage[1]);
         } else {
-            SkASSERT(fDstToIndexClass == kLinear_MatrixClass);
             dx = matrix.getScaleX();
             dy = matrix.getSkewY();
         }
@@ -122,8 +119,8 @@ void SkSweepGradient::shadeSpan16(int x, int y, uint16_t* SK_RESTRICT dstC,
     if (fDstToIndexClass != kPerspective_MatrixClass) {
         proc(matrix, SkIntToScalar(x) + SK_ScalarHalf,
                      SkIntToScalar(y) + SK_ScalarHalf, &srcPt);
-        SkScalar dx, fx = srcPt.fX;
-        SkScalar dy, fy = srcPt.fY;
+        float dx, fx = srcPt.fX;
+        float dy, fy = srcPt.fY;
 
         if (fDstToIndexClass == kFixedStepInX_MatrixClass) {
             SkFixed storage[2];
@@ -132,7 +129,6 @@ void SkSweepGradient::shadeSpan16(int x, int y, uint16_t* SK_RESTRICT dstC,
             dx = SkFixedToScalar(storage[0]);
             dy = SkFixedToScalar(storage[1]);
         } else {
-            SkASSERT(fDstToIndexClass == kLinear_MatrixClass);
             dx = matrix.getScaleX();
             dy = matrix.getSkewY();
         }
@@ -228,8 +224,8 @@ GrEffectRef* GrSweepGradient::TestCreate(SkRandom* random,
     SkPoint center = {random->nextUScalar1(), random->nextUScalar1()};
 
     SkColor colors[kMaxRandomGradientColors];
-    SkScalar stopsArray[kMaxRandomGradientColors];
-    SkScalar* stops = stopsArray;
+    float stopsArray[kMaxRandomGradientColors];
+    float* stops = stopsArray;
     SkShader::TileMode tmIgnored;
     int colorCount = RandomGradientParams(random, colors, &stops, &tmIgnored);
     SkAutoTUnref<SkShader> shader(SkGradientShader::CreateSweep(center.fX, center.fY,
@@ -249,18 +245,8 @@ void GrGLSweepGradient::emitCode(GrGLShaderBuilder* builder,
                                  const TextureSamplerArray& samplers) {
     this->emitUniforms(builder, key);
     SkString coords2D = builder->ensureFSCoords2D(coords, 0);
-    const GrGLContextInfo ctxInfo = builder->ctxInfo();
     SkString t;
-    // 0.1591549430918 is 1/(2*pi), used since atan returns values [-pi, pi]
-    // On Intel GPU there is an issue where it reads the second arguement to atan "- %s.x" as an int
-    // thus must us -1.0 * %s.x to work correctly
-    if (kIntel_GrGLVendor != ctxInfo.vendor()){
-        t.printf("atan(- %s.y, - %s.x) * 0.1591549430918 + 0.5",
-                 coords2D.c_str(), coords2D.c_str());
-    } else {
-        t.printf("atan(- %s.y, -1.0 * %s.x) * 0.1591549430918 + 0.5",
-                 coords2D.c_str(), coords2D.c_str());
-    }
+    t.printf("atan(- %s.y, - %s.x) * 0.1591549430918 + 0.5", coords2D.c_str(), coords2D.c_str());
     this->emitColor(builder, t.c_str(), key,
                           outputColor, inputColor, samplers);
 }
@@ -285,7 +271,7 @@ GrEffectRef* SkSweepGradient::asNewEffect(GrContext*, const SkPaint&) const {
 
 #endif
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkSweepGradient::toString(SkString* str) const {
     str->append("SkSweepGradient: (");
 

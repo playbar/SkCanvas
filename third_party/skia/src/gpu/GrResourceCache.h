@@ -13,7 +13,7 @@
 
 #include "GrConfig.h"
 #include "GrTypes.h"
-#include "GrTMultiMap.h"
+#include "GrTHashTable.h"
 #include "GrBinHashKey.h"
 #include "SkMessageBus.h"
 #include "SkTInternalLList.h"
@@ -23,8 +23,15 @@ class GrResourceEntry;
 
 class GrResourceKey {
 public:
-    static GrCacheID::Domain ScratchDomain() {
-        static const GrCacheID::Domain gDomain = GrCacheID::GenerateDomain();
+    enum {
+        kHashBits   = 7,
+        kHashCount  = 1 << kHashBits,
+        kHashMask   = kHashCount - 1
+    };
+
+    static uint8_t ScratchDomain()
+	{
+        static const uint8_t gDomain = GrCacheID::GenerateDomain();
         return gDomain;
     }
 
@@ -55,13 +62,14 @@ public:
         this->init(id.getDomain(), id.getKey(), type, flags);
     }
 
-    uint32_t getHash() const {
-        return fKey.getHash();
+    //!< returns hash value [0..kHashMask] for the key
+    int getHash() const {
+        return fKey.getHash() & kHashMask;
     }
 
     bool isScratch() const {
         return ScratchDomain() ==
-            *reinterpret_cast<const GrCacheID::Domain*>(fKey.getData() +
+            *reinterpret_cast<const uint8_t*>(fKey.getData() +
                                                         kCacheIDDomainOffset);
     }
 
@@ -76,19 +84,23 @@ public:
     }
 
     bool operator==(const GrResourceKey& other) const { return fKey == other.fKey; }
+    bool operator<(const GrResourceKey& other) const { return fKey < other.fKey; }
+
+    static bool LessThan(const GrResourceEntry& entry, const GrResourceKey& key);
+    static bool Equals(const GrResourceEntry& entry, const GrResourceKey& key);
 
 private:
     enum {
         kCacheIDKeyOffset = 0,
         kCacheIDDomainOffset = kCacheIDKeyOffset + sizeof(GrCacheID::Key),
-        kResourceTypeOffset = kCacheIDDomainOffset + sizeof(GrCacheID::Domain),
+        kResourceTypeOffset = kCacheIDDomainOffset + sizeof(uint8_t),
         kResourceFlagsOffset = kResourceTypeOffset + sizeof(ResourceType),
         kPadOffset = kResourceFlagsOffset + sizeof(ResourceFlags),
         kKeySize = SkAlign4(kPadOffset),
         kPadSize = kKeySize - kPadOffset
     };
 
-    void init(const GrCacheID::Domain domain,
+    void init(const uint8_t domain,
               const GrCacheID::Key& key,
               ResourceType type,
               ResourceFlags flags) {
@@ -99,7 +111,7 @@ private:
 
         uint8_t* k = keyData.fKey8;
         memcpy(k + kCacheIDKeyOffset, key.fData8, sizeof(GrCacheID::Key));
-        memcpy(k + kCacheIDDomainOffset, &domain, sizeof(GrCacheID::Domain));
+        memcpy(k + kCacheIDDomainOffset, &domain, sizeof(uint8_t));
         memcpy(k + kResourceTypeOffset, &type, sizeof(ResourceType));
         memcpy(k + kResourceFlagsOffset, &flags, sizeof(ResourceFlags));
         memset(k + kPadOffset, 0, kPadSize);
@@ -120,17 +132,6 @@ public:
     GrResource* resource() const { return fResource; }
     const GrResourceKey& key() const { return fKey; }
 
-    static const GrResourceKey& GetKey(const GrResourceEntry& e) { return e.key(); }
-    static uint32_t Hash(const GrResourceKey& key) { return key.getHash(); }
-    static bool Equal(const GrResourceEntry& a, const GrResourceKey& b) {
-        return a.key() == b;
-    }
-#ifdef SK_DEBUG
-    void validate() const;
-#else
-    void validate() const {}
-#endif
-
 private:
     GrResourceEntry(const GrResourceKey& key, GrResource* resource);
     ~GrResourceEntry();
@@ -138,11 +139,21 @@ private:
     GrResourceKey    fKey;
     GrResource*      fResource;
 
-    // Linked list for the LRU ordering.
+    // we're a linked list
     SK_DECLARE_INTERNAL_LLIST_INTERFACE(GrResourceEntry);
 
     friend class GrResourceCache;
+    friend class GrDLinkedList;
 };
+
+inline bool GrResourceKey::LessThan(const GrResourceEntry& entry, const GrResourceKey& key) {
+    return entry.key() < key;
+}
+
+inline bool GrResourceKey::Equals(const GrResourceEntry& entry, const GrResourceKey& key) {
+    return entry.key() == key;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -150,14 +161,20 @@ private:
  *  Cache of GrResource objects.
  *
  *  These have a corresponding GrResourceKey, built from 128bits identifying the
- *  resource. Multiple resources can map to same GrResourceKey.
+ *  resource.
  *
  *  The cache stores the entries in a double-linked list, which is its LRU.
  *  When an entry is "locked" (i.e. given to the caller), it is moved to the
  *  head of the list. If/when we must purge some of the entries, we walk the
  *  list backwards from the tail, since those are the least recently used.
  *
- *  For fast searches, we maintain a hash map based on the GrResourceKey.
+ *  For fast searches, we maintain a sorted array (based on the GrResourceKey)
+ *  which we can bsearch. When a new entry is added, it is inserted into this
+ *  array.
+ *
+ *  For even faster searches, a hash is computed from the Key. If there is
+ *  a collision between two keys with the same hash, we fall back on the
+ *  bsearch, and update the hash to reflect the most recent Key requested.
  *
  *  It is a goal to make the GrResourceCache the central repository and bookkeeper
  *  of all resources. It should replace the linked list of GrResources that
@@ -292,12 +309,6 @@ public:
      */
     void purgeAsNeeded(int extraCount = 0, size_t extraBytes = 0);
 
-#ifdef SK_DEBUG
-    void validate() const;
-#else
-    void validate() const {}
-#endif
-
 #if GR_CACHE_STATS
     void printStats();
 #endif
@@ -313,11 +324,7 @@ private:
 
     void removeInvalidResource(GrResourceEntry* entry);
 
-    GrTMultiMap<GrResourceEntry,
-                GrResourceKey,
-                GrResourceEntry::GetKey,
-                GrResourceEntry::Hash,
-                GrResourceEntry::Equal> fCache;
+    GrTHashTable<GrResourceEntry, GrResourceKey, 8> fCache;
 
     // We're an internal doubly linked list
     typedef SkTInternalLList<GrResourceEntry> EntryList;
@@ -356,31 +363,9 @@ private:
     // Listen for messages that a resource has been invalidated and purge cached junk proactively.
     SkMessageBus<GrResourceInvalidatedMessage>::Inbox fInvalidationInbox;
     void purgeInvalidated();
-
-#ifdef SK_DEBUG
-    static size_t countBytes(const SkTInternalLList<GrResourceEntry>& list);
-#endif
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef SK_DEBUG
-    class GrAutoResourceCacheValidate {
-    public:
-        GrAutoResourceCacheValidate(GrResourceCache* cache) : fCache(cache) {
-            cache->validate();
-        }
-        ~GrAutoResourceCacheValidate() {
-            fCache->validate();
-        }
-    private:
-        GrResourceCache* fCache;
-    };
-#else
-    class GrAutoResourceCacheValidate {
-    public:
-        GrAutoResourceCacheValidate(GrResourceCache*) {}
-    };
-#endif
 
 #endif

@@ -132,18 +132,7 @@ void SkAnimateMaker::delayEnable(SkApply* apply, SkMSec time) {
 
 void SkAnimateMaker::deleteMembers() {
     int index;
-#if defined SK_DEBUG && 0
-    //this code checks to see if helpers are among the children, but it is not complete -
-    //it should check the children of the children
-    int result;
-    SkTDArray<SkDisplayable*> children(fChildren.begin(), fChildren.count());
-    SkQSort(children.begin(), children.count(), sizeof(SkDisplayable*),compare_disp);
-    for (index = 0; index < fHelpers.count(); index++) {
-        SkDisplayable* helper = fHelpers[index];
-        result = SkTSearch(children.begin(), children.count(), helper, sizeof(SkDisplayable*));
-        SkASSERT(result < 0);
-    }
-#endif
+
     for (index = 0; index < fChildren.count(); index++) {
         SkDisplayable* child = fChildren[index];
         delete child;
@@ -162,7 +151,6 @@ void SkAnimateMaker::doDelayedEvent() {
     fEnableTime = getAppTime();
     for (int index = 0; index < fDelayed.count(); ) {
         SkDisplayable* child = fDelayed[index];
-        SkASSERT(child->isApply());
         SkApply* apply = (SkApply*) child;
         apply->interpolate(*this, fEnableTime);
         if (apply->hasDelayedAnimator())
@@ -191,10 +179,8 @@ void SkAnimateMaker::dump(const char* match) {
 int SkAnimateMaker::dynamicProperty(SkString& nameStr, SkDisplayable** displayablePtr ) {
     const char* name = nameStr.c_str();
     const char* dot = strchr(name, '.');
-    SkASSERT(dot);
     SkDisplayable* displayable;
     if (find(name, dot - name, &displayable) == false) {
-        SkASSERT(0);
         return 0;
     }
     const char* fieldName = dot + 1;
@@ -218,7 +204,6 @@ SkAnimator* SkAnimateMaker::getRoot()
 #endif
 
 void SkAnimateMaker::helperAdd(SkDisplayable* trackMe) {
-    SkASSERT(fHelpers.find(trackMe) < 0);
     *fHelpers.append() = trackMe;
 }
 
@@ -227,20 +212,6 @@ void SkAnimateMaker::helperRemove(SkDisplayable* alreadyTracked) {
     if (helperIndex >= 0)
         fHelpers.remove(helperIndex);
 }
-
-#if 0
-void SkAnimateMaker::loadMovies() {
-    for (SkDisplayable** dispPtr = fMovies.begin(); dispPtr < fMovies.end(); dispPtr++) {
-        SkDisplayable* displayable = *dispPtr;
-        SkASSERT(displayable->getType() == SkType_Movie);
-        SkDisplayMovie* movie = (SkDisplayMovie*) displayable;
-        SkAnimateMaker* movieMaker = movie->fMovie.fMaker;
-        movieMaker->fEvents.doEvent(*movieMaker, SkDisplayEvent::kOnload, NULL);
-        movieMaker->fEvents.removeEvent(SkDisplayEvent::kOnload, NULL);
-        movieMaker->loadMovies();
-    }
-}
-#endif
 
 void SkAnimateMaker::notifyInval() {
     if (fHostEventSinkID)

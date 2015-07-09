@@ -16,7 +16,6 @@ public:
     }
 
     virtual void blitRect(int x, int y, int width, int height) {
-        SkASSERT(width > 0 && height > 0);
         int srcX = x - fLeft;
         int srcY = y - fTop;
         SkSPRITE_DST_TYPE* SK_RESTRICT dst =fDevice->SkSPRITE_DST_GETADDR(x, y);

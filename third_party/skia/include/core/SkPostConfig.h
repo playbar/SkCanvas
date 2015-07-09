@@ -120,12 +120,12 @@
  * SK_ENABLE_INST_COUNT controlls printing how many reference counted objects
  * are still held on exit.
  * Defaults to 1 in DEBUG and 0 in RELEASE.
+ * FIXME: currently always 0, since it fails if multiple threads run at once
+ * (see skbug.com/1219 ).
  */
 #ifndef SK_ENABLE_INST_COUNT
 #  ifdef SK_DEBUG
-// Only enabled for static builds, because instance counting relies on static
-// variables in functions defined in header files.
-#    define SK_ENABLE_INST_COUNT !defined(SKIA_DLL)
+#    define SK_ENABLE_INST_COUNT 0
 #  else
 #    define SK_ENABLE_INST_COUNT 0
 #  endif
@@ -374,7 +374,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #ifndef SK_ATOMICS_PLATFORM_H
-#  if defined(SK_BUILD_FOR_WIN)
+#  if defined(_WIN32)
 #    define SK_ATOMICS_PLATFORM_H "../../src/ports/SkAtomics_win.h"
 #  elif defined(SK_BUILD_FOR_ANDROID_FRAMEWORK)
 #    define SK_ATOMICS_PLATFORM_H "../../src/ports/SkAtomics_android.h"
@@ -384,7 +384,7 @@
 #endif
 
 #ifndef SK_MUTEX_PLATFORM_H
-#  if defined(SK_BUILD_FOR_WIN)
+#  if defined(_WIN32)
 #    define SK_MUTEX_PLATFORM_H "../../src/ports/SkMutex_win.h"
 #  else
 #    define SK_MUTEX_PLATFORM_H "../../src/ports/SkMutex_pthread.h"

@@ -21,8 +21,8 @@ public:
     static const char* FindMSec(const char str[], SkMSec* value);
     static const char* FindNamedColor(const char str[], size_t len, SkColor* color);
     static const char* FindS32(const char str[], int32_t* value);
-    static const char* FindScalar(const char str[], SkScalar* value);
-    static const char* FindScalars(const char str[], SkScalar value[], int count);
+    static const char* FindScalar(const char str[], float* value);
+    static const char* FindScalars(const char str[], float value[], int count);
 
     static bool FindBool(const char str[], bool* value);
     // return the index of str in list[], or -1 if not found

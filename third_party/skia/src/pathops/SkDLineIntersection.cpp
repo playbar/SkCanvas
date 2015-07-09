@@ -17,7 +17,6 @@ SkDPoint SkIntersections::Line(const SkDLine& a, const SkDLine& b) {
     double bxLen = b[1].fX - b[0].fX;
     double byLen = b[1].fY - b[0].fY;
     double denom = byLen * axLen - ayLen * bxLen;
-    SkASSERT(denom);
     double term1 = a[1].fX * a[0].fY - a[1].fY * a[0].fX;
     double term2 = b[1].fX * b[0].fY - b[1].fY * b[0].fX;
     SkDPoint p;
@@ -27,7 +26,6 @@ SkDPoint SkIntersections::Line(const SkDLine& a, const SkDLine& b) {
 }
 
 void SkIntersections::cleanUpCoincidence() {
-    SkASSERT(fUsed == 2);
     // both t values are good
     bool startMatch = fT[0][0] == 0 && (fT[1][0] == 0 || fT[1][0] == 1);
     bool endMatch = fT[0][1] == 1 && (fT[1][1] == 0 || fT[1][1] == 1);
@@ -49,7 +47,6 @@ void SkIntersections::cleanUpParallelLines(bool parallel) {
         bool startMatch = fT[0][0] == 0 || fT[1][0] == 0 || fT[1][0] == 1;
         bool endMatch = fT[0][1] == 1 || fT[1][1] == 0 || fT[1][1] == 1;
         if ((!startMatch && !endMatch) || approximately_equal(fT[0][0], fT[0][1])) {
-            SkASSERT(startMatch || endMatch);
             removeOne(endMatch);
         }
     }
@@ -161,7 +158,6 @@ int SkIntersections::intersect(const SkDLine& a, const SkDLine& b) {
         }
     }
     cleanUpParallelLines(!unparallel);
-    SkASSERT(fUsed <= 2);
     return fUsed;
 }
 

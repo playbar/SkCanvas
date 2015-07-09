@@ -22,7 +22,6 @@ public:
 #endif
     }
     SkTDArray(const T src[], int count) {
-        SkASSERT(src || count == 0);
 
         fReserve = fCount = 0;
         fArray = NULL;
@@ -101,13 +100,6 @@ public:
     int count() const { return fCount; }
 
     /**
-     *  Return the total number of elements allocated.
-     *  reserved() - count() gives you the number of elements you can add
-     *  without causing an allocation.
-     */
-    int reserved() const { return fReserve; }
-
-    /**
      *  return the number of bytes in the array: count * sizeof(T)
      */
     size_t bytes() const { return fCount * sizeof(T); }
@@ -118,11 +110,9 @@ public:
     const T*  end() const { return fArray ? fArray + fCount : NULL; }
 
     T&  operator[](int index) {
-        SkASSERT(index < fCount);
         return fArray[index];
     }
     const T&  operator[](int index) const {
-        SkASSERT(index < fCount);
         return fArray[index];
     }
 
@@ -142,7 +132,6 @@ public:
 #endif
             fReserve = fCount = 0;
         } else {
-            SkASSERT(fReserve == 0 && fCount == 0);
         }
     }
 
@@ -151,28 +140,24 @@ public:
         fCount = 0;
     }
 
-    /**
-     *  Sets the number of elements in the array.
-     *  If the array does not have space for count elements, it will increase
-     *  the storage allocated to some amount greater than that required.
-     *  It will never shrink the shrink the storage.
-     */
     void setCount(int count) {
-        SkASSERT(count >= 0);
         if (count > fReserve) {
-            this->resizeStorageToAtLeast(count);
+            this->growBy(count - fCount);
+        } else {
+            fCount = count;
         }
-        fCount = count;
     }
 
     void setReserve(int reserve) {
         if (reserve > fReserve) {
-            this->resizeStorageToAtLeast(reserve);
+            int count = fCount;
+            this->growBy(reserve - fCount);
+            fCount = count;
         }
     }
 
     T* prepend() {
-        this->adjustCount(1);
+        this->growBy(1);
         memmove(fArray + 1, fArray, (fCount - 1) * sizeof(T));
         return fArray;
     }
@@ -183,10 +168,7 @@ public:
     T* append(int count, const T* src = NULL) {
         int oldCount = fCount;
         if (count)  {
-            SkASSERT(src == NULL || fArray == NULL ||
-                    src + count <= fArray || fArray + oldCount <= src);
-
-            this->adjustCount(count);
+            this->growBy(count);
             if (src) {
                 memcpy(fArray + oldCount, src, sizeof(T) * count);
             }
@@ -204,10 +186,8 @@ public:
         return this->insert(index, 1, NULL);
     }
     T* insert(int index, int count, const T* src = NULL) {
-        SkASSERT(count);
-        SkASSERT(index <= fCount);
         size_t oldCount = fCount;
-        this->adjustCount(count);
+        this->growBy(count);
         T* dst = fArray + index;
         memmove(dst + count, dst, sizeof(T) * (oldCount - index));
         if (src) {
@@ -217,13 +197,11 @@ public:
     }
 
     void remove(int index, int count = 1) {
-        SkASSERT(index + count <= fCount);
         fCount = fCount - count;
         memmove(fArray + index, fArray + index + count, sizeof(T) * (fCount - index));
     }
 
     void removeShuffle(int index) {
-        SkASSERT(index < fCount);
         int newCount = fCount - 1;
         fCount = newCount;
         if (index != newCount) {
@@ -249,7 +227,7 @@ public:
 
         while (iter > stop) {
             if (*--iter == elem) {
-                return SkToInt(iter - stop);
+                return iter - stop;
             }
         }
         return -1;
@@ -267,8 +245,6 @@ public:
      * capped by count - index. The actual number copied is returned.
      */
     int copyRange(T* dst, int index, int max) const {
-        SkASSERT(max >= 0);
-        SkASSERT(!max || dst);
         if (index >= fCount) {
             return 0;
         }
@@ -338,16 +314,8 @@ public:
         }
     }
 
-#ifdef SK_DEBUG
-    void validate() const {
-        SkASSERT((fReserve == 0 && fArray == NULL) ||
-                 (fReserve > 0 && fArray != NULL));
-        SkASSERT(fCount <= fReserve);
-        SkASSERT(fData == (ArrayT*)fArray);
-    }
-#endif
-
 private:
+
 #ifdef SK_DEBUG
     enum {
         kDebugArraySize = 16
@@ -359,30 +327,18 @@ private:
     int     fReserve;
     int     fCount;
 
-    /**
-     *  Adjusts the number of elements in the array.
-     *  This is the same as calling setCount(count() + delta).
-     */
-    void adjustCount(int delta) {
-        this->setCount(fCount + delta);
-    }
+    void growBy(int extra) {
+        if (fCount + extra > fReserve) {
+            int size = fCount + extra + 4;
+            size += size >> 2;
 
-    /**
-     *  Increase the storage allocation such that it can hold (fCount + extra)
-     *  elements.
-     *  It never shrinks the allocation, and it may increase the allocation by
-     *  more than is strictly required, based on a private growth heuristic.
-     *
-     *  note: does NOT modify fCount
-     */
-    void resizeStorageToAtLeast(int count) {
-        SkASSERT(count > fReserve);
-        fReserve = count + 4;
-        fReserve += fReserve / 4;
-        fArray = (T*)sk_realloc_throw(fArray, fReserve * sizeof(T));
+            fArray = (T*)sk_realloc_throw(fArray, size * sizeof(T));
 #ifdef SK_DEBUG
-        fData = (ArrayT*)fArray;
+            fData = (ArrayT*)fArray;
 #endif
+            fReserve = size;
+        }
+        fCount += extra;
     }
 };
 

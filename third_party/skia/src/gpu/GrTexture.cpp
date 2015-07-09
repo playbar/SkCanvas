@@ -40,7 +40,6 @@ void GrTexture::internal_dispose() const {
         return;
     }
 
-    SkASSERT(0 == this->getDeferredRefCount());
     this->INHERITED::internal_dispose();
 }
 
@@ -73,7 +72,6 @@ void GrTexture::writePixels(int left, int top, int width, int height,
 }
 
 void GrTexture::onRelease() {
-    SkASSERT(!this->isSetFlag((GrTextureFlags) kReturnToCache_FlagBit));
     INHERITED::onRelease();
 }
 
@@ -87,19 +85,12 @@ void GrTexture::onAbandon() {
 void GrTexture::validateDesc() const {
     if (NULL != this->asRenderTarget()) {
         // This texture has a render target
-        SkASSERT(0 != (fDesc.fFlags & kRenderTarget_GrTextureFlagBit));
 
         if (NULL != this->asRenderTarget()->getStencilBuffer()) {
-            SkASSERT(0 != (fDesc.fFlags & kNoStencil_GrTextureFlagBit));
         } else {
-            SkASSERT(0 == (fDesc.fFlags & kNoStencil_GrTextureFlagBit));
         }
 
-        SkASSERT(fDesc.fSampleCnt == this->asRenderTarget()->numSamples());
     } else {
-        SkASSERT(0 == (fDesc.fFlags & kRenderTarget_GrTextureFlagBit));
-        SkASSERT(0 == (fDesc.fFlags & kNoStencil_GrTextureFlagBit));
-        SkASSERT(0 == fDesc.fSampleCnt);
     }
 }
 
@@ -172,8 +163,6 @@ GrResourceKey GrTexture::ComputeScratchKey(const GrTextureDesc& desc) {
     // Instead of a client-provided key of the texture contents we create a key from the
     // descriptor.
     GR_STATIC_ASSERT(sizeof(idKey) >= 16);
-    SkASSERT(desc.fHeight < (1 << 16));
-    SkASSERT(desc.fWidth < (1 << 16));
     idKey.fData32[0] = (desc.fWidth) | (desc.fHeight << 16);
     idKey.fData32[1] = desc.fConfig | desc.fSampleCnt << 16;
     idKey.fData32[2] = desc.fFlags;

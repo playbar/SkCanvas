@@ -25,25 +25,24 @@ public:
     virtual ~SkColorSpaceLuminance() { }
 
     /** Converts a color component luminance in the color space to a linear luma. */
-    virtual SkScalar toLuma(SkScalar gamma, SkScalar luminance) const = 0;
+    virtual float toLuma(float gamma, float luminance) const = 0;
     /** Converts a linear luma to a color component luminance in the color space. */
-    virtual SkScalar fromLuma(SkScalar gamma, SkScalar luma) const = 0;
+    virtual float fromLuma(float gamma, float luma) const = 0;
 
     /** Converts a color to a luminance value. */
-    static U8CPU computeLuminance(SkScalar gamma, SkColor c) {
+    static U8CPU computeLuminance(float gamma, SkColor c) {
         const SkColorSpaceLuminance& luminance = Fetch(gamma);
-        SkScalar r = luminance.toLuma(gamma, SkIntToScalar(SkColorGetR(c)) / 255);
-        SkScalar g = luminance.toLuma(gamma, SkIntToScalar(SkColorGetG(c)) / 255);
-        SkScalar b = luminance.toLuma(gamma, SkIntToScalar(SkColorGetB(c)) / 255);
-        SkScalar luma = r * SK_LUM_COEFF_R +
+        float r = luminance.toLuma(gamma, SkIntToScalar(SkColorGetR(c)) / 255);
+        float g = luminance.toLuma(gamma, SkIntToScalar(SkColorGetG(c)) / 255);
+        float b = luminance.toLuma(gamma, SkIntToScalar(SkColorGetB(c)) / 255);
+        float luma = r * SK_LUM_COEFF_R +
                         g * SK_LUM_COEFF_G +
                         b * SK_LUM_COEFF_B;
-        SkASSERT(luma <= SK_Scalar1);
         return SkScalarRoundToInt(luminance.fromLuma(gamma, luma) * 255);
     }
 
     /** Retrieves the SkColorSpaceLuminance for the given gamma. */
-    static const SkColorSpaceLuminance& Fetch(SkScalar gamma);
+    static const SkColorSpaceLuminance& Fetch(float gamma);
 };
 
 ///@{
@@ -76,9 +75,9 @@ template<> /*static*/ inline U8CPU sk_t_scale255<8>(U8CPU base) {
 
 template <int R_LUM_BITS, int G_LUM_BITS, int B_LUM_BITS> class SkTMaskPreBlend;
 
-void SkTMaskGamma_build_correcting_lut(uint8_t table[256], U8CPU srcI, SkScalar contrast,
-                                       const SkColorSpaceLuminance& srcConvert, SkScalar srcGamma,
-                                       const SkColorSpaceLuminance& dstConvert, SkScalar dstGamma);
+void SkTMaskGamma_build_correcting_lut(uint8_t table[256], U8CPU srcI, float contrast,
+                                       const SkColorSpaceLuminance& srcConvert, float srcGamma,
+                                       const SkColorSpaceLuminance& dstConvert, float dstGamma);
 
 /**
  * A regular mask contains linear alpha values. A gamma correcting mask
@@ -107,7 +106,7 @@ public:
      * @param paint The color space in which the paint color was chosen.
      * @param device The color space of the target device.
      */
-    SkTMaskGamma(SkScalar contrast, SkScalar paintGamma, SkScalar deviceGamma) : fIsLinear(false) {
+    SkTMaskGamma(float contrast, float paintGamma, float deviceGamma) : fIsLinear(false) {
         const SkColorSpaceLuminance& paintConvert = SkColorSpaceLuminance::Fetch(paintGamma);
         const SkColorSpaceLuminance& deviceConvert = SkColorSpaceLuminance::Fetch(deviceGamma);
         for (U8CPU i = 0; i < (1 << MAX_LUM_BITS); ++i) {

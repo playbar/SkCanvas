@@ -288,7 +288,10 @@ public:
      */
     bool decodeSubset(SkBitmap* bm, const SkIRect& subset, SkBitmap::Config pref);
 
-    SK_ATTR_DEPRECATED("use decodeSubset() instead")
+    /**
+     *  @Deprecated
+     *  Use decodeSubset instead.
+     */
     bool decodeRegion(SkBitmap* bitmap, const SkIRect& rect, SkBitmap::Config pref) {
         return this->decodeSubset(bitmap, rect, pref);
     }
@@ -518,7 +521,7 @@ public:
 // decoder implementation that registers with the decoder factory must call it.
 #define DEFINE_DECODER_CREATOR(codec)           \
     SkImageDecoder *Create ## codec () {        \
-        return SkNEW( Sk ## codec );            \
+        return new Sk ## codec;            \
     }
 
 // All the decoders known by Skia. Note that, depending on the compiler settings,

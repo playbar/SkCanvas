@@ -41,7 +41,7 @@ protected:
     void parseSVG();
     SkString d;
     SkTDPathPartArray fParts;
-    mutable SkScalar fLength;
+    mutable float fLength;
     SkDisplayable* fParent; // SkPolyToPoly or SkFromPath, for instance
     SkBool8 fChildHasID;
     SkBool8 fDirty;

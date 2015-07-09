@@ -34,7 +34,6 @@ void* PipeController::requestBlock(size_t minRequest, size_t *actual) {
 
 void PipeController::notifyWritten(size_t bytes) {
     fStatus = fReader.playback(this->getData(), bytes);
-    SkASSERT(SkGPipeReader::kError_Status != fStatus);
     fBytesWritten += bytes;
 }
 
@@ -53,8 +52,7 @@ TiledPipeController::TiledPipeController(const SkBitmap& bitmap,
         rect.setLTRB(0, top, bitmap.width(), bottom);
         top = bottom;
 
-        SkDEBUGCODE(bool extracted = )bitmap.extractSubset(&fBitmaps[i], rect);
-        SkASSERT(extracted);
+        bitmap.extractSubset(&fBitmaps[i], rect);
         SkBaseDevice* device = new SkBitmapDevice(fBitmaps[i]);
         SkCanvas* canvas = new SkCanvas(device);
         device->unref();

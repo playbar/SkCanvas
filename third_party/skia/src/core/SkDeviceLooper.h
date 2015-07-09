@@ -35,14 +35,10 @@ public:
     ~SkDeviceLooper();
 
     const SkBitmap& getBitmap() const {
-        SkASSERT(kDone_State != fState);
-        SkASSERT(fCurrBitmap);
         return *fCurrBitmap;
     }
 
     const SkRasterClip& getRC() const {
-        SkASSERT(kDone_State != fState);
-        SkASSERT(fCurrRC);
         return *fCurrRC;
     }
 

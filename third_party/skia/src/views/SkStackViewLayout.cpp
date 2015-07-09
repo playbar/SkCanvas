@@ -19,7 +19,6 @@ SkStackViewLayout::SkStackViewLayout()
 
 void SkStackViewLayout::setOrient(Orient ori)
 {
-    SkASSERT((unsigned)ori < kOrientCount);
     fOrient = SkToU8(ori);
 }
 
@@ -34,20 +33,18 @@ void SkStackViewLayout::setMargin(const SkRect& margin)
     fMargin = margin;
 }
 
-void SkStackViewLayout::setSpacer(SkScalar spacer)
+void SkStackViewLayout::setSpacer(float spacer)
 {
     fSpacer = spacer;
 }
 
 void SkStackViewLayout::setPack(Pack pack)
 {
-    SkASSERT((unsigned)pack < kPackCount);
     fPack = SkToU8(pack);
 }
 
 void SkStackViewLayout::setAlign(Align align)
 {
-    SkASSERT((unsigned)align < kAlignCount);
     fAlign = SkToU8(align);
 }
 
@@ -58,25 +55,25 @@ void SkStackViewLayout::setRound(bool r)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-typedef SkScalar (*AlignProc)(SkScalar childLimit, SkScalar parentLimit);
-typedef SkScalar (SkView::*GetSizeProc)() const;
-typedef void (SkView::*SetLocProc)(SkScalar coord);
-typedef void (SkView::*SetSizeProc)(SkScalar coord);
+typedef float (*AlignProc)(float childLimit, float parentLimit);
+typedef float (SkView::*GetSizeProc)() const;
+typedef void (SkView::*SetLocProc)(float coord);
+typedef void (SkView::*SetSizeProc)(float coord);
 
-static SkScalar left_align_proc(SkScalar childLimit, SkScalar parentLimit) { return 0; }
-static SkScalar center_align_proc(SkScalar childLimit, SkScalar parentLimit) { return SkScalarHalf(parentLimit - childLimit); }
-static SkScalar right_align_proc(SkScalar childLimit, SkScalar parentLimit) { return parentLimit - childLimit; }
-static SkScalar fill_align_proc(SkScalar childLimit, SkScalar parentLimit) { return 0; }
+static float left_align_proc(float childLimit, float parentLimit) { return 0; }
+static float center_align_proc(float childLimit, float parentLimit) { return SkScalarHalf(parentLimit - childLimit); }
+static float right_align_proc(float childLimit, float parentLimit) { return parentLimit - childLimit; }
+static float fill_align_proc(float childLimit, float parentLimit) { return 0; }
 
 /*    Measure the main-dimension for all the children. If a child is marked flex in that direction
     ignore its current value but increment the counter for flexChildren
 */
-static SkScalar compute_children_limit(SkView* parent, GetSizeProc sizeProc, int* count,
+static float compute_children_limit(SkView* parent, GetSizeProc sizeProc, int* count,
                                        uint32_t flexMask, int* flexCount)
 {
     SkView::B2FIter    iter(parent);
     SkView*            child;
-    SkScalar        limit = 0;
+    float        limit = 0;
     int                n = 0, flex = 0;
 
     while ((child = iter.next()) != NULL)
@@ -103,7 +100,7 @@ void SkStackViewLayout::onLayoutChildren(SkView* parent)
         fill_align_proc
     };
 
-    SkScalar            startM, endM, crossStartM, crossLimit;
+    float            startM, endM, crossStartM, crossLimit;
     GetSizeProc            mainGetSizeP, crossGetSizeP;
     SetLocProc            mainLocP, crossLocP;
     SetSizeProc            mainSetSizeP, crossSetSizeP;
@@ -148,16 +145,16 @@ void SkStackViewLayout::onLayoutChildren(SkView* parent)
         crossSetSizeP = NULL;
 
     int            childCount, flexCount;
-    SkScalar    childLimit = compute_children_limit(parent, mainGetSizeP, &childCount, flexMask, &flexCount);
+    float    childLimit = compute_children_limit(parent, mainGetSizeP, &childCount, flexMask, &flexCount);
 
     if (childCount == 0)
         return;
 
     childLimit += (childCount - 1) * fSpacer;
 
-    SkScalar        parentLimit = (parent->*mainGetSizeP)() - startM - endM;
-    SkScalar        pos = startM + gAlignProcs[fPack](childLimit, parentLimit);
-    SkScalar        flexAmount = 0;
+    float        parentLimit = (parent->*mainGetSizeP)() - startM - endM;
+    float        pos = startM + gAlignProcs[fPack](childLimit, parentLimit);
+    float        flexAmount = 0;
     SkView::B2FIter    iter(parent);
     SkView*            child;
 
@@ -169,7 +166,7 @@ void SkStackViewLayout::onLayoutChildren(SkView* parent)
         if (fRound)
             pos = SkScalarRoundToScalar(pos);
         (child->*mainLocP)(pos);
-        SkScalar crossLoc = crossStartM + gAlignProcs[fAlign]((child->*crossGetSizeP)(), crossLimit);
+        float crossLoc = crossStartM + gAlignProcs[fAlign]((child->*crossGetSizeP)(), crossLimit);
         if (fRound)
             crossLoc = SkScalarRoundToScalar(crossLoc);
         (child->*crossLocP)(crossLoc);
@@ -198,7 +195,7 @@ void SkStackViewLayout::onLayoutChildren(SkView* parent)
 void SkStackViewLayout::onInflate(const SkDOM& dom, const SkDOM::Node* node)
 {
     int            index;
-    SkScalar    value[4];
+    float    value[4];
 
     if ((index = dom.findList(node, "orient", "horizontal,vertical")) >= 0)
         this->setOrient((Orient)index);
@@ -269,5 +266,5 @@ void SkFillViewLayout::onLayoutChildren(SkView* parent)
 void SkFillViewLayout::onInflate(const SkDOM& dom, const SkDOM::Node* node)
 {
     this->INHERITED::onInflate(dom, node);
-    (void)dom.findScalars(node, "margin", (SkScalar*)&fMargin, 4);
+    (void)dom.findScalars(node, "margin", (float*)&fMargin, 4);
 }

@@ -147,7 +147,7 @@ public:
         @param y The y-position of the mouse
         @return true if the event was dispatched successfully.
     */
-    bool doClickEvent(int state, SkScalar x, SkScalar y);
+    bool doClickEvent(int state, float x, float y);
 
     /** Pass a meta-key event, such as an arrow , to the animator.
         This triggers events of the form <event kind="keyPress" code="... />
@@ -203,7 +203,7 @@ public:
         @param y ignored
         @return true if a mouseDown event handler is enabled.
     */
-    bool findClickEvent(SkScalar x, SkScalar y);
+    bool findClickEvent(float x, float y);
 
 
     /** Get the nested animator associated with this element, if any.
@@ -235,7 +235,7 @@ public:
         @param index the array entry
         @return the scalar value to retrieve, or SK_ScalarNaN if unsuccessful
     */
-    SkScalar getArrayScalar(const SkDisplayable* element, const SkMemberInfo* field, int index);
+    float getArrayScalar(const SkDisplayable* element, const SkMemberInfo* field, int index);
 
     /** Returns the scalar value of the specified element's attribute[index]
         @param elementID is the value of the id attribute in the XML of this element
@@ -243,7 +243,7 @@ public:
         @param index the array entry
         @return the scalar value to retrieve, or SK_ScalarNaN if unsuccessful
     */
-    SkScalar getArrayScalar(const char* elementID, const char* fieldName, int index);
+    float getArrayScalar(const char* elementID, const char* fieldName, int index);
 
     /** Returns the string value of the specified element's attribute[index]
         @param element is a value returned by getElement
@@ -344,14 +344,14 @@ public:
         @param field is a value returned by getField
         @return the scalar value to retrieve, or SK_ScalarNaN if not found
     */
-    SkScalar getScalar(const SkDisplayable* element, const SkMemberInfo* field);
+    float getScalar(const SkDisplayable* element, const SkMemberInfo* field);
 
     /** Returns the scalar value of the specified element's attribute
         @param elementID is the value of the id attribute in the XML of this element
         @param fieldName specifies the name of the attribute
         @return the scalar value to retrieve, or SK_ScalarNaN if not found
     */
-    SkScalar getScalar(const char* elementID, const char* fieldName);
+    float getScalar(const char* elementID, const char* fieldName);
 
     /** Returns the string value of the specified element's attribute
         @param element is a value returned by getElement
@@ -409,7 +409,7 @@ public:
         @param data the scalar value to set
         @return true if the value was set successfully
     */
-    bool setScalar(const char* elementID, const char* fieldName, SkScalar data);
+    bool setScalar(const char* elementID, const char* fieldName, float data);
 
     /** Sets the string value of the specified element's attribute
         @param elementID is the value of the id attribute in the XML of this element
@@ -482,7 +482,7 @@ private:
     bool setArray(SkDisplayable* element, const SkMemberInfo* field, SkTypedArray array);
     bool setArray(const char* elementID, const char* fieldName, SkTypedArray array);
     bool setInt(SkDisplayable* element, const SkMemberInfo* field, int32_t data);
-    bool setScalar(SkDisplayable* element, const SkMemberInfo* field, SkScalar data);
+    bool setScalar(SkDisplayable* element, const SkMemberInfo* field, float data);
     bool setString(SkDisplayable* element, const SkMemberInfo* field, const char* data);
 
     virtual bool onEvent(const SkEvent&);

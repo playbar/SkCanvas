@@ -97,7 +97,6 @@ public:
     virtual ~SkAAClipBlitter();
 
     void init(SkBlitter* blitter, const SkAAClip* aaclip) {
-        SkASSERT(aaclip && !aaclip->isEmpty());
         fBlitter = blitter;
         fAAClip = aaclip;
         fAAClipBounds = aaclip->getBounds();

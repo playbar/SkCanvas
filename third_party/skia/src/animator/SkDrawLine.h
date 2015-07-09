@@ -18,10 +18,10 @@ class SkLine : public SkBoundable {
     SkLine();
     virtual bool draw(SkAnimateMaker& );
 private:
-    SkScalar x1;
-    SkScalar x2;
-    SkScalar y1;
-    SkScalar y2;
+    float x1;
+    float x2;
+    float y1;
+    float y2;
     typedef SkBoundable INHERITED;
 };
 

@@ -23,7 +23,6 @@ DEFINE_GET_MEMBER(SkDataInput);
 SkDataInput::SkDataInput() : fParent(NULL) {}
 
 bool SkDataInput::add() {
-    SkASSERT(name.size() > 0);
     const char* dataName = name.c_str();
     if (fInt != (int) SK_NaN32)
         fParent->fEvent.setS32(dataName, fInt);
@@ -31,8 +30,6 @@ bool SkDataInput::add() {
         fParent->fEvent.setScalar(dataName, fFloat);
     else if (string.size() > 0)
         fParent->fEvent.setString(dataName, string);
-//  else
-//      SkASSERT(0);
     return false;
 }
 

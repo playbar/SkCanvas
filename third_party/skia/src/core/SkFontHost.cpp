@@ -73,10 +73,8 @@ class SkEmptyFontStyleSet : public SkFontStyleSet {
 public:
     virtual int count() SK_OVERRIDE { return 0; }
     virtual void getStyle(int, SkFontStyle*, SkString*) SK_OVERRIDE {
-        SkDEBUGFAIL("SkFontStyleSet::getStyle called on empty set");
     }
     virtual SkTypeface* createTypeface(int index) SK_OVERRIDE {
-        SkDEBUGFAIL("SkFontStyleSet::createTypeface called on empty set");
         return NULL;
     }
     virtual SkTypeface* matchStyle(const SkFontStyle&) SK_OVERRIDE {
@@ -85,45 +83,43 @@ public:
 };
 
 SkFontStyleSet* SkFontStyleSet::CreateEmpty() {
-    return SkNEW(SkEmptyFontStyleSet);
+    return new SkEmptyFontStyleSet;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 class SkEmptyFontMgr : public SkFontMgr {
 protected:
-    virtual int onCountFamilies() const SK_OVERRIDE {
+    virtual int onCountFamilies() SK_OVERRIDE {
         return 0;
     }
-    virtual void onGetFamilyName(int index, SkString* familyName) const SK_OVERRIDE {
-        SkDEBUGFAIL("onGetFamilyName called with bad index");
+    virtual void onGetFamilyName(int index, SkString* familyName) SK_OVERRIDE {
     }
-    virtual SkFontStyleSet* onCreateStyleSet(int index) const SK_OVERRIDE {
-        SkDEBUGFAIL("onCreateStyleSet called with bad index");
+    virtual SkFontStyleSet* onCreateStyleSet(int index) SK_OVERRIDE {
         return NULL;
     }
-    virtual SkFontStyleSet* onMatchFamily(const char[]) const SK_OVERRIDE {
+    virtual SkFontStyleSet* onMatchFamily(const char[]) SK_OVERRIDE {
         return SkFontStyleSet::CreateEmpty();
     }
 
     virtual SkTypeface* onMatchFamilyStyle(const char[],
-                                           const SkFontStyle&) const SK_OVERRIDE {
+                                           const SkFontStyle&) SK_OVERRIDE {
         return NULL;
     }
     virtual SkTypeface* onMatchFaceStyle(const SkTypeface*,
-                                         const SkFontStyle&) const SK_OVERRIDE {
+                                         const SkFontStyle&) SK_OVERRIDE {
         return NULL;
     }
-    virtual SkTypeface* onCreateFromData(SkData*, int) const SK_OVERRIDE {
+    virtual SkTypeface* onCreateFromData(SkData*, int) SK_OVERRIDE {
         return NULL;
     }
-    virtual SkTypeface* onCreateFromStream(SkStream*, int) const SK_OVERRIDE {
+    virtual SkTypeface* onCreateFromStream(SkStream*, int) SK_OVERRIDE {
         return NULL;
     }
-    virtual SkTypeface* onCreateFromFile(const char[], int) const SK_OVERRIDE {
+    virtual SkTypeface* onCreateFromFile(const char[], int) SK_OVERRIDE {
         return NULL;
     }
-    virtual SkTypeface* onLegacyCreateTypeface(const char [], unsigned) const SK_OVERRIDE {
+    virtual SkTypeface* onLegacyCreateTypeface(const char [], unsigned) SK_OVERRIDE {
         return NULL;
     }
 };
@@ -135,47 +131,47 @@ static SkFontStyleSet* emptyOnNull(SkFontStyleSet* fsset) {
     return fsset;
 }
 
-int SkFontMgr::countFamilies() const {
+int SkFontMgr::countFamilies() {
     return this->onCountFamilies();
 }
 
-void SkFontMgr::getFamilyName(int index, SkString* familyName) const {
+void SkFontMgr::getFamilyName(int index, SkString* familyName) {
     this->onGetFamilyName(index, familyName);
 }
 
-SkFontStyleSet* SkFontMgr::createStyleSet(int index) const {
+SkFontStyleSet* SkFontMgr::createStyleSet(int index) {
     return emptyOnNull(this->onCreateStyleSet(index));
 }
 
-SkFontStyleSet* SkFontMgr::matchFamily(const char familyName[]) const {
+SkFontStyleSet* SkFontMgr::matchFamily(const char familyName[]) {
     return emptyOnNull(this->onMatchFamily(familyName));
 }
 
 SkTypeface* SkFontMgr::matchFamilyStyle(const char familyName[],
-                                        const SkFontStyle& fs) const {
+                                        const SkFontStyle& fs) {
     return this->onMatchFamilyStyle(familyName, fs);
 }
 
 SkTypeface* SkFontMgr::matchFaceStyle(const SkTypeface* face,
-                                      const SkFontStyle& fs) const {
+                                      const SkFontStyle& fs) {
     return this->onMatchFaceStyle(face, fs);
 }
 
-SkTypeface* SkFontMgr::createFromData(SkData* data, int ttcIndex) const {
+SkTypeface* SkFontMgr::createFromData(SkData* data, int ttcIndex) {
     if (NULL == data) {
         return NULL;
     }
     return this->onCreateFromData(data, ttcIndex);
 }
 
-SkTypeface* SkFontMgr::createFromStream(SkStream* stream, int ttcIndex) const {
+SkTypeface* SkFontMgr::createFromStream(SkStream* stream, int ttcIndex) {
     if (NULL == stream) {
         return NULL;
     }
     return this->onCreateFromStream(stream, ttcIndex);
 }
 
-SkTypeface* SkFontMgr::createFromFile(const char path[], int ttcIndex) const {
+SkTypeface* SkFontMgr::createFromFile(const char path[], int ttcIndex) {
     if (NULL == path) {
         return NULL;
     }
@@ -183,7 +179,7 @@ SkTypeface* SkFontMgr::createFromFile(const char path[], int ttcIndex) const {
 }
 
 SkTypeface* SkFontMgr::legacyCreateTypeface(const char familyName[],
-                                            unsigned styleBits) const {
+                                            unsigned styleBits) {
     return this->onLegacyCreateTypeface(familyName, styleBits);
 }
 
@@ -191,7 +187,7 @@ void set_up_default(SkFontMgr** singleton) {
   *singleton = SkFontMgr::Factory();
   // we never want to return NULL
   if (NULL == *singleton) {
-      *singleton = SkNEW(SkEmptyFontMgr);
+      *singleton = new SkEmptyFontMgr;
   }
 }
 

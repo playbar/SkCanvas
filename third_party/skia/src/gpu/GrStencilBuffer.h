@@ -17,7 +17,8 @@ class GrRenderTarget;
 class GrResourceEntry;
 class GrResourceKey;
 
-class GrStencilBuffer : public GrResource {
+class GrStencilBuffer : public GrResource
+{
 public:
     SK_DECLARE_INST_COUNT(GrStencilBuffer);
 

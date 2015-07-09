@@ -53,7 +53,6 @@ public:
     Row fRows[16];
 
     static int HeightToRowIndex(int height) {
-        SkASSERT(height >= MIN_HEIGHT_POW2);
         return 32 - SkCLZ(height - 1);
     }
 
@@ -90,7 +89,6 @@ bool GrRectanizerPow2::addRect(int width, int height, GrIPoint16* loc) {
     }
 
     Row* row = &fRows[HeightToRowIndex(height)];
-    SkASSERT(row->fRowHeight == 0 || row->fRowHeight == height);
 
     if (0 == row->fRowHeight) {
         if (!this->canAddStrip(height)) {
@@ -108,14 +106,9 @@ bool GrRectanizerPow2::addRect(int width, int height, GrIPoint16* loc) {
         }
     }
 
-    SkASSERT(row->fRowHeight == height);
-    SkASSERT(row->canAddWidth(width, this->width()));
     *loc = row->fLoc;
     row->fLoc.fX += width;
 
-    SkASSERT(row->fLoc.fX <= this->width());
-    SkASSERT(row->fLoc.fY <= this->height());
-    SkASSERT(fNextStripY <= this->height());
     fAreaSoFar += area;
     return true;
 }

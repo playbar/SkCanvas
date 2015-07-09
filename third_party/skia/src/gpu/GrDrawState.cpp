@@ -27,7 +27,6 @@ bool GrDrawState::setIdentityViewMatrix()  {
 }
 
 void GrDrawState::setFromPaint(const GrPaint& paint, const SkMatrix& vm, GrRenderTarget* rt) {
-    SkASSERT(0 == fBlockEffectRemovalCnt || 0 == this->numTotalStages());
 
     fColorStages.reset();
     fCoverageStages.reset();
@@ -65,21 +64,10 @@ void GrDrawState::setFromPaint(const GrPaint& paint, const SkMatrix& vm, GrRende
 
 static size_t vertex_size(const GrVertexAttrib* attribs, int count) {
     // this works as long as we're 4 byte-aligned
-#ifdef SK_DEBUG
-    uint32_t overlapCheck = 0;
-#endif
-    SkASSERT(count <= GrDrawState::kMaxVertexAttribCnt);
     size_t size = 0;
     for (int index = 0; index < count; ++index) {
         size_t attribSize = GrVertexAttribTypeSize(attribs[index].fType);
         size += attribSize;
-#ifdef SK_DEBUG
-        size_t dwordCount = attribSize >> 2;
-        uint32_t mask = (1 << dwordCount)-1;
-        size_t offsetShift = attribs[index].fOffset >> 2;
-        SkASSERT(!(overlapCheck & (mask << offsetShift)));
-        overlapCheck |= (mask << offsetShift);
-#endif
     }
     return size;
 }
@@ -91,8 +79,6 @@ size_t GrDrawState::getVertexSize() const {
 ////////////////////////////////////////////////////////////////////////////////
 
 void GrDrawState::setVertexAttribs(const GrVertexAttrib* attribs, int count) {
-    SkASSERT(count <= kMaxVertexAttribCnt);
-
     fCommon.fVAPtr = attribs;
     fCommon.fVACount = count;
 
@@ -100,27 +86,14 @@ void GrDrawState::setVertexAttribs(const GrVertexAttrib* attribs, int count) {
     memset(fCommon.fFixedFunctionVertexAttribIndices,
            0xff,
            sizeof(fCommon.fFixedFunctionVertexAttribIndices));
-#ifdef SK_DEBUG
-    uint32_t overlapCheck = 0;
-#endif
+
     for (int i = 0; i < count; ++i) {
         if (attribs[i].fBinding < kGrFixedFunctionVertexAttribBindingCnt) {
             // The fixed function attribs can only be specified once
-            SkASSERT(-1 == fCommon.fFixedFunctionVertexAttribIndices[attribs[i].fBinding]);
-            SkASSERT(GrFixedFunctionVertexAttribVectorCount(attribs[i].fBinding) ==
-                     GrVertexAttribTypeVectorCount(attribs[i].fType));
             fCommon.fFixedFunctionVertexAttribIndices[attribs[i].fBinding] = i;
         }
-#ifdef SK_DEBUG
-        size_t dwordCount = GrVertexAttribTypeSize(attribs[i].fType) >> 2;
-        uint32_t mask = (1 << dwordCount)-1;
-        size_t offsetShift = attribs[i].fOffset >> 2;
-        SkASSERT(!(overlapCheck & (mask << offsetShift)));
-        overlapCheck |= (mask << offsetShift);
-#endif
     }
     // Positions must be specified.
-    SkASSERT(-1 != fCommon.fFixedFunctionVertexAttribIndices[kPosition_GrVertexAttribBinding]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +125,6 @@ bool GrDrawState::validateVertexAttribs() const {
         int covIdx = s - fColorStages.count();
         const GrEffectStage& stage = covIdx < 0 ? fColorStages[s] : fCoverageStages[covIdx];
         const GrEffectRef* effect = stage.getEffect();
-        SkASSERT(NULL != effect);
         // make sure that any attribute indices have the correct binding type, that the attrib
         // type and effect's shader lang type are compatible, and that attributes shared by
         // multiple effects use the same shader lang type.
@@ -393,9 +365,7 @@ void GrDrawState::AutoViewMatrixRestore::restore() {
     if (NULL != fDrawState) {
         SkDEBUGCODE(--fDrawState->fBlockEffectRemovalCnt;)
         fDrawState->fCommon.fViewMatrix = fViewMatrix;
-        SkASSERT(fDrawState->numColorStages() >= fNumColorStages);
         int numCoverageStages = fSavedCoordChanges.count() - fNumColorStages;
-        SkASSERT(fDrawState->numCoverageStages() >= numCoverageStages);
 
         int i = 0;
         for (int s = 0; s < fNumColorStages; ++s, ++i) {
@@ -412,7 +382,6 @@ void GrDrawState::AutoViewMatrixRestore::set(GrDrawState* drawState,
                                              const SkMatrix& preconcatMatrix) {
     this->restore();
 
-    SkASSERT(NULL == fDrawState);
     if (NULL == drawState || preconcatMatrix.isIdentity()) {
         return;
     }

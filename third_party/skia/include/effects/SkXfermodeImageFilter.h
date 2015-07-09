@@ -21,13 +21,10 @@ class SK_API SkXfermodeImageFilter : public SkImageFilter {
       */
 
 public:
-    virtual ~SkXfermodeImageFilter();
+    SkXfermodeImageFilter(SkXfermode* mode, SkImageFilter* background,
+                          SkImageFilter* foreground = NULL, const CropRect* cropRect = NULL);
 
-    static SkXfermodeImageFilter* Create(SkXfermode* mode, SkImageFilter* background,
-                                         SkImageFilter* foreground = NULL,
-                                         const CropRect* cropRect = NULL) {
-        return SkNEW_ARGS(SkXfermodeImageFilter, (mode, background, foreground, cropRect));
-    }
+    virtual ~SkXfermodeImageFilter();
 
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkXfermodeImageFilter)
 
@@ -35,22 +32,16 @@ public:
                                const SkBitmap& src,
                                const SkMatrix& ctm,
                                SkBitmap* dst,
-                               SkIPoint* offset) const SK_OVERRIDE;
+                               SkIPoint* offset) SK_OVERRIDE;
 #if SK_SUPPORT_GPU
     virtual bool canFilterImageGPU() const SK_OVERRIDE { return !cropRectIsSet(); }
     virtual bool filterImageGPU(Proxy* proxy, const SkBitmap& src, const SkMatrix& ctm,
-                                SkBitmap* result, SkIPoint* offset) const SK_OVERRIDE;
+                                SkBitmap* result, SkIPoint* offset) SK_OVERRIDE;
 #endif
 
 protected:
-    explicit SkXfermodeImageFilter(SkReadBuffer& buffer);
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
-
-#ifdef SK_SUPPORT_LEGACY_PUBLICEFFECTCONSTRUCTORS
-public:
-#endif
-    SkXfermodeImageFilter(SkXfermode* mode, SkImageFilter* background,
-                          SkImageFilter* foreground = NULL, const CropRect* cropRect = NULL);
+    explicit SkXfermodeImageFilter(SkFlattenableReadBuffer& buffer);
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
 
 private:
     SkXfermode* fMode;

@@ -31,7 +31,7 @@ public:
                              const SkVector& beforeUnitNormal,
                              const SkPoint& pivot,
                              const SkVector& afterUnitNormal,
-                             SkScalar radius, SkScalar invMiterLimit,
+                             float radius, float invMiterLimit,
                              bool prevIsLine, bool currIsLine);
 
     static CapProc  CapFactory(SkPaint::Cap);

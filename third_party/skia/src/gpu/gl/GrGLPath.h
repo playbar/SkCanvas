@@ -10,7 +10,7 @@
 #define GrGLPath_DEFINED
 
 #include "../GrPath.h"
-#include "gl/GrGLFunctions.h"
+#include "gl/glew.h"
 
 class GrGpuGL;
 
@@ -20,11 +20,12 @@ class GrGpuGL;
  * and/or be subclassed.
  */
 
-class GrGLPath : public GrPath {
+class GrGLPath : public GrPath 
+{
 public:
     GrGLPath(GrGpuGL* gpu, const SkPath& path, const SkStrokeRec& stroke);
     virtual ~GrGLPath();
-    GrGLuint pathID() const { return fPathID; }
+    GLuint pathID() const { return fPathID; }
     // TODO: Figure out how to get an approximate size of the path in Gpu
     // memory.
     virtual size_t sizeInBytes() const SK_OVERRIDE { return 100; }
@@ -34,7 +35,7 @@ protected:
     virtual void onAbandon() SK_OVERRIDE;
 
 private:
-    GrGLuint fPathID;
+    GLuint fPathID;
 
     typedef GrPath INHERITED;
 };

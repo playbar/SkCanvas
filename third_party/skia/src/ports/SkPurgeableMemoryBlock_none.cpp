@@ -26,7 +26,6 @@ bool SkPurgeableMemoryBlock::purge() {
 #endif
 
 SkPurgeableMemoryBlock::SkPurgeableMemoryBlock(size_t size) {
-    SkASSERT(false);
 }
 
 SkPurgeableMemoryBlock::~SkPurgeableMemoryBlock() {

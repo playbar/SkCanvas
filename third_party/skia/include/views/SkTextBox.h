@@ -48,21 +48,21 @@ public:
 
     void    getBox(SkRect*) const;
     void    setBox(const SkRect&);
-    void    setBox(SkScalar left, SkScalar top, SkScalar right, SkScalar bottom);
+    void    setBox(float left, float top, float right, float bottom);
 
-    void    getSpacing(SkScalar* mul, SkScalar* add) const;
-    void    setSpacing(SkScalar mul, SkScalar add);
+    void    getSpacing(float* mul, float* add) const;
+    void    setSpacing(float mul, float add);
 
     void    draw(SkCanvas*, const char text[], size_t len, const SkPaint&);
 
     void    setText(const char text[], size_t len, const SkPaint&);
     void    draw(SkCanvas*);
     int     countLines() const;
-    SkScalar getTextHeight() const;
+    float getTextHeight() const;
 
 private:
     SkRect      fBox;
-    SkScalar    fSpacingMul, fSpacingAdd;
+    float    fSpacingMul, fSpacingAdd;
     uint8_t     fMode, fSpacingAlign;
     const char* fText;
     size_t      fLen;
@@ -71,7 +71,7 @@ private:
 
 class SkTextLineBreaker {
 public:
-    static int CountLines(const char text[], size_t len, const SkPaint&, SkScalar width);
+    static int CountLines(const char text[], size_t len, const SkPaint&, float width);
 };
 
 #endif

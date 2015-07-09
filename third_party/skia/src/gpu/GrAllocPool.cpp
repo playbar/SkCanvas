@@ -11,14 +11,14 @@
 
 #define GrAllocPool_MIN_BLOCK_SIZE      ((size_t)128)
 
-struct GrAllocPool::Block {
+struct GrAllocPool::Block 
+{
     Block*  fNext;
     char*   fPtr;
     size_t  fBytesFree;
     size_t  fBytesTotal;
 
     static Block* Create(size_t size, Block* next) {
-        SkASSERT(size >= GrAllocPool_MIN_BLOCK_SIZE);
 
         Block* block = (Block*)sk_malloc_throw(sizeof(Block) + size);
         block->fNext = next;
@@ -28,12 +28,12 @@ struct GrAllocPool::Block {
         return block;
     }
 
-    bool canAlloc(size_t bytes) const {
+    bool canAlloc(size_t bytes) const 
+	{
         return bytes <= fBytesFree;
     }
 
     void* alloc(size_t bytes) {
-        SkASSERT(bytes <= fBytesFree);
         fBytesFree -= bytes;
         void* ptr = fPtr;
         fPtr += bytes;
@@ -41,7 +41,6 @@ struct GrAllocPool::Block {
     }
 
     size_t release(size_t bytes) {
-        SkASSERT(bytes > 0);
         size_t free = GrMin(bytes, fBytesTotal - fBytesFree);
         fBytesFree += free;
         fPtr -= free;
@@ -110,7 +109,6 @@ void GrAllocPool::validate() const {
         count += 1;
         block = block->fNext;
     }
-    SkASSERT(fBlocksAllocated == count);
 }
 
 #endif

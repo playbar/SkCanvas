@@ -2,8 +2,7 @@
 #include "SkBitmap.h"
 #include "SkTableColorFilter.h"
 #include "SkColorPriv.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkUnPreMultiply.h"
 #include "SkString.h"
 
@@ -49,7 +48,7 @@ public:
     virtual void filterSpan(const SkPMColor src[], int count,
                             SkPMColor dst[]) const SK_OVERRIDE;
 
-    SK_TO_STRING_OVERRIDE()
+    SkDEVCODE(virtual void toString(SkString* str) const SK_OVERRIDE;)
 
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkTable_ColorFilter)
 
@@ -61,8 +60,8 @@ public:
     };
 
 protected:
-    SkTable_ColorFilter(SkReadBuffer& buffer);
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
+    SkTable_ColorFilter(SkFlattenableReadBuffer& buffer);
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
 
 private:
     mutable const SkBitmap* fBitmap; // lazily allocated
@@ -152,7 +151,7 @@ void SkTable_ColorFilter::filterSpan(const SkPMColor src[], int count,
     }
 }
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkTable_ColorFilter::toString(SkString* str) const {
     str->append("SkTable_ColorFilter");
 }
@@ -167,13 +166,12 @@ static const uint8_t gCountNibBits[] = {
 
 #include "SkPackBits.h"
 
-void SkTable_ColorFilter::flatten(SkWriteBuffer& buffer) const {
+void SkTable_ColorFilter::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
 
     uint8_t storage[5*256];
     int count = gCountNibBits[fFlags & 0xF];
     size_t size = SkPackBits::Pack8(fStorage, count * 256, storage);
-    SkASSERT(size <= sizeof(storage));
 
 //    SkDebugf("raw %d packed %d\n", count * 256, size);
 
@@ -181,7 +179,7 @@ void SkTable_ColorFilter::flatten(SkWriteBuffer& buffer) const {
     buffer.writeByteArray(storage, size);
 }
 
-SkTable_ColorFilter::SkTable_ColorFilter(SkReadBuffer& buffer) : INHERITED(buffer) {
+SkTable_ColorFilter::SkTable_ColorFilter(SkFlattenableReadBuffer& buffer) : INHERITED(buffer) {
     fBitmap = NULL;
 
     uint8_t storage[5*256];
@@ -189,22 +187,19 @@ SkTable_ColorFilter::SkTable_ColorFilter(SkReadBuffer& buffer) : INHERITED(buffe
     fFlags = buffer.readInt();
 
     size_t size = buffer.getArrayCount();
-    SkASSERT(size <= sizeof(storage));
     buffer.validate(size <= sizeof(storage));
     buffer.readByteArray(storage, size);
 
-    SkDEBUGCODE(size_t raw = ) SkPackBits::Unpack8(storage, size, fStorage);
+    SkPackBits::Unpack8(storage, size, fStorage);
 
-    SkASSERT(raw <= sizeof(fStorage));
-    SkDEBUGCODE(size_t count = gCountNibBits[fFlags & 0xF]);
-    SkASSERT(raw == count * 256);
 }
 
 bool SkTable_ColorFilter::asComponentTable(SkBitmap* table) const {
     if (table) {
         if (NULL == fBitmap) {
             SkBitmap* bmp = SkNEW(SkBitmap);
-            bmp->allocPixels(SkImageInfo::MakeA8(256, 4));
+            bmp->setConfig(SkBitmap::kA8_Config, 256, 4, 256);
+            bmp->allocPixels();
             uint8_t* bitmapPixels = bmp->getAddr8(0, 0);
             int offset = 0;
             static const unsigned kFlags[] = { kA_Flag, kR_Flag, kG_Flag, kB_Flag };

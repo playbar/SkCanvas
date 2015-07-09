@@ -27,7 +27,7 @@ SkDrawCommand::~SkDrawCommand() {
 
 const char* SkDrawCommand::GetCommandString(DrawType type) {
     switch (type) {
-        case UNUSED: SkDEBUGFAIL("DrawType UNUSED\n"); break;
+        case UNUSED: break;
         case DRAW_CLEAR: return "Clear";
         case CLIP_PATH: return "Clip Path";
         case CLIP_REGION: return "Clip Region";
@@ -64,15 +64,10 @@ const char* SkDrawCommand::GetCommandString(DrawType type) {
         case BEGIN_COMMENT_GROUP: return "BeginCommentGroup";
         case COMMENT: return "Comment";
         case END_COMMENT_GROUP: return "EndCommentGroup";
-        case DRAW_DRRECT: return "Draw DRRect";
-        case PUSH_CULL: return "PushCull";
-        case POP_CULL: return "PopCull";
         default:
             SkDebugf("DrawType error 0x%08x\n", type);
-            SkASSERT(0);
             break;
     }
-    SkDEBUGFAIL("DrawType UNUSED\n");
     return NULL;
 }
 
@@ -95,7 +90,7 @@ namespace {
 void xlate_and_scale_to_bounds(SkCanvas* canvas, const SkRect& bounds) {
     const SkISize& size = canvas->getDeviceSize();
 
-    static const SkScalar kInsetFrac = 0.9f; // Leave a border around object
+    static const float kInsetFrac = 0.9f; // Leave a border around object
 
     canvas->translate(size.fWidth/2.0f, size.fHeight/2.0f);
     if (bounds.width() > bounds.height()) {
@@ -128,8 +123,8 @@ void render_path(SkCanvas* canvas, const SkPath& path) {
 void render_bitmap(SkCanvas* canvas, const SkBitmap& input, const SkRect* srcRect = NULL) {
     const SkISize& size = canvas->getDeviceSize();
 
-    SkScalar xScale = SkIntToScalar(size.fWidth-2) / input.width();
-    SkScalar yScale = SkIntToScalar(size.fHeight-2) / input.height();
+    float xScale = SkIntToScalar(size.fWidth-2) / input.width();
+    float yScale = SkIntToScalar(size.fHeight-2) / input.height();
 
     if (input.width() > input.height()) {
         yScale *= input.height() / (float) input.width();
@@ -170,22 +165,6 @@ void render_rrect(SkCanvas* canvas, const SkRRect& rrect) {
     p.setStyle(SkPaint::kStroke_Style);
 
     canvas->drawRRect(rrect, p);
-    canvas->restore();
-}
-
-void render_drrect(SkCanvas* canvas, const SkRRect& outer, const SkRRect& inner) {
-    canvas->clear(0xFFFFFFFF);
-    canvas->save();
-
-    const SkRect& bounds = outer.getBounds();
-
-    xlate_and_scale_to_bounds(canvas, bounds);
-
-    SkPaint p;
-    p.setColor(SK_ColorBLACK);
-    p.setStyle(SkPaint::kStroke_Style);
-
-    canvas->drawDRRect(outer, inner, p);
     canvas->restore();
 }
 
@@ -271,7 +250,7 @@ void SkConcatCommand::execute(SkCanvas* canvas) {
     canvas->concat(fMatrix);
 }
 
-SkDrawBitmapCommand::SkDrawBitmapCommand(const SkBitmap& bitmap, SkScalar left, SkScalar top,
+SkDrawBitmapCommand::SkDrawBitmapCommand(const SkBitmap& bitmap, float left, float top,
                        const SkPaint* paint) {
     fBitmap = bitmap;
     fLeft = left;
@@ -597,7 +576,7 @@ void SkDrawPosTextCommand::execute(SkCanvas* canvas) {
 
 
 SkDrawPosTextHCommand::SkDrawPosTextHCommand(const void* text, size_t byteLength,
-                                             const SkScalar xpos[], SkScalar constY,
+                                             const float xpos[], float constY,
                                              const SkPaint& paint) {
     size_t numPts = paint.countText(text, byteLength);
 
@@ -605,8 +584,8 @@ SkDrawPosTextHCommand::SkDrawPosTextHCommand(const void* text, size_t byteLength
     memcpy(fText, text, byteLength);
     fByteLength = byteLength;
 
-    fXpos = new SkScalar[numPts];
-    memcpy(fXpos, xpos, numPts * sizeof(SkScalar));
+    fXpos = new float[numPts];
+    memcpy(fXpos, xpos, numPts * sizeof(float));
 
     fConstY = constY;
     fPaint = paint;
@@ -653,28 +632,6 @@ bool SkDrawRRectCommand::render(SkCanvas* canvas) const {
     return true;
 }
 
-SkDrawDRRectCommand::SkDrawDRRectCommand(const SkRRect& outer,
-                                         const SkRRect& inner,
-                                         const SkPaint& paint) {
-    fOuter = outer;
-    fInner = inner;
-    fPaint = paint;
-    fDrawType = DRAW_DRRECT;
-
-    fInfo.push(SkObjectParser::RRectToString(outer));
-    fInfo.push(SkObjectParser::RRectToString(inner));
-    fInfo.push(SkObjectParser::PaintToString(paint));
-}
-
-void SkDrawDRRectCommand::execute(SkCanvas* canvas) {
-    canvas->drawDRRect(fOuter, fInner, fPaint);
-}
-
-bool SkDrawDRRectCommand::render(SkCanvas* canvas) const {
-    render_drrect(canvas, fOuter, fInner);
-    return true;
-}
-
 SkDrawSpriteCommand::SkDrawSpriteCommand(const SkBitmap& bitmap, int left, int top,
                                          const SkPaint* paint) {
     fBitmap = bitmap;
@@ -705,7 +662,7 @@ bool SkDrawSpriteCommand::render(SkCanvas* canvas) const {
     return true;
 }
 
-SkDrawTextCommand::SkDrawTextCommand(const void* text, size_t byteLength, SkScalar x, SkScalar y,
+SkDrawTextCommand::SkDrawTextCommand(const void* text, size_t byteLength, float x, float y,
                                      const SkPaint& paint) {
     fText = new char[byteLength];
     memcpy(fText, text, byteLength);
@@ -828,7 +785,7 @@ void SkRestoreCommand::trackSaveState(int* state) {
     (*state)--;
 }
 
-SkRotateCommand::SkRotateCommand(SkScalar degrees) {
+SkRotateCommand::SkRotateCommand(float degrees) {
     fDegrees = degrees;
     fDrawType = ROTATE;
 
@@ -885,15 +842,11 @@ void SkSaveLayerCommand::execute(SkCanvas* canvas) {
                       fFlags);
 }
 
-void SkSaveLayerCommand::vizExecute(SkCanvas* canvas) {
-    canvas->save();
-}
-
 void SkSaveLayerCommand::trackSaveState(int* state) {
     (*state)++;
 }
 
-SkScaleCommand::SkScaleCommand(SkScalar sx, SkScalar sy) {
+SkScaleCommand::SkScaleCommand(float sx, float sy) {
     fSx = sx;
     fSy = sy;
     fDrawType = SCALE;
@@ -917,7 +870,7 @@ void SkSetMatrixCommand::execute(SkCanvas* canvas) {
     canvas->setMatrix(fMatrix);
 }
 
-SkSkewCommand::SkSkewCommand(SkScalar sx, SkScalar sy) {
+SkSkewCommand::SkSkewCommand(float sx, float sy) {
     fSx = sx;
     fSy = sy;
     fDrawType = SKEW;
@@ -930,7 +883,7 @@ void SkSkewCommand::execute(SkCanvas* canvas) {
     canvas->skew(fSx, fSy);
 }
 
-SkTranslateCommand::SkTranslateCommand(SkScalar dx, SkScalar dy) {
+SkTranslateCommand::SkTranslateCommand(float dx, float dy) {
     fDx = dx;
     fDy = dy;
     fDrawType = TRANSLATE;
@@ -941,31 +894,4 @@ SkTranslateCommand::SkTranslateCommand(SkScalar dx, SkScalar dy) {
 
 void SkTranslateCommand::execute(SkCanvas* canvas) {
     canvas->translate(fDx, fDy);
-}
-
-SkPushCullCommand::SkPushCullCommand(const SkRect& cullRect)
-    : fCullRect(cullRect) {
-    fDrawType = PUSH_CULL;
-    fInfo.push(SkObjectParser::RectToString(cullRect));
-}
-
-void SkPushCullCommand::execute(SkCanvas* canvas) {
-    canvas->pushCull(fCullRect);
-}
-
-void SkPushCullCommand::vizExecute(SkCanvas* canvas) {
-    canvas->pushCull(fCullRect);
-
-    SkPaint p;
-    p.setColor(SK_ColorCYAN);
-    p.setStyle(SkPaint::kStroke_Style);
-    canvas->drawRect(fCullRect, p);
-}
-
-SkPopCullCommand::SkPopCullCommand() {
-    fDrawType = POP_CULL;
-}
-
-void SkPopCullCommand::execute(SkCanvas* canvas) {
-    canvas->popCull();
 }

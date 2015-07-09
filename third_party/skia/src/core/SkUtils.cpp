@@ -38,7 +38,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 void sk_memset16_portable(uint16_t dst[], uint16_t value, int count) {
-    SkASSERT(dst != NULL && count >= 0);
 
     if (count <= 0) {
         return;
@@ -91,7 +90,6 @@ void sk_memset16_portable(uint16_t dst[], uint16_t value, int count) {
 }
 
 void sk_memset32_portable(uint32_t dst[], uint32_t value, int count) {
-    SkASSERT(dst != NULL && count >= 0);
 
     int sixteenlongs = count >> 4;
     if (sixteenlongs) {
@@ -139,8 +137,6 @@ SkMemset32Proc sk_memset32 = sk_memset32_stub;
 
 #ifdef SK_DEBUG
     static void assert_utf8_leadingbyte(unsigned c) {
-        SkASSERT(c <= 0xF7);    // otherwise leading byte is too big (more than 4 bytes)
-        SkASSERT((c & 0xC0) != 0x80);   // can't begin with a middle char
     }
 
     int SkUTF8_LeadByteToCount(unsigned c) {
@@ -152,7 +148,6 @@ SkMemset32Proc sk_memset32 = sk_memset32_stub;
 #endif
 
 int SkUTF8_CountUnichars(const char utf8[]) {
-    SkASSERT(utf8);
 
     int count = 0;
 
@@ -168,8 +163,6 @@ int SkUTF8_CountUnichars(const char utf8[]) {
 }
 
 int SkUTF8_CountUnichars(const char utf8[], size_t byteLength) {
-    SkASSERT(NULL != utf8 || 0 == byteLength);
-
     int         count = 0;
     const char* stop = utf8 + byteLength;
 
@@ -181,7 +174,6 @@ int SkUTF8_CountUnichars(const char utf8[], size_t byteLength) {
 }
 
 SkUnichar SkUTF8_ToUnichar(const char utf8[]) {
-    SkASSERT(NULL != utf8);
 
     const uint8_t*  p = (const uint8_t*)utf8;
     int             c = *p;
@@ -202,7 +194,6 @@ SkUnichar SkUTF8_ToUnichar(const char utf8[]) {
 }
 
 SkUnichar SkUTF8_NextUnichar(const char** ptr) {
-    SkASSERT(NULL != ptr && NULL != *ptr);
 
     const uint8_t*  p = (const uint8_t*)*ptr;
     int             c = *p;
@@ -224,7 +215,6 @@ SkUnichar SkUTF8_NextUnichar(const char** ptr) {
 }
 
 SkUnichar SkUTF8_PrevUnichar(const char** ptr) {
-    SkASSERT(NULL != ptr && NULL != *ptr);
 
     const char* p = *ptr;
 
@@ -240,7 +230,6 @@ SkUnichar SkUTF8_PrevUnichar(const char** ptr) {
 
 size_t SkUTF8_FromUnichar(SkUnichar uni, char utf8[]) {
     if ((uint32_t)uni > 0x10FFFF) {
-        SkDEBUGFAIL("bad unichar");
         return 0;
     }
 
@@ -254,8 +243,6 @@ size_t SkUTF8_FromUnichar(SkUnichar uni, char utf8[]) {
     char    tmp[4];
     char*   p = tmp;
     size_t  count = 1;
-
-    SkDEBUGCODE(SkUnichar orig = uni;)
 
     while (uni > 0x7F >> count) {
         *p++ = (char)(0x80 | (uni & 0x3F));
@@ -272,22 +259,18 @@ size_t SkUTF8_FromUnichar(SkUnichar uni, char utf8[]) {
         *--utf8 = (char)(~(0xFF >> count) | uni);
     }
 
-    SkASSERT(utf8 == NULL || orig == SkUTF8_ToUnichar(utf8));
     return count;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 int SkUTF16_CountUnichars(const uint16_t src[]) {
-    SkASSERT(src);
 
     int count = 0;
     unsigned c;
     while ((c = *src++) != 0) {
-        SkASSERT(!SkUTF16_IsLowSurrogate(c));
         if (SkUTF16_IsHighSurrogate(c)) {
             c = *src++;
-            SkASSERT(SkUTF16_IsLowSurrogate(c));
         }
         count += 1;
     }
@@ -295,17 +278,13 @@ int SkUTF16_CountUnichars(const uint16_t src[]) {
 }
 
 int SkUTF16_CountUnichars(const uint16_t src[], int numberOf16BitValues) {
-    SkASSERT(src);
 
     const uint16_t* stop = src + numberOf16BitValues;
     int count = 0;
     while (src < stop) {
         unsigned c = *src++;
-        SkASSERT(!SkUTF16_IsLowSurrogate(c));
         if (SkUTF16_IsHighSurrogate(c)) {
-            SkASSERT(src < stop);
             c = *src++;
-            SkASSERT(SkUTF16_IsLowSurrogate(c));
         }
         count += 1;
     }
@@ -313,15 +292,12 @@ int SkUTF16_CountUnichars(const uint16_t src[], int numberOf16BitValues) {
 }
 
 SkUnichar SkUTF16_NextUnichar(const uint16_t** srcPtr) {
-    SkASSERT(srcPtr && *srcPtr);
 
     const uint16_t* src = *srcPtr;
     SkUnichar       c = *src++;
 
-    SkASSERT(!SkUTF16_IsLowSurrogate(c));
     if (SkUTF16_IsHighSurrogate(c)) {
         unsigned c2 = *src++;
-        SkASSERT(SkUTF16_IsLowSurrogate(c2));
 
         // c = ((c & 0x3FF) << 10) + (c2 & 0x3FF) + 0x10000
         // c = (((c & 0x3FF) + 64) << 10) + (c2 & 0x3FF)
@@ -332,15 +308,12 @@ SkUnichar SkUTF16_NextUnichar(const uint16_t** srcPtr) {
 }
 
 SkUnichar SkUTF16_PrevUnichar(const uint16_t** srcPtr) {
-    SkASSERT(srcPtr && *srcPtr);
 
     const uint16_t* src = *srcPtr;
     SkUnichar       c = *--src;
 
-    SkASSERT(!SkUTF16_IsHighSurrogate(c));
     if (SkUTF16_IsLowSurrogate(c)) {
         unsigned c2 = *--src;
-        SkASSERT(SkUTF16_IsHighSurrogate(c2));
         c = (c2 << 10) + c + (0x10000 - (0xD800 << 10) - 0xDC00);
     }
     *srcPtr = src;
@@ -348,7 +321,6 @@ SkUnichar SkUTF16_PrevUnichar(const uint16_t** srcPtr) {
 }
 
 size_t SkUTF16_FromUnichar(SkUnichar uni, uint16_t dst[]) {
-    SkASSERT((unsigned)uni <= 0x10FFFF);
 
     int extra = (uni > 0xFFFF);
 
@@ -359,12 +331,8 @@ size_t SkUTF16_FromUnichar(SkUnichar uni, uint16_t dst[]) {
             dst[0] = SkToU16((0xD800 - 64) + (uni >> 10));
             dst[1] = SkToU16(0xDC00 | (uni & 0x3FF));
 
-            SkASSERT(SkUTF16_IsHighSurrogate(dst[0]));
-            SkASSERT(SkUTF16_IsLowSurrogate(dst[1]));
         } else {
             dst[0] = SkToU16(uni);
-            SkASSERT(!SkUTF16_IsHighSurrogate(dst[0]));
-            SkASSERT(!SkUTF16_IsLowSurrogate(dst[0]));
         }
     }
     return 1 + extra;
@@ -372,12 +340,9 @@ size_t SkUTF16_FromUnichar(SkUnichar uni, uint16_t dst[]) {
 
 size_t SkUTF16_ToUTF8(const uint16_t utf16[], int numberOf16BitValues,
                       char utf8[]) {
-    SkASSERT(numberOf16BitValues >= 0);
     if (numberOf16BitValues <= 0) {
         return 0;
     }
-
-    SkASSERT(utf16 != NULL);
 
     const uint16_t* stop = utf16 + numberOf16BitValues;
     size_t          size = 0;

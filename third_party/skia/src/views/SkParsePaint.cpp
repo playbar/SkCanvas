@@ -62,11 +62,8 @@ static SkShader* inflate_shader(const SkDOM& dom, const SkDOM::Node* node)
 
 void SkPaint_Inflate(SkPaint* paint, const SkDOM& dom, const SkDOM::Node* node)
 {
-    SkASSERT(paint);
-    SkASSERT(&dom);
-    SkASSERT(node);
 
-    SkScalar x;
+    float x;
 
     if (dom.findScalar(node, "stroke-width", &x))
         paint->setStrokeWidth(x);
@@ -74,9 +71,6 @@ void SkPaint_Inflate(SkPaint* paint, const SkDOM& dom, const SkDOM::Node* node)
         paint->setTextSize(x);
 
     bool    b;
-
-    SkASSERT("legacy: use is-stroke" && !dom.findBool(node, "is-frame", &b));
-
     if (dom.findBool(node, "is-stroke", &b))
         paint->setStyle(b ? SkPaint::kStroke_Style : SkPaint::kFill_Style);
     if (dom.findBool(node, "is-antialias", &b))

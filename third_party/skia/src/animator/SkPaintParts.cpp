@@ -22,7 +22,6 @@ SkDisplayable* SkPaintPart::getParent() const {
 }
 
 bool SkPaintPart::setParent(SkDisplayable* parent) {
-    SkASSERT(parent != NULL);
     if (parent->isPaint() == false)
         return true;
     fPaint = (SkDrawPaint*) parent;

@@ -10,7 +10,9 @@
 
 GrGLIndexBuffer::GrGLIndexBuffer(GrGpuGL* gpu, const Desc& desc)
     : INHERITED(gpu, desc.fIsWrapped, desc.fSizeInBytes, desc.fDynamic, 0 == desc.fID)
-    , fImpl(gpu, desc, GR_GL_ELEMENT_ARRAY_BUFFER) {
+    , fImpl( desc, GL_ELEMENT_ARRAY_BUFFER) 
+{
+
 }
 
 void GrGLIndexBuffer::onRelease() {

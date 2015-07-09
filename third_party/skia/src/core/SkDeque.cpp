@@ -31,7 +31,6 @@ SkDeque::SkDeque(size_t elemSize, int allocCount)
         , fInitialStorage(NULL)
         , fCount(0)
         , fAllocCount(allocCount) {
-    SkASSERT(allocCount >= 1);
     fFrontBlock = fBackBlock = NULL;
     fFront = fBack = NULL;
 }
@@ -41,8 +40,6 @@ SkDeque::SkDeque(size_t elemSize, void* storage, size_t storageSize, int allocCo
         , fInitialStorage(storage)
         , fCount(0)
         , fAllocCount(allocCount) {
-    SkASSERT(storageSize == 0 || storage != NULL);
-    SkASSERT(allocCount >= 1);
 
     if (storageSize >= sizeof(Block) + elemSize) {
         fFrontBlock = (Block*)storage;
@@ -97,10 +94,8 @@ void* SkDeque::push_front() {
     first->fBegin = begin;
 
     if (NULL == fFront) {
-        SkASSERT(NULL == fBack);
         fFront = fBack = begin;
     } else {
-        SkASSERT(NULL != fBack);
         fFront = begin;
     }
 
@@ -138,10 +133,8 @@ void* SkDeque::push_back() {
     end -= fElemSize;
 
     if (NULL == fBack) {
-        SkASSERT(NULL == fFront);
         fFront = fBack = end;
     } else {
-        SkASSERT(NULL != fFront);
         fBack = end;
     }
 
@@ -149,68 +142,53 @@ void* SkDeque::push_back() {
 }
 
 void SkDeque::pop_front() {
-    SkASSERT(fCount > 0);
     fCount -= 1;
 
     Block*  first = fFrontBlock;
-
-    SkASSERT(first != NULL);
 
     if (first->fBegin == NULL) {  // we were marked empty from before
         first = first->fNext;
         first->fPrev = NULL;
         this->freeBlock(fFrontBlock);
         fFrontBlock = first;
-        SkASSERT(first != NULL);    // else we popped too far
     }
 
     char* begin = first->fBegin + fElemSize;
-    SkASSERT(begin <= first->fEnd);
-
     if (begin < fFrontBlock->fEnd) {
         first->fBegin = begin;
-        SkASSERT(NULL != first->fBegin);
         fFront = first->fBegin;
     } else {
         first->fBegin = first->fEnd = NULL;  // mark as empty
         if (NULL == first->fNext) {
             fFront = fBack = NULL;
         } else {
-            SkASSERT(NULL != first->fNext->fBegin);
             fFront = first->fNext->fBegin;
         }
     }
 }
 
 void SkDeque::pop_back() {
-    SkASSERT(fCount > 0);
     fCount -= 1;
 
     Block* last = fBackBlock;
-
-    SkASSERT(last != NULL);
 
     if (last->fEnd == NULL) {  // we were marked empty from before
         last = last->fPrev;
         last->fNext = NULL;
         this->freeBlock(fBackBlock);
         fBackBlock = last;
-        SkASSERT(last != NULL);  // else we popped too far
     }
 
     char* end = last->fEnd - fElemSize;
-    SkASSERT(end >= last->fBegin);
 
     if (end > last->fBegin) {
         last->fEnd = end;
-        SkASSERT(NULL != last->fEnd);
         fBack = last->fEnd - fElemSize;
     } else {
         last->fBegin = last->fEnd = NULL;    // mark as empty
         if (NULL == last->fPrev) {
             fFront = fBack = NULL;
         } else {
-            SkASSERT(NULL != last->fPrev->fEnd);
             fBack = last->fPrev->fEnd - fElemSize;
         }
     }
@@ -251,7 +229,6 @@ void* SkDeque::Iter::next() {
 
     if (pos) {   // if we were valid, try to move to the next setting
         char* next = pos + fElemSize;
-        SkASSERT(next <= fCurBlock->fEnd);
         if (next == fCurBlock->fEnd) { // exhausted this chunk, move to next
             do {
                 fCurBlock = fCurBlock->fNext;
@@ -270,7 +247,6 @@ void* SkDeque::Iter::prev() {
 
     if (pos) {   // if we were valid, try to move to the prior setting
         char* prev = pos - fElemSize;
-        SkASSERT(prev >= fCurBlock->fBegin - fElemSize);
         if (prev < fCurBlock->fBegin) { // exhausted this chunk, move to prior
             do {
                 fCurBlock = fCurBlock->fPrev;

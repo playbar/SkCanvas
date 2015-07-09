@@ -10,13 +10,17 @@
 #include "GrResource.h"
 #include "GrGpu.h"
 
-GrResource::GrResource(GrGpu* gpu, bool isWrapped) {
+GrResource::GrResource(GrGpu* gpu, bool isWrapped) 
+{
     fGpu              = gpu;
     fCacheEntry       = NULL;
     fDeferredRefCount = 0;
-    if (isWrapped) {
+    if (isWrapped) 
+	{
         fFlags = kWrapped_FlagBit;
-    } else {
+    }
+	else 
+	{
         fFlags = 0;
     }
     fGpu->insertResource(this);
@@ -24,8 +28,6 @@ GrResource::GrResource(GrGpu* gpu, bool isWrapped) {
 
 GrResource::~GrResource() {
     // subclass should have released this.
-    SkASSERT(0 == fDeferredRefCount);
-    SkASSERT(!this->isValid());
 }
 
 void GrResource::release() {

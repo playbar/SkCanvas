@@ -24,10 +24,12 @@
 
 #include "effects/GrVertexEffect.h"
 
-GrAAConvexPathRenderer::GrAAConvexPathRenderer() {
+GrAAConvexPathRenderer::GrAAConvexPathRenderer() 
+{
 }
 
-struct Segment {
+struct Segment 
+{
     enum {
         // These enum values are assumed in member functions below.
         kLine = 0,
@@ -59,7 +61,7 @@ struct Segment {
 typedef SkTArray<Segment, true> SegmentArray;
 
 static void center_of_mass(const SegmentArray& segments, SkPoint* c) {
-    SkScalar area = 0;
+    float area = 0;
     SkPoint center = {0, 0};
     int count = segments.count();
     SkPoint p0 = {0, 0};
@@ -78,7 +80,7 @@ static void center_of_mass(const SegmentArray& segments, SkPoint* c) {
             pi = pj;
             const SkPoint pj = segments[i + 1].endPt() - p0;
 
-            SkScalar t = SkScalarMul(pi.fX, pj.fY) - SkScalarMul(pj.fX, pi.fY);
+            float t = SkScalarMul(pi.fX, pj.fY) - SkScalarMul(pj.fX, pi.fY);
             area += t;
             center.fX += (pi.fX + pj.fX) * t;
             center.fY += (pi.fY + pj.fY) * t;
@@ -95,7 +97,7 @@ static void center_of_mass(const SegmentArray& segments, SkPoint* c) {
             avg.fX += pt.fX;
             avg.fY += pt.fY;
         }
-        SkScalar denom = SK_Scalar1 / count;
+        float denom = SK_Scalar1 / count;
         avg.scale(denom);
         *c = avg;
     } else {
@@ -106,7 +108,6 @@ static void center_of_mass(const SegmentArray& segments, SkPoint* c) {
         // undo the translate of p0 to the origin.
         *c = center + p0;
     }
-    SkASSERT(!SkScalarIsNaN(c->fX) && !SkScalarIsNaN(c->fY));
 }
 
 static void compute_vectors(SegmentArray* segments,
@@ -175,11 +176,11 @@ struct DegenerateTestData {
     }           fStage;
     GrPoint     fFirstPoint;
     GrVec       fLineNormal;
-    SkScalar    fLineC;
+    float    fLineC;
 };
 
-static const SkScalar kClose = (SK_Scalar1 / 16);
-static const SkScalar kCloseSqd = SkScalarMul(kClose, kClose);
+static const float kClose = (SK_Scalar1 / 16);
+static const float kCloseSqd = SkScalarMul(kClose, kClose);
 
 static void update_degenerate_test(DegenerateTestData* data, const GrPoint& pt) {
     switch (data->fStage) {
@@ -212,8 +213,7 @@ static inline bool get_direction(const SkPath& path, const SkMatrix& m, SkPath::
         return false;
     }
     // check whether m reverses the orientation
-    SkASSERT(!m.hasPerspective());
-    SkScalar det2x2 = SkScalarMul(m.get(SkMatrix::kMScaleX), m.get(SkMatrix::kMScaleY)) -
+    float det2x2 = SkScalarMul(m.get(SkMatrix::kMScaleX), m.get(SkMatrix::kMScaleY)) -
                       SkScalarMul(m.get(SkMatrix::kMSkewX), m.get(SkMatrix::kMSkewY));
     if (det2x2 < 0) {
         *dir = SkPath::OppositeDirection(*dir);
@@ -248,7 +248,6 @@ static inline void add_quad_segment(const SkPoint pts[3],
         segments->back().fType = Segment::kQuad;
         segments->back().fPts[0] = pts[1];
         segments->back().fPts[1] = pts[2];
-        SkASSERT(contains_inclusive(*devBounds, pts[0]));
         devBounds->growToInclude(pts + 1, 2);
     }
 }
@@ -332,8 +331,8 @@ static bool get_segments(const SkPath& path,
 struct QuadVertex {
     GrPoint  fPos;
     GrPoint  fUV;
-    SkScalar fD0;
-    SkScalar fD1;
+    float fD0;
+    float fD1;
 };
 
 struct Draw {
@@ -410,7 +409,7 @@ static void create_vertices(const SegmentArray&  segments,
 
             // we draw the line edge as a degenerate quad (u is 0, v is the
             // signed distance to the edge)
-            SkScalar dist = fanPt.distanceToLineBetween(verts[*v + 1].fPos,
+            float dist = fanPt.distanceToLineBetween(verts[*v + 1].fPos,
                                                         verts[*v + 2].fPos);
             verts[*v + 0].fUV.set(0, dist);
             verts[*v + 1].fUV.set(0, 0);
@@ -451,7 +450,7 @@ static void create_vertices(const SegmentArray&  segments,
             verts[*v + 4].fPos = qpts[2] + segb.fNorms[1];
             verts[*v + 5].fPos = qpts[1] + midVec;
 
-            SkScalar c = segb.fNorms[0].dot(qpts[0]);
+            float c = segb.fNorms[0].dot(qpts[0]);
             verts[*v + 0].fD0 =  -segb.fNorms[0].dot(fanPt) + c;
             verts[*v + 1].fD0 =  0.f;
             verts[*v + 2].fD0 =  -segb.fNorms[0].dot(qpts[2]) + c;
@@ -682,24 +681,11 @@ bool GrAAConvexPathRenderer::onDrawPath(const SkPath& origPath,
     if (!arg.succeeded()) {
         return false;
     }
-    SkASSERT(sizeof(QuadVertex) == drawState->getVertexSize());
     verts = reinterpret_cast<QuadVertex*>(arg.vertices());
     idxs = reinterpret_cast<uint16_t*>(arg.indices());
 
     SkSTArray<kPreallocDrawCnt, Draw, true> draws;
     create_vertices(segments, fanPt, &draws, verts, idxs);
-
-    // Check devBounds
-#ifdef SK_DEBUG
-    SkRect tolDevBounds = devBounds;
-    tolDevBounds.outset(SK_Scalar1 / 10000, SK_Scalar1 / 10000);
-    SkRect actualBounds;
-    actualBounds.set(verts[0].fPos, verts[1].fPos);
-    for (int i = 2; i < vCount; ++i) {
-        actualBounds.growToInclude(verts[i].fPos.fX, verts[i].fPos.fY);
-    }
-    SkASSERT(tolDevBounds.contains(actualBounds));
-#endif
 
     int vOffset = 0;
     for (int i = 0; i < draws.count(); ++i) {

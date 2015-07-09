@@ -14,15 +14,12 @@
 #include "SkUtils.h"
 
 static SkUnichar SkUTF16BE_NextUnichar(const uint16_t** srcPtr) {
-    SkASSERT(srcPtr && *srcPtr);
 
     const uint16_t* src = *srcPtr;
     SkUnichar c = SkEndian_SwapBE16(*src++);
 
-    SkASSERT(!SkUTF16_IsLowSurrogate(c));
     if (SkUTF16_IsHighSurrogate(c)) {
         unsigned c2 = SkEndian_SwapBE16(*src++);
-        SkASSERT(SkUTF16_IsLowSurrogate(c2));
 
         c = (c << 10) + c2 + (0x10000 - (0xD800 << 10) - 0xDC00);
     }
@@ -31,7 +28,6 @@ static SkUnichar SkUTF16BE_NextUnichar(const uint16_t** srcPtr) {
 }
 
 static void SkStringFromUTF16BE(const uint16_t* utf16be, size_t length, SkString& utf8) {
-    SkASSERT(utf16be != NULL);
 
     utf8.reset();
     size_t numberOf16BitValues = length / 2;
@@ -492,7 +488,6 @@ bool SkOTTableName::Iterator::next(SkOTTableName::Iterator::Record& record) {
         case SkOTTableName::Record::PlatformID::Custom:
             // These should never appear in a 'name' table.
         default:
-            SkASSERT(false);
             record.name.reset();
             break;
     }

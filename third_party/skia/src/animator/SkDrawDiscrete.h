@@ -17,8 +17,8 @@ class SkDiscrete : public SkDrawPathEffect {
     SkDiscrete();
     virtual SkPathEffect* getPathEffect();
 private:
-    SkScalar deviation;
-    SkScalar segLength;
+    float deviation;
+    float segLength;
 };
 
 #endif //SkDrawDiscrete_DEFINED

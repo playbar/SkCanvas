@@ -31,7 +31,6 @@ SkXMLParserError::~SkXMLParserError()
 
 void SkXMLParserError::getErrorString(SkString* str) const
 {
-    SkASSERT(str);
     SkString temp;
     if (fCode != kNoError) {
         if ((unsigned)fCode < SK_ARRAY_COUNT(gErrorStrings))

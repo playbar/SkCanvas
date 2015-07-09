@@ -43,8 +43,8 @@ public:
                            int32_t height,
                            SkBitmap* returnedBitmap);
 
-    static ID* FindAndLock(const SkBitmap& original, SkScalar scaleX,
-                           SkScalar scaleY, SkBitmap* returnedBitmap);
+	static ID* FindAndLock(const SkBitmap& original, float scaleX,
+		float scaleY, SkBitmap* returnedBitmap);
     static ID* FindAndLockMip(const SkBitmap& original,
                               SkMipMap const** returnedMipMap);
 
@@ -54,8 +54,8 @@ public:
                           int32_t height,
                           const SkBitmap& bitmap);
 
-    static ID* AddAndLock(const SkBitmap& original, SkScalar scaleX,
-                          SkScalar scaleY, const SkBitmap& bitmap);
+	static ID* AddAndLock(const SkBitmap& original, float scaleX,
+		float scaleY, const SkBitmap& bitmap);
     static ID* AddAndLockMip(const SkBitmap& original, const SkMipMap* mipMap);
 
     static void Unlock(ID*);
@@ -117,8 +117,8 @@ public:
      *  If a match is not found, returnedBitmap will be unmodifed, and
      *  NULL will be returned.
      */
-    ID* findAndLock(const SkBitmap& original, SkScalar scaleX,
-                    SkScalar scaleY, SkBitmap* returnedBitmap);
+	ID* findAndLock(const SkBitmap& original, float scaleX,
+		float scaleY, SkBitmap* returnedBitmap);
     ID* findAndLockMip(const SkBitmap& original,
                        SkMipMap const** returnedMipMap);
 
@@ -132,8 +132,8 @@ public:
      */
     ID* addAndLock(uint32_t pixelGenerationID, int32_t width, int32_t height,
                    const SkBitmap& bitmap);
-    ID* addAndLock(const SkBitmap& original, SkScalar scaleX,
-                   SkScalar scaleY, const SkBitmap& bitmap);
+	ID* addAndLock(const SkBitmap& original, float scaleX,
+		float scaleY, const SkBitmap& bitmap);
     ID* addAndLockMip(const SkBitmap& original, const SkMipMap* mipMap);
 
     /**
@@ -179,7 +179,7 @@ private:
     size_t  fByteLimit;
     int     fCount;
 
-    Rec* findAndLock(uint32_t generationID, SkScalar sx, SkScalar sy,
+	Rec* findAndLock(uint32_t generationID, float sx, float sy,
                      const SkIRect& bounds);
     Rec* findAndLock(const Key& key);
     ID* addAndLock(Rec* rec);
@@ -194,10 +194,5 @@ private:
 
     void init();    // called by constructors
 
-#ifdef SK_DEBUG
-    void validate() const;
-#else
-    void validate() const {}
-#endif
 };
 #endif

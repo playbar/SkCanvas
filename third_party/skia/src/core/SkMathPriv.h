@@ -18,7 +18,6 @@
  Typically used in conjunction with SkExtractSign().
  */
 static inline int32_t SkApplySign(int32_t n, int32_t sign) {
-    SkASSERT(sign == 0 || sign == -1);
     return (n ^ sign) - sign;
 }
 
@@ -45,8 +44,6 @@ static inline unsigned SkClampUMax(unsigned value, unsigned max) {
  a and b are 0..255
  */
 static inline U8CPU SkMulDiv255Trunc(U8CPU a, U8CPU b) {
-    SkASSERT((uint8_t)a == a);
-    SkASSERT((uint8_t)b == b);
     unsigned prod = SkMulS16(a, b) + 1;
     return (prod + (prod >> 8)) >> 8;
 }
@@ -55,8 +52,6 @@ static inline U8CPU SkMulDiv255Trunc(U8CPU a, U8CPU b) {
  both a and b are 0..255. The expected result equals (a * b + 254) / 255.
  */
 static inline U8CPU SkMulDiv255Ceiling(U8CPU a, U8CPU b) {
-    SkASSERT((uint8_t)a == a);
-    SkASSERT((uint8_t)b == b);
     unsigned prod = SkMulS16(a, b) + 255;
     return (prod + (prod >> 8)) >> 8;
 }

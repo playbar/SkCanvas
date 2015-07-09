@@ -32,7 +32,7 @@ public:
                         1 is a linear blend (default)
                         (1...inf) is a cubic log/lag/log blend (fast to change at the beginning and end)
     */
-    bool    setKeyFrame(int index, SkMSec time, const SkOperand values[], SkScalar blend = SK_Scalar1);
+    bool    setKeyFrame(int index, SkMSec time, const SkOperand values[], float blend = SK_Scalar1);
     Result timeToValues(SkMSec time, SkOperand values[]) const;
     SkDEBUGCODE(static void UnitTest();)
 private:

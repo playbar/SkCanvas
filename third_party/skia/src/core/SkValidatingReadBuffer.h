@@ -10,15 +10,14 @@
 
 #include "SkRefCnt.h"
 #include "SkBitmapHeap.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkPath.h"
 #include "SkPicture.h"
 #include "SkReader32.h"
 
 class SkBitmap;
 
-class SkValidatingReadBuffer : public SkReadBuffer {
+class SkValidatingReadBuffer : public SkFlattenableReadBuffer {
 public:
     SkValidatingReadBuffer(const void* data, size_t size);
     virtual ~SkValidatingReadBuffer();
@@ -30,7 +29,7 @@ public:
     virtual SkColor readColor() SK_OVERRIDE;
     virtual SkFixed readFixed() SK_OVERRIDE;
     virtual int32_t readInt() SK_OVERRIDE;
-    virtual SkScalar readScalar() SK_OVERRIDE;
+	virtual float readScalar() SK_OVERRIDE;
     virtual uint32_t readUInt() SK_OVERRIDE;
     virtual int32_t read32() SK_OVERRIDE;
 
@@ -52,7 +51,7 @@ public:
     virtual bool readColorArray(SkColor* colors, size_t size) SK_OVERRIDE;
     virtual bool readIntArray(int32_t* values, size_t size) SK_OVERRIDE;
     virtual bool readPointArray(SkPoint* points, size_t size) SK_OVERRIDE;
-    virtual bool readScalarArray(SkScalar* values, size_t size) SK_OVERRIDE;
+	virtual bool readScalarArray(float* values, size_t size) SK_OVERRIDE;
 
     // helpers to get info about arrays and binary data
     virtual uint32_t getArrayCount() SK_OVERRIDE;
@@ -75,9 +74,10 @@ private:
         return SkIsAlign4((uintptr_t)ptr);
     }
 
+    SkReader32 fReader;
     bool fError;
 
-    typedef SkReadBuffer INHERITED;
+    typedef SkFlattenableReadBuffer INHERITED;
 };
 
 #endif // SkValidatingReadBuffer_DEFINED

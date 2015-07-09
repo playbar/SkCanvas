@@ -16,42 +16,26 @@ public:
     /**
      *  Refs the passed-in picture.
      */
-    static SkPictureImageFilter* Create(SkPicture* picture) {
-        return SkNEW_ARGS(SkPictureImageFilter, (picture));
-    }
+    explicit SkPictureImageFilter(SkPicture* picture);
 
     /**
-     *  Refs the passed-in picture. cropRect can be used to crop or expand the destination rect when
+     *  Refs the passed-in picture. rect can be used to crop or expand the destination rect when
      *  the picture is drawn. (No scaling is implied by the dest rect; only the CTM is applied.)
      */
-    static SkPictureImageFilter* Create(SkPicture* picture, const SkRect& cropRect) {
-        return SkNEW_ARGS(SkPictureImageFilter, (picture, cropRect));
-    }
+    SkPictureImageFilter(SkPicture* picture, const SkRect& rect);
 
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkPictureImageFilter)
 
 protected:
     virtual ~SkPictureImageFilter();
-    /*  Constructs an SkPictureImageFilter object from an SkReadBuffer.
-     *  Note: If the SkPictureImageFilter object construction requires bitmap
-     *  decoding, the decoder must be set on the SkReadBuffer parameter by calling
-     *  SkReadBuffer::setBitmapDecoder() before calling this constructor.
-     *  @param SkReadBuffer Serialized picture data.
-     */
-    explicit SkPictureImageFilter(SkReadBuffer&);
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
+    explicit SkPictureImageFilter(SkFlattenableReadBuffer& buffer);
+    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
     virtual bool onFilterImage(Proxy*, const SkBitmap& src, const SkMatrix&,
-                               SkBitmap* result, SkIPoint* offset) const SK_OVERRIDE;
-
-#ifdef SK_SUPPORT_LEGACY_PUBLICEFFECTCONSTRUCTORS
-public:
-#endif
-    explicit SkPictureImageFilter(SkPicture* picture);
-    SkPictureImageFilter(SkPicture* picture, const SkRect& cropRect);
+                               SkBitmap* result, SkIPoint* offset) SK_OVERRIDE;
 
 private:
     SkPicture* fPicture;
-    SkRect     fCropRect;
+    SkRect     fRect;
     typedef SkImageFilter INHERITED;
 };
 

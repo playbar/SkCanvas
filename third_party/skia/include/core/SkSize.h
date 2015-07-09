@@ -74,8 +74,8 @@ static inline bool operator!=(const SkTSize<T>& a, const SkTSize<T>& b) {
 
 typedef SkTSize<int32_t> SkISize;
 
-struct SkSize : public SkTSize<SkScalar> {
-    static SkSize Make(SkScalar w, SkScalar h) {
+struct SkSize : public SkTSize<float> {
+	static SkSize Make(float w, float h) {
         SkSize s;
         s.fWidth = w;
         s.fHeight = h;

@@ -333,11 +333,6 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
     SkScaledBitmapSampler sampler(origWidth, origHeight, sampleSize);
     decodedBitmap->setConfig(config, sampler.scaledWidth(), sampler.scaledHeight());
 
-    // we should communicate alphaType, even if we early-return in bounds-only-mode.
-    if (this->getRequireUnpremultipliedColors()) {
-        decodedBitmap->setAlphaType(kUnpremul_SkAlphaType);
-    }
-
     if (SkImageDecoder::kDecodeBounds_Mode == mode) {
         return true;
     }
@@ -483,9 +478,15 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
         }
     }
 
-    if (!reallyHasAlpha) {
-        decodedBitmap->setAlphaType(kOpaque_SkAlphaType);
+    SkAlphaType alphaType = kOpaque_SkAlphaType;
+    if (reallyHasAlpha) {
+        if (this->getRequireUnpremultipliedColors()) {
+            alphaType = kUnpremul_SkAlphaType;
+        } else {
+            alphaType = kPremul_SkAlphaType;
+        }
     }
+    decodedBitmap->setAlphaType(alphaType);
     return true;
 }
 
@@ -606,9 +607,13 @@ bool SkPNGImageDecoder::getBitmapConfig(png_structp png_ptr, png_infop info_ptr,
 
     // sanity check for size
     {
-        int64_t size = sk_64_mul(origWidth, origHeight);
+        Sk64 size;
+        size.setMul(origWidth, origHeight);
+        if (size.isNeg() || !size.is32()) {
+            return false;
+        }
         // now check that if we are 4-bytes per pixel, we also don't overflow
-        if (size < 0 || size > (0x7FFFFFFF >> 2)) {
+        if (size.get32() > (0x7FFFFFFF >> 2)) {
             return false;
         }
     }
@@ -1028,7 +1033,7 @@ static transform_scanline_proc choose_proc(SkBitmap::Config config,
             return gMap[i].fProc;
         }
     }
-    sk_throw();
+    abort();
     return NULL;
 }
 

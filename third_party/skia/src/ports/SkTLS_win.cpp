@@ -28,7 +28,6 @@ void* SkTLS::PlatformGetSpecific(bool forceCreateTheSlot) {
 }
 
 void SkTLS::PlatformSetSpecific(void* ptr) {
-    SkASSERT(gOnce);
     (void)TlsSetValue(gTlsIndex, ptr);
 }
 

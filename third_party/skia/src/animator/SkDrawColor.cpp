@@ -21,23 +21,23 @@ enum HSV_Choice {
     kGetValue
 };
 
-static SkScalar RGB_to_HSV(SkColor color, HSV_Choice choice) {
-    SkScalar red = SkIntToScalar(SkColorGetR(color));
-    SkScalar green = SkIntToScalar(SkColorGetG(color));
-    SkScalar blue = SkIntToScalar(SkColorGetB(color));
-    SkScalar min = SkMinScalar(SkMinScalar(red, green), blue);
-    SkScalar value = SkMaxScalar(SkMaxScalar(red, green), blue);
+static float RGB_to_HSV(SkColor color, HSV_Choice choice) {
+    float red = SkIntToScalar(SkColorGetR(color));
+    float green = SkIntToScalar(SkColorGetG(color));
+    float blue = SkIntToScalar(SkColorGetB(color));
+    float min = SkMinScalar(SkMinScalar(red, green), blue);
+    float value = SkMaxScalar(SkMaxScalar(red, green), blue);
     if (choice == kGetValue)
         return value/255;
-    SkScalar delta = value - min;
-    SkScalar saturation = value == 0 ? 0 : SkScalarDiv(delta, value);
+    float delta = value - min;
+    float saturation = value == 0 ? 0 : SkScalarDiv(delta, value);
     if (choice == kGetSaturation)
         return saturation;
-    SkScalar hue;
+    float hue;
     if (saturation == 0)
         hue = 0;
     else {
-        SkScalar part60 = SkScalarDiv(60 * SK_Scalar1, delta);
+        float part60 = SkScalarDiv(60 * SK_Scalar1, delta);
         if (red == value) {
             hue = SkScalarMul(green - blue, part60);
             if (hue < 0)
@@ -48,7 +48,6 @@ static SkScalar RGB_to_HSV(SkColor color, HSV_Choice choice) {
         else  // blue == value
             hue = 240 * SK_Scalar1 + SkScalarMul(red - green, part60);
     }
-    SkASSERT(choice == kGetHue);
     return hue;
 }
 
@@ -57,23 +56,23 @@ static SkScalar RGB_to_HSV(SkColor color, HSV_Choice choice) {
 #pragma warning ( disable : 4701 )
 #endif
 
-static SkColor HSV_to_RGB(SkColor color, HSV_Choice choice, SkScalar hsv) {
-    SkScalar hue = choice == kGetHue ? hsv : RGB_to_HSV(color, kGetHue);
-    SkScalar saturation = choice == kGetSaturation ? hsv : RGB_to_HSV(color, kGetSaturation);
-    SkScalar value = choice == kGetValue ? hsv : RGB_to_HSV(color, kGetValue);
+static SkColor HSV_to_RGB(SkColor color, HSV_Choice choice, float hsv) {
+    float hue = choice == kGetHue ? hsv : RGB_to_HSV(color, kGetHue);
+    float saturation = choice == kGetSaturation ? hsv : RGB_to_HSV(color, kGetSaturation);
+    float value = choice == kGetValue ? hsv : RGB_to_HSV(color, kGetValue);
     value *= 255;
-    SkScalar red SK_INIT_TO_AVOID_WARNING;
-    SkScalar green SK_INIT_TO_AVOID_WARNING;
-    SkScalar blue SK_INIT_TO_AVOID_WARNING;
+    float red =0;
+    float green =0;
+    float blue =0;
     if (saturation == 0)    // color is on black-and-white center line
         red = green = blue = value;
     else {
         //SkScalar fraction = SkScalarMod(hue, 60 * SK_Scalar1);
         int sextant = SkScalarFloorToInt(hue / 60);
-        SkScalar fraction = hue / 60 - SkIntToScalar(sextant);
-        SkScalar p = SkScalarMul(value , SK_Scalar1 - saturation);
-        SkScalar q = SkScalarMul(value, SK_Scalar1 - SkScalarMul(saturation, fraction));
-        SkScalar t = SkScalarMul(value, SK_Scalar1 -
+        float fraction = hue / 60 - SkIntToScalar(sextant);
+        float p = SkScalarMul(value , SK_Scalar1 - saturation);
+        float q = SkScalarMul(value, SK_Scalar1 - SkScalarMul(saturation, fraction));
+        float t = SkScalarMul(value, SK_Scalar1 -
             SkScalarMul(saturation, SK_Scalar1 - fraction));
         switch (sextant % 6) {
             case 0: red = value; green = t; blue = p; break;
@@ -175,7 +174,7 @@ SkDisplayable* SkDrawColor::getParent() const {
 
 bool SkDrawColor::getProperty(int index, SkScriptValue* value) const {
     value->fType = SkType_Float;
-    SkScalar result;
+    float result;
     switch(index) {
         case SK_PROPERTY(alpha):
             result = SkIntToScalar(SkColorGetA(color)) / 255;
@@ -199,7 +198,6 @@ bool SkDrawColor::getProperty(int index, SkScriptValue* value) const {
             result = RGB_to_HSV(color, kGetValue);
             break;
         default:
-            SkASSERT(0);
             return false;
     }
     value->fOperand.fScalar = result;
@@ -211,7 +209,6 @@ void SkDrawColor::onEndElement(SkAnimateMaker&) {
 }
 
 bool SkDrawColor::setParent(SkDisplayable* parent) {
-    SkASSERT(parent != NULL);
     if (parent->getType() == SkType_DrawLinearGradient || parent->getType() == SkType_DrawRadialGradient)
         return false;
     if (parent->isPaint() == false)
@@ -221,8 +218,7 @@ bool SkDrawColor::setParent(SkDisplayable* parent) {
 }
 
 bool SkDrawColor::setProperty(int index, SkScriptValue& value) {
-    SkASSERT(value.fType == SkType_Float);
-    SkScalar scalar = value.fOperand.fScalar;
+    float scalar = value.fOperand.fScalar;
     switch (index) {
         case SK_PROPERTY(alpha):
             uint8_t alpha;
@@ -258,7 +254,6 @@ bool SkDrawColor::setProperty(int index, SkScriptValue& value) {
             fDirty = true;
             break;
         default:
-            SkASSERT(0);
             return false;
     }
     return true;

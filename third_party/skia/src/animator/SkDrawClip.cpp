@@ -32,7 +32,6 @@ bool SkDrawClip::draw(SkAnimateMaker& maker ) {
     if (rect != NULL)
         maker.fCanvas->clipRect(rect->fRect);
     else {
-        SkASSERT(path != NULL);
         maker.fCanvas->clipPath(path->fPath);
     }
     return false;

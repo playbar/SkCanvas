@@ -74,7 +74,7 @@ class SkDrawCornerPathEffect : public SkDrawPathEffect {
     virtual ~SkDrawCornerPathEffect();
     virtual SkPathEffect* getPathEffect();
 private:
-    SkScalar radius;
+    float radius;
 };
 
 //////////// SkShape1DPathEffect
@@ -94,7 +94,7 @@ public:
     SK_DECLARE_UNFLATTENABLE_OBJECT()
 
 protected:
-    virtual SkScalar begin(SkScalar contourLength) const {
+    virtual float begin(float contourLength) const {
         SkScriptValue value;
         SkAnimatorScript engine(*fMaker, NULL, SkType_Float);
         engine.propertyCallBack(GetContourLength, &contourLength);
@@ -103,7 +103,7 @@ protected:
         return value.fOperand.fScalar;
     }
 
-    virtual SkScalar next(SkPath* dst, SkScalar distance, SkPathMeasure&) const {
+    virtual float next(SkPath* dst, float distance, SkPathMeasure&) const {
         fMaker->setExtraPropertyCallBack(fDraw->fType, GetDistance, &distance);
         SkDrawPath* drawPath = NULL;
         if (fDraw->addPath->isPath()) {
@@ -132,7 +132,7 @@ protected:
                 m = matrix->getMatrix();
             }
         }
-        SkScalar result = 0;
+        float result = 0;
         SkAnimatorScript::EvaluateFloat(*fMaker, NULL, fDraw->spacing.c_str(), &result);
         if (drawPath)
             dst->addPath(drawPath->getPath(), m);
@@ -143,7 +143,7 @@ protected:
 private:
     static bool GetContourLength(const char* token, size_t len, void* clen, SkScriptValue* value) {
         if (SK_LITERAL_STR_EQUAL("contourLength", token, len)) {
-            value->fOperand.fScalar = *(SkScalar*) clen;
+            value->fOperand.fScalar = *(float*) clen;
             value->fType = SkType_Float;
             return true;
         }
@@ -152,7 +152,7 @@ private:
 
     static bool GetDistance(const char* token, size_t len, void* dist, SkScriptValue* value) {
         if (SK_LITERAL_STR_EQUAL("distance", token, len)) {
-            value->fOperand.fScalar = *(SkScalar*) dist;
+            value->fOperand.fScalar = *(float*) dist;
             value->fType = SkType_Float;
             return true;
         }
@@ -288,7 +288,6 @@ clearCallBack:
         int index;
         if (SkAnimatorScript::MapEnums(match, token, len, &index) == false)
             return false;
-        SkASSERT((sizeof(SkPoint) +     sizeof(SkRect)) / sizeof(SkScalar) == 6);
         if (index < 6) {
             value->fType = SkType_Float;
             value->fOperand.fScalar = (&shape2D->fLoc.fX)[index];
@@ -371,7 +370,7 @@ bool SkDrawComposePathEffect::addChild(SkAnimateMaker& , SkDisplayable* child) {
 SkPathEffect* SkDrawComposePathEffect::getPathEffect() {
     SkPathEffect* e1 = effect1->getPathEffect();
     SkPathEffect* e2 = effect2->getPathEffect();
-    SkPathEffect* composite = SkComposePathEffect::Create(e1, e2);
+    SkPathEffect* composite = new SkComposePathEffect(e1, e2);
     e1->unref();
     e2->unref();
     return composite;
@@ -401,7 +400,7 @@ SkDrawCornerPathEffect::~SkDrawCornerPathEffect() {
 }
 
 SkPathEffect* SkDrawCornerPathEffect::getPathEffect() {
-    return SkCornerPathEffect::Create(radius);
+    return new SkCornerPathEffect(radius);
 }
 
 /////////

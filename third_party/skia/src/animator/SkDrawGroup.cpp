@@ -41,8 +41,6 @@ SkGroup::~SkGroup() {
             delete *ptr;
 //      else {
 //          SkApply* apply = (SkApply*) *ptr;
-//          SkASSERT(apply->isApply());
-//          SkASSERT(apply->getScope());
 //          delete apply->getScope();
 //      }
         index++;
@@ -50,12 +48,9 @@ SkGroup::~SkGroup() {
 }
 
 bool SkGroup::addChild(SkAnimateMaker& , SkDisplayable* child) {
-    SkASSERT(child);
-//  SkASSERT(child->isDrawable());
     *fChildren.append() = (SkDrawable*) child;
     if (child->isGroup()) {
         SkGroup* groupie = (SkGroup*) child;
-        SkASSERT(groupie->fParentList == NULL);
         groupie->fParentList = &fChildren;
     }
     return true;
@@ -257,8 +252,6 @@ void SkGroup::reset() {
         if (index >= max || copySet(index) == false)
             continue;
         SkApply* apply = (SkApply*) *ptr;
-        SkASSERT(apply->isApply());
-        SkASSERT(apply->getScope());
         *ptr = apply->getScope();
         markCopyClear(index);
         index++;

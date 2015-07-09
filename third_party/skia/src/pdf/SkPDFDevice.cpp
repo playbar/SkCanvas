@@ -232,14 +232,15 @@ GraphicStateEntry::GraphicStateEntry() : fColor(SK_ColorBLACK),
     fMatrix.reset();
 }
 
-bool GraphicStateEntry::compareInitialState(const GraphicStateEntry& cur) {
-    return fColor == cur.fColor &&
-           fShaderIndex == cur.fShaderIndex &&
-           fGraphicStateIndex == cur.fGraphicStateIndex &&
-           fMatrix == cur.fMatrix &&
-           fClipStack == cur.fClipStack &&
-           (fTextScaleX == 0 ||
-               (fTextScaleX == cur.fTextScaleX && fTextFill == cur.fTextFill));
+bool GraphicStateEntry::compareInitialState(const GraphicStateEntry& b) {
+    return fColor == b.fColor &&
+           fShaderIndex == b.fShaderIndex &&
+           fGraphicStateIndex == b.fGraphicStateIndex &&
+           fMatrix == b.fMatrix &&
+           fClipStack == b.fClipStack &&
+               (fTextScaleX == 0 ||
+                b.fTextScaleX == 0 ||
+                (fTextScaleX == b.fTextScaleX && fTextFill == b.fTextFill));
 }
 
 class GraphicStackState {
@@ -404,8 +405,10 @@ static bool get_clip_stack_path(const SkMatrix& transform,
             outClipPath->reset();
             outClipPath->setFillType(SkPath::kInverseWinding_FillType);
             continue;
-        } else {
-            clipEntry->asPath(&entryPath);
+        } else if (SkClipStack::Element::kRect_Type == clipEntry->getType()) {
+            entryPath.addRect(clipEntry->getRect());
+        } else if (SkClipStack::Element::kPath_Type == clipEntry->getType()) {
+            entryPath = clipEntry->getPath();
         }
         entryPath.transform(transform);
 
@@ -503,13 +506,14 @@ void GraphicStackState::updateClip(const SkClipStack& clipStack,
                     emit_clip(NULL, &translatedClip, fContentStream);
                     break;
                 }
-                default: {
+                case SkClipStack::Element::kPath_Type: {
                     SkPath translatedPath;
-                    clipEntry->asPath(&translatedPath);
-                    translatedPath.transform(transform, &translatedPath);
+                    clipEntry->getPath().transform(transform, &translatedPath);
                     emit_clip(&translatedPath, NULL, fContentStream);
                     break;
                 }
+                default:
+                    SkASSERT(false);
             }
         }
     }
@@ -582,10 +586,13 @@ void GraphicStackState::updateDrawingState(const GraphicStateEntry& state) {
     }
 }
 
-SkBaseDevice* SkPDFDevice::onCreateDevice(const SkImageInfo& info, Usage usage) {
+SkBaseDevice* SkPDFDevice::onCreateCompatibleDevice(SkBitmap::Config config,
+                                                    int width, int height,
+                                                    bool isOpaque,
+                                                    Usage usage) {
     SkMatrix initialTransform;
     initialTransform.reset();
-    SkISize size = SkISize::Make(info.width(), info.height());
+    SkISize size = SkISize::Make(width, height);
     return SkNEW_ARGS(SkPDFDevice, (size, size, initialTransform));
 }
 
@@ -704,7 +711,7 @@ private:
 
 static inline SkBitmap makeContentBitmap(const SkISize& contentSize,
                                          const SkMatrix* initialTransform) {
-    SkImageInfo info;
+    SkBitmap bitmap;
     if (initialTransform) {
         // Compute the size of the drawing area.
         SkVector drawingSize;
@@ -718,19 +725,17 @@ static inline SkBitmap makeContentBitmap(const SkISize& contentSize,
         }
         inverse.mapVectors(&drawingSize, 1);
         SkISize size = SkSize::Make(drawingSize.fX, drawingSize.fY).toRound();
-        info = SkImageInfo::MakeUnknown(abs(size.fWidth), abs(size.fHeight));
+        bitmap.setConfig(SkBitmap::kNo_Config, abs(size.fWidth),
+                         abs(size.fHeight));
     } else {
-        info = SkImageInfo::MakeUnknown(abs(contentSize.fWidth),
-                                        abs(contentSize.fHeight));
+        bitmap.setConfig(SkBitmap::kNo_Config, abs(contentSize.fWidth),
+                         abs(contentSize.fHeight));
     }
 
-    SkBitmap bitmap;
-    bitmap.setConfig(info);
     return bitmap;
 }
 
 // TODO(vandebo) change pageSize to SkSize.
-// TODO: inherit from SkBaseDevice instead of SkBitmapDevice
 SkPDFDevice::SkPDFDevice(const SkISize& pageSize, const SkISize& contentSize,
                          const SkMatrix& initialTransform)
     : SkBitmapDevice(makeContentBitmap(contentSize, &initialTransform)),
@@ -805,6 +810,10 @@ void SkPDFDevice::cleanUp(bool clearFontUsage) {
     if (clearFontUsage) {
         fFontGlyphUsage->reset();
     }
+}
+
+uint32_t SkPDFDevice::getDeviceCapabilities() {
+    return kVector_Capability;
 }
 
 void SkPDFDevice::clear(SkColor color) {
@@ -1332,12 +1341,18 @@ void SkPDFDevice::drawVertices(const SkDraw& d, SkCanvas::VertexMode,
     if (d.fClip->isEmpty()) {
         return;
     }
-    // TODO: implement drawVertices
+    NOT_IMPLEMENTED("drawVerticies", true);
 }
 
 void SkPDFDevice::drawDevice(const SkDraw& d, SkBaseDevice* device,
                              int x, int y, const SkPaint& paint) {
-    // our onCreateDevice() always creates SkPDFDevice subclasses.
+    if ((device->getDeviceCapabilities() & kVector_Capability) == 0) {
+        // If we somehow get a raster device, do what our parent would do.
+        INHERITED::drawDevice(d, device, x, y, paint);
+        return;
+    }
+
+    // Assume that a vector capable device means that it's a PDF Device.
     SkPDFDevice* pdfDevice = static_cast<SkPDFDevice*>(device);
     if (pdfDevice->isContentEmpty()) {
         return;
@@ -2235,11 +2250,13 @@ void SkPDFDevice::internalDrawBitmap(const SkMatrix& origMatrix,
         // the image.  Avoiding alpha will reduce the pdf size and generation
         // CPU time some.
 
-        const int w = SkScalarCeilToInt(physicalPerspectiveOutline.getBounds().width());
-        const int h = SkScalarCeilToInt(physicalPerspectiveOutline.getBounds().height());
-        if (!perspectiveBitmap.allocPixels(SkImageInfo::MakeN32Premul(w, h))) {
-            return;
-        }
+        perspectiveBitmap.setConfig(
+                SkBitmap::kARGB_8888_Config,
+                SkScalarCeilToInt(
+                        physicalPerspectiveOutline.getBounds().width()),
+                SkScalarCeilToInt(
+                        physicalPerspectiveOutline.getBounds().height()));
+        perspectiveBitmap.allocPixels();
         perspectiveBitmap.eraseColor(SK_ColorTRANSPARENT);
 
         SkBitmapDevice device(perspectiveBitmap);
@@ -2315,6 +2332,6 @@ bool SkPDFDevice::onReadPixels(const SkBitmap& bitmap, int x, int y,
     return false;
 }
 
-bool SkPDFDevice::allowImageFilter(const SkImageFilter*) {
+bool SkPDFDevice::allowImageFilter(SkImageFilter*) {
     return false;
 }

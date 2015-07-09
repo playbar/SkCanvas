@@ -165,7 +165,7 @@ void SkScriptEngine2::addTokenInt(int integer) {
     fActiveStream->write(&integer, sizeof(integer));
 }
 
-void SkScriptEngine2::addTokenScalar(SkScalar scalar) {
+void SkScriptEngine2::addTokenScalar(float scalar) {
     fActiveStream->write(&scalar, sizeof(scalar));
 }
 
@@ -213,7 +213,7 @@ void SkScriptEngine2::addTokenValue(const SkScriptValue2& value, AddTokenRegiste
                 fOperandInUse = true;
             break;
         default:
-            SkASSERT(0); //!!! not implemented yet
+			break;
     }
 }
 
@@ -288,11 +288,9 @@ twoChar:
             *fOpStack.push() = (Op) kParen;
             return advance;
         case '&':
-            SkASSERT(nextChar != '&');
             op = kBitAnd;
             break;
         case '|':
-            SkASSERT(nextChar != '|');
             op = kBitOr;
             break;
         case '%':
@@ -315,7 +313,6 @@ twoChar:
             idx++;
         } while (true);
         signed char topPrecedence = gPrecedence[compare];
-        SkASSERT(topPrecedence != -1);
         if (topPrecedence > precedence || (topPrecedence == precedence &&
             gOpAttributes[op].fLeftType == SkOperand2::kNoType)) {
             break;
@@ -335,7 +332,6 @@ bool SkScriptEngine2::convertParams(SkTDArray<SkScriptValue2>* params,
                                     const SkOperand2::OpType* paramTypes, int paramCount) {
     int count = params->count();
     if (count > paramCount) {
-        SkASSERT(0);
         return false;    // too many parameters passed
     }
     for (int index = 0; index < count; index++)
@@ -357,7 +353,6 @@ bool SkScriptEngine2::convertTo(SkOperand2::OpType toType, SkScriptValue2* value
 
 bool SkScriptEngine2::evaluateDot(const char*& script) {
     size_t fieldLength = token_length(++script);        // skip dot
-    SkASSERT(fieldLength > 0); // !!! add error handling
     const char* field = script;
     script += fieldLength;
     bool success = handleProperty();
@@ -400,7 +395,6 @@ bool SkScriptEngine2::evaluateScript(const char** scriptPtr, SkScriptValue2* val
         *scriptPtr += sizeof("#script:") - 1;
         if (fReturnType == SkOperand2::kNoType || fReturnType == SkOperand2::kString) {
             success = innerScript(scriptPtr, value);
-            SkASSERT(success);
             inner = value->fOperand.fString->c_str();
             scriptPtr = &inner;
         }
@@ -445,7 +439,6 @@ bool SkScriptEngine2::functionParams(const char** scriptPtr, SkTDArray<SkScriptV
     do {
         SkScriptValue2 value;
         bool success = innerScript(scriptPtr, &value);
-        SkASSERT(success);
         if (success == false)
             return false;
         *params->append() = value;
@@ -488,7 +481,6 @@ bool SkScriptEngine2::innerScript(const char** scriptPtr, SkScriptValue2* value)
             if (fBraceStack.top() == kArrayBrace) {
                 SkScriptValue2 tokenValue;
                 success = innerScript(&script, &tokenValue);    // terminate and return on comma, close brace
-                SkASSERT(success);
                 {
                     SkOperand2::OpType type = fReturnType;
                     if (fReturnType == SkOperand2::kNoType) {
@@ -506,7 +498,6 @@ bool SkScriptEngine2::innerScript(const char** scriptPtr, SkScriptValue2* value)
                 lastPush = false;
                 continue;
             } else {
-                SkASSERT(token_length(script) > 0);
             }
         }
         if (lastPush != false && fTokenLength > 0) {
@@ -520,7 +511,6 @@ bool SkScriptEngine2::innerScript(const char** scriptPtr, SkScriptValue2* value)
                 continue;
             } else if (ch == '[') {
                 if (handleProperty() == false) {
-                    SkASSERT(0);
                     return false;
                 }
                 if (handleArrayIndexer(&script) == false)
@@ -529,7 +519,6 @@ bool SkScriptEngine2::innerScript(const char** scriptPtr, SkScriptValue2* value)
                 continue;
             } else if (ch != '.') {
                 if (handleProperty() == false) {
-                    SkASSERT(0);
                     return false;
                 }
                 lastPush = true;
@@ -537,16 +526,13 @@ bool SkScriptEngine2::innerScript(const char** scriptPtr, SkScriptValue2* value)
             }
         }
         if (ch == '0' && (script[1] & ~0x20) == 'X') {
-            SkASSERT(lastPush == false);
             script += 2;
             script = SkParse::FindHex(script, (uint32_t*) &operand.fOperand.fS32);
-            SkASSERT(script);
             goto intCommon;
         }
         if (lastPush == false && ch == '.')
             goto scalarCommon;
         if (ch >= '0' && ch <= '9') {
-            SkASSERT(lastPush == false);
             dotCheck = SkParse::FindS32(script, &operand.fOperand.fS32);
             if (dotCheck[0] != '.') {
                 script = dotCheck;
@@ -564,7 +550,6 @@ scalarCommon:
         }
         int length = token_length(script);
         if (length > 0) {
-            SkASSERT(lastPush == false);
             fToken = script;
             fTokenLength = length;
             script += length;
@@ -573,7 +558,6 @@ scalarCommon:
         }
         char startQuote = ch;
         if (startQuote == '\'' || startQuote == '\"') {
-            SkASSERT(lastPush == false);
             operand.fOperand.fString = new SkString();
             ++script;
             const char* stringStart = script;
@@ -581,7 +565,6 @@ scalarCommon:
                 if (script[0] == '\\')
                     ++script;
                 ++script;
-                SkASSERT(script[0]); // !!! throw an error
             } while (script[0] != startQuote);
             operand.fOperand.fString->set(stringStart, script - stringStart);
             script = stringStart;
@@ -591,7 +574,6 @@ scalarCommon:
                     ++script;
                 *stringWrite++ = script[0];
                 ++script;
-                SkASSERT(script[0]); // !!! throw an error
             } while (script[0] != startQuote);
             ++script;
             track(operand.fOperand.fString);
@@ -606,7 +588,6 @@ scalarCommon:
                 int tokenLength = token_length(++script);
                 const char* token = script;
                 script += tokenLength;
-                SkASSERT(fValueStack.count() > 0); // !!! add error handling
                 SkScriptValue2 top;
                 fValueStack.pop(&top);
 
@@ -617,14 +598,12 @@ scalarCommon:
                 fConstExpression = false;
                 fValueStack.push(top);
                 success = evaluateDotParam(script, token, tokenLength);
-                SkASSERT(success);
                 lastPush = true;
                 continue;
             }
             // get next token, and evaluate immediately
             success = evaluateDot(script);
             if (success == false) {
-                //                SkASSERT(0);
                 return false;
             }
             lastPush = true;
@@ -647,19 +626,7 @@ scalarCommon:
             lastPush = true;
             continue;
         }
-#if 0 // structs not supported for now
-        if (ch == '{') {
-            if (lastPush == false) {
-                script++;
-                *fBraceStack.push() = kStructBrace;
-                operand.fS32 = 0;
-                *fTypeStack.push() = (SkOpType) kStruct;
-                fOperandStack.push(operand);
-                continue;
-            }
-            SkASSERT(0); // braces in other contexts aren't supported yet
-        }
-#endif
+
         if (ch == ')' && fBraceStack.count() > 0) {
             BraceStyle braceStyle = fBraceStack.top();
             if (braceStyle == kFunctionBrace) {
@@ -671,7 +638,6 @@ scalarCommon:
             if (ch != ',') {
                 BraceStyle match;
                 fBraceStack.pop(&match);
-                SkASSERT(match == kArrayBrace);
             }
             script++;
             // !!! see if brace or bracket is correct closer
@@ -689,7 +655,6 @@ scalarCommon:
     }
     if (fTokenLength > 0) {
         success = handleProperty();
-        SkASSERT(success);
     }
     int branchIndex = 0;
     branchBalance = fBranchStack.count() - branchBalance;
@@ -777,18 +742,13 @@ bool SkScriptEngine2::handleArrayIndexer(const char** scriptPtr) {
     fReturnType = SkOperand2::kS32;
     bool success = innerScript(scriptPtr, &scriptValue);
     fReturnType = saveType;
-    SkASSERT(success);
     success = convertTo(SkOperand2::kS32, &scriptValue);
-    SkASSERT(success);
     int index = scriptValue.fOperand.fS32;
     fValueStack.pop(&scriptValue);
     if (scriptValue.fType == SkOperand2::kObject) {
         success = handleUnbox(&scriptValue);
-        SkASSERT(success);
-        SkASSERT(scriptValue.fType == SkOperand2::kArray);
     }
     scriptValue.fType = scriptValue.fOperand.fArray->getType();
-    //    SkASSERT(index >= 0);
     if ((unsigned) index >= (unsigned) scriptValue.fOperand.fArray->count()) {
         fError = kArrayIndexOutOfBounds;
         return false;
@@ -977,22 +937,18 @@ void SkScriptEngine2::processLogicalOp(Op op) {
     switch (op) {
         case kParen:
         case kArrayOp:
-            SkASSERT(fOpStack.count() > 1 && fOpStack.top() == op);    // !!! add error handling
             if (op == kParen)
                 fOpStack.pop();
             else {
                 SkScriptValue2 value;
                 fValueStack.pop(&value);
-                SkASSERT(value.fType == SkOperand2::kS32 || value.fType == SkOperand2::kScalar); // !!! add error handling (although, could permit strings eventually)
                 int index = value.fType == SkOperand2::kScalar ? SkScalarFloorToInt(value.fOperand.fScalar) :
                     value.fOperand.fS32;
                 SkScriptValue2 arrayValue;
                 fValueStack.pop(&arrayValue);
-                SkASSERT(arrayValue.fType == SkOperand2::kArray);  // !!! add error handling
                 SkOpArray* array = arrayValue.fOperand.fArray;
                 SkOperand2 operand;
-                SkDEBUGCODE(bool success = ) array->getIndex(index, &operand);
-                SkASSERT(success); // !!! add error handling
+                array->getIndex(index, &operand);
                 SkScriptValue2 resultValue;
                 resultValue.fType = array->getType();
                 resultValue.fOperand = operand;
@@ -1005,7 +961,6 @@ void SkScriptEngine2::processLogicalOp(Op op) {
                 addTokenValue(fValueStack.top(), kAccumulator);
                 fValueStack.pop();
             }
-            SkASSERT(fAccumulatorType != SkOperand2::kString); // !!! add error handling
             addToken(kIfOp);
             Branch branch(op, fOpStack.count(), getTokenOffset());
             *fBranchStack.push() = branch;
@@ -1022,7 +977,6 @@ void SkScriptEngine2::processLogicalOp(Op op) {
             resolveBranch(branch);
             branch.fOperator = op;
             branch.fDone = Branch::kIsNotDone;
-            SkASSERT(branch.fOpStackDepth == fOpStack.count());
             branch.fOffset = newOffset;
             fAccumulatorType = SkOperand2::kNoType;
         } break;
@@ -1034,11 +988,9 @@ void SkScriptEngine2::processLogicalOp(Op op) {
             oldTop.fPrimed = Branch::kIsNotPrimed;
             oldTop.fDone = Branch::kIsNotDone;
             if (fAccumulatorType == SkOperand2::kNoType) {
-                SkASSERT(fValueStack.top().fType == SkOperand2::kS32); // !!! add error handling, and conversion to int?
                 addTokenValue(fValueStack.top(), kAccumulator);
                 fValueStack.pop();
             } else {
-                SkASSERT(fAccumulatorType == SkOperand2::kS32);
             }
             // if 'and', write beq goto opcode after end of predicate (after to bool)
             // if 'or', write bne goto to bool
@@ -1051,7 +1003,7 @@ void SkScriptEngine2::processLogicalOp(Op op) {
             fAccumulatorType = SkOperand2::kNoType;
         }    break;
         default:
-            SkASSERT(0);
+			break;
     }
 }
 
@@ -1178,10 +1130,8 @@ bool SkScriptEngine2::processOp() {
 }
 
 void SkScriptEngine2::Branch::resolve(SkDynamicMemoryWStream* stream, size_t off) {
-    SkASSERT(fDone == kIsNotDone);
     fPrimed = kIsNotPrimed;
     fDone = kIsDone;
-    SkASSERT(off > fOffset + sizeof(size_t));
     size_t offset = off - fOffset - sizeof(offset);
     stream->write(&offset, fOffset, sizeof(offset));
 }
@@ -1191,7 +1141,6 @@ void SkScriptEngine2::resolveBranch(SkScriptEngine2::Branch& branch) {
 }
 
 bool SkScriptEngine2::ConvertTo(SkScriptEngine2* engine, SkOperand2::OpType toType, SkScriptValue2* value ) {
-    SkASSERT(value);
     SkOperand2::OpType type = value->fType;
     if (type == toType)
         return true;
@@ -1202,7 +1151,6 @@ bool SkScriptEngine2::ConvertTo(SkScriptEngine2* engine, SkOperand2::OpType toTy
             if (type == SkOperand2::kScalar)
                 operand.fS32 = SkScalarFloorToInt(operand.fScalar);
             else {
-                SkASSERT(type == SkOperand2::kString);
                 success = SkParse::FindS32(operand.fString->c_str(), &operand.fS32) != NULL;
             }
                 break;
@@ -1210,18 +1158,15 @@ bool SkScriptEngine2::ConvertTo(SkScriptEngine2* engine, SkOperand2::OpType toTy
             if (type == SkOperand2::kS32)
                 operand.fScalar = IntToScalar(operand.fS32);
             else {
-                SkASSERT(type == SkOperand2::kString);
                 success = SkParse::FindScalar(operand.fString->c_str(), &operand.fScalar) != NULL;
             }
                 break;
         case SkOperand2::kString: {
             SkString* strPtr = new SkString();
-            SkASSERT(engine);
             engine->track(strPtr);
             if (type == SkOperand2::kS32)
                 strPtr->appendS32(operand.fS32);
             else {
-                SkASSERT(type == SkOperand2::kScalar);
                 strPtr->appendScalar(operand.fScalar);
             }
             operand.fString = strPtr;
@@ -1233,14 +1178,14 @@ bool SkScriptEngine2::ConvertTo(SkScriptEngine2* engine, SkOperand2::OpType toTy
             operand.fArray = array;
         } break;
         default:
-            SkASSERT(0);
+			break;
     }
     value->fType = toType;
     return success;
 }
 
-SkScalar SkScriptEngine2::IntToScalar(int32_t s32) {
-    SkScalar scalar;
+float SkScriptEngine2::IntToScalar(int32_t s32) {
+    float scalar;
     if (s32 == (int32_t) SK_NaN32)
         scalar = SK_ScalarNaN;
     else if (SkAbs32(s32) == SK_MaxS32)
@@ -1264,243 +1209,8 @@ bool SkScriptEngine2::ValueToString(const SkScriptValue2& value, SkString* strin
             string->set(*value.fOperand.fString);
             break;
         default:
-            SkASSERT(0);
             return false;
     }
     return true; // no error
 }
 
-#ifdef SK_DEBUG
-#if defined(SK_SUPPORT_UNITTEST)
-
-#define testInt(expression) { #expression, SkOperand2::kS32, expression, 0, NULL }
-#define testScalar(expression) { #expression, SkOperand2::kScalar, 0, (float) (expression), NULL }
-#define testRemainder(exp1, exp2) { #exp1 "%" #exp2, SkOperand2::kScalar, 0, fmodf((float) exp1, (float) exp2), NULL }
-#define testTrue(expression) { #expression, SkOperand2::kS32, 1, 0, NULL }
-#define testFalse(expression) { #expression, SkOperand2::kS32, 0, 0, NULL }
-
-static const SkScriptNAnswer2 scriptTests[]  = {
-    testInt(1||(0&&3)),
-    testScalar(- -5.5- -1.5),
-    testScalar(1.0+5),
-    testInt((6+7)*8),
-    testInt(3*(4+5)),
-    testScalar(1.0+2.0),
-    testScalar(3.0-1.0),
-    testScalar(6-1.0),
-    testScalar(2.5*6.),
-    testScalar(0.5*4),
-    testScalar(4.5/.5),
-    testScalar(9.5/19),
-    testRemainder(9.5, 0.5),
-    testRemainder(9.,2),
-    testRemainder(9,2.5),
-    testRemainder(-9,2.5),
-    testTrue(-9==-9.0),
-    testTrue(-9.==-4.0-5),
-    testTrue(-9.*1==-4-5),
-    testFalse(-9!=-9.0),
-    testFalse(-9.!=-4.0-5),
-    testFalse(-9.*1!=-4-5),
-    testInt(0x123),
-    testInt(0XABC),
-    testInt(0xdeadBEEF),
-    {    "'123'+\"456\"", SkOperand2::kString, 0, 0, "123456" },
-    {    "123+\"456\"", SkOperand2::kString, 0, 0, "123456" },
-    {    "'123'+456", SkOperand2::kString, 0, 0, "123456" },
-    {    "'123'|\"456\"", SkOperand2::kS32, 123|456, 0, NULL },
-    {    "123|\"456\"", SkOperand2::kS32, 123|456, 0, NULL },
-    {    "'123'|456", SkOperand2::kS32, 123|456, 0, NULL },
-    {    "'2'<11", SkOperand2::kS32, 1, 0, NULL },
-    {    "2<'11'", SkOperand2::kS32, 1, 0, NULL },
-    {    "'2'<'11'", SkOperand2::kS32, 0, 0, NULL },
-    testInt(123),
-    testInt(-345),
-    testInt(+678),
-    testInt(1+2+3),
-    testInt(3*4+5),
-    testInt(6+7*8),
-    testInt(-1-2-8/4),
-    testInt(-9%4),
-    testInt(9%-4),
-    testInt(-9%-4),
-    testInt(123|978),
-    testInt(123&978),
-    testInt(123^978),
-    testInt(2<<4),
-    testInt(99>>3),
-    testInt(~55),
-    testInt(~~55),
-    testInt(!55),
-    testInt(!!55),
-    // both int
-    testInt(2<2),
-    testInt(2<11),
-    testInt(20<11),
-    testInt(2<=2),
-    testInt(2<=11),
-    testInt(20<=11),
-    testInt(2>2),
-    testInt(2>11),
-    testInt(20>11),
-    testInt(2>=2),
-    testInt(2>=11),
-    testInt(20>=11),
-    testInt(2==2),
-    testInt(2==11),
-    testInt(20==11),
-    testInt(2!=2),
-    testInt(2!=11),
-    testInt(20!=11),
-    // left int, right scalar
-    testInt(2<2.),
-    testInt(2<11.),
-    testInt(20<11.),
-    testInt(2<=2.),
-    testInt(2<=11.),
-    testInt(20<=11.),
-    testInt(2>2.),
-    testInt(2>11.),
-    testInt(20>11.),
-    testInt(2>=2.),
-    testInt(2>=11.),
-    testInt(20>=11.),
-    testInt(2==2.),
-    testInt(2==11.),
-    testInt(20==11.),
-    testInt(2!=2.),
-    testInt(2!=11.),
-    testInt(20!=11.),
-    // left scalar, right int
-    testInt(2.<2),
-    testInt(2.<11),
-    testInt(20.<11),
-    testInt(2.<=2),
-    testInt(2.<=11),
-    testInt(20.<=11),
-    testInt(2.>2),
-    testInt(2.>11),
-    testInt(20.>11),
-    testInt(2.>=2),
-    testInt(2.>=11),
-    testInt(20.>=11),
-    testInt(2.==2),
-    testInt(2.==11),
-    testInt(20.==11),
-    testInt(2.!=2),
-    testInt(2.!=11),
-    testInt(20.!=11),
-    // both scalar
-    testInt(2.<11.),
-    testInt(20.<11.),
-    testInt(2.<=2.),
-    testInt(2.<=11.),
-    testInt(20.<=11.),
-    testInt(2.>2.),
-    testInt(2.>11.),
-    testInt(20.>11.),
-    testInt(2.>=2.),
-    testInt(2.>=11.),
-    testInt(20.>=11.),
-    testInt(2.==2.),
-    testInt(2.==11.),
-    testInt(20.==11.),
-    testInt(2.!=2.),
-    testInt(2.!=11.),
-    testInt(20.!=11.),
-    // int, string (string is int)
-    testFalse(2<'2'),
-    testTrue(2<'11'),
-    testFalse(20<'11'),
-    testTrue(2<='2'),
-    testTrue(2<='11'),
-    testFalse(20<='11'),
-    testFalse(2>'2'),
-    testFalse(2>'11'),
-    testTrue(20>'11'),
-    testTrue(2>='2'),
-    testFalse(2>='11'),
-    testTrue(20>='11'),
-    testTrue(2=='2'),
-    testFalse(2=='11'),
-    testFalse(2!='2'),
-    testTrue(2!='11'),
-    // int, string (string is scalar)
-    testFalse(2<'2.'),
-    testTrue(2<'11.'),
-    testFalse(20<'11.'),
-    testTrue(2=='2.'),
-    testFalse(2=='11.'),
-    // scalar, string
-    testFalse(2.<'2.'),
-    testTrue(2.<'11.'),
-    testFalse(20.<'11.'),
-    testTrue(2.=='2.'),
-    testFalse(2.=='11.'),
-    // string, int
-    testFalse('2'<2),
-    testTrue('2'<11),
-    testFalse('20'<11),
-    testTrue('2'==2),
-    testFalse('2'==11),
-    // string, scalar
-    testFalse('2'<2.),
-    testTrue('2'<11.),
-    testFalse('20'<11.),
-    testTrue('2'==2.),
-    testFalse('2'==11.),
-    // string, string
-    testFalse('2'<'2'),
-    testFalse('2'<'11'),
-    testFalse('20'<'11'),
-    testTrue('2'=='2'),
-    testFalse('2'=='11'),
-    // logic
-    testInt(1?2:3),
-    testInt(0?2:3),
-    testInt((1&&2)||3),
-    testInt((1&&0)||3),
-    testInt((1&&0)||0),
-    testInt(1||(0&&3)),
-    testInt(0||(0&&3)),
-    testInt(0||(1&&3)),
-    testInt(0&&1?2:3)
-    , {    "123.5", SkOperand2::kScalar, 0, SkIntToScalar(123) + SK_Scalar1/2, NULL }
-};
-
-#define SkScriptNAnswer_testCount    SK_ARRAY_COUNT(scriptTests)
-#endif  // SK_SUPPORT_UNITTEST
-
-void SkScriptEngine2::UnitTest() {
-#if defined(SK_SUPPORT_UNITTEST)
-    ValidateDecompileTable();
-    for (size_t index = 0; index < SkScriptNAnswer_testCount; index++) {
-        SkScriptEngine2 engine(scriptTests[index].fType);
-        SkScriptValue2 value;
-        const char* script = scriptTests[index].fScript;
-        const char* scriptPtr = script;
-        SkASSERT(engine.evaluateScript(&scriptPtr, &value) == true);
-        SkASSERT(value.fType == scriptTests[index].fType);
-        SkScalar error;
-        switch (value.fType) {
-            case SkOperand2::kS32:
-                if (value.fOperand.fS32 != scriptTests[index].fIntAnswer)
-                    SkDEBUGF(("script '%s' == value %d != expected answer %d\n", script, value.fOperand.fS32, scriptTests[index].fIntAnswer));
-                SkASSERT(value.fOperand.fS32 == scriptTests[index].fIntAnswer);
-                break;
-            case SkOperand2::kScalar:
-                error = SkScalarAbs(value.fOperand.fScalar - scriptTests[index].fScalarAnswer);
-                if (error >= SK_Scalar1 / 10000)
-                    SkDEBUGF(("script '%s' == value %g != expected answer %g\n", script, value.fOperand.fScalar / (1.0f * SK_Scalar1), scriptTests[index].fScalarAnswer / (1.0f * SK_Scalar1)));
-                SkASSERT(error < SK_Scalar1 / 10000);
-                break;
-            case SkOperand2::kString:
-                SkASSERT(value.fOperand.fString->equals(scriptTests[index].fStringAnswer));
-                break;
-            default:
-                SkASSERT(0);
-        }
-    }
-#endif  // SK_SUPPORT_UNITTEST
-}
-#endif  // SK_DEBUG

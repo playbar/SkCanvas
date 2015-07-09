@@ -80,7 +80,6 @@ const SkDOM::Node* SkDOM::getRootNode() const
 
 const SkDOM::Node* SkDOM::getFirstChild(const Node* node, const char name[]) const
 {
-    SkASSERT(node);
     const Node* child = node->fFirstChild;
 
     if (name)
@@ -94,7 +93,6 @@ const SkDOM::Node* SkDOM::getFirstChild(const Node* node, const char name[]) con
 
 const SkDOM::Node* SkDOM::getNextSibling(const Node* node, const char name[]) const
 {
-    SkASSERT(node);
     const Node* sibling = node->fNextSibling;
     if (name)
     {
@@ -107,19 +105,16 @@ const SkDOM::Node* SkDOM::getNextSibling(const Node* node, const char name[]) co
 
 SkDOM::Type SkDOM::getType(const Node* node) const
 {
-    SkASSERT(node);
     return (Type)node->fType;
 }
 
 const char* SkDOM::getName(const Node* node) const
 {
-    SkASSERT(node);
     return node->fName;
 }
 
 const char* SkDOM::findAttr(const Node* node, const char name[]) const
 {
-    SkASSERT(node);
     const Attr* attr = node->attrs();
     const Attr* stop = attr + node->fAttrCount;
 
@@ -141,7 +136,6 @@ const SkDOM::Attr* SkDOM::getFirstAttr(const Node* node) const
 
 const SkDOM::Attr* SkDOM::getNextAttr(const Node* node, const Attr* attr) const
 {
-    SkASSERT(node);
     if (attr == NULL)
         return NULL;
     return (attr - node->attrs() + 1) < node->fAttrCount ? attr + 1 : NULL;
@@ -149,15 +143,11 @@ const SkDOM::Attr* SkDOM::getNextAttr(const Node* node, const Attr* attr) const
 
 const char* SkDOM::getAttrName(const Node* node, const Attr* attr) const
 {
-    SkASSERT(node);
-    SkASSERT(attr);
     return attr->fName;
 }
 
 const char* SkDOM::getAttrValue(const Node* node, const Attr* attr) const
 {
-    SkASSERT(node);
-    SkASSERT(attr);
     return attr->fValue;
 }
 
@@ -165,7 +155,6 @@ const char* SkDOM::getAttrValue(const Node* node, const Attr* attr) const
 
 SkDOM::AttrIter::AttrIter(const SkDOM&, const SkDOM::Node* node)
 {
-    SkASSERT(node);
     fAttr = node->attrs();
     fStop = fAttr + node->fAttrCount;
 }
@@ -191,7 +180,6 @@ const char* SkDOM::AttrIter::next(const char** value)
 
 static char* dupstr(SkChunkAlloc* chunk, const char src[])
 {
-    SkASSERT(chunk && src);
     size_t  len = strlen(src);
     char*   dst = (char*)chunk->alloc(len + 1, SkChunkAlloc::kThrow_AllocFailType);
     memcpy(dst, src, len + 1);
@@ -230,7 +218,6 @@ protected:
         else    // this adds siblings in reverse order. gets corrected in onEndElement()
         {
             SkDOM::Node* parent = fParentStack.top();
-            SkASSERT(fRoot && parent);
             node->fNextSibling = parent->fFirstChild;
             parent->fFirstChild = node;
         }
@@ -365,7 +352,7 @@ bool SkDOM::findS32(const Node* node, const char name[], int32_t* value) const
     return vstr && SkParse::FindS32(vstr, value);
 }
 
-bool SkDOM::findScalars(const Node* node, const char name[], SkScalar value[], int count) const
+bool SkDOM::findScalars(const Node* node, const char name[], float value[], int count) const
 {
     const char* vstr = this->findAttr(node, name);
     return vstr && SkParse::FindScalars(vstr, value, count);
@@ -402,10 +389,10 @@ bool SkDOM::hasS32(const Node* node, const char name[], int32_t target) const
     return vstr && SkParse::FindS32(vstr, &value) && value == target;
 }
 
-bool SkDOM::hasScalar(const Node* node, const char name[], SkScalar target) const
+bool SkDOM::hasScalar(const Node* node, const char name[], float target) const
 {
     const char* vstr = this->findAttr(node, name);
-    SkScalar    value;
+    float    value;
     return vstr && SkParse::FindScalar(vstr, &value) && value == target;
 }
 
@@ -466,38 +453,7 @@ void SkDOM::dump(const Node* node, int level) const
 
 void SkDOM::UnitTest()
 {
-#ifdef SK_SUPPORT_UNITTEST
-    static const char gDoc[] =
-        "<root a='1' b='2'>"
-            "<elem1 c='3' />"
-            "<elem2 d='4' />"
-            "<elem3 e='5'>"
-                "<subelem1/>"
-                "<subelem2 f='6' g='7'/>"
-            "</elem3>"
-            "<elem4 h='8'/>"
-        "</root>"
-        ;
 
-    SkDOM   dom;
-
-    SkASSERT(dom.getRootNode() == NULL);
-
-    const Node* root = dom.build(gDoc, sizeof(gDoc) - 1);
-    SkASSERT(root && dom.getRootNode() == root);
-
-    const char* v = dom.findAttr(root, "a");
-    SkASSERT(v && !strcmp(v, "1"));
-    v = dom.findAttr(root, "b");
-    SkASSERT(v && !strcmp(v, "2"));
-    v = dom.findAttr(root, "c");
-    SkASSERT(v == NULL);
-
-    SkASSERT(dom.getFirstChild(root, "elem1"));
-    SkASSERT(!dom.getFirstChild(root, "subelem1"));
-
-    dom.dump();
-#endif
 }
 
 #endif

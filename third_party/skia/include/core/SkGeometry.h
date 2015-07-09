@@ -30,14 +30,14 @@ bool SkXRayCrossesLine(const SkXRay& pt, const SkPoint pts[2],
 /** Given a quadratic equation Ax^2 + Bx + C = 0, return 0, 1, 2 roots for the
     equation.
 */
-int SkFindUnitQuadRoots(SkScalar A, SkScalar B, SkScalar C, SkScalar roots[2]);
+int SkFindUnitQuadRoots(float A, float B, float C, float roots[2]);
 
 ///////////////////////////////////////////////////////////////////////////////
 
 /** Set pt to the point on the src quadratic specified by t. t must be
     0 <= t <= 1.0
 */
-void SkEvalQuadAt(const SkPoint src[3], SkScalar t, SkPoint* pt,
+void SkEvalQuadAt(const SkPoint src[3], float t, SkPoint* pt,
                   SkVector* tangent = NULL);
 void SkEvalQuadAtHalf(const SkPoint src[3], SkPoint* pt,
                       SkVector* tangent = NULL);
@@ -46,7 +46,7 @@ void SkEvalQuadAtHalf(const SkPoint src[3], SkPoint* pt,
     where 0 < t < 1, and return the two new quadratics in dst:
     dst[0..2] and dst[2..4]
 */
-void SkChopQuadAt(const SkPoint src[3], SkPoint dst[5], SkScalar t);
+void SkChopQuadAt(const SkPoint src[3], SkPoint dst[5], float t);
 
 /** Given a src quadratic bezier, chop it at the specified t == 1/2,
     The new quads are returned in dst[0..2] and dst[2..4]
@@ -61,7 +61,7 @@ void SkChopQuadAtHalf(const SkPoint src[3], SkPoint dst[5]);
     0                   ignored
     1                   0 < tValues[0] < 1
 */
-int SkFindQuadExtrema(SkScalar a, SkScalar b, SkScalar c, SkScalar tValues[1]);
+int SkFindQuadExtrema(float a, float b, float c, float tValues[1]);
 
 /** Given 3 points on a quadratic bezier, chop it into 1, 2 beziers such that
     the resulting beziers are monotonic in Y. This is called by the scan converter.
@@ -98,24 +98,24 @@ SK_API void SkConvertQuadToCubic(const SkPoint src[3], SkPoint dst[4]);
 /** Convert from parametric from (pts) to polynomial coefficients
     coeff[0]*T^3 + coeff[1]*T^2 + coeff[2]*T + coeff[3]
 */
-void SkGetCubicCoeff(const SkPoint pts[4], SkScalar cx[4], SkScalar cy[4]);
+void SkGetCubicCoeff(const SkPoint pts[4], float cx[4], float cy[4]);
 
 /** Set pt to the point on the src cubic specified by t. t must be
     0 <= t <= 1.0
 */
-void SkEvalCubicAt(const SkPoint src[4], SkScalar t, SkPoint* locOrNull,
+void SkEvalCubicAt(const SkPoint src[4], float t, SkPoint* locOrNull,
                    SkVector* tangentOrNull, SkVector* curvatureOrNull);
 
 /** Given a src cubic bezier, chop it at the specified t value,
     where 0 < t < 1, and return the two new cubics in dst:
     dst[0..3] and dst[3..6]
 */
-void SkChopCubicAt(const SkPoint src[4], SkPoint dst[7], SkScalar t);
+void SkChopCubicAt(const SkPoint src[4], SkPoint dst[7], float t);
 /** Given a src cubic bezier, chop it at the specified t values,
     where 0 < t < 1, and return the new cubics in dst:
     dst[0..3],dst[3..6],...,dst[3*t_count..3*(t_count+1)]
 */
-void SkChopCubicAt(const SkPoint src[4], SkPoint dst[], const SkScalar t[],
+void SkChopCubicAt(const SkPoint src[4], SkPoint dst[], const float t[],
                    int t_count);
 
 /** Given a src cubic bezier, chop it at the specified t == 1/2,
@@ -132,8 +132,8 @@ void SkChopCubicAtHalf(const SkPoint src[4], SkPoint dst[7]);
     1                   0 < tValues[0] < 1
     2                   0 < tValues[0] < tValues[1] < 1
 */
-int SkFindCubicExtrema(SkScalar a, SkScalar b, SkScalar c, SkScalar d,
-                       SkScalar tValues[2]);
+int SkFindCubicExtrema(float a, float b, float c, float d,
+                       float tValues[2]);
 
 /** Given 4 points on a cubic bezier, chop it into 1, 2, 3 beziers such that
     the resulting beziers are monotonic in Y. This is called by the scan converter.
@@ -149,7 +149,7 @@ int SkChopCubicAtXExtrema(const SkPoint src[4], SkPoint dst[10]);
 /** Given a cubic bezier, return 0, 1, or 2 t-values that represent the
     inflection points.
 */
-int SkFindCubicInflections(const SkPoint src[4], SkScalar tValues[2]);
+int SkFindCubicInflections(const SkPoint src[4], float tValues[2]);
 
 /** Return 1 for no chop, 2 for having chopped the cubic at a single
     inflection point, 3 for having chopped at 2 inflection points.
@@ -157,9 +157,9 @@ int SkFindCubicInflections(const SkPoint src[4], SkScalar tValues[2]);
 */
 int SkChopCubicAtInflections(const SkPoint src[4], SkPoint dst[10]);
 
-int SkFindCubicMaxCurvature(const SkPoint src[4], SkScalar tValues[3]);
+int SkFindCubicMaxCurvature(const SkPoint src[4], float tValues[3]);
 int SkChopCubicAtMaxCurvature(const SkPoint src[4], SkPoint dst[13],
-                              SkScalar tValues[3] = NULL);
+                              float tValues[3] = NULL);
 
 /** Given a monotonic cubic bezier, determine whether an xray intersects the
     cubic.
@@ -215,9 +215,9 @@ int SkBuildQuadArc(const SkVector& unitStart, const SkVector& unitStop,
 // experimental
 struct SkConic {
     SkPoint  fPts[3];
-    SkScalar fW;
+    float fW;
 
-    void set(const SkPoint pts[3], SkScalar w) {
+    void set(const SkPoint pts[3], float w) {
         memcpy(fPts, pts, 3 * sizeof(SkPoint));
         fW = w;
     }
@@ -229,18 +229,18 @@ struct SkConic {
      *  tangent value's length is arbitrary, and only its direction should
      *  be used.
      */
-    void evalAt(SkScalar t, SkPoint* pos, SkVector* tangent = NULL) const;
-    void chopAt(SkScalar t, SkConic dst[2]) const;
+    void evalAt(float t, SkPoint* pos, SkVector* tangent = NULL) const;
+    void chopAt(float t, SkConic dst[2]) const;
     void chop(SkConic dst[2]) const;
 
     void computeAsQuadError(SkVector* err) const;
-    bool asQuadTol(SkScalar tol) const;
+    bool asQuadTol(float tol) const;
 
     /**
      *  return the power-of-2 number of quads needed to approximate this conic
      *  with a sequence of quads. Will be >= 0.
      */
-    int computeQuadPOW2(SkScalar tol) const;
+    int computeQuadPOW2(float tol) const;
 
     /**
      *  Chop this conic into N quads, stored continguously in pts[], where
@@ -248,22 +248,13 @@ struct SkConic {
      */
     int chopIntoQuadsPOW2(SkPoint pts[], int pow2) const;
 
-    bool findXExtrema(SkScalar* t) const;
-    bool findYExtrema(SkScalar* t) const;
+    bool findXExtrema(float* t) const;
+    bool findYExtrema(float* t) const;
     bool chopAtXExtrema(SkConic dst[2]) const;
     bool chopAtYExtrema(SkConic dst[2]) const;
 
     void computeTightBounds(SkRect* bounds) const;
     void computeFastBounds(SkRect* bounds) const;
-
-    /** Find the parameter value where the conic takes on its maximum curvature.
-     *
-     *  @param t   output scalar for max curvature.  Will be unchanged if
-     *             max curvature outside 0..1 range.
-     *
-     *  @return  true if max curvature found inside 0..1 range, false otherwise
-     */
-    bool findMaxCurvature(SkScalar* t) const;
 };
 
 #include "SkTemplates.h"
@@ -287,7 +278,7 @@ public:
      *      quad[2] == pts[4..6]
      *      quad[3] == pts[6..8]
      */
-    const SkPoint* computeQuads(const SkConic& conic, SkScalar tol) {
+    const SkPoint* computeQuads(const SkConic& conic, float tol) {
         int pow2 = conic.computeQuadPOW2(tol);
         fQuadCount = 1 << pow2;
         SkPoint* pts = fStorage.reset(1 + 2 * fQuadCount);
@@ -295,8 +286,8 @@ public:
         return pts;
     }
 
-    const SkPoint* computeQuads(const SkPoint pts[3], SkScalar weight,
-                                SkScalar tol) {
+    const SkPoint* computeQuads(const SkPoint pts[3], float weight,
+                                float tol) {
         SkConic conic;
         conic.set(pts, weight);
         return computeQuads(conic, tol);

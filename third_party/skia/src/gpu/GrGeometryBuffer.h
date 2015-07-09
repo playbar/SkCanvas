@@ -17,7 +17,8 @@ class GrGpu;
 /**
  * Parent class for vertex and index buffers
  */
-class GrGeometryBuffer : public GrResource {
+class GrGeometryBuffer : public GrResource
+{
 public:
     SK_DECLARE_INST_COUNT(GrGeometryBuffer);
 

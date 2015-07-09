@@ -30,21 +30,21 @@ public:
     virtual ~SkLayer();
 
     bool isInheritFromRootTransform() const;
-    SkScalar getOpacity() const { return m_opacity; }
+    float getOpacity() const { return m_opacity; }
     const SkSize& getSize() const { return m_size; }
     const SkPoint& getPosition() const { return m_position; }
     const SkPoint& getAnchorPoint() const { return m_anchorPoint; }
     const SkMatrix& getMatrix() const { return fMatrix; }
     const SkMatrix& getChildrenMatrix() const { return fChildrenMatrix; }
 
-    SkScalar getWidth() const { return m_size.width(); }
-    SkScalar getHeight() const { return m_size.height(); }
+    float getWidth() const { return m_size.width(); }
+    float getHeight() const { return m_size.height(); }
 
     void setInheritFromRootTransform(bool);
-    void setOpacity(SkScalar opacity) { m_opacity = opacity; }
-    void setSize(SkScalar w, SkScalar h) { m_size.set(w, h); }
-    void setPosition(SkScalar x, SkScalar y) { m_position.set(x, y); }
-    void setAnchorPoint(SkScalar x, SkScalar y) { m_anchorPoint.set(x, y); }
+    void setOpacity(float opacity) { m_opacity = opacity; }
+    void setSize(float w, float h) { m_size.set(w, h); }
+    void setPosition(float x, float y) { m_position.set(x, y); }
+    void setAnchorPoint(float x, float y) { m_anchorPoint.set(x, y); }
     void setMatrix(const SkMatrix&);
     void setChildrenMatrix(const SkMatrix&);
 
@@ -100,13 +100,13 @@ public:
 
     // paint method
 
-    void draw(SkCanvas*, SkScalar opacity);
+    void draw(SkCanvas*, float opacity);
     void draw(SkCanvas* canvas) {
         this->draw(canvas, SK_Scalar1);
     }
 
 protected:
-    virtual void onDraw(SkCanvas*, SkScalar opacity);
+    virtual void onDraw(SkCanvas*, float opacity);
 
 private:
     enum Flags {
@@ -114,7 +114,7 @@ private:
     };
 
     SkLayer*    fParent;
-    SkScalar    m_opacity;
+    float    m_opacity;
     SkSize      m_size;
     SkPoint     m_position;
     SkPoint     m_anchorPoint;

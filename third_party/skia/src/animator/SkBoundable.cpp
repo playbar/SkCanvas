@@ -23,7 +23,6 @@ void SkBoundable::clearBounder() {
 }
 
 void SkBoundable::getBounds(SkRect* rect) {
-    SkASSERT(rect);
     if (fBounds.fLeft == (int16_t)0x8000U) {
         INHERITED::getBounds(rect);
         return;

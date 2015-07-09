@@ -49,7 +49,6 @@ SkAnimateBase::SkAnimateBase() : begin(0), dur(1), repeat(SK_Scalar1),
 SkAnimateBase::~SkAnimateBase() {
     SkDisplayTypes type = fValues.getType();
     if (type == SkType_String || type == SkType_DynamicString) {
-        SkASSERT(fValues.count() == 1);
         delete fValues[0].fString;
     }
 }
@@ -125,7 +124,6 @@ returnBool:
             value->fType = SkType_String;
             break;
         default:
-            SkASSERT(0);
             return false;
     }
     return true;
@@ -140,7 +138,6 @@ void SkAnimateBase::onEndElement(SkAnimateMaker& maker) {
     fChanged = false;
     setTarget(maker);
     if (field.size()) {
-        SkASSERT(fTarget);
         fFieldInfo = fTarget->getMember(field.c_str());
         field.reset();
     }
@@ -152,16 +149,14 @@ void SkAnimateBase::onEndElement(SkAnimateMaker& maker) {
             return; //should this return an error?
         size_t arrayNameLen = arrayEnd - lvalStr;
         SkString arrayStr(lvalStr, arrayNameLen);
-        SkASSERT(fTarget);  //this return an error?
         fFieldInfo = fTarget->getMember(arrayStr.c_str());
         SkString scriptStr(arrayEnd + 1, lval.size() - arrayNameLen - 2);
         SkAnimatorScript::EvaluateInt(maker, this, scriptStr.c_str(), &fFieldOffset);
     }
 }
 
-void SkAnimateBase::packARGB(SkScalar array[], int count, SkTDOperandArray* converted)
+void SkAnimateBase::packARGB(float array[], int count, SkTDOperandArray* converted)
 {
-    SkASSERT(count == 4);
     converted->setCount(1);
     SkColor color = SkColorSetARGB(SkScalarRoundToInt(array[0]),
                                    SkScalarRoundToInt(array[1]),
@@ -176,7 +171,6 @@ void SkAnimateBase::refresh(SkAnimateMaker& ) {
 }
 
 bool SkAnimateBase::setParent(SkDisplayable* apply) {
-    SkASSERT(apply->isApply());
     fApply = (SkApply*) apply;
     return false;
 }
@@ -189,7 +183,6 @@ bool SkAnimateBase::setProperty(int index, SkScriptValue& value) {
             goto checkForBool;
         case SK_PROPERTY(values):
             fHasValues = true;
-            SkASSERT(value.fType == SkType_String);
             to = *value.fOperand.fString;
             break;
         case SK_PROPERTY(mirror):
@@ -198,7 +191,6 @@ bool SkAnimateBase::setProperty(int index, SkScriptValue& value) {
         case SK_PROPERTY(reset):
             fReset = boolValue;
 checkForBool:
-            SkASSERT(value.fType == SkType_Boolean);
             break;
         default:
             return false;

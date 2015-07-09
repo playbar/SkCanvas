@@ -93,7 +93,7 @@ const char* SkImageDecoder::GetFormatName(Format format) {
         case kWEBP_Format:
             return "WEBP";
         default:
-            SkDEBUGFAIL("Invalid format type!");
+			break;
     }
     return "Unknown Format";
 }
@@ -258,9 +258,6 @@ bool SkImageDecoder::cropBitmap(SkBitmap *dst, SkBitmap *src, int sampleSize,
 
 bool SkImageDecoder::DecodeFile(const char file[], SkBitmap* bm,
                             SkBitmap::Config pref,  Mode mode, Format* format) {
-    SkASSERT(file);
-    SkASSERT(bm);
-
     SkAutoTUnref<SkStreamRewindable> stream(SkStream::NewFromFile(file));
     if (stream.get()) {
         if (SkImageDecoder::DecodeStream(stream, bm, pref, mode, format)) {
@@ -276,7 +273,6 @@ bool SkImageDecoder::DecodeMemory(const void* buffer, size_t size, SkBitmap* bm,
     if (0 == size) {
         return false;
     }
-    SkASSERT(buffer);
 
     SkMemoryStream  stream(buffer, size);
     return SkImageDecoder::DecodeStream(&stream, bm, pref, mode, format);
@@ -285,9 +281,6 @@ bool SkImageDecoder::DecodeMemory(const void* buffer, size_t size, SkBitmap* bm,
 bool SkImageDecoder::DecodeStream(SkStreamRewindable* stream, SkBitmap* bm,
                                   SkBitmap::Config pref, Mode mode,
                                   Format* format) {
-    SkASSERT(stream);
-    SkASSERT(bm);
-
     bool success = false;
     SkImageDecoder* codec = SkImageDecoder::Factory(stream);
 

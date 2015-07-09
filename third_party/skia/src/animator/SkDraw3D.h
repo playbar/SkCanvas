@@ -29,8 +29,8 @@ class Sk3D_Camera : public SkDrawable {
     virtual ~Sk3D_Camera();
     virtual bool draw(SkAnimateMaker& );
 private:
-    SkScalar hackWidth;
-    SkScalar hackHeight;
+    float hackWidth;
+    float hackHeight;
     SkCamera3D fCamera;
     Sk3D_Patch* patch;
 };

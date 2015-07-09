@@ -74,7 +74,6 @@ static SkOpSegment* findChaseOp(SkTDArray<SkOpSpan*>& chase, int& nextStart, int
         int lastIndex = firstIndex != 0 ? firstIndex : angleCount;
         SkOpSegment* first = NULL;
         do {
-            SkASSERT(nextIndex != firstIndex);
             if (nextIndex == angleCount) {
                 nextIndex = 0;
             }
@@ -107,34 +106,6 @@ static SkOpSegment* findChaseOp(SkTDArray<SkOpSpan*>& chase, int& nextStart, int
     return NULL;
 }
 
-/*
-static bool windingIsActive(int winding, int oppWinding, int spanWinding, int oppSpanWinding,
-        bool windingIsOp, PathOp op) {
-    bool active = windingIsActive(winding, spanWinding);
-    if (!active) {
-        return false;
-    }
-    if (oppSpanWinding && windingIsActive(oppWinding, oppSpanWinding)) {
-        switch (op) {
-            case kIntersect_Op:
-            case kUnion_Op:
-                return true;
-            case kDifference_Op: {
-                int absSpan = abs(spanWinding);
-                int absOpp = abs(oppSpanWinding);
-                return windingIsOp ? absSpan < absOpp : absSpan > absOpp;
-            }
-            case kXor_Op:
-                return spanWinding != oppSpanWinding;
-            default:
-                SkASSERT(0);
-        }
-    }
-    bool opActive = oppWinding != 0;
-    return gOpLookup[op][opActive][windingIsOp];
-}
-*/
-
 static bool bridgeOp(SkTArray<SkOpContour*, true>& contourList, const SkPathOp op,
         const int xorMask, const int xorOpMask, SkPathWriter* simple) {
     bool firstContour = true;
@@ -149,7 +120,6 @@ static bool bridgeOp(SkTArray<SkOpContour*, true>& contourList, const SkPathOp o
         if (!current) {
             if (topUnsortable || !done) {
                 topUnsortable = false;
-                SkASSERT(topLeft.fX != SK_ScalarMin && topLeft.fY != SK_ScalarMin);
                 topLeft.fX = topLeft.fY = SK_ScalarMin;
                 continue;
             }
@@ -168,7 +138,6 @@ static bool bridgeOp(SkTArray<SkOpContour*, true>& contourList, const SkPathOp o
                         }
                         break;
                     }
-                    SkASSERT(unsortable || !current->done());
                     int nextStart = index;
                     int nextEnd = endIndex;
                     SkOpSegment* next = current->findNextOp(&chaseArray, &nextStart, &nextEnd,
@@ -178,7 +147,6 @@ static bool bridgeOp(SkTArray<SkOpContour*, true>& contourList, const SkPathOp o
                                 && current->verb() != SkPath::kLine_Verb
                                 && !simple->isClosed()) {
                             current->addCurveTo(index, endIndex, simple, true);
-                            SkASSERT(simple->isClosed());
                         }
                         break;
                     }
@@ -199,7 +167,6 @@ static bool bridgeOp(SkTArray<SkOpContour*, true>& contourList, const SkPathOp o
                     if (!unsortable && !simple->isEmpty()) {
                         unsortable = current->checkSmall(min);
                     }
-                    SkASSERT(unsortable || simple->isEmpty());
                     if (!current->done(min)) {
                         current->addCurveTo(index, endIndex, simple, true);
                         current->markDoneBinary(min);

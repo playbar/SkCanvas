@@ -183,8 +183,8 @@ typedef unsigned __int64 uint64_t;
  */
 inline void GrCrash() { GrAlwaysAssert(false); }
 inline void GrCrash(const char* msg) { GrPrintf(msg); GrAlwaysAssert(false); }
-inline void GrDebugCrash() { SkASSERT(false); }
-inline void GrDebugCrash(const char* msg) { GrPrintf(msg); SkASSERT(false); }
+inline void GrDebugCrash() {  }
+inline void GrDebugCrash(const char* msg) { GrPrintf(msg); }
 
 /**
  *  GR_STATIC_ASSERT is a compile time assertion. Depending on the platform

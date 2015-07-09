@@ -8,8 +8,7 @@
 #include "SkMatrixConvolutionImageFilter.h"
 #include "SkBitmap.h"
 #include "SkColorPriv.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkRect.h"
 #include "SkUnPreMultiply.h"
 
@@ -35,10 +34,10 @@ static bool tile_mode_is_valid(SkMatrixConvolutionImageFilter::TileMode tileMode
 
 SkMatrixConvolutionImageFilter::SkMatrixConvolutionImageFilter(
     const SkISize& kernelSize,
-    const SkScalar* kernel,
-    SkScalar gain,
-    SkScalar bias,
-    const SkIPoint& kernelOffset,
+    const float* kernel,
+    float gain,
+    float bias,
+    const SkIPoint& target,
     TileMode tileMode,
     bool convolveAlpha,
     SkImageFilter* input,
@@ -47,22 +46,19 @@ SkMatrixConvolutionImageFilter::SkMatrixConvolutionImageFilter(
     fKernelSize(kernelSize),
     fGain(gain),
     fBias(bias),
-    fKernelOffset(kernelOffset),
+    fTarget(target),
     fTileMode(tileMode),
     fConvolveAlpha(convolveAlpha) {
     uint32_t size = fKernelSize.fWidth * fKernelSize.fHeight;
-    fKernel = SkNEW_ARRAY(SkScalar, size);
-    memcpy(fKernel, kernel, size * sizeof(SkScalar));
-    SkASSERT(kernelSize.fWidth >= 1 && kernelSize.fHeight >= 1);
-    SkASSERT(kernelOffset.fX >= 0 && kernelOffset.fX < kernelSize.fWidth);
-    SkASSERT(kernelOffset.fY >= 0 && kernelOffset.fY < kernelSize.fHeight);
+    fKernel = SkNEW_ARRAY(float, size);
+    memcpy(fKernel, kernel, size * sizeof(float));
 }
 
-SkMatrixConvolutionImageFilter::SkMatrixConvolutionImageFilter(SkReadBuffer& buffer)
+SkMatrixConvolutionImageFilter::SkMatrixConvolutionImageFilter(SkFlattenableReadBuffer& buffer)
     : INHERITED(1, buffer) {
     // We need to be able to read at most SK_MaxS32 bytes, so divide that
     // by the size of a scalar to know how many scalars we can read.
-    static const int32_t kMaxSize = SK_MaxS32 / sizeof(SkScalar);
+    static const int32_t kMaxSize = SK_MaxS32 / sizeof(float);
     fKernelSize.fWidth = buffer.readInt();
     fKernelSize.fHeight = buffer.readInt();
     if ((fKernelSize.fWidth >= 1) && (fKernelSize.fHeight >= 1) &&
@@ -71,16 +67,15 @@ SkMatrixConvolutionImageFilter::SkMatrixConvolutionImageFilter(SkReadBuffer& buf
         // but we don't impose a hard limit for kernel size
         (kMaxSize / fKernelSize.fWidth >= fKernelSize.fHeight)) {
         size_t size = fKernelSize.fWidth * fKernelSize.fHeight;
-        fKernel = SkNEW_ARRAY(SkScalar, size);
-        SkDEBUGCODE(bool success =) buffer.readScalarArray(fKernel, size);
-        SkASSERT(success);
+        fKernel = SkNEW_ARRAY(float, size);
+        buffer.readScalarArray(fKernel, size);
     } else {
         fKernel = 0;
     }
     fGain = buffer.readScalar();
     fBias = buffer.readScalar();
-    fKernelOffset.fX = buffer.readInt();
-    fKernelOffset.fY = buffer.readInt();
+    fTarget.fX = buffer.readInt();
+    fTarget.fY = buffer.readInt();
     fTileMode = (TileMode) buffer.readInt();
     fConvolveAlpha = buffer.readBool();
     buffer.validate((fKernel != 0) &&
@@ -89,15 +84,15 @@ SkMatrixConvolutionImageFilter::SkMatrixConvolutionImageFilter(SkReadBuffer& buf
                     tile_mode_is_valid(fTileMode));
 }
 
-void SkMatrixConvolutionImageFilter::flatten(SkWriteBuffer& buffer) const {
+void SkMatrixConvolutionImageFilter::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writeInt(fKernelSize.fWidth);
     buffer.writeInt(fKernelSize.fHeight);
     buffer.writeScalarArray(fKernel, fKernelSize.fWidth * fKernelSize.fHeight);
     buffer.writeScalar(fGain);
     buffer.writeScalar(fBias);
-    buffer.writeInt(fKernelOffset.fX);
-    buffer.writeInt(fKernelOffset.fY);
+    buffer.writeInt(fTarget.fX);
+    buffer.writeInt(fTarget.fY);
     buffer.writeInt((int) fTileMode);
     buffer.writeBool(fConvolveAlpha);
 }
@@ -152,18 +147,18 @@ template<class PixelFetcher, bool convolveAlpha>
 void SkMatrixConvolutionImageFilter::filterPixels(const SkBitmap& src,
                                                   SkBitmap* result,
                                                   const SkIRect& rect,
-                                                  const SkIRect& bounds) const {
+                                                  const SkIRect& bounds) {
     for (int y = rect.fTop; y < rect.fBottom; ++y) {
         SkPMColor* dptr = result->getAddr32(rect.fLeft - bounds.fLeft, y - bounds.fTop);
         for (int x = rect.fLeft; x < rect.fRight; ++x) {
-            SkScalar sumA = 0, sumR = 0, sumG = 0, sumB = 0;
+            float sumA = 0, sumR = 0, sumG = 0, sumB = 0;
             for (int cy = 0; cy < fKernelSize.fHeight; cy++) {
                 for (int cx = 0; cx < fKernelSize.fWidth; cx++) {
                     SkPMColor s = PixelFetcher::fetch(src,
-                                                      x + cx - fKernelOffset.fX,
-                                                      y + cy - fKernelOffset.fY,
+                                                      x + cx - fTarget.fX,
+                                                      y + cy - fTarget.fY,
                                                       bounds);
-                    SkScalar k = fKernel[cy * fKernelSize.fWidth + cx];
+                    float k = fKernel[cy * fKernelSize.fWidth + cx];
                     if (convolveAlpha) {
                         sumA += SkScalarMul(SkIntToScalar(SkGetPackedA32(s)), k);
                     }
@@ -192,7 +187,7 @@ template<class PixelFetcher>
 void SkMatrixConvolutionImageFilter::filterPixels(const SkBitmap& src,
                                                   SkBitmap* result,
                                                   const SkIRect& rect,
-                                                  const SkIRect& bounds) const {
+                                                  const SkIRect& bounds) {
     if (fConvolveAlpha) {
         filterPixels<PixelFetcher, true>(src, result, rect, bounds);
     } else {
@@ -203,14 +198,14 @@ void SkMatrixConvolutionImageFilter::filterPixels(const SkBitmap& src,
 void SkMatrixConvolutionImageFilter::filterInteriorPixels(const SkBitmap& src,
                                                           SkBitmap* result,
                                                           const SkIRect& rect,
-                                                          const SkIRect& bounds) const {
+                                                          const SkIRect& bounds) {
     filterPixels<UncheckedPixelFetcher>(src, result, rect, bounds);
 }
 
 void SkMatrixConvolutionImageFilter::filterBorderPixels(const SkBitmap& src,
                                                         SkBitmap* result,
                                                         const SkIRect& rect,
-                                                        const SkIRect& bounds) const {
+                                                        const SkIRect& bounds) {
     switch (fTileMode) {
         case kClamp_TileMode:
             filterPixels<ClampPixelFetcher>(src, result, rect, bounds);
@@ -253,20 +248,18 @@ bool SkMatrixConvolutionImageFilter::onFilterImage(Proxy* proxy,
                                                    const SkBitmap& source,
                                                    const SkMatrix& matrix,
                                                    SkBitmap* result,
-                                                   SkIPoint* offset) const {
+                                                   SkIPoint* loc) {
     SkBitmap src = source;
-    SkIPoint srcOffset = SkIPoint::Make(0, 0);
-    if (getInput(0) && !getInput(0)->filterImage(proxy, source, matrix, &src, &srcOffset)) {
+    if (getInput(0) && !getInput(0)->filterImage(proxy, source, matrix, &src, loc)) {
         return false;
     }
 
-    if (src.colorType() != kPMColor_SkColorType) {
+    if (src.config() != SkBitmap::kARGB_8888_Config) {
         return false;
     }
 
     SkIRect bounds;
     src.getBounds(&bounds);
-    bounds.offset(srcOffset);
     if (!this->applyCropRect(&bounds, matrix)) {
         return false;
     }
@@ -286,11 +279,8 @@ bool SkMatrixConvolutionImageFilter::onFilterImage(Proxy* proxy,
         return false;
     }
 
-    offset->fX = bounds.fLeft;
-    offset->fY = bounds.fTop;
-    bounds.offset(-srcOffset);
-    SkIRect interior = SkIRect::MakeXYWH(bounds.left() + fKernelOffset.fX,
-                                         bounds.top() + fKernelOffset.fY,
+    SkIRect interior = SkIRect::MakeXYWH(bounds.left() + fTarget.fX,
+                                         bounds.top() + fTarget.fY,
                                          bounds.width() - fKernelSize.fWidth + 1,
                                          bounds.height() - fKernelSize.fHeight + 1);
     SkIRect top = SkIRect::MakeLTRB(bounds.left(), bounds.top(), bounds.right(), interior.top());
@@ -305,6 +295,8 @@ bool SkMatrixConvolutionImageFilter::onFilterImage(Proxy* proxy,
     filterInteriorPixels(src, result, interior, bounds);
     filterBorderPixels(src, result, right, bounds);
     filterBorderPixels(src, result, bottom, bounds);
+    loc->fX += bounds.fLeft;
+    loc->fY += bounds.fTop;
     return true;
 }
 
@@ -320,10 +312,10 @@ public:
     static GrEffectRef* Create(GrTexture* texture,
                                const SkIRect& bounds,
                                const SkISize& kernelSize,
-                               const SkScalar* kernel,
-                               SkScalar gain,
-                               SkScalar bias,
-                               const SkIPoint& kernelOffset,
+                               const float* kernel,
+                               float gain,
+                               float bias,
+                               const SkIPoint& target,
                                TileMode tileMode,
                                bool convolveAlpha) {
         AutoEffectUnref effect(SkNEW_ARGS(GrMatrixConvolutionEffect, (texture,
@@ -332,7 +324,7 @@ public:
                                                                       kernel,
                                                                       gain,
                                                                       bias,
-                                                                      kernelOffset,
+                                                                      target,
                                                                       tileMode,
                                                                       convolveAlpha)));
         return CreateEffectRef(effect);
@@ -348,7 +340,7 @@ public:
     static const char* Name() { return "MatrixConvolution"; }
     const SkIRect& bounds() const { return fBounds; }
     const SkISize& kernelSize() const { return fKernelSize; }
-    const float* kernelOffset() const { return fKernelOffset; }
+    const float* target() const { return fTarget; }
     const float* kernel() const { return fKernel; }
     float gain() const { return fGain; }
     float bias() const { return fBias; }
@@ -363,10 +355,10 @@ private:
     GrMatrixConvolutionEffect(GrTexture*,
                               const SkIRect& bounds,
                               const SkISize& kernelSize,
-                              const SkScalar* kernel,
-                              SkScalar gain,
-                              SkScalar bias,
-                              const SkIPoint& kernelOffset,
+                              const float* kernel,
+                              float gain,
+                              float bias,
+                              const SkIPoint& target,
                               TileMode tileMode,
                               bool convolveAlpha);
 
@@ -377,7 +369,7 @@ private:
     float   *fKernel;
     float    fGain;
     float    fBias;
-    float    fKernelOffset[2];
+    float    fTarget[2];
     TileMode fTileMode;
     bool     fConvolveAlpha;
 
@@ -412,7 +404,7 @@ private:
     UniformHandle       fBoundsUni;
     UniformHandle       fKernelUni;
     UniformHandle       fImageIncrementUni;
-    UniformHandle       fKernelOffsetUni;
+    UniformHandle       fTargetUni;
     UniformHandle       fGainUni;
     UniformHandle       fBiasUni;
 
@@ -467,15 +459,15 @@ void GrGLMatrixConvolutionEffect::emitCode(GrGLShaderBuilder* builder,
                                              kFloat_GrSLType,
                                              "Kernel",
                                              fKernelSize.width() * fKernelSize.height());
-    fKernelOffsetUni = builder->addUniform(GrGLShaderBuilder::kFragment_Visibility,
-                                             kVec2f_GrSLType, "KernelOffset");
+    fTargetUni = builder->addUniform(GrGLShaderBuilder::kFragment_Visibility,
+                                             kVec2f_GrSLType, "Target");
     fGainUni = builder->addUniform(GrGLShaderBuilder::kFragment_Visibility,
                                    kFloat_GrSLType, "Gain");
     fBiasUni = builder->addUniform(GrGLShaderBuilder::kFragment_Visibility,
                                    kFloat_GrSLType, "Bias");
 
     const char* bounds = builder->getUniformCStr(fBoundsUni);
-    const char* kernelOffset = builder->getUniformCStr(fKernelOffsetUni);
+    const char* target = builder->getUniformCStr(fTargetUni);
     const char* imgInc = builder->getUniformCStr(fImageIncrementUni);
     const char* kernel = builder->getUniformCStr(fKernelUni);
     const char* gain = builder->getUniformCStr(fGainUni);
@@ -484,7 +476,7 @@ void GrGLMatrixConvolutionEffect::emitCode(GrGLShaderBuilder* builder,
     int kHeight = fKernelSize.height();
 
     builder->fsCodeAppend("\t\tvec4 sum = vec4(0, 0, 0, 0);\n");
-    builder->fsCodeAppendf("\t\tvec2 coord = %s - %s * %s;\n", coords2D.c_str(), kernelOffset, imgInc);
+    builder->fsCodeAppendf("\t\tvec2 coord = %s - %s * %s;\n", coords2D.c_str(), target, imgInc);
     builder->fsCodeAppendf("\t\tfor (int y = 0; y < %d; y++) {\n", kHeight);
     builder->fsCodeAppendf("\t\t\tfor (int x = 0; x < %d; x++) {\n", kWidth);
     builder->fsCodeAppendf("\t\t\t\tfloat k = %s[y * %d + x];\n", kernel, kWidth);
@@ -515,7 +507,6 @@ void GrGLMatrixConvolutionEffect::emitCode(GrGLShaderBuilder* builder,
 namespace {
 
 int encodeXY(int x, int y) {
-    SkASSERT(x >= 1 && y >= 1 && x * y <= 32);
     if (y < x)
         return 0x40 | encodeXY(y, x);
     else
@@ -538,14 +529,12 @@ void GrGLMatrixConvolutionEffect::setData(const GrGLUniformManager& uman,
     const GrMatrixConvolutionEffect& conv = drawEffect.castEffect<GrMatrixConvolutionEffect>();
     GrTexture& texture = *conv.texture(0);
     // the code we generated was for a specific kernel size
-    SkASSERT(conv.kernelSize() == fKernelSize);
-    SkASSERT(conv.tileMode() == fTileMode);
     float imageIncrement[2];
     float ySign = texture.origin() == kTopLeft_GrSurfaceOrigin ? 1.0f : -1.0f;
     imageIncrement[0] = 1.0f / texture.width();
     imageIncrement[1] = ySign / texture.height();
     uman.set2fv(fImageIncrementUni, 1, imageIncrement);
-    uman.set2fv(fKernelOffsetUni, 1, conv.kernelOffset());
+    uman.set2fv(fTargetUni, 1, conv.target());
     uman.set1fv(fKernelUni, fKernelSize.width() * fKernelSize.height(), conv.kernel());
     uman.set1f(fGainUni, conv.gain());
     uman.set1f(fBiasUni, conv.bias());
@@ -564,10 +553,10 @@ void GrGLMatrixConvolutionEffect::setData(const GrGLUniformManager& uman,
 GrMatrixConvolutionEffect::GrMatrixConvolutionEffect(GrTexture* texture,
                                                      const SkIRect& bounds,
                                                      const SkISize& kernelSize,
-                                                     const SkScalar* kernel,
-                                                     SkScalar gain,
-                                                     SkScalar bias,
-                                                     const SkIPoint& kernelOffset,
+                                                     const float* kernel,
+                                                     float gain,
+                                                     float bias,
+                                                     const SkIPoint& target,
                                                      TileMode tileMode,
                                                      bool convolveAlpha)
   : INHERITED(texture, MakeDivByTextureWHMatrix(texture)),
@@ -581,8 +570,8 @@ GrMatrixConvolutionEffect::GrMatrixConvolutionEffect(GrTexture* texture,
     for (int i = 0; i < kernelSize.width() * kernelSize.height(); i++) {
         fKernel[i] = SkScalarToFloat(kernel[i]);
     }
-    fKernelOffset[0] = static_cast<float>(kernelOffset.x());
-    fKernelOffset[1] = static_cast<float>(kernelOffset.y());
+    fTarget[0] = static_cast<float>(target.x());
+    fTarget[1] = static_cast<float>(target.y());
     this->setWillNotUseInputColor();
 }
 
@@ -602,7 +591,7 @@ bool GrMatrixConvolutionEffect::onIsEqual(const GrEffect& sBase) const {
                    fKernelSize.width() * fKernelSize.height() * sizeof(float)) &&
            fGain == s.gain() &&
            fBias == s.bias() &&
-           fKernelOffset == s.kernelOffset() &&
+           fTarget == s.target() &&
            fTileMode == s.tileMode() &&
            fConvolveAlpha == s.convolveAlpha();
 }
@@ -622,14 +611,14 @@ GrEffectRef* GrMatrixConvolutionEffect::TestCreate(SkRandom* random,
     int width = random->nextRangeU(1, MAX_KERNEL_SIZE);
     int height = random->nextRangeU(1, MAX_KERNEL_SIZE / width);
     SkISize kernelSize = SkISize::Make(width, height);
-    SkAutoTDeleteArray<SkScalar> kernel(new SkScalar[width * height]);
+    SkAutoTDeleteArray<float> kernel(new float[width * height]);
     for (int i = 0; i < width * height; i++) {
         kernel.get()[i] = random->nextSScalar1();
     }
-    SkScalar gain = random->nextSScalar1();
-    SkScalar bias = random->nextSScalar1();
-    SkIPoint kernelOffset = SkIPoint::Make(random->nextRangeU(0, kernelSize.width()),
-                                           random->nextRangeU(0, kernelSize.height()));
+    float gain = random->nextSScalar1();
+    float bias = random->nextSScalar1();
+    SkIPoint target = SkIPoint::Make(random->nextRangeU(0, kernelSize.width()),
+                                     random->nextRangeU(0, kernelSize.height()));
     SkIRect bounds = SkIRect::MakeXYWH(random->nextRangeU(0, textures[texIdx]->width()),
                                        random->nextRangeU(0, textures[texIdx]->height()),
                                        random->nextRangeU(0, textures[texIdx]->width()),
@@ -642,7 +631,7 @@ GrEffectRef* GrMatrixConvolutionEffect::TestCreate(SkRandom* random,
                                              kernel.get(),
                                              gain,
                                              bias,
-                                             kernelOffset,
+                                             target,
                                              tileMode,
                                              convolveAlpha);
 }
@@ -655,14 +644,13 @@ bool SkMatrixConvolutionImageFilter::asNewEffect(GrEffectRef** effect,
     if (!effect) {
         return fKernelSize.width() * fKernelSize.height() <= MAX_KERNEL_SIZE;
     }
-    SkASSERT(fKernelSize.width() * fKernelSize.height() <= MAX_KERNEL_SIZE);
     *effect = GrMatrixConvolutionEffect::Create(texture,
                                                 bounds,
                                                 fKernelSize,
                                                 fKernel,
                                                 fGain,
                                                 fBias,
-                                                fKernelOffset,
+                                                fTarget,
                                                 fTileMode,
                                                 fConvolveAlpha);
     return true;

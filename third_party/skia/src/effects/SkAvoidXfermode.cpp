@@ -7,8 +7,7 @@
 
 #include "SkAvoidXfermode.h"
 #include "SkColorPriv.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "SkFlattenableBuffers.h"
 #include "SkString.h"
 
 SkAvoidXfermode::SkAvoidXfermode(SkColor opColor, U8CPU tolerance, Mode mode) {
@@ -21,14 +20,14 @@ SkAvoidXfermode::SkAvoidXfermode(SkColor opColor, U8CPU tolerance, Mode mode) {
     fMode = mode;
 }
 
-SkAvoidXfermode::SkAvoidXfermode(SkReadBuffer& buffer)
+SkAvoidXfermode::SkAvoidXfermode(SkFlattenableReadBuffer& buffer)
     : INHERITED(buffer) {
     fOpColor = buffer.readColor();
     fDistMul = buffer.readUInt();
     fMode = (Mode)buffer.readUInt();
 }
 
-void SkAvoidXfermode::flatten(SkWriteBuffer& buffer) const {
+void SkAvoidXfermode::flatten(SkFlattenableWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
 
     buffer.writeColor(fOpColor);
@@ -38,9 +37,6 @@ void SkAvoidXfermode::flatten(SkWriteBuffer& buffer) const {
 
 // returns 0..31
 static unsigned color_dist16(uint16_t c, unsigned r, unsigned g, unsigned b) {
-    SkASSERT(r <= SK_R16_MASK);
-    SkASSERT(g <= SK_G16_MASK);
-    SkASSERT(b <= SK_B16_MASK);
 
     unsigned dr = SkAbs32(SkGetPackedR16(c) - r);
     unsigned dg = SkAbs32(SkGetPackedG16(c) - g) >> (SK_G16_BITS - SK_R16_BITS);
@@ -51,9 +47,6 @@ static unsigned color_dist16(uint16_t c, unsigned r, unsigned g, unsigned b) {
 
 // returns 0..255
 static unsigned color_dist32(SkPMColor c, U8CPU r, U8CPU g, U8CPU b) {
-    SkASSERT(r <= 0xFF);
-    SkASSERT(g <= 0xFF);
-    SkASSERT(b <= 0xFF);
 
     unsigned dr = SkAbs32(SkGetPackedR32(c) - r);
     unsigned dg = SkAbs32(SkGetPackedG32(c) - g);
@@ -95,11 +88,9 @@ void SkAvoidXfermode::xfer32(SkPMColor dst[], const SkPMColor src[], int count,
         int d = color_dist32(dst[i], opR, opG, opB);
         // now reverse d if we need to
         d = MAX + (d ^ mask) - mask;
-        SkASSERT((unsigned)d <= 255);
         d = Accurate255To256(d);
 
         d = scale_dist_14(d, mul, sub);
-        SkASSERT(d <= 256);
 
         if (d > 0) {
             if (NULL != aa) {
@@ -114,7 +105,6 @@ void SkAvoidXfermode::xfer32(SkPMColor dst[], const SkPMColor src[], int count,
 }
 
 static inline U16CPU SkBlend3216(SkPMColor src, U16CPU dst, unsigned scale) {
-    SkASSERT(scale <= 32);
     scale <<= 3;
 
     return SkPackRGB16( SkAlphaBlend(SkPacked32ToR16(src), SkGetPackedR16(dst), scale),
@@ -144,11 +134,9 @@ void SkAvoidXfermode::xfer16(uint16_t dst[], const SkPMColor src[], int count,
         int d = color_dist16(dst[i], opR, opG, opB);
         // now reverse d if we need to
         d = MAX + (d ^ mask) - mask;
-        SkASSERT((unsigned)d <= 31);
         // convert from 0..31 to 0..32
         d += d >> 4;
         d = scale_dist_14(d, mul, sub);
-        SkASSERT(d <= 32);
 
         if (d > 0) {
             if (NULL != aa) {
@@ -167,7 +155,7 @@ void SkAvoidXfermode::xferA8(SkAlpha dst[], const SkPMColor src[], int count,
     // override in subclass
 }
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkAvoidXfermode::toString(SkString* str) const {
     str->append("SkAvoidXfermode: opColor: ");
     str->appendHex(fOpColor);

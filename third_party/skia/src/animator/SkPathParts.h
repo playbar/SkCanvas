@@ -36,8 +36,8 @@ class SkMoveTo : public SkPathPart {
     SkMoveTo();
     virtual bool add();
 protected:
-    SkScalar x;
-    SkScalar y;
+    float x;
+    float y;
 };
 
 class SkRMoveTo : public SkMoveTo {
@@ -52,8 +52,8 @@ class SkLineTo : public SkPathPart {
     SkLineTo();
     virtual bool add();
 protected:
-    SkScalar x;
-    SkScalar y;
+    float x;
+    float y;
 };
 
 class SkRLineTo : public SkLineTo {
@@ -68,10 +68,10 @@ class SkQuadTo : public SkPathPart {
     SkQuadTo();
     virtual bool add();
 protected:
-    SkScalar x1;
-    SkScalar y1;
-    SkScalar x2;
-    SkScalar y2;
+    float x1;
+    float y1;
+    float x2;
+    float y2;
 };
 
 class SkRQuadTo : public SkQuadTo {
@@ -86,12 +86,12 @@ class SkCubicTo : public SkPathPart {
     SkCubicTo();
     virtual bool add();
 protected:
-    SkScalar x1;
-    SkScalar y1;
-    SkScalar x2;
-    SkScalar y2;
-    SkScalar x3;
-    SkScalar y3;
+    float x1;
+    float y1;
+    float x2;
+    float y2;
+    float x3;
+    float y3;
 };
 
 class SkRCubicTo : public SkCubicTo {
@@ -135,9 +135,9 @@ class SkAddCircle : public SkAddGeom {
     SkAddCircle();
     virtual bool add();
 private:
-    SkScalar radius;
-    SkScalar x;
-    SkScalar y;
+    float radius;
+    float x;
+    float y;
     typedef SkAddGeom INHERITED;
 };
 
@@ -146,8 +146,8 @@ class SkAddRoundRect : public SkAddRect {
     SkAddRoundRect();
     virtual bool add();
 private:
-    SkScalar rx;
-    SkScalar ry;
+    float rx;
+    float ry;
     typedef SkAddRect INHERITED;
 };
 

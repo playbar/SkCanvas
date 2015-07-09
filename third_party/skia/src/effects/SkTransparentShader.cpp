@@ -23,13 +23,13 @@ bool SkTransparentShader::setContext(const SkBitmap& device,
 uint32_t SkTransparentShader::getFlags() {
     uint32_t flags = this->INHERITED::getFlags();
 
-    switch (fDevice->colorType()) {
-        case kRGB_565_SkColorType:
+    switch (fDevice->config()) {
+        case SkBitmap::kRGB_565_Config:
             flags |= kHasSpan16_Flag;
             if (fAlpha == 255)
                 flags |= kOpaqueAlpha_Flag;
             break;
-        case kPMColor_SkColorType:
+        case SkBitmap::kARGB_8888_Config:
             if (fAlpha == 255 && fDevice->isOpaque())
                 flags |= kOpaqueAlpha_Flag;
             break;
@@ -42,8 +42,8 @@ uint32_t SkTransparentShader::getFlags() {
 void SkTransparentShader::shadeSpan(int x, int y, SkPMColor span[], int count) {
     unsigned scale = SkAlpha255To256(fAlpha);
 
-    switch (fDevice->colorType()) {
-        case kPMColor_SkColorType:
+    switch (fDevice->config()) {
+        case SkBitmap::kARGB_8888_Config:
             if (scale == 256) {
                 SkPMColor* src = fDevice->getAddr32(x, y);
                 if (src != span) {
@@ -56,7 +56,7 @@ void SkTransparentShader::shadeSpan(int x, int y, SkPMColor span[], int count) {
                 }
             }
             break;
-        case kRGB_565_SkColorType: {
+        case SkBitmap::kRGB_565_Config: {
             const uint16_t* src = fDevice->getAddr16(x, y);
             if (scale == 256) {
                 for (int i = count - 1; i >= 0; --i) {
@@ -78,7 +78,9 @@ void SkTransparentShader::shadeSpan(int x, int y, SkPMColor span[], int count) {
             }
             break;
         }
-        case kAlpha_8_SkColorType: {
+        case SkBitmap::kIndex8_Config:
+            break;
+        case SkBitmap::kA8_Config: {
             const uint8_t* src = fDevice->getAddr8(x, y);
             if (scale == 256) {
                 for (int i = count - 1; i >= 0; --i) {
@@ -91,14 +93,12 @@ void SkTransparentShader::shadeSpan(int x, int y, SkPMColor span[], int count) {
             }
             break;
         }
-        default:
-            SkDEBUGFAIL("colorType not supported as a destination device");
+        default:    // to avoid warnings
             break;
     }
 }
 
 void SkTransparentShader::shadeSpan16(int x, int y, uint16_t span[], int count) {
-    SkASSERT(fDevice->colorType() == kRGB_565_SkColorType);
 
     uint16_t* src = fDevice->getAddr16(x, y);
     if (src != span) {
@@ -106,7 +106,7 @@ void SkTransparentShader::shadeSpan16(int x, int y, uint16_t span[], int count) 
     }
 }
 
-#ifndef SK_IGNORE_TO_STRING
+#ifdef SK_DEVELOPER
 void SkTransparentShader::toString(SkString* str) const {
     str->append("SkTransparentShader: (");
 

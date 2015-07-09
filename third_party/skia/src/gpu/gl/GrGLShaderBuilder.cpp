@@ -15,9 +15,6 @@
 #include "SkRTConf.h"
 #include "SkTrace.h"
 
-#define GL_CALL(X) GR_GL_CALL(this->gpu()->glInterface(), X)
-#define GL_CALL_RET(R, X) GR_GL_CALL_RET(this->gpu()->glInterface(), R, X)
-
 // number of each input/output type in a single allocation block
 static const int kVarsPerBlock = 8;
 
@@ -44,7 +41,6 @@ inline const char* sample_function_name(GrSLType type, GrGLSLGeneration glslGen)
     if (kVec2f_GrSLType == type) {
         return glslGen >= k130_GrGLSLGeneration ? "texture" : "texture2D";
     } else {
-        SkASSERT(kVec3f_GrSLType == type);
         return glslGen >= k130_GrGLSLGeneration ? "textureProj" : "texture2DProj";
     }
 }
@@ -56,8 +52,6 @@ void append_texture_lookup(SkString* out,
                            uint32_t configComponentMask,
                            const char* swizzle,
                            GrSLType varyingType = kVec2f_GrSLType) {
-    SkASSERT(NULL != coordName);
-
     out->appendf("%s(%s, %s)",
                  sample_function_name(varyingType, gpu->glslGeneration()),
                  samplerName,
@@ -181,7 +175,7 @@ bool GrGLShaderBuilder::enableFeature(GLSLFeature feature) {
             if (!fGpu->glCaps().shaderDerivativeSupport()) {
                 return false;
             }
-            if (kGLES_GrGLStandard == fGpu->glStandard()) {
+            if (kES_GrGLBinding == fGpu->glBinding()) {
                 this->addFSFeature(1 << kStandardDerivatives_GLSLFeature,
                                    "GL_OES_standard_derivatives");
             }
@@ -304,7 +298,6 @@ GrGLShaderBuilder::DstReadKey GrGLShaderBuilder::KeyForDstRead(const GrTexture* 
     if (GrGLCaps::kNone_FBFetchType != caps.fbFetchType()) {
         return key;
     }
-    SkASSERT(NULL != dstCopy);
     if (!caps.textureSwizzleSupport() && GrPixelConfigIsAlphaOnly(dstCopy->config())) {
         // The fact that the config is alpha-only must be considered when generating code.
         key |= kUseAlphaConfig_DstReadKeyBit;
@@ -312,7 +305,6 @@ GrGLShaderBuilder::DstReadKey GrGLShaderBuilder::KeyForDstRead(const GrTexture* 
     if (kTopLeft_GrSurfaceOrigin == dstCopy->origin()) {
         key |= kTopLeftOrigin_DstReadKeyBit;
     }
-    SkASSERT(static_cast<DstReadKey>(key) == key);
     return static_cast<DstReadKey>(key);
 }
 
@@ -326,18 +318,18 @@ GrGLShaderBuilder::FragPosKey GrGLShaderBuilder::KeyForFragmentPosition(const Gr
 }
 
 
-const GrGLenum* GrGLShaderBuilder::GetTexParamSwizzle(GrPixelConfig config, const GrGLCaps& caps) {
+const GLenum* GrGLShaderBuilder::GetTexParamSwizzle(GrPixelConfig config, const GrGLCaps& caps) {
     if (caps.textureSwizzleSupport() && GrPixelConfigIsAlphaOnly(config)) {
         if (caps.textureRedSupport()) {
-            static const GrGLenum gRedSmear[] = { GR_GL_RED, GR_GL_RED, GR_GL_RED, GR_GL_RED };
+            static const GLenum gRedSmear[] = { GL_RED, GL_RED, GL_RED, GL_RED };
             return gRedSmear;
         } else {
-            static const GrGLenum gAlphaSmear[] = { GR_GL_ALPHA, GR_GL_ALPHA,
-                                                    GR_GL_ALPHA, GR_GL_ALPHA };
+            static const GLenum gAlphaSmear[] = { GL_ALPHA, GL_ALPHA,
+                                                    GL_ALPHA, GL_ALPHA };
             return gAlphaSmear;
         }
     } else {
-        static const GrGLenum gStraight[] = { GR_GL_RED, GR_GL_GREEN, GR_GL_BLUE, GR_GL_ALPHA };
+        static const GLenum gStraight[] = { GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA };
         return gStraight;
     }
 }
@@ -347,10 +339,7 @@ GrGLUniformManager::UniformHandle GrGLShaderBuilder::addUniformArray(uint32_t vi
                                                                      const char* name,
                                                                      int count,
                                                                      const char** outName) {
-    SkASSERT(name && strlen(name));
     SkDEBUGCODE(static const uint32_t kVisibilityMask = kVertex_Visibility | kFragment_Visibility);
-    SkASSERT(0 == (~kVisibilityMask & visibility));
-    SkASSERT(0 != visibility);
 
     BuilderUniform& uni = fUniforms.push_back();
     UniformHandle h = GrGLUniformManager::UniformHandle::CreateFromUniformIndex(fUniforms.count() - 1);
@@ -358,7 +347,6 @@ GrGLUniformManager::UniformHandle GrGLShaderBuilder::addUniformArray(uint32_t vi
     fUniformManager.appendUniform(type, count);
     // We expect the uniform manager to initially have no uniforms and that all uniforms are added
     // by this function. Therefore, the handles should match.
-    SkASSERT(h2 == h);
     uni.fVariable.setType(type);
     uni.fVariable.setTypeModifier(GrGLShaderVar::kUniform_TypeModifier);
     this->nameVariable(uni.fVariable.accessName(), 'u', name);
@@ -382,7 +370,6 @@ GrGLUniformManager::UniformHandle GrGLShaderBuilder::addUniformArray(uint32_t vi
 
 SkString GrGLShaderBuilder::ensureFSCoords2D(const TransformedCoordsArray& coords, int index) {
     if (kVec3f_GrSLType != coords[index].type()) {
-        SkASSERT(kVec2f_GrSLType == coords[index].type());
         return coords[index].getName();
     }
 
@@ -404,11 +391,14 @@ const char* GrGLShaderBuilder::fragmentPosition() {
             return "";
         }
     }
-    // We only declare "gl_FragCoord" when we're in the case where we want to use layout qualifiers
-    // to reverse y. Otherwise it isn't necessary and whether the "in" qualifier appears in the
-    // declaration varies in earlier GLSL specs. So it is simpler to omit it.
     if (fTopLeftFragPosRead) {
-        fSetupFragPosition = true;
+        if (!fSetupFragPosition) {
+            fFSInputs.push_back().set(kVec4f_GrSLType,
+                                      GrGLShaderVar::kIn_TypeModifier,
+                                      "gl_FragCoord",
+                                      GrGLShaderVar::kDefault_Precision);
+            fSetupFragPosition = true;
+        }
         return "gl_FragCoord";
     } else if (fGpu->glCaps().fragCoordConventionsSupport()) {
         if (!fSetupFragPosition) {
@@ -427,7 +417,6 @@ const char* GrGLShaderBuilder::fragmentPosition() {
             // temporarily change the stage index because we're inserting non-stage code.
             CodeStage::AutoStageRestore csar(&fCodeStage, NULL);
 
-            SkASSERT(!fRTHeightUniform.isValid());
             const char* rtHeightName;
 
             fRTHeightUniform = this->addUniform(kFragment_Visibility,
@@ -439,7 +428,6 @@ const char* GrGLShaderBuilder::fragmentPosition() {
                                    kCoordName, rtHeightName);
             fSetupFragPosition = true;
         }
-        SkASSERT(fRTHeightUniform.isValid());
         return kCoordName;
     }
 }
@@ -468,10 +456,10 @@ void GrGLShaderBuilder::fsEmitFunction(GrSLType returnType,
 namespace {
 
 inline void append_default_precision_qualifier(GrGLShaderVar::Precision p,
-                                               GrGLStandard standard,
+                                               GrGLBinding binding,
                                                SkString* str) {
     // Desktop GLSL has added precision qualifiers but they don't do anything.
-    if (kGLES_GrGLStandard == standard) {
+    if (kES_GrGLBinding == binding) {
         switch (p) {
             case GrGLShaderVar::kHigh_Precision:
                 str->append("precision highp float;\n");
@@ -519,7 +507,6 @@ void GrGLShaderBuilder::createAndEmitEffects(GrGLProgramEffectsBuilder* programE
     GrGLSLExpr4 outColor;
 
     for (int e = 0; e < effectCnt; ++e) {
-        SkASSERT(NULL != effectStages[e] && NULL != effectStages[e]->getEffect());
         const GrEffectStage& stage = *effectStages[e];
 
         CodeStage::AutoStageRestore csar(&fCodeStage, &stage);
@@ -555,7 +542,8 @@ void GrGLShaderBuilder::createAndEmitEffects(GrGLProgramEffectsBuilder* programE
     }
 }
 
-const char* GrGLShaderBuilder::getColorOutputName() const {
+const char* GrGLShaderBuilder::getColorOutputName() const
+{
     return fHasCustomColorOutput ? declared_color_output_name() : "gl_FragColor";
 }
 
@@ -569,19 +557,20 @@ const char* GrGLShaderBuilder::enableSecondaryOutput() {
     return dual_source_output_name();
 }
 
-bool GrGLShaderBuilder::finish(GrGLuint* outProgramId) {
+
+bool GrGLShaderBuilder::finish(GLuint* outProgramId) 
+{
     SK_TRACE_EVENT0("GrGLShaderBuilder::finish");
 
-    GrGLuint programId = 0;
-    GL_CALL_RET(programId, CreateProgram());
+    GLuint programId = 0;
+    programId = glCreateProgram();
     if (!programId) {
         return false;
     }
 
-    SkTDArray<GrGLuint> shadersToDelete;
-
-    if (!this->compileAndAttachShaders(programId, &shadersToDelete)) {
-        GL_CALL(DeleteProgram(programId));
+    if (!this->compileAndAttachShaders(programId)) 
+	{
+        glDeleteProgram(programId);
         return false;
     }
 
@@ -590,7 +579,7 @@ bool GrGLShaderBuilder::finish(GrGLuint* outProgramId) {
       fUniformManager.getUniformLocations(programId, fUniforms);
     }
 
-    GL_CALL(LinkProgram(programId));
+    glLinkProgram(programId);
 
     // Calling GetProgramiv is expensive in Chromium. Assume success in release builds.
     bool checkLinked = !fGpu->ctxInfo().isChromium();
@@ -598,132 +587,117 @@ bool GrGLShaderBuilder::finish(GrGLuint* outProgramId) {
     checkLinked = true;
 #endif
     if (checkLinked) {
-        GrGLint linked = GR_GL_INIT_ZERO;
-        GL_CALL(GetProgramiv(programId, GR_GL_LINK_STATUS, &linked));
+        GLint linked = 0;
+        glGetProgramiv(programId, GL_LINK_STATUS, &linked);
         if (!linked) {
-            GrGLint infoLen = GR_GL_INIT_ZERO;
-            GL_CALL(GetProgramiv(programId, GR_GL_INFO_LOG_LENGTH, &infoLen));
+            GLint infoLen = 0;
+			glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &infoLen);
             SkAutoMalloc log(sizeof(char)*(infoLen+1));  // outside if for debugger
             if (infoLen > 0) {
                 // retrieve length even though we don't need it to workaround
                 // bug in chrome cmd buffer param validation.
-                GrGLsizei length = GR_GL_INIT_ZERO;
-                GL_CALL(GetProgramInfoLog(programId,
+                GLsizei length = 0;
+                glGetProgramInfoLog(programId,
                                           infoLen+1,
                                           &length,
-                                          (char*)log.get()));
+                                          (char*)log.get());
                 GrPrintf((char*)log.get());
             }
-            SkDEBUGFAIL("Error linking program");
-            GL_CALL(DeleteProgram(programId));
+            glDeleteProgram(programId);
             return false;
         }
     }
 
-    if (!fUniformManager.isUsingBindUniform()) {
+    if (!fUniformManager.isUsingBindUniform())
+	{
       fUniformManager.getUniformLocations(programId, fUniforms);
     }
-
-    for (int i = 0; i < shadersToDelete.count(); ++i) {
-      GL_CALL(DeleteShader(shadersToDelete[i]));
-    }
-
     *outProgramId = programId;
     return true;
 }
 
-// Compiles a GL shader and attaches it to a program. Returns the shader ID if
-// successful, or 0 if not.
-static GrGLuint attach_shader(const GrGLContext& glCtx,
-                              GrGLuint programId,
-                              GrGLenum type,
-                              const SkString& shaderSrc) {
-    const GrGLInterface* gli = glCtx.interface();
-
-    GrGLuint shaderId;
-    GR_GL_CALL_RET(gli, shaderId, CreateShader(type));
+// Compiles a GL shader, attaches it to a program, and releases the shader's reference.
+// (That way there's no need to hang on to the GL shader id and delete it later.)
+static bool attach_shader(const GrGLContext& glCtx,
+                          GLuint programId,
+                          GLenum type,
+                          const SkString& shaderSrc)
+{
+    GLuint shaderId;
+    shaderId = glCreateShader(type);
     if (0 == shaderId) {
-        return 0;
+        return false;
     }
 
-    const GrGLchar* sourceStr = shaderSrc.c_str();
-    GrGLint sourceLength = static_cast<GrGLint>(shaderSrc.size());
-    GR_GL_CALL(gli, ShaderSource(shaderId, 1, &sourceStr, &sourceLength));
-    GR_GL_CALL(gli, CompileShader(shaderId));
+    const GLchar* sourceStr = shaderSrc.c_str();
+    GLint sourceLength = static_cast<GLint>(shaderSrc.size());
+    glShaderSource(shaderId, 1, &sourceStr, &sourceLength);
+    glCompileShader(shaderId);
 
     // Calling GetShaderiv in Chromium is quite expensive. Assume success in release builds.
-    bool checkCompiled = !glCtx.isChromium();
+    bool checkCompiled = !glCtx.info().isChromium();
 #ifdef SK_DEBUG
     checkCompiled = true;
 #endif
     if (checkCompiled) {
-        GrGLint compiled = GR_GL_INIT_ZERO;
-        GR_GL_CALL(gli, GetShaderiv(shaderId, GR_GL_COMPILE_STATUS, &compiled));
+        GLint compiled = 0;
+        glGetShaderiv(shaderId, GL_COMPILE_STATUS, &compiled);
 
         if (!compiled) {
-            GrGLint infoLen = GR_GL_INIT_ZERO;
-            GR_GL_CALL(gli, GetShaderiv(shaderId, GR_GL_INFO_LOG_LENGTH, &infoLen));
+            GLint infoLen = 0;
+			glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &infoLen);
             SkAutoMalloc log(sizeof(char)*(infoLen+1)); // outside if for debugger
             if (infoLen > 0) {
                 // retrieve length even though we don't need it to workaround bug in Chromium cmd
                 // buffer param validation.
-                GrGLsizei length = GR_GL_INIT_ZERO;
-                GR_GL_CALL(gli, GetShaderInfoLog(shaderId, infoLen+1,
-                                                 &length, (char*)log.get()));
+                GLsizei length = 0;
+                glGetShaderInfoLog(shaderId, infoLen+1,
+                                                 &length, (char*)log.get());
                 GrPrintf(shaderSrc.c_str());
                 GrPrintf("\n%s", log.get());
             }
-            SkDEBUGFAIL("Shader compilation failed!");
-            GR_GL_CALL(gli, DeleteShader(shaderId));
-            return 0;
+            glDeleteShader(shaderId);
+            return false;
         }
     }
-    if (c_PrintShaders) {
+    if (c_PrintShaders)
+	{
         GrPrintf(shaderSrc.c_str());
         GrPrintf("\n");
     }
 
-    // Attach the shader, but defer deletion until after we have linked the program.
-    // This works around a bug in the Android emulator's GLES2 wrapper which
-    // will immediately delete the shader object and free its memory even though it's
-    // attached to a program, which then causes glLinkProgram to fail.
-    GR_GL_CALL(gli, AttachShader(programId, shaderId));
-
-    return shaderId;
+    glAttachShader(programId, shaderId);
+    glDeleteShader(shaderId);
+    return true;
 }
 
-bool GrGLShaderBuilder::compileAndAttachShaders(GrGLuint programId, SkTDArray<GrGLuint>* shaderIds) const {
+bool GrGLShaderBuilder::compileAndAttachShaders(GLuint programId) const {
     SkString fragShaderSrc(GrGetGLSLVersionDecl(this->ctxInfo()));
     fragShaderSrc.append(fFSExtensions);
     append_default_precision_qualifier(kDefaultFragmentPrecision,
-                                       fGpu->glStandard(),
+                                       fGpu->glBinding(),
                                        &fragShaderSrc);
     this->appendUniformDecls(kFragment_Visibility, &fragShaderSrc);
     this->appendDecls(fFSInputs, &fragShaderSrc);
     // We shouldn't have declared outputs on 1.10
-    SkASSERT(k110_GrGLSLGeneration != fGpu->glslGeneration() || fFSOutputs.empty());
     this->appendDecls(fFSOutputs, &fragShaderSrc);
     fragShaderSrc.append(fFSFunctions);
     fragShaderSrc.append("void main() {\n");
     fragShaderSrc.append(fFSCode);
     fragShaderSrc.append("}\n");
-
-    GrGLuint fragShaderId = attach_shader(fGpu->glContext(), programId, GR_GL_FRAGMENT_SHADER, fragShaderSrc);
-    if (!fragShaderId) {
+    if (!attach_shader(fGpu->glContext(), programId, GL_FRAGMENT_SHADER, fragShaderSrc)) {
         return false;
     }
-
-    *shaderIds->append() = fragShaderId;
 
     return true;
 }
 
-void GrGLShaderBuilder::bindProgramLocations(GrGLuint programId) const {
+void GrGLShaderBuilder::bindProgramLocations(GLuint programId) const {
     if (fHasCustomColorOutput) {
-        GL_CALL(BindFragDataLocation(programId, 0, declared_color_output_name()));
+        glBindFragDataLocation(programId, 0, declared_color_output_name());
     }
     if (fHasSecondaryOutput) {
-        GL_CALL(BindFragDataLocationIndexed(programId, 0, 1, dual_source_output_name()));
+        glBindFragDataLocationIndexed(programId, 0, 1, dual_source_output_name());
     }
 }
 
@@ -766,7 +740,7 @@ GrGLFullShaderBuilder::GrGLFullShaderBuilder(GrGpuGL* gpu,
 
     // we output point size in the GS if present
     if (header.fEmitsPointSize
-#if GR_GL_EXPERIMENTAL_GS
+#if GL_EXPERIMENTAL_GS
         && !header.fExperimentalGS
 #endif
         ) {
@@ -795,7 +769,6 @@ bool GrGLFullShaderBuilder::addAttribute(GrSLType type, const char* name) {
         const GrGLShaderVar& attr = fVSAttrs[i];
         // if attribute already added, don't add it again
         if (attr.getName().equals(name)) {
-            SkASSERT(attr.getType() == type);
             return false;
         }
     }
@@ -830,7 +803,7 @@ void GrGLFullShaderBuilder::addVarying(GrSLType type,
     }
     // input to FS comes either from VS or GS
     const SkString* fsName;
-#if GR_GL_EXPERIMENTAL_GS
+#if GL_EXPERIMENTAL_GS
     if (fDesc.getHeader().fExperimentalGS) {
         // if we have a GS take each varying in as an array
         // and output as non-array.
@@ -881,7 +854,7 @@ GrGLProgramEffects* GrGLFullShaderBuilder::createAndEmitEffects(
     return programEffectsBuilder.finish();
 }
 
-bool GrGLFullShaderBuilder::compileAndAttachShaders(GrGLuint programId, SkTDArray<GrGLuint>* shaderIds) const {
+bool GrGLFullShaderBuilder::compileAndAttachShaders(GLuint programId) const {
     const GrGLContext& glCtx = this->gpu()->glContext();
     SkString vertShaderSrc(GrGetGLSLVersionDecl(this->ctxInfo()));
     this->appendUniformDecls(kVertex_Visibility, &vertShaderSrc);
@@ -890,15 +863,12 @@ bool GrGLFullShaderBuilder::compileAndAttachShaders(GrGLuint programId, SkTDArra
     vertShaderSrc.append("void main() {\n");
     vertShaderSrc.append(fVSCode);
     vertShaderSrc.append("}\n");
-    GrGLuint vertShaderId = attach_shader(glCtx, programId, GR_GL_VERTEX_SHADER, vertShaderSrc);
-    if (!vertShaderId) {
+    if (!attach_shader(glCtx, programId, GL_VERTEX_SHADER, vertShaderSrc)) {
         return false;
     }
-    *shaderIds->append() = vertShaderId;
 
-#if GR_GL_EXPERIMENTAL_GS
+#if GL_EXPERIMENTAL_GS
     if (fDesc.getHeader().fExperimentalGS) {
-        SkASSERT(this->ctxInfo().glslGeneration() >= k150_GrGLSLGeneration);
         SkString geomShaderSrc(GrGetGLSLVersionDecl(this->ctxInfo()));
         geomShaderSrc.append("layout(triangles) in;\n"
                              "layout(triangle_strip, max_vertices = 6) out;\n");
@@ -910,7 +880,6 @@ bool GrGLFullShaderBuilder::compileAndAttachShaders(GrGLuint programId, SkTDArra
         if (fDesc.getHeader().fEmitsPointSize) {
             geomShaderSrc.append("\t\tgl_PointSize = 1.0;\n");
         }
-        SkASSERT(fGSInputs.count() == fGSOutputs.count());
         for (int i = 0; i < fGSInputs.count(); ++i) {
             geomShaderSrc.appendf("\t\t%s = %s[i];\n",
                                   fGSOutputs[i].getName().c_str(),
@@ -920,46 +889,44 @@ bool GrGLFullShaderBuilder::compileAndAttachShaders(GrGLuint programId, SkTDArra
                              "\t}\n"
                              "\tEndPrimitive();\n");
         geomShaderSrc.append("}\n");
-        GrGLuint geomShaderId = attach_shader(glCtx, programId, GR_GL_GEOMETRY_SHADER, geomShaderSrc);
-        if (!geomShaderId) {
+        if (!attach_shader(glCtx, programId, GL_GEOMETRY_SHADER, geomShaderSrc)) {
             return false;
         }
-        *shaderIds->append() = geomShaderId;
     }
 #endif
 
-    return this->INHERITED::compileAndAttachShaders(programId, shaderIds);
+    return this->INHERITED::compileAndAttachShaders(programId);
 }
 
-void GrGLFullShaderBuilder::bindProgramLocations(GrGLuint programId) const {
+void GrGLFullShaderBuilder::bindProgramLocations(GLuint programId) const {
     this->INHERITED::bindProgramLocations(programId);
 
     const GrGLProgramDesc::KeyHeader& header = fDesc.getHeader();
 
     // Bind the attrib locations to same values for all shaders
-    SkASSERT(-1 != header.fPositionAttributeIndex);
-    GL_CALL(BindAttribLocation(programId,
+    glBindAttribLocation(programId,
                                header.fPositionAttributeIndex,
-                               fPositionVar->c_str()));
-    if (-1 != header.fLocalCoordAttributeIndex) {
-        GL_CALL(BindAttribLocation(programId,
+                               fPositionVar->c_str());
+    if (-1 != header.fLocalCoordAttributeIndex) 
+	{
+        glBindAttribLocation(programId,
                                    header.fLocalCoordAttributeIndex,
-                                   fLocalCoordsVar->c_str()));
+                                   fLocalCoordsVar->c_str());
     }
     if (-1 != header.fColorAttributeIndex) {
-        GL_CALL(BindAttribLocation(programId,
+        glBindAttribLocation(programId,
                                    header.fColorAttributeIndex,
-                                   color_attribute_name()));
+                                   color_attribute_name());
     }
     if (-1 != header.fCoverageAttributeIndex) {
-        GL_CALL(BindAttribLocation(programId,
+        glBindAttribLocation(programId,
                                    header.fCoverageAttributeIndex,
-                                   coverage_attribute_name()));
+                                   coverage_attribute_name());
     }
 
     const AttributePair* attribEnd = fEffectAttributes.end();
     for (const AttributePair* attrib = fEffectAttributes.begin(); attrib != attribEnd; ++attrib) {
-         GL_CALL(BindAttribLocation(programId, attrib->fIndex, attrib->fName.c_str()));
+         glBindAttribLocation(programId, attrib->fIndex, attrib->fName.c_str());
     }
 }
 
@@ -971,17 +938,11 @@ GrGLFragmentOnlyShaderBuilder::GrGLFragmentOnlyShaderBuilder(GrGpuGL* gpu,
     : INHERITED(gpu, uniformManager, desc)
     , fNumTexCoordSets(0) {
 
-    SkASSERT(!desc.getHeader().fHasVertexCode);
-    SkASSERT(gpu->glCaps().fixedFunctionSupport());
-    SkASSERT(gpu->glCaps().pathRenderingSupport());
-    SkASSERT(GrGLProgramDesc::kAttribute_ColorInput != desc.getHeader().fColorInput);
-    SkASSERT(GrGLProgramDesc::kAttribute_ColorInput != desc.getHeader().fCoverageInput);
 }
 
 int GrGLFragmentOnlyShaderBuilder::addTexCoordSets(int count) {
     int firstFreeCoordSet = fNumTexCoordSets;
     fNumTexCoordSets += count;
-    SkASSERT(gpu()->glCaps().maxFixedFunctionTextureCoords() >= fNumTexCoordSets);
     return firstFreeCoordSet;
 }
 

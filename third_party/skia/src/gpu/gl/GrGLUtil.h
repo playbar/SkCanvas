@@ -8,173 +8,120 @@
 #ifndef GrGLUtil_DEFINED
 #define GrGLUtil_DEFINED
 
-#include "gl/GrGLInterface.h"
-#include "GrGLDefines.h"
+#include "SkRefCnt.h"
+#include "gl/glew.h"
 
 class SkMatrix;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-typedef uint32_t GrGLVersion;
-typedef uint32_t GrGLSLVersion;
-
 /**
  * The Vendor and Renderer enum values are lazily updated as required.
  */
-enum GrGLVendor {
-    kARM_GrGLVendor,
-    kImagination_GrGLVendor,
-    kIntel_GrGLVendor,
-    kQualcomm_GrGLVendor,
 
-    kOther_GrGLVendor
+enum GrGLBinding 
+{
+    kNone_GrGLBinding = 0x0,
+
+    kDesktop_GrGLBinding = 0x01,
+    kES_GrGLBinding = 0x02,  // ES2+ only
 };
 
-enum GrGLRenderer {
-    kTegra2_GrGLRenderer,
-    kTegra3_GrGLRenderer,
+/* Path Rendering */
+// commands
+#define GL_CLOSE_PATH                                    0x00
+#define GL_MOVE_TO                                       0x02
+#define GL_RELATIVE_MOVE_TO                              0x03
+#define GL_LINE_TO                                       0x04
+#define GL_RELATIVE_LINE_TO                              0x05
+#define GL_HORIZONTAL_LINE_TO                            0x06
+#define GL_RELATIVE_HORIZONTAL_LINE_TO                   0x07
+#define GL_VERTICAL_LINE_TO                              0x08
+#define GL_RELATIVE_VERTICAL_LINE_TO                     0x09
+#define GL_QUADRATIC_CURVE_TO                            0x0A
+#define GL_RELATIVE_QUADRATIC_CURVE_TO                   0x0B
+#define GL_CUBIC_CURVE_TO                                0x0C
+#define GL_RELATIVE_CUBIC_CURVE_TO                       0x0D
+#define GL_SMOOTH_QUADRATIC_CURVE_TO                     0x0E
+#define GL_RELATIVE_SMOOTH_QUADRATIC_CURVE_TO            0x0F
+#define GL_SMOOTH_CUBIC_CURVE_TO                         0x10
+#define GL_RELATIVE_SMOOTH_CUBIC_CURVE_TO                0x11
+#define GL_SMALL_CCW_ARC_TO                              0x12
+#define GL_RELATIVE_SMALL_CCW_ARC_TO                     0x13
+#define GL_SMALL_CW_ARC_TO                               0x14
+#define GL_RELATIVE_SMALL_CW_ARC_TO                      0x15
+#define GL_LARGE_CCW_ARC_TO                              0x16
+#define GL_RELATIVE_LARGE_CCW_ARC_TO                     0x17
+#define GL_LARGE_CW_ARC_TO                               0x18
+#define GL_RELATIVE_LARGE_CW_ARC_TO                      0x19
+#define GL_CIRCULAR_CCW_ARC_TO                           0xF8
+#define GL_CIRCULAR_CW_ARC_TO                            0xFA
+#define GL_CIRCULAR_TANGENT_ARC_TO                       0xFC
+#define GL_ARC_TO                                        0xFE
+#define GL_RELATIVE_ARC_TO                               0xFF
 
-    kOther_GrGLRenderer
-};
+// cap/dash values
+/*      GL_FLAT */
+#define GL_SQUARE                                        0x90A3
+#define GL_ROUND                                         0x90A4
+#define GL_TRIANGULAR                                    0x90A5
 
-#define GR_GL_VER(major, minor) ((static_cast<int>(major) << 16) | \
+// join values
+/*      GL_NONE */
+/*      GL_ROUND_NV  */
+#define GL_BEVEL                                         0x90A6
+#define GL_MITER_REVERT                                  0x90A7
+#define GL_MITER_TRUNCATE                                0x90A8
+#define GL_UNPACK_FLIP_Y                  0x9240
+#define GL_PACK_REVERSE_ROW_ORDER         0x93A4
+#define GL_PALETTE8_RGBA8                 0x8B96
+#define GL_TEXTURE_USAGE                  0x93A2
+#define GL_FRAMEBUFFER_ATTACHMENT         0x93A3
+#define GL_BGRA8                          0x93A1
+
+
+#define GL_VER(major, minor) ((static_cast<int>(major) << 16) | \
                                  static_cast<int>(minor))
 #define GR_GLSL_VER(major, minor) ((static_cast<int>(major) << 16) | \
                                    static_cast<int>(minor))
 
 ////////////////////////////////////////////////////////////////////////////////
 
-/**
- *  Some drivers want the var-int arg to be zero-initialized on input.
- */
-#define GR_GL_INIT_ZERO     0
-#define GR_GL_GetIntegerv(gl, e, p)                                            \
-    do {                                                                       \
-        *(p) = GR_GL_INIT_ZERO;                                                \
-        GR_GL_CALL(gl, GetIntegerv(e, p));                                     \
-    } while (0)
-
-#define GR_GL_GetFramebufferAttachmentParameteriv(gl, t, a, pname, p)          \
-    do {                                                                       \
-        *(p) = GR_GL_INIT_ZERO;                                                \
-        GR_GL_CALL(gl, GetFramebufferAttachmentParameteriv(t, a, pname, p));   \
-    } while (0)
-
-#define GR_GL_GetRenderbufferParameteriv(gl, t, pname, p)                      \
-    do {                                                                       \
-        *(p) = GR_GL_INIT_ZERO;                                                \
-        GR_GL_CALL(gl, GetRenderbufferParameteriv(t, pname, p));               \
-    } while (0)
-#define GR_GL_GetTexLevelParameteriv(gl, t, l, pname, p)                       \
-    do {                                                                       \
-        *(p) = GR_GL_INIT_ZERO;                                                \
-        GR_GL_CALL(gl, GetTexLevelParameteriv(t, l, pname, p));                \
-    } while (0)
-
-////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Helpers for glGetString()
  */
 
 // these variants assume caller already has a string from glGetString()
-GrGLVersion GrGLGetVersionFromString(const char* versionString);
-GrGLStandard GrGLGetStandardInUseFromString(const char* versionString);
-GrGLSLVersion GrGLGetGLSLVersionFromString(const char* versionString);
+uint32_t GrGLGetVersionFromString(const char* versionString);
+GrGLBinding GrGLGetBindingInUseFromString(const char* versionString);
+uint32_t GrGLGetGLSLVersionFromString(const char* versionString);
 bool GrGLIsMesaFromVersionString(const char* versionString);
-GrGLVendor GrGLGetVendorFromString(const char* vendorString);
-GrGLRenderer GrGLGetRendererFromString(const char* rendererString);
 bool GrGLIsChromiumFromRendererString(const char* rendererString);
 
 // these variants call glGetString()
-GrGLVersion GrGLGetVersion(const GrGLInterface*);
-GrGLSLVersion GrGLGetGLSLVersion(const GrGLInterface*);
-GrGLVendor GrGLGetVendor(const GrGLInterface*);
-GrGLRenderer GrGLGetRenderer(const GrGLInterface*);
-
+GrGLBinding GrGLGetBindingInUse();
+uint32_t GrGLGetVersion();
+uint32_t GrGLGetGLSLVersion();
 
 /**
  * Helpers for glGetError()
  */
 
-void GrGLCheckErr(const GrGLInterface* gl,
-                  const char* location,
+void GrGLCheckErr(const char* location,
                   const char* call);
 
-void GrGLClearErr(const GrGLInterface* gl);
+void GrGLClearErr();
 
 /**
  * Helper for converting SkMatrix to a column-major GL float array
  */
-template<int MatrixSize> void GrGLGetMatrix(GrGLfloat* dest, const SkMatrix& src);
+template<int MatrixSize> void GrGLGetMatrix(GLfloat* dest, const SkMatrix& src);
 
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Macros for using GrGLInterface to make GL calls
+ * Macros for using GLinterface to make GL calls
  */
-
-// internal macro to conditionally call glGetError based on compile-time and
-// run-time flags.
-#if GR_GL_CHECK_ERROR
-    extern bool gCheckErrorGL;
-    #define GR_GL_CHECK_ERROR_IMPL(IFACE, X)                    \
-        if (gCheckErrorGL)                                      \
-            GrGLCheckErr(IFACE, GR_FILE_AND_LINE_STR, #X)
-#else
-    #define GR_GL_CHECK_ERROR_IMPL(IFACE, X)
-#endif
-
-// internal macro to conditionally log the gl call using GrPrintf based on
-// compile-time and run-time flags.
-#if GR_GL_LOG_CALLS
-    extern bool gLogCallsGL;
-    #define GR_GL_LOG_CALLS_IMPL(X)                             \
-        if (gLogCallsGL)                                        \
-            GrPrintf(GR_FILE_AND_LINE_STR "GL: " #X "\n")
-#else
-    #define GR_GL_LOG_CALLS_IMPL(X)
-#endif
-
-// internal macro that does the per-GL-call callback (if necessary)
-#if GR_GL_PER_GL_FUNC_CALLBACK
-    #define GR_GL_CALLBACK_IMPL(IFACE) (IFACE)->fCallback(IFACE)
-#else
-    #define GR_GL_CALLBACK_IMPL(IFACE)
-#endif
-
-// makes a GL call on the interface and does any error checking and logging
-#define GR_GL_CALL(IFACE, X)                                    \
-    do {                                                        \
-        GR_GL_CALL_NOERRCHECK(IFACE, X);                        \
-        GR_GL_CHECK_ERROR_IMPL(IFACE, X);                       \
-    } while (false)
-
-// Variant of above that always skips the error check. This is useful when
-// the caller wants to do its own glGetError() call and examine the error value.
-#define GR_GL_CALL_NOERRCHECK(IFACE, X)                         \
-    do {                                                        \
-        GR_GL_CALLBACK_IMPL(IFACE);                             \
-        (IFACE)->fFunctions.f##X;                               \
-        GR_GL_LOG_CALLS_IMPL(X);                                \
-    } while (false)
-
-// same as GR_GL_CALL but stores the return value of the gl call in RET
-#define GR_GL_CALL_RET(IFACE, RET, X)                           \
-    do {                                                        \
-        GR_GL_CALL_RET_NOERRCHECK(IFACE, RET, X);               \
-        GR_GL_CHECK_ERROR_IMPL(IFACE, X);                       \
-    } while (false)
-
-// same as GR_GL_CALL_RET but always skips the error check.
-#define GR_GL_CALL_RET_NOERRCHECK(IFACE, RET, X)                \
-    do {                                                        \
-        GR_GL_CALLBACK_IMPL(IFACE);                             \
-        (RET) = (IFACE)->fFunctions.f##X;                       \
-        GR_GL_LOG_CALLS_IMPL(X);                                \
-    } while (false)
-
-// call glGetError without doing a redundant error check or logging.
-#define GR_GL_GET_ERROR(IFACE) (IFACE)->fFunctions.fGetError()
 
 #endif

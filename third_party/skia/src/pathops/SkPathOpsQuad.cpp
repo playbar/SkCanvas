@@ -238,7 +238,6 @@ void SkDQuad::align(int endIndex, SkDPoint* dstPt) const {
 }
 
 SkDPoint SkDQuad::subDivide(const SkDPoint& a, const SkDPoint& c, double t1, double t2) const {
-    SkASSERT(t1 != t2);
     SkDPoint b;
 #if 0
     // this approach assumes that the control point computed directly is accurate enough
@@ -255,7 +254,6 @@ SkDPoint SkDQuad::subDivide(const SkDPoint& a, const SkDPoint& c, double t1, dou
     if (i.used() == 1) {
         b = i.pt(0);
     } else {
-        SkASSERT(i.used() == 2 || i.used() == 0);
         b = SkDPoint::Mid(b0[1], b1[1]);
     }
 #endif

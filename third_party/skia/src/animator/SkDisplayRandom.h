@@ -31,9 +31,9 @@ class SkDisplayRandom : public SkDisplayable {
     virtual bool getProperty(int index, SkScriptValue* value) const;
     virtual bool setProperty(int index, SkScriptValue& );
 private:
-    SkScalar blend;
-    SkScalar min;
-    SkScalar max;
+    float blend;
+    float min;
+    float max;
     mutable SkRandom fRandom;
 };
 

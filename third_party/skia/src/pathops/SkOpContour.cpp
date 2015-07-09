@@ -35,7 +35,6 @@ bool SkOpContour::addCoincident(int index, SkOpContour* other, int otherIndex,
 
 SkOpSegment* SkOpContour::nonVerticalSegment(int* start, int* end) {
     int segmentCount = fSortedSegments.count();
-    SkASSERT(segmentCount > 0);
     for (int sortedIndex = fFirstSorted; sortedIndex < segmentCount; ++sortedIndex) {
         SkOpSegment* testSegment = fSortedSegments[sortedIndex];
         if (testSegment->done()) {
@@ -79,20 +78,16 @@ void SkOpContour::addCoincidentPoints() {
         if (startT == endT) { // if one is very large the smaller may have collapsed to nothing
             if (endT <= 1 - FLT_EPSILON) {
                 endT += FLT_EPSILON;
-                SkASSERT(endT <= 1);
             } else {
                 startT -= FLT_EPSILON;
-                SkASSERT(startT >= 0);
             }
         }
-        SkASSERT(!approximately_negative(endT - startT));
         double oStartT = coincidence.fTs[1][0];
         double oEndT = coincidence.fTs[1][1];
         if ((oStartSwapped = oStartT > oEndT)) {
             SkTSwap(oStartT, oEndT);
             cancelers ^= true;
         }
-        SkASSERT(!approximately_negative(oEndT - oStartT));
         if (cancelers) {
             // make sure startT and endT have t entries
             const SkPoint& startPt = coincidence.fPts[startSwapped];
@@ -252,20 +247,16 @@ void SkOpContour::calcCommonCoincidentWinding(const SkCoincidence& coincidence) 
     if (startT == endT) { // if span is very large, the smaller may have collapsed to nothing
         if (endT <= 1 - FLT_EPSILON) {
             endT += FLT_EPSILON;
-            SkASSERT(endT <= 1);
         } else {
             startT -= FLT_EPSILON;
-            SkASSERT(startT >= 0);
         }
     }
-    SkASSERT(!approximately_negative(endT - startT));
     double oStartT = coincidence.fTs[1][0];
     double oEndT = coincidence.fTs[1][1];
     if (oStartT > oEndT) {
         SkTSwap<double>(oStartT, oEndT);
         cancelers ^= true;
     }
-    SkASSERT(!approximately_negative(oEndT - oStartT));
     if (cancelers) {
         thisOne.addTCancel(*startPt, *endPt, &other);
     } else {
@@ -300,7 +291,6 @@ void SkOpContour::toPath(SkPathWriter* path) const {
 void SkOpContour::topSortableSegment(const SkPoint& topLeft, SkPoint* bestXY,
         SkOpSegment** topStart) {
     int segmentCount = fSortedSegments.count();
-    SkASSERT(segmentCount > 0);
     int sortedIndex = fFirstSorted;
     fDone = true;  // may be cleared below
     for ( ; sortedIndex < segmentCount; ++sortedIndex) {
@@ -376,8 +366,6 @@ void SkOpContour::debugShowWindingValues(const SkTArray<SkOpContour*, true>& con
 void SkOpContour::setBounds() {
     int count = fSegments.count();
     if (count == 0) {
-        SkDebugf("%s empty contour\n", __FUNCTION__);
-        SkASSERT(0);
         // FIXME: delete empty contour?
         return;
     }

@@ -44,14 +44,12 @@ public:
     Error getError() { return fError; }
     SkOperand2::OpType getReturnType() { return fReturnType; }
     void track(SkOpArray* array) {
-        SkASSERT(fTrackArray.find(array) < 0);
         *fTrackArray.append() = array; }
     void track(SkString* string) {
-        SkASSERT(fTrackString.find(string) < 0);
         *fTrackString.append() = string;
     }
     static bool ConvertTo(SkScriptEngine2* , SkOperand2::OpType toType, SkScriptValue2* value);
-    static SkScalar IntToScalar(int32_t );
+    static float IntToScalar(int32_t );
     static bool ValueToString(const SkScriptValue2& value, SkString* string);
 
     enum Op {        // used by tokenizer attribute table
@@ -217,7 +215,7 @@ protected:
     void addToken(TypeOp );
     void addTokenConst(SkScriptValue2* , AddTokenRegister , SkOperand2::OpType , TypeOp );
     void addTokenInt(int );
-    void addTokenScalar(SkScalar );
+    void addTokenScalar(float );
     void addTokenString(const SkString& );
     void addTokenValue(const SkScriptValue2& , AddTokenRegister );
     int arithmeticOp(char ch, char nextChar, bool lastPush);
@@ -281,7 +279,7 @@ struct SkScriptNAnswer2 {
     const char* fScript;
     SkOperand2::OpType fType;
     int32_t fIntAnswer;
-    SkScalar fScalarAnswer;
+    float fScalarAnswer;
     const char* fStringAnswer;
 };
 

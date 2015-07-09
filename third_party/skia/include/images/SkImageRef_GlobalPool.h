@@ -53,7 +53,7 @@ protected:
 
     virtual void onUnlockPixels();
 
-    SkImageRef_GlobalPool(SkReadBuffer&);
+    SkImageRef_GlobalPool(SkFlattenableReadBuffer&);
 
 private:
     typedef SkImageRef INHERITED;

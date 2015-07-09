@@ -65,7 +65,7 @@ SkDisplayable* SkDrawRect::getParent() const {
 }
 
 bool SkDrawRect::getProperty(int index, SkScriptValue* value) const {
-    SkScalar result;
+    float result;
     switch (index) {
         case SK_PROPERTY(height):
             result = fRect.height();
@@ -78,7 +78,6 @@ bool SkDrawRect::getProperty(int index, SkScriptValue* value) const {
             result = fRect.width();
             break;
         default:
-            SkASSERT(0);
             return false;
     }
     value->fType = SkType_Float;
@@ -93,20 +92,18 @@ bool SkDrawRect::setParent(SkDisplayable* parent) {
 }
 
 bool SkDrawRect::setProperty(int index, SkScriptValue& value) {
-    SkScalar scalar = value.fOperand.fScalar;
+    float scalar = value.fOperand.fScalar;
     switch (index) {
         case SK_PROPERTY(height):
-            SkASSERT(value.fType == SkType_Float);
             fRect.fBottom = scalar + fRect.fTop;
             return true;
         case SK_PROPERTY(needsRedraw):
             return false;
         case SK_PROPERTY(width):
-            SkASSERT(value.fType == SkType_Float);
             fRect.fRight = scalar + fRect.fLeft;
             return true;
         default:
-            SkASSERT(0);
+			break;
     }
     return false;
 }

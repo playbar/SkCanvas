@@ -9,20 +9,16 @@
 #include "GrGLPath.h"
 #include "GrGpuGL.h"
 
-#define GPUGL static_cast<GrGpuGL*>(this->getGpu())
-
-#define GL_CALL(X) GR_GL_CALL(GPUGL->glInterface(), X)
-#define GL_CALL_RET(R, X) GR_GL_CALL_RET(GPUGL->glInterface(), R, X)
 
 namespace {
-inline GrGLubyte verb_to_gl_path_cmd(SkPath::Verb verb) {
-    static const GrGLubyte gTable[] = {
-        GR_GL_MOVE_TO,
-        GR_GL_LINE_TO,
-        GR_GL_QUADRATIC_CURVE_TO,
+inline GLubyte verb_to_gl_path_cmd(SkPath::Verb verb) {
+    static const GLubyte gTable[] = {
+        GL_MOVE_TO,
+        GL_LINE_TO,
+        GL_QUADRATIC_CURVE_TO,
         0xFF, // conic
-        GR_GL_CUBIC_CURVE_TO,
-        GR_GL_CLOSE_PATH,
+        GL_CUBIC_CURVE_TO,
+        GL_CLOSE_PATH,
     };
     GR_STATIC_ASSERT(0 == SkPath::kMove_Verb);
     GR_STATIC_ASSERT(1 == SkPath::kLine_Verb);
@@ -30,7 +26,6 @@ inline GrGLubyte verb_to_gl_path_cmd(SkPath::Verb verb) {
     GR_STATIC_ASSERT(4 == SkPath::kCubic_Verb);
     GR_STATIC_ASSERT(5 == SkPath::kClose_Verb);
 
-    SkASSERT(verb >= 0 && (size_t)verb < GR_ARRAY_COUNT(gTable));
     return gTable[verb];
 }
 
@@ -50,16 +45,15 @@ inline int num_pts(SkPath::Verb verb) {
     GR_STATIC_ASSERT(4 == SkPath::kCubic_Verb);
     GR_STATIC_ASSERT(5 == SkPath::kClose_Verb);
 
-    SkASSERT(verb >= 0 && (size_t)verb < GR_ARRAY_COUNT(gTable));
     return gTable[verb];
 }
 #endif
 
-inline GrGLenum join_to_gl_join(SkPaint::Join join) {
-    static GrGLenum gSkJoinsToGrGLJoins[] = {
-        GR_GL_MITER_REVERT,
-        GR_GL_ROUND,
-        GR_GL_BEVEL
+inline GLenum join_to_gl_join(SkPaint::Join join) {
+    static GLenum gSkJoinsToGrGLJoins[] = {
+        GL_MITER_REVERT,
+        GL_ROUND,
+        GL_BEVEL
     };
     return gSkJoinsToGrGLJoins[join];
     GR_STATIC_ASSERT(0 == SkPaint::kMiter_Join);
@@ -68,11 +62,11 @@ inline GrGLenum join_to_gl_join(SkPaint::Join join) {
     GR_STATIC_ASSERT(GR_ARRAY_COUNT(gSkJoinsToGrGLJoins) == SkPaint::kJoinCount);
 }
 
-inline GrGLenum cap_to_gl_cap(SkPaint::Cap cap) {
-    static GrGLenum gSkCapsToGrGLCaps[] = {
-        GR_GL_FLAT,
-        GR_GL_ROUND,
-        GR_GL_SQUARE
+inline GLenum cap_to_gl_cap(SkPaint::Cap cap) {
+    static GLenum gSkCapsToGrGLCaps[] = {
+        GL_FLAT,
+        GL_ROUND_NV,
+        GL_SQUARE_NV
     };
     return gSkCapsToGrGLCaps[cap];
     GR_STATIC_ASSERT(0 == SkPaint::kButt_Cap);
@@ -87,11 +81,10 @@ static const bool kIsWrapped = false; // The constructor creates the GL path obj
 
 GrGLPath::GrGLPath(GrGpuGL* gpu, const SkPath& path, const SkStrokeRec& stroke)
     : INHERITED(gpu, kIsWrapped, path, stroke) {
-    SkASSERT(!path.isEmpty());
 
-    GL_CALL_RET(fPathID, GenPaths(1));
+    fPathID = glGenPathsNV(1);
 
-    SkSTArray<16, GrGLubyte, true> pathCommands;
+    SkSTArray<16, GLubyte, true> pathCommands;
     SkSTArray<16, SkPoint, true> pathPoints;
 
     int verbCnt = fSkPath.countVerbs();
@@ -109,20 +102,20 @@ GrGLPath::GrGLPath(GrGpuGL* gpu, const SkPath& path, const SkStrokeRec& stroke)
         pathCommands[i] = verb_to_gl_path_cmd(v);
         SkDEBUGCODE(numPts += num_pts(v));
     }
-    SkASSERT(pathPoints.count() == numPts);
 
-    GL_CALL(PathCommands(fPathID,
+    glPathCommandsNV(fPathID,
                          verbCnt, &pathCommands[0],
-                         2 * pointCnt, GR_GL_FLOAT, &pathPoints[0]));
+                         2 * pointCnt, GL_FLOAT, &pathPoints[0]);
 
-    if (stroke.needToApply()) {
-        GL_CALL(PathParameterf(fPathID, GR_GL_PATH_STROKE_WIDTH, SkScalarToFloat(stroke.getWidth())));
-        GL_CALL(PathParameterf(fPathID, GR_GL_PATH_MITER_LIMIT, SkScalarToFloat(stroke.getMiter())));
-        GrGLenum join = join_to_gl_join(stroke.getJoin());
-        GL_CALL(PathParameteri(fPathID, GR_GL_PATH_JOIN_STYLE, join));
-        GrGLenum cap = cap_to_gl_cap(stroke.getCap());
-        GL_CALL(PathParameteri(fPathID, GR_GL_PATH_INITIAL_END_CAP, cap));
-        GL_CALL(PathParameteri(fPathID, GR_GL_PATH_TERMINAL_END_CAP, cap));
+    if (stroke.needToApply())
+	{
+        glPathParameterfNV(fPathID, GL_PATH_STROKE_WIDTH_NV, SkScalarToFloat(stroke.getWidth()));
+        glPathParameterfNV(fPathID, GL_PATH_MITER_LIMIT_NV, SkScalarToFloat(stroke.getMiter()));
+        GLenum join = join_to_gl_join(stroke.getJoin());
+        glPathParameteriNV(fPathID, GL_PATH_JOIN_STYLE_NV, join);
+        GLenum cap = cap_to_gl_cap(stroke.getCap());
+        glPathParameteriNV(fPathID, GL_PATH_INITIAL_END_CAP_NV, cap);
+        glPathParameteriNV(fPathID, GL_PATH_TERMINAL_END_CAP_NV, cap);
 
         // FIXME: try to account for stroking, without rasterizing the stroke.
         fBounds.outset(SkScalarToFloat(stroke.getWidth()), SkScalarToFloat(stroke.getWidth()));
@@ -134,8 +127,9 @@ GrGLPath::~GrGLPath() {
 }
 
 void GrGLPath::onRelease() {
-    if (0 != fPathID && !this->isWrapped()) {
-        GL_CALL(DeletePaths(fPathID, 1));
+    if (0 != fPathID && !this->isWrapped())
+	{
+        glDeletePathsNV(fPathID, 1);
         fPathID = 0;
     }
 

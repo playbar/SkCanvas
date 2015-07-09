@@ -33,10 +33,6 @@ struct SkDRect {
     }
 
     bool intersects(SkDRect* r) const {
-        SkASSERT(fLeft <= fRight);
-        SkASSERT(fTop <= fBottom);
-        SkASSERT(r->fLeft <= r->fRight);
-        SkASSERT(r->fTop <= r->fBottom);
         return r->fLeft <= fRight && fLeft <= r->fRight && r->fTop <= fBottom && fTop <= r->fBottom;
     }
 

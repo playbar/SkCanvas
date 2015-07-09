@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2006 The Android Open Source Project
  *
@@ -5,7 +6,7 @@
  * found in the LICENSE file.
  */
 
-#include "SkSmallAllocator.h"
+
 #include "SkSpriteBlitter.h"
 
 SkSpriteBlitter::SkSpriteBlitter(const SkBitmap& source)
@@ -27,20 +28,16 @@ void SkSpriteBlitter::setup(const SkBitmap& device, int left, int top,
 
 #ifdef SK_DEBUG
 void SkSpriteBlitter::blitH(int x, int y, int width) {
-    SkDEBUGFAIL("how did we get here?");
 }
 
 void SkSpriteBlitter::blitAntiH(int x, int y, const SkAlpha antialias[],
                                 const int16_t runs[]) {
-    SkDEBUGFAIL("how did we get here?");
 }
 
 void SkSpriteBlitter::blitV(int x, int y, int height, SkAlpha alpha) {
-    SkDEBUGFAIL("how did we get here?");
 }
 
 void SkSpriteBlitter::blitMask(const SkMask&, const SkIRect& clip) {
-    SkDEBUGFAIL("how did we get here?");
 }
 #endif
 
@@ -48,8 +45,11 @@ void SkSpriteBlitter::blitMask(const SkMask&, const SkIRect& clip) {
 
 // returning null means the caller will call SkBlitter::Choose() and
 // have wrapped the source bitmap inside a shader
-SkBlitter* SkBlitter::ChooseSprite(const SkBitmap& device, const SkPaint& paint,
-        const SkBitmap& source, int left, int top, SkTBlitterAllocator* allocator) {
+SkBlitter* SkBlitter::ChooseSprite( const SkBitmap& device,
+                                    const SkPaint& paint,
+                                    const SkBitmap& source,
+                                    int left, int top,
+                                    void* storage, size_t storageSize) {
     /*  We currently ignore antialiasing and filtertype, meaning we will take our
         special blitters regardless of these settings. Ignoring filtertype seems fine
         since by definition there is no scale in the matrix. Ignoring antialiasing is
@@ -59,16 +59,17 @@ SkBlitter* SkBlitter::ChooseSprite(const SkBitmap& device, const SkPaint& paint,
         paint and return null if it is set, forcing the client to take the slow shader case
         (which does respect soft edges).
     */
-    SkASSERT(allocator != NULL);
 
     SkSpriteBlitter* blitter;
 
-    switch (device.colorType()) {
-        case kRGB_565_SkColorType:
-            blitter = SkSpriteBlitter::ChooseD16(source, paint, allocator);
+    switch (device.config()) {
+        case SkBitmap::kRGB_565_Config:
+            blitter = SkSpriteBlitter::ChooseD16(source, paint, storage,
+                                                 storageSize);
             break;
-        case kPMColor_SkColorType:
-            blitter = SkSpriteBlitter::ChooseD32(source, paint, allocator);
+        case SkBitmap::kARGB_8888_Config:
+            blitter = SkSpriteBlitter::ChooseD32(source, paint, storage,
+                                                 storageSize);
             break;
         default:
             blitter = NULL;

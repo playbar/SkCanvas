@@ -14,7 +14,7 @@
 SkValidatingReadBuffer::SkValidatingReadBuffer(const void* data, size_t size) :
     fError(false) {
     this->setMemory(data, size);
-    this->setFlags(SkReadBuffer::kValidation_Flag);
+    this->setFlags(SkFlattenableReadBuffer::kValidation_Flag);
 }
 
 SkValidatingReadBuffer::~SkValidatingReadBuffer() {
@@ -76,8 +76,8 @@ int32_t SkValidatingReadBuffer::readInt() {
     return fError ? 0 : fReader.readInt();
 }
 
-SkScalar SkValidatingReadBuffer::readScalar() {
-    const size_t inc = sizeof(SkScalar);
+float SkValidatingReadBuffer::readScalar() {
+    const size_t inc = sizeof(float);
     this->validate(IsPtrAlign4(fReader.peek()) && fReader.isAvailable(inc));
     return fError ? 0 : fReader.readScalar();
 }
@@ -200,8 +200,8 @@ bool SkValidatingReadBuffer::readPointArray(SkPoint* points, size_t size) {
     return readArray(points, size, sizeof(SkPoint));
 }
 
-bool SkValidatingReadBuffer::readScalarArray(SkScalar* values, size_t size) {
-    return readArray(values, size, sizeof(SkScalar));
+bool SkValidatingReadBuffer::readScalarArray(float* values, size_t size) {
+    return readArray(values, size, sizeof(float));
 }
 
 uint32_t SkValidatingReadBuffer::getArrayCount() {
@@ -213,10 +213,10 @@ uint32_t SkValidatingReadBuffer::getArrayCount() {
 void SkValidatingReadBuffer::readBitmap(SkBitmap* bitmap) {
     const int width = this->readInt();
     const int height = this->readInt();
-    const bool useBitmapHeap = this->readBool();
     const size_t length = this->readUInt();
     // A size of zero means the SkBitmap was simply flattened.
-    if (!this->validate(!useBitmapHeap && (0 == length))) {
+    this->validate(length == 0);
+    if (fError) {
         return;
     }
     bitmap->unflatten(*this);
@@ -269,7 +269,6 @@ SkFlattenable* SkValidatingReadBuffer::readFlattenable(SkFlattenable::Type type)
     } else {
         // we must skip the remaining data
         this->skip(sizeRecorded);
-        SkASSERT(false);
     }
     return obj;
 }

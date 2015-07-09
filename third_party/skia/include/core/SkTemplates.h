@@ -11,8 +11,6 @@
 #define SkTemplates_DEFINED
 
 #include "SkTypes.h"
-#include <limits>
-#include <limits.h>
 #include <new>
 
 /** \file SkTemplates.h
@@ -66,15 +64,6 @@ template <typename D, typename S> static D* SkTAddOffset(S* ptr, size_t byteOffs
     );
 }
 
-/** SkTSetBit<N, T>::value is a T with the Nth bit set. */
-template<unsigned N, typename T = uintmax_t> struct SkTSetBit {
-    static const T value = static_cast<T>(1) << N;
-    SK_COMPILE_ASSERT(sizeof(T)*CHAR_BIT > N, SkTSetBit_N_too_large);
-    SK_COMPILE_ASSERT(std::numeric_limits<T>::is_integer, SkTSetBit_T_must_be_integer);
-    SK_COMPILE_ASSERT(!std::numeric_limits<T>::is_signed, SkTSetBit_T_must_be_unsigned);
-    SK_COMPILE_ASSERT(std::numeric_limits<T>::radix == 2, SkTSetBit_T_radix_must_be_2);
-};
-
 /** \class SkAutoTCallVProc
 
     Call a function when this goes out of scope. The template uses two
@@ -125,8 +114,8 @@ public:
     ~SkAutoTDelete() { SkDELETE(fObj); }
 
     T* get() const { return fObj; }
-    T& operator*() const { SkASSERT(fObj); return *fObj; }
-    T* operator->() const { SkASSERT(fObj); return fObj; }
+    T& operator*() const { return *fObj; }
+    T* operator->() const { return fObj; }
 
     void reset(T* obj) {
         if (fObj != obj) {
@@ -154,10 +143,6 @@ public:
         return obj;
     }
 
-    void swap(SkAutoTDelete* that) {
-        SkTSwap(fObj, that->fObj);
-    }
-
 private:
     T*  fObj;
 };
@@ -173,8 +158,8 @@ public:
     }
 
     T* get() const { return fObj; }
-    T& operator*() const { SkASSERT(fObj); return *fObj; }
-    T* operator->() const { SkASSERT(fObj); return fObj; }
+    T& operator*() const { return *fObj; }
+    T* operator->() const { return fObj; }
 
 private:
     T*  fObj;
@@ -188,13 +173,6 @@ public:
     T*      get() const { return fArray; }
     void    free() { SkDELETE_ARRAY(fArray); fArray = NULL; }
     T*      detach() { T* array = fArray; fArray = NULL; return array; }
-
-    void reset(T array[]) {
-        if (fArray != array) {
-            SkDELETE_ARRAY(fArray);
-            fArray = array;
-        }
-    }
 
 private:
     T*  fArray;
@@ -211,7 +189,6 @@ public:
     /** Allocate count number of T elements
      */
     explicit SkAutoTArray(int count) {
-        SkASSERT(count >= 0);
         fArray = NULL;
         if (count) {
             fArray = SkNEW_ARRAY(T, count);
@@ -223,7 +200,6 @@ public:
      */
     void reset(int count) {
         SkDELETE_ARRAY(fArray);
-        SkASSERT(count >= 0);
         fArray = NULL;
         if (count) {
             fArray = SkNEW_ARRAY(T, count);
@@ -242,7 +218,6 @@ public:
     /** Return the nth element in the array
      */
     T&  operator[](int index) const {
-        SkASSERT((unsigned)index < (unsigned)fCount);
         return fArray[index];
     }
 
@@ -284,7 +259,6 @@ public:
         if (fCount != count) {
             if (fCount > N) {
                 // 'fArray' was allocated last time so free it now
-                SkASSERT((T*) fStorage != fArray);
                 sk_free(fArray);
             }
 
@@ -317,7 +291,6 @@ public:
     /** Return the nth element in the array
      */
     T&  operator[](int index) const {
-        SkASSERT(index < fCount);
         return fArray[index];
     }
 

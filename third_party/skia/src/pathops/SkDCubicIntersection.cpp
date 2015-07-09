@@ -14,11 +14,6 @@
 #include "SkReduceOrder.h"
 #include "SkTSort.h"
 
-#if ONE_OFF_DEBUG
-static const double tLimits1[2][2] = {{0.3, 0.4}, {0.8, 0.9}};
-static const double tLimits2[2][2] = {{-0.8, -0.9}, {-0.8, -0.9}};
-#endif
-
 #define DEBUG_QUAD_PART ONE_OFF_DEBUG && 1
 #define DEBUG_QUAD_PART_SHOW_SIMPLE DEBUG_QUAD_PART && 0
 #define SWAP_TOP_DEBUG 0
@@ -31,28 +26,6 @@ static int quadPart(const SkDCubic& cubic, double tStart, double tEnd, SkReduceO
     // FIXME: should reduceOrder be looser in this use case if quartic is going to blow up on an
     // extremely shallow quadratic?
     int order = reducer->reduce(quad);
-#if DEBUG_QUAD_PART
-    SkDebugf("%s cubic=(%1.9g,%1.9g %1.9g,%1.9g %1.9g,%1.9g %1.9g,%1.9g)"
-            " t=(%1.9g,%1.9g)\n", __FUNCTION__, cubic[0].fX, cubic[0].fY,
-            cubic[1].fX, cubic[1].fY, cubic[2].fX, cubic[2].fY,
-            cubic[3].fX, cubic[3].fY, tStart, tEnd);
-    SkDebugf("  {{%1.9g,%1.9g}, {%1.9g,%1.9g}, {%1.9g,%1.9g}, {%1.9g,%1.9g}},\n"
-             "  {{%1.9g,%1.9g}, {%1.9g,%1.9g}, {%1.9g,%1.9g}},\n",
-            part[0].fX, part[0].fY, part[1].fX, part[1].fY, part[2].fX, part[2].fY,
-            part[3].fX, part[3].fY, quad[0].fX, quad[0].fY,
-            quad[1].fX, quad[1].fY, quad[2].fX, quad[2].fY);
-#if DEBUG_QUAD_PART_SHOW_SIMPLE
-    SkDebugf("%s simple=(%1.9g,%1.9g", __FUNCTION__, reducer->fQuad[0].fX, reducer->fQuad[0].fY);
-    if (order > 1) {
-        SkDebugf(" %1.9g,%1.9g", reducer->fQuad[1].fX, reducer->fQuad[1].fY);
-    }
-    if (order > 2) {
-        SkDebugf(" %1.9g,%1.9g", reducer->fQuad[2].fX, reducer->fQuad[2].fY);
-    }
-    SkDebugf(")\n");
-    SkASSERT(order < 4 && order > 0);
-#endif
-#endif
     return order;
 }
 
@@ -65,7 +38,6 @@ static void intersectWithOrder(const SkDQuad& simple1, int order1, const SkDQuad
     } else if (order1 == 3 && order2 <= 2) {
         i.intersect(simple1, (const SkDLine&) simple2);
     } else {
-        SkASSERT(order1 <= 2 && order2 == 3);
         i.intersect(simple2, (const SkDLine&) simple1);
         i.swapPts();
     }
@@ -125,7 +97,6 @@ static void intersect(const SkDCubic& cubic1, double t1s, double t1e, const SkDC
                 SkDPoint p2 = cubic2.ptAtT(to2);
                 if (p1.approximatelyEqual(p2)) {
     // FIXME: local edge may be coincident -- experiment with not propagating coincidence to caller
-//                    SkASSERT(!locals.isCoincident(tIdx));
                     if (&cubic1 != &cubic2 || !approximately_equal(to1, to2)) {
                         if (i.swapped()) {  //  FIXME: insert should respect swap
                             i.insert(to2, to1, p1);
@@ -456,7 +427,6 @@ int SkIntersections::intersect(const SkDCubic& c1, const SkDCubic& c2) {
             }
         }
     }
-    SkASSERT(fUsed < 4);
     if (!selfIntersect) {
         if (only_end_pts_in_common(c1, c2)) {
             return fUsed;
@@ -481,7 +451,6 @@ int SkIntersections::intersect(const SkDCubic& c1, const SkDCubic& c2) {
         swap();
     }
     if (cubicCheckCoincidence(c1, c2)) {
-        SkASSERT(!selfIntersect);
         return fUsed;
     }
     // FIXME: pass in cached bounds from caller
@@ -506,7 +475,6 @@ int SkIntersections::intersect(const SkDCubic& c1, const SkDCubic& c2) {
         swap();
     }
     if (cubicCheckCoincidence(c1, c2)) {
-        SkASSERT(!selfIntersect);
         return fUsed;
     }
     SkIntersections i;
@@ -638,7 +606,6 @@ int SkIntersections::intersect(const SkDCubic& c) {
     }
     (void) intersect(c, c);
     if (used() > 0) {
-        SkASSERT(used() == 1);
         if (fT[0][0] > fT[1][0]) {
             swapPts();
         }

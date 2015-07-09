@@ -10,11 +10,12 @@
 
 #include "GrIndexBuffer.h"
 #include "GrGLBufferImpl.h"
-#include "gl/GrGLInterface.h"
+#include "gl/glew.h"
 
 class GrGpuGL;
 
-class GrGLIndexBuffer : public GrIndexBuffer {
+class GrGLIndexBuffer : public GrIndexBuffer 
+{
 
 public:
     typedef GrGLBufferImpl::Desc Desc;
@@ -22,7 +23,7 @@ public:
     GrGLIndexBuffer(GrGpuGL* gpu, const Desc& desc);
     virtual ~GrGLIndexBuffer() { this->release(); }
 
-    GrGLuint bufferID() const { return fImpl.bufferID(); }
+    GLuint bufferID() const { return fImpl.bufferID(); }
     size_t baseOffset() const { return fImpl.baseOffset(); }
 
     void bind() const {
@@ -45,7 +46,6 @@ protected:
 
 private:
     GrGpuGL* getGpuGL() const {
-        SkASSERT(this->isValid());
         return (GrGpuGL*)(this->getGpu());
     }
 

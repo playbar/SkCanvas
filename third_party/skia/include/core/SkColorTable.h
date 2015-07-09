@@ -44,7 +44,6 @@ public:
         the index is in range (0 <= index < count).
     */
     SkPMColor operator[](int index) const {
-        SkASSERT(fColors != NULL && (unsigned)index < fCount);
         return fColors[index];
     }
 
@@ -71,12 +70,11 @@ public:
     /** Balancing call to lock16BitCache().
     */
     void unlock16BitCache() {
-        SkASSERT(f16BitCacheLockCount > 0);
         SkDEBUGCODE(f16BitCacheLockCount -= 1);
     }
 
-    explicit SkColorTable(SkReadBuffer&);
-    void writeToBuffer(SkWriteBuffer&) const;
+    explicit SkColorTable(SkFlattenableReadBuffer&);
+    void writeToBuffer(SkFlattenableWriteBuffer&) const;
 
 private:
     SkPMColor*  fColors;

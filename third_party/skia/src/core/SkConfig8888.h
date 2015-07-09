@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2011 Google Inc.
  *
@@ -5,8 +6,6 @@
  * found in the LICENSE file.
  */
 
-#ifndef SkConfig8888_DEFINED
-#define SkConfig8888_DEFINED
 
 #include "SkCanvas.h"
 #include "SkColorPriv.h"
@@ -46,7 +45,6 @@ static inline void SkCopyBitmapToConfig8888(uint32_t* dstPixels,
                                      size_t dstRowBytes,
                                      SkCanvas::Config8888 dstConfig8888,
                                      const SkBitmap& srcBmp) {
-    SkASSERT(SkBitmap::kARGB_8888_Config == srcBmp.config());
     SkAutoLockPixels alp(srcBmp);
     int w = srcBmp.width();
     int h = srcBmp.height();
@@ -64,7 +62,6 @@ static inline void SkCopyConfig8888ToBitmap(const SkBitmap& dstBmp,
                                      const uint32_t* srcPixels,
                                      size_t srcRowBytes,
                                      SkCanvas::Config8888 srcConfig8888) {
-    SkASSERT(SkBitmap::kARGB_8888_Config == dstBmp.config());
     SkAutoLockPixels alp(dstBmp);
     int w = dstBmp.width();
     int h = dstBmp.height();
@@ -75,5 +72,3 @@ static inline void SkCopyConfig8888ToBitmap(const SkBitmap& dstBmp,
 }
 
 }
-
-#endif

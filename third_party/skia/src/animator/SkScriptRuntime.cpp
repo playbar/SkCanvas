@@ -65,7 +65,7 @@ bool SkScriptRuntime::executeTokens(unsigned char* opCode) {
     size_t ref;
     int index, size;
     int registerLoad;
-    SkScriptCallBack* callBack SK_INIT_TO_AVOID_WARNING;
+    SkScriptCallBack* callBack =0;
     do {
     switch ((op = (SkScriptEngine2::TypeOp) *opCode++)) {
         case SkScriptEngine2::kArrayToken:    // create an array
@@ -130,8 +130,8 @@ bool SkScriptRuntime::executeTokens(unsigned char* opCode) {
         case SkScriptEngine2::kScalarAccumulator:
         case SkScriptEngine2::kScalarOperand:
             registerLoad = op - SkScriptEngine2::kScalarAccumulator;
-            memcpy(&operand[registerLoad].fScalar, opCode, sizeof(SkScalar));
-            opCode += sizeof(SkScalar);
+            memcpy(&operand[registerLoad].fScalar, opCode, sizeof(float));
+            opCode += sizeof(float);
             break;
         case SkScriptEngine2::kStringAccumulator:
         case SkScriptEngine2::kStringOperand: {
@@ -236,7 +236,6 @@ bool SkScriptRuntime::executeTokens(unsigned char* opCode) {
             operand[0].fS32 |= operand[1].fS32;
             break;
         case SkScriptEngine2::kDivideInt:
-            SkASSERT(operand[1].fS32 != 0);
             if (operand[1].fS32 == 0)
                 operand[0].fS32 = operand[0].fS32 == 0 ? SK_NaN32 :
                     operand[0].fS32 > 0 ? SK_MaxS32 : -SK_MaxS32;
@@ -311,7 +310,6 @@ bool SkScriptRuntime::executeTokens(unsigned char* opCode) {
         case SkScriptEngine2::kEnd:
             goto done;
         case SkScriptEngine2::kNop:
-                SkASSERT(0);
     default:
         break;
     }
@@ -329,23 +327,19 @@ bool SkScriptRuntime::getResult(SkOperand2* result) {
 }
 
 void SkScriptRuntime::track(SkOpArray* array) {
-    SkASSERT(fTrackArray.find(array) < 0);
     *fTrackArray.append() = array;
 }
 
 void SkScriptRuntime::track(SkString* string) {
-    SkASSERT(fTrackString.find(string) < 0);
     *fTrackString.append() = string;
 }
 
 void SkScriptRuntime::untrack(SkOpArray* array) {
     int index = fTrackArray.find(array);
-    SkASSERT(index >= 0);
     fTrackArray.begin()[index] = NULL;
 }
 
 void SkScriptRuntime::untrack(SkString* string) {
     int index = fTrackString.find(string);
-    SkASSERT(index >= 0);
     fTrackString.begin()[index] = NULL;
 }

@@ -18,7 +18,7 @@ SkPathRef::Editor::Editor(SkAutoTUnref<SkPathRef>* pathRef,
     if ((*pathRef)->unique()) {
         (*pathRef)->incReserve(incReserveVerbs, incReservePoints);
     } else {
-        SkPathRef* copy = SkNEW(SkPathRef);
+        SkPathRef* copy = new SkPathRef;
         copy->copy(**pathRef, incReserveVerbs, incReservePoints);
         pathRef->reset(copy);
     }
@@ -28,35 +28,31 @@ SkPathRef::Editor::Editor(SkAutoTUnref<SkPathRef>* pathRef,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-static SkPathRef* gEmptyPathRef = NULL;
-static void cleanup_gEmptyPathRef() { gEmptyPathRef->unref(); }
-
-void SkPathRef::CreateEmptyImpl(int) {
-    gEmptyPathRef = SkNEW(SkPathRef);
-    gEmptyPathRef->computeBounds();  // Preemptively avoid a race to clear fBoundsIsDirty.
+void SkPathRef::CreateEmptyImpl(SkPathRef** empty) {
+    *empty = new SkPathRef;
+    (*empty)->computeBounds();  // Preemptively avoid a race to clear fBoundsIsDirty.
 }
 
 SkPathRef* SkPathRef::CreateEmpty() {
+    static SkPathRef* gEmptyPathRef;
     SK_DECLARE_STATIC_ONCE(once);
-    SkOnce(&once, SkPathRef::CreateEmptyImpl, 0, cleanup_gEmptyPathRef);
+    SkOnce(&once, SkPathRef::CreateEmptyImpl, &gEmptyPathRef);
     return SkRef(gEmptyPathRef);
 }
 
 void SkPathRef::CreateTransformedCopy(SkAutoTUnref<SkPathRef>* dst,
                                       const SkPathRef& src,
                                       const SkMatrix& matrix) {
-    SkDEBUGCODE(src.validate();)
     if (matrix.isIdentity()) {
         if (*dst != &src) {
             src.ref();
             dst->reset(const_cast<SkPathRef*>(&src));
-            SkDEBUGCODE((*dst)->validate();)
         }
         return;
     }
 
     if (!(*dst)->unique()) {
-        dst->reset(SkNEW(SkPathRef));
+        dst->reset(new SkPathRef);
     }
 
     if (*dst != &src) {
@@ -65,9 +61,6 @@ void SkPathRef::CreateTransformedCopy(SkAutoTUnref<SkPathRef>* dst,
         (*dst)->fConicWeights = src.fConicWeights;
     }
 
-    SkASSERT((*dst)->countPoints() == src.countPoints());
-    SkASSERT((*dst)->countVerbs() == src.countVerbs());
-    SkASSERT((*dst)->fConicWeights.count() == src.fConicWeights.count());
 
     // Need to check this here in case (&src == dst)
     bool canXformBounds = !src.fBoundsIsDirty && matrix.rectStaysRect() && src.countPoints() > 1;
@@ -103,12 +96,14 @@ void SkPathRef::CreateTransformedCopy(SkAutoTUnref<SkPathRef>* dst,
 
     // It's an oval only if it stays a rect.
     (*dst)->fIsOval = src.fIsOval && matrix.rectStaysRect();
-
-    SkDEBUGCODE((*dst)->validate();)
 }
 
-SkPathRef* SkPathRef::CreateFromBuffer(SkRBuffer* buffer) {
-    SkPathRef* ref = SkNEW(SkPathRef);
+SkPathRef* SkPathRef::CreateFromBuffer(SkRBuffer* buffer
+#ifndef DELETE_THIS_CODE_WHEN_SKPS_ARE_REBUILT_AT_V16_AND_ALL_OTHER_INSTANCES_TOO
+                                   , bool newFormat, int32_t oldPacked
+#endif
+    ) {
+    SkPathRef* ref = new SkPathRef;
     bool isOval;
     uint8_t segmentMask;
 
@@ -119,8 +114,18 @@ SkPathRef* SkPathRef::CreateFromBuffer(SkRBuffer* buffer) {
     }
 
     ref->fIsFinite = (packed >> kIsFinite_SerializationShift) & 1;
-    segmentMask = (packed >> kSegmentMask_SerializationShift) & 0xF;
-    isOval  = (packed >> kIsOval_SerializationShift) & 1;
+
+#ifndef DELETE_THIS_CODE_WHEN_SKPS_ARE_REBUILT_AT_V16_AND_ALL_OTHER_INSTANCES_TOO
+    if (newFormat) {
+#endif
+        segmentMask = (packed >> kSegmentMask_SerializationShift) & 0xF;
+        isOval  = (packed >> kIsOval_SerializationShift) & 1;
+#ifndef DELETE_THIS_CODE_WHEN_SKPS_ARE_REBUILT_AT_V16_AND_ALL_OTHER_INSTANCES_TOO
+    } else {
+        segmentMask = (oldPacked >> SkPath::kOldSegmentMask_SerializationShift) & 0xF;
+        isOval  = (oldPacked >> SkPath::kOldIsOval_SerializationShift) & 1;
+    }
+#endif
 
     int32_t verbCount, pointCount, conicCount;
     if (!buffer->readU32(&(ref->fGenerationID)) ||
@@ -132,13 +137,10 @@ SkPathRef* SkPathRef::CreateFromBuffer(SkRBuffer* buffer) {
     }
 
     ref->resetToSize(verbCount, pointCount, conicCount);
-    SkASSERT(verbCount == ref->countVerbs());
-    SkASSERT(pointCount == ref->countPoints());
-    SkASSERT(conicCount == ref->fConicWeights.count());
 
     if (!buffer->read(ref->verbsMemWritable(), verbCount * sizeof(uint8_t)) ||
         !buffer->read(ref->fPoints, pointCount * sizeof(SkPoint)) ||
-        !buffer->read(ref->fConicWeights.begin(), conicCount * sizeof(SkScalar)) ||
+        !buffer->read(ref->fConicWeights.begin(), conicCount * sizeof(float)) ||
         !buffer->read(&ref->fBounds, sizeof(SkRect))) {
         SkDELETE(ref);
         return NULL;
@@ -153,7 +155,6 @@ SkPathRef* SkPathRef::CreateFromBuffer(SkRBuffer* buffer) {
 
 void SkPathRef::Rewind(SkAutoTUnref<SkPathRef>* pathRef) {
     if ((*pathRef)->unique()) {
-        SkDEBUGCODE((*pathRef)->validate();)
         (*pathRef)->fBoundsIsDirty = true;  // this also invalidates fIsFinite
         (*pathRef)->fVerbCnt = 0;
         (*pathRef)->fPointCnt = 0;
@@ -162,18 +163,15 @@ void SkPathRef::Rewind(SkAutoTUnref<SkPathRef>* pathRef) {
         (*pathRef)->fConicWeights.rewind();
         (*pathRef)->fSegmentMask = 0;
         (*pathRef)->fIsOval = false;
-        SkDEBUGCODE((*pathRef)->validate();)
     } else {
         int oldVCnt = (*pathRef)->countVerbs();
         int oldPCnt = (*pathRef)->countPoints();
-        pathRef->reset(SkNEW(SkPathRef));
+        pathRef->reset(new SkPathRef);
         (*pathRef)->resetToSize(0, 0, 0, oldVCnt, oldPCnt);
     }
 }
 
 bool SkPathRef::operator== (const SkPathRef& ref) const {
-    SkDEBUGCODE(this->validate();)
-    SkDEBUGCODE(ref.validate();)
 
     // We explicitly check fSegmentMask as a quick-reject. We could skip it,
     // since it is only a cache of info in the fVerbs, but its a fast way to
@@ -182,7 +180,6 @@ bool SkPathRef::operator== (const SkPathRef& ref) const {
         return false;
     }
 
-    bool genIDMatch = fGenerationID && fGenerationID == ref.fGenerationID;
 #ifdef SK_RELEASE
     if (genIDMatch) {
         return true;
@@ -190,23 +187,19 @@ bool SkPathRef::operator== (const SkPathRef& ref) const {
 #endif
     if (fPointCnt != ref.fPointCnt ||
         fVerbCnt != ref.fVerbCnt) {
-        SkASSERT(!genIDMatch);
         return false;
     }
     if (0 != memcmp(this->verbsMemBegin(),
                     ref.verbsMemBegin(),
                     ref.fVerbCnt * sizeof(uint8_t))) {
-        SkASSERT(!genIDMatch);
         return false;
     }
     if (0 != memcmp(this->points(),
                     ref.points(),
                     ref.fPointCnt * sizeof(SkPoint))) {
-        SkASSERT(!genIDMatch);
         return false;
     }
     if (fConicWeights != ref.fConicWeights) {
-        SkASSERT(!genIDMatch);
         return false;
     }
     // We've done the work to determine that these are equal. If either has a zero genID, copy
@@ -220,8 +213,6 @@ bool SkPathRef::operator== (const SkPathRef& ref) const {
 }
 
 void SkPathRef::writeToBuffer(SkWBuffer* buffer) const {
-    SkDEBUGCODE(this->validate();)
-    SkDEBUGCODE(size_t beforePos = buffer->pos();)
 
     // Call getBounds() to ensure (as a side-effect) that fBounds
     // and fIsFinite are computed.
@@ -243,7 +234,6 @@ void SkPathRef::writeToBuffer(SkWBuffer* buffer) const {
     buffer->write(fConicWeights.begin(), fConicWeights.bytes());
     buffer->write(&bounds, sizeof(bounds));
 
-    SkASSERT(buffer->pos() - beforePos == (size_t) this->writeSize());
 }
 
 uint32_t SkPathRef::writeSize() const {
@@ -257,7 +247,6 @@ uint32_t SkPathRef::writeSize() const {
 void SkPathRef::copy(const SkPathRef& ref,
                      int additionalReserveVerbs,
                      int additionalReservePoints) {
-    SkDEBUGCODE(this->validate();)
     this->resetToSize(ref.fVerbCnt, ref.fPointCnt, ref.fConicWeights.count(),
                         additionalReserveVerbs, additionalReservePoints);
     memcpy(this->verbsMemWritable(), ref.verbsMemBegin(), ref.fVerbCnt * sizeof(uint8_t));
@@ -273,18 +262,16 @@ void SkPathRef::copy(const SkPathRef& ref,
     }
     fSegmentMask = ref.fSegmentMask;
     fIsOval = ref.fIsOval;
-    SkDEBUGCODE(this->validate();)
 }
 
 SkPoint* SkPathRef::growForRepeatedVerb(int /*SkPath::Verb*/ verb,
                                         int numVbs,
-                                        SkScalar** weights) {
+                                        float** weights) {
     // This value is just made-up for now. When count is 4, calling memset was much
     // slower than just writing the loop. This seems odd, and hopefully in the
     // future this will appear to have been a fluke...
     static const unsigned int kMIN_COUNT_FOR_MEMSET_TO_BE_FAST = 16;
 
-    SkDEBUGCODE(this->validate();)
     int pCnt;
     bool dirtyAfterEdit = true;
     switch (verb) {
@@ -309,15 +296,12 @@ SkPoint* SkPathRef::growForRepeatedVerb(int /*SkPath::Verb*/ verb,
             pCnt = 3 * numVbs;
             break;
         case SkPath::kClose_Verb:
-            SkDEBUGFAIL("growForRepeatedVerb called for kClose_Verb");
             pCnt = 0;
             dirtyAfterEdit = false;
             break;
         case SkPath::kDone_Verb:
-            SkDEBUGFAIL("growForRepeatedVerb called for kDone");
             // fall through
         default:
-            SkDEBUGFAIL("default should not be reached");
             pCnt = 0;
             dirtyAfterEdit = false;
     }
@@ -347,16 +331,13 @@ SkPoint* SkPathRef::growForRepeatedVerb(int /*SkPath::Verb*/ verb,
     }
 
     if (SkPath::kConic_Verb == verb) {
-        SkASSERT(NULL != weights);
         *weights = fConicWeights.append(numVbs);
     }
 
-    SkDEBUGCODE(this->validate();)
     return ret;
 }
 
-SkPoint* SkPathRef::growForVerb(int /* SkPath::Verb*/ verb, SkScalar weight) {
-    SkDEBUGCODE(this->validate();)
+SkPoint* SkPathRef::growForVerb(int /* SkPath::Verb*/ verb, float weight) {
     int pCnt;
     bool dirtyAfterEdit = true;
     switch (verb) {
@@ -385,10 +366,8 @@ SkPoint* SkPathRef::growForVerb(int /* SkPath::Verb*/ verb, SkScalar weight) {
             dirtyAfterEdit = false;
             break;
         case SkPath::kDone_Verb:
-            SkDEBUGFAIL("growForVerb called for kDone");
             // fall through
         default:
-            SkDEBUGFAIL("default is not reached");
             dirtyAfterEdit = false;
             pCnt = 0;
     }
@@ -408,12 +387,10 @@ SkPoint* SkPathRef::growForVerb(int /* SkPath::Verb*/ verb, SkScalar weight) {
         *fConicWeights.append() = weight;
     }
 
-    SkDEBUGCODE(this->validate();)
     return ret;
 }
 
 uint32_t SkPathRef::genID() const {
-    SkASSERT(!fEditorsAttached);
     static const uint32_t kMask = (static_cast<int64_t>(1) << SkPath::kPathRefGenIDBitCnt) - 1;
     if (!fGenerationID) {
         if (0 == fPointCnt && 0 == fVerbCnt) {
@@ -430,63 +407,3 @@ uint32_t SkPathRef::genID() const {
     return fGenerationID;
 }
 
-#ifdef SK_DEBUG
-void SkPathRef::validate() const {
-    this->INHERITED::validate();
-    SkASSERT(static_cast<ptrdiff_t>(fFreeSpace) >= 0);
-    SkASSERT(reinterpret_cast<intptr_t>(fVerbs) - reinterpret_cast<intptr_t>(fPoints) >= 0);
-    SkASSERT((NULL == fPoints) == (NULL == fVerbs));
-    SkASSERT(!(NULL == fPoints && 0 != fFreeSpace));
-    SkASSERT(!(NULL == fPoints && 0 != fFreeSpace));
-    SkASSERT(!(NULL == fPoints && fPointCnt));
-    SkASSERT(!(NULL == fVerbs && fVerbCnt));
-    SkASSERT(this->currSize() ==
-                fFreeSpace + sizeof(SkPoint) * fPointCnt + sizeof(uint8_t) * fVerbCnt);
-
-    if (!fBoundsIsDirty && !fBounds.isEmpty()) {
-        bool isFinite = true;
-        for (int i = 0; i < fPointCnt; ++i) {
-            SkASSERT(!fPoints[i].isFinite() || (
-                     fBounds.fLeft - fPoints[i].fX   < SK_ScalarNearlyZero &&
-                     fPoints[i].fX - fBounds.fRight  < SK_ScalarNearlyZero &&
-                     fBounds.fTop  - fPoints[i].fY   < SK_ScalarNearlyZero &&
-                     fPoints[i].fY - fBounds.fBottom < SK_ScalarNearlyZero));
-            if (!fPoints[i].isFinite()) {
-                isFinite = false;
-            }
-        }
-        SkASSERT(SkToBool(fIsFinite) == isFinite);
-    }
-
-#ifdef SK_DEBUG_PATH
-    uint32_t mask = 0;
-    for (int i = 0; i < fVerbCnt; ++i) {
-        switch (fVerbs[~i]) {
-            case SkPath::kMove_Verb:
-                break;
-            case SkPath::kLine_Verb:
-                mask |= SkPath::kLine_SegmentMask;
-                break;
-            case SkPath::kQuad_Verb:
-                mask |= SkPath::kQuad_SegmentMask;
-                break;
-            case SkPath::kConic_Verb:
-                mask |= SkPath::kConic_SegmentMask;
-                break;
-            case SkPath::kCubic_Verb:
-                mask |= SkPath::kCubic_SegmentMask;
-                break;
-            case SkPath::kClose_Verb:
-                break;
-            case SkPath::kDone_Verb:
-                SkDEBUGFAIL("Done verb shouldn't be recorded.");
-                break;
-            default:
-                SkDEBUGFAIL("Unknown Verb");
-                break;
-        }
-    }
-    SkASSERT(mask == fSegmentMask);
-#endif // SK_DEBUG_PATH
-}
-#endif

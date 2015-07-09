@@ -19,25 +19,14 @@ static inline int nonzero_to_one(int x) {
 }
 
 static inline int neq_to_one(int x, int max) {
-#if 0
-    return x != max;
-#else
-    SkASSERT(x >= 0 && x <= max);
     return ((unsigned)(x - max)) >> 31;
-#endif
 }
 
 static inline int neq_to_mask(int x, int max) {
-#if 0
-    return -(x != max);
-#else
-    SkASSERT(x >= 0 && x <= max);
     return (x - max) >> 31;
-#endif
 }
 
 static inline unsigned div255(unsigned x) {
-    SkASSERT(x <= (255*255));
     return x * ((1 << 24) / 255) >> 24;
 }
 
@@ -53,7 +42,6 @@ void SkEmbossMask_BuildTable() {
     // build it 0..127 x 0..127, so we use 2^15 - 1 in the numerator for our "fixed" table
 
     FILE* file = ::fopen("SkEmbossMask_Table.h", "w");
-    SkASSERT(file);
     ::fprintf(file, "#include \"SkTypes.h\"\n\n");
     ::fprintf(file, "static const U16 gInvSqrtTable[128 * 128] = {\n");
     for (int dx = 0; dx <= 255/2; dx++) {
@@ -79,9 +67,6 @@ void SkEmbossMask_BuildTable() {
 #endif
 
 void SkEmbossMask::Emboss(SkMask* mask, const SkEmbossMaskFilter::Light& light) {
-    SkASSERT(kDelta == kDeltaUsedToBuildTable);
-
-    SkASSERT(mask->fFormat == SkMask::k3D_Format);
 
     int     specular = light.fSpecular;
     int     ambient = light.fAmbient;

@@ -26,8 +26,6 @@ public:
     }
 
     void setMemory(const void* data, size_t size) {
-        SkASSERT(ptr_align_4(data));
-        SkASSERT(SkAlign4(size) == size);
 
         fBase = fCurr = (const char*)data;
         fStop = (const char*)data + size;
@@ -45,18 +43,14 @@ public:
     void rewind() { fCurr = fBase; }
 
     void setOffset(size_t offset) {
-        SkASSERT(SkAlign4(offset) == offset);
-        SkASSERT(offset <= this->size());
         fCurr = fBase + offset;
     }
 
     bool readBool() { return this->readInt() != 0; }
 
     int32_t readInt() {
-        SkASSERT(ptr_align_4(fCurr));
         int32_t value = *(const int32_t*)fCurr;
         fCurr += sizeof(value);
-        SkASSERT(fCurr <= fStop);
         return value;
     }
 
@@ -72,33 +66,25 @@ public:
         return ptr;
     }
 
-    SkScalar readScalar() {
-        SkASSERT(ptr_align_4(fCurr));
-        SkScalar value = *(const SkScalar*)fCurr;
+    float readScalar() {
+        float value = *(const float*)fCurr;
         fCurr += sizeof(value);
-        SkASSERT(fCurr <= fStop);
         return value;
     }
 
     const void* skip(size_t size) {
-        SkASSERT(ptr_align_4(fCurr));
         const void* addr = fCurr;
         fCurr += SkAlign4(size);
-        SkASSERT(fCurr <= fStop);
         return addr;
     }
 
     template <typename T> const T& skipT() {
-        SkASSERT(SkAlign4(sizeof(T)) == sizeof(T));
         return *(const T*)this->skip(sizeof(T));
     }
 
     void read(void* dst, size_t size) {
-        SkASSERT(0 == size || dst != NULL);
-        SkASSERT(ptr_align_4(fCurr));
         memcpy(dst, fCurr, size);
         fCurr += SkAlign4(size);
-        SkASSERT(fCurr <= fStop);
     }
 
     uint8_t readU8() { return (uint8_t)this->readInt(); }

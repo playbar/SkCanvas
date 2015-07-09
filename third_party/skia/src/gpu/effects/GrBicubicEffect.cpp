@@ -2,7 +2,8 @@
 
 #define DS(x) SkDoubleToScalar(x)
 
-const SkScalar GrBicubicEffect::gMitchellCoefficients[16] = {
+const float GrBicubicEffect::gMitchellCoefficients[16] = 
+{
     DS( 1.0 / 18.0), DS(-9.0 / 18.0), DS( 15.0 / 18.0), DS( -7.0 / 18.0),
     DS(16.0 / 18.0), DS( 0.0 / 18.0), DS(-36.0 / 18.0), DS( 21.0 / 18.0),
     DS( 1.0 / 18.0), DS( 9.0 / 18.0), DS( 27.0 / 18.0), DS(-21.0 / 18.0),
@@ -117,7 +118,7 @@ void GrGLBicubicEffect::setData(const GrGLUniformManager& uman,
 }
 
 static inline void convert_row_major_scalar_coeffs_to_column_major_floats(float dst[16],
-                                                                          const SkScalar src[16]) {
+                                                                          const float src[16]) {
     for (int y = 0; y < 4; y++) {
         for (int x = 0; x < 4; x++) {
             dst[x * 4 + y] = SkScalarToFloat(src[y * 4 + x]);
@@ -126,7 +127,7 @@ static inline void convert_row_major_scalar_coeffs_to_column_major_floats(float 
 }
 
 GrBicubicEffect::GrBicubicEffect(GrTexture* texture,
-                                 const SkScalar coefficients[16],
+                                 const float coefficients[16],
                                  const SkMatrix &matrix,
                                  const SkShader::TileMode tileModes[2])
   : INHERITED(texture, matrix, GrTextureParams(tileModes, GrTextureParams::kNone_FilterMode))
@@ -135,7 +136,7 @@ GrBicubicEffect::GrBicubicEffect(GrTexture* texture,
 }
 
 GrBicubicEffect::GrBicubicEffect(GrTexture* texture,
-                                 const SkScalar coefficients[16],
+                                 const float coefficients[16],
                                  const SkMatrix &matrix,
                                  const SkRect& domain)
   : INHERITED(texture, matrix, GrTextureParams(SkShader::kClamp_TileMode,
@@ -171,7 +172,7 @@ GrEffectRef* GrBicubicEffect::TestCreate(SkRandom* random,
                                          GrTexture* textures[]) {
     int texIdx = random->nextBool() ? GrEffectUnitTest::kSkiaPMTextureIdx :
                                       GrEffectUnitTest::kAlphaTextureIdx;
-    SkScalar coefficients[16];
+    float coefficients[16];
     for (int i = 0; i < 16; i++) {
         coefficients[i] = random->nextSScalar1();
     }

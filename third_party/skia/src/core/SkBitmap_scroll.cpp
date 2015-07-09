@@ -11,7 +11,7 @@
 bool SkBitmap::scrollRect(const SkIRect* subset, int dx, int dy,
                           SkRegion* inval) const
 {
-    if (this->isImmutable() || kUnknown_SkColorType == this->colorType()) {
+    if (this->isImmutable()) {
         return false;
     }
 
@@ -23,7 +23,25 @@ bool SkBitmap::scrollRect(const SkIRect* subset, int dx, int dy,
                 tmp.scrollRect(NULL, dx, dy, inval);
     }
 
-    int shift = this->bytesPerPixel() >> 1;
+    int shift;
+
+    switch (this->config()) {
+    case kIndex8_Config:
+    case kA8_Config:
+        shift = 0;
+        break;
+    case kARGB_4444_Config:
+    case kRGB_565_Config:
+        shift = 1;
+        break;
+    case kARGB_8888_Config:
+        shift = 2;
+        break;
+    default:
+        // can't scroll this config
+        return false;
+    }
+
     int width = this->width();
     int height = this->height();
 

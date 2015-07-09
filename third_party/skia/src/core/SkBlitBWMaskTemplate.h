@@ -25,8 +25,6 @@
 
 static void SK_BLITBWMASK_NAME(const SkBitmap& bitmap, const SkMask& srcMask, const SkIRect& clip SK_BLITBWMASK_ARGS)
 {
-    SkASSERT(clip.fRight <= srcMask.fBounds.fRight);
-
     int cx = clip.fLeft;
     int cy = clip.fTop;
     int maskLeft = srcMask.fBounds.fLeft;
@@ -34,9 +32,6 @@ static void SK_BLITBWMASK_NAME(const SkBitmap& bitmap, const SkMask& srcMask, co
     size_t bitmap_rowBytes = bitmap.rowBytes();
     unsigned height = clip.height();
 
-    SkASSERT(mask_rowBytes != 0);
-    SkASSERT(bitmap_rowBytes != 0);
-    SkASSERT(height != 0);
 
     const uint8_t* bits = srcMask.getAddr1(cx, cy);
     SK_BLITBWMASK_DEVTYPE* device = bitmap.SK_BLITBWMASK_GETADDR(cx, cy);
@@ -57,9 +52,7 @@ static void SK_BLITBWMASK_NAME(const SkBitmap& bitmap, const SkMask& srcMask, co
     else
     {
         int left_edge = cx - maskLeft;
-        SkASSERT(left_edge >= 0);
         int rite_edge = clip.fRight - maskLeft;
-        SkASSERT(rite_edge > left_edge);
 
         int left_mask = 0xFF >> (left_edge & 7);
         int rite_mask = 0xFF << (8 - (rite_edge & 7));
@@ -69,7 +62,6 @@ static void SK_BLITBWMASK_NAME(const SkBitmap& bitmap, const SkMask& srcMask, co
         // check for empty right mask, so we don't read off the end (or go slower than we need to)
         if (rite_mask == 0)
         {
-            SkASSERT(full_runs >= 0);
             full_runs -= 1;
             rite_mask = 0xFF;
         }
@@ -83,7 +75,6 @@ static void SK_BLITBWMASK_NAME(const SkBitmap& bitmap, const SkMask& srcMask, co
         if (full_runs < 0)
         {
             left_mask &= rite_mask;
-            SkASSERT(left_mask != 0);
             do {
                 U8CPU mask = *bits & left_mask;
                 SK_BLITBWMASK_BLIT8(mask, device);

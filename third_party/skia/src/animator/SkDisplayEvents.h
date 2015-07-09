@@ -18,8 +18,8 @@ struct SkEventState {
     int fCode;
     SkBool fDisable;
     SkDisplayable* fDisplayable;
-    SkScalar fX;
-    SkScalar fY;
+    float fX;
+    float fY;
 };
 
 class SkEvents {

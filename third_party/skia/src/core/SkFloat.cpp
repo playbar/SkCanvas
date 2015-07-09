@@ -69,19 +69,16 @@ int32_t SkFloat::SetShift(int value, int shift)
     if (value >> 24)    // value is too big (has more than 24 bits set)
     {
         int bias = 8 - SkCLZ(value);
-        SkASSERT(bias > 0 && bias < 8);
         value >>= bias;
         shift += bias;
     }
     else
     {
         int zeros = SkCLZ(value << 8);
-        SkASSERT(zeros >= 0 && zeros <= 23);
         value <<= zeros;
         shift -= zeros;
     }
     // now value is left-aligned to 24 bits
-    SkASSERT((value >> 23) == 1);
 
     shift += EXP_BIAS;
     if (shift < 0)  // underflow
@@ -102,11 +99,8 @@ int32_t SkFloat::SetShift(int value, int shift)
             int n;
 
             n = SkExtractSign(packed);
-            SkASSERT(n == sign);
             n = get_unsigned_exp(packed);
-            SkASSERT(n == shift);
             n = get_unsigned_value(packed);
-            SkASSERT(n == value);
         }
 #endif
         return packed;
@@ -156,9 +150,15 @@ int32_t SkFloat::Add(int32_t packed_a, int32_t packed_b)
     return SkFloat::SetShift(value_a + value_b, exp - EXP_BIAS);
 }
 
-static inline int32_t mul24(int32_t a, int32_t b) {
-    int64_t tmp = (sk_64_mul(a, b) + (1 << 23)) >> 24;
-    return sk_64_asS32(tmp);
+#include "Sk64.h"
+
+static inline int32_t mul24(int32_t a, int32_t b)
+{
+    Sk64 tmp;
+
+    tmp.setMul(a, b);
+    tmp.roundRight(24);
+    return tmp.get32();
 }
 
 int32_t SkFloat::Mul(int32_t packed_a, int32_t packed_b)
@@ -182,7 +182,6 @@ int32_t SkFloat::MulInt(int32_t packed, int n)
 
 int32_t SkFloat::Div(int32_t packed_n, int32_t packed_d)
 {
-    SkASSERT(packed_d != 0);
 
     if (packed_n == 0)
         return 0;
@@ -210,7 +209,6 @@ int32_t SkFloat::Sqrt(int32_t packed)
 {
     if (packed < 0)
     {
-        SkDEBUGFAIL("can't sqrt a negative number");
         return 0;
     }
 
@@ -230,7 +228,7 @@ int32_t SkFloat::Sqrt(int32_t packed)
 
 int32_t SkFloat::CubeRoot(int32_t packed)
 {
-    sk_throw();
+	abort();
     return 0;
 }
 
@@ -256,132 +254,3 @@ int SkFloat::Cmp(int32_t packed_a, int32_t packed_b)
     return int_sign(packed_a, packed_b);
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////
-
-#ifdef SK_DEBUG
-
-#include "SkRandom.h"
-#include "SkFloatingPoint.h"
-
-void SkFloat::UnitTest()
-{
-#if 0 // def SK_SUPPORT_UNITTEST
-    SkFloat a, b, c, d;
-    int     n;
-
-    a.setZero();
-    n = a.getInt();
-    SkASSERT(n == 0);
-
-    b.setInt(5);
-    n = b.getInt();
-    SkASSERT(n == 5);
-
-    c.setInt(-3);
-    n = c.getInt();
-    SkASSERT(n == -3);
-
-    d.setAdd(c, b);
-    SkDebugf("SkFloat: %d + %d = %d\n", c.getInt(), b.getInt(), d.getInt());
-
-    SkRandom    rand;
-
-    int i;
-    for (i = 0; i < 1000; i++)
-    {
-        float fa, fb;
-        int aa = rand.nextS() >> 14;
-        int bb = rand.nextS() >> 14;
-        a.setInt(aa);
-        b.setInt(bb);
-        SkASSERT(a.getInt() == aa);
-        SkASSERT(b.getInt() == bb);
-
-        c.setAdd(a, b);
-        int cc = c.getInt();
-        SkASSERT(cc == aa + bb);
-
-        c.setSub(a, b);
-        cc = c.getInt();
-        SkASSERT(cc == aa - bb);
-
-        aa >>= 5;
-        bb >>= 5;
-        a.setInt(aa);
-        b.setInt(bb);
-        c.setMul(a, b);
-        cc = c.getInt();
-        SkASSERT(cc == aa * bb);
-        /////////////////////////////////////
-
-        aa = rand.nextS() >> 11;
-        a.setFixed(aa);
-        cc = a.getFixed();
-        SkASSERT(aa == cc);
-
-        bb = rand.nextS() >> 11;
-        b.setFixed(bb);
-        cc = b.getFixed();
-        SkASSERT(bb == cc);
-
-        cc = SkFixedMul(aa, bb);
-        c.setMul(a, b);
-        SkFixed dd = c.getFixed();
-        int diff = cc - dd;
-        SkASSERT(SkAbs32(diff) <= 1);
-
-        fa = (float)aa / 65536.0f;
-        fb = (float)bb / 65536.0f;
-        a.assertEquals(fa);
-        b.assertEquals(fb);
-        fa = a.getFloat();
-        fb = b.getFloat();
-
-        c.assertEquals(fa * fb, 1);
-
-        c.setDiv(a, b);
-        cc = SkFixedDiv(aa, bb);
-        dd = c.getFixed();
-        diff = cc - dd;
-        SkASSERT(SkAbs32(diff) <= 3);
-
-        c.assertEquals(fa / fb, 1);
-
-        SkASSERT((aa == bb) == (a == b));
-        SkASSERT((aa != bb) == (a != b));
-        SkASSERT((aa < bb) == (a < b));
-        SkASSERT((aa <= bb) == (a <= b));
-        SkASSERT((aa > bb) == (a > b));
-        SkASSERT((aa >= bb) == (a >= b));
-
-        if (aa < 0)
-        {
-            aa = -aa;
-            fa = -fa;
-        }
-        a.setFixed(aa);
-        c.setSqrt(a);
-        cc = SkFixedSqrt(aa);
-        dd = c.getFixed();
-        SkASSERT(dd == cc);
-
-        c.assertEquals(sk_float_sqrt(fa), 2);
-
-        // cuberoot
-#if 0
-        a.setInt(1);
-        a.cubeRoot();
-        a.assertEquals(1.0f, 0);
-        a.setInt(8);
-        a.cubeRoot();
-        a.assertEquals(2.0f, 0);
-        a.setInt(27);
-        a.cubeRoot();
-        a.assertEquals(3.0f, 0);
-#endif
-    }
-#endif
-}
-
-#endif
