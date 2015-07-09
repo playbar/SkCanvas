@@ -14230,5 +14230,8 @@
     <ClCompile Include="..\third_party\skia\src\gpu\glew.c">
       <Filter>..\third_party\skia\src\gpu</Filter>
     </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\core\SkFlattenableBuffers.cpp">
+      <Filter>..\third_party\skia\src\core</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
