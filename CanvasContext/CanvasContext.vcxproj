@@ -36,9 +36,11 @@
     <ClCompile Include="blink\ColorData.cpp" />
     <ClCompile Include="blink\FontFamilyNames.cpp" />
     <ClCompile Include="blink\RuntimeEnabledFeatures.cpp" />
+    <ClCompile Include="Canvas\Canvas2DContextAttributes.cpp" />
     <ClCompile Include="Canvas\CanvasGradient.cpp" />
     <ClCompile Include="Canvas\CanvasPathMethods.cpp" />
     <ClCompile Include="Canvas\CanvasPattern.cpp" />
+    <ClCompile Include="Canvas\CanvasRenderingContext2D.cpp" />
     <ClCompile Include="Canvas\CanvasStyle.cpp" />
     <ClCompile Include="platform\CalculationValue.cpp" />
     <ClCompile Include="platform\fonts\Character.cpp" />
@@ -140,10 +142,13 @@
     <ClInclude Include="..\third_party\libpng\pngusr.h" />
     <ClInclude Include="blink\FontFamilyNames.h" />
     <ClInclude Include="blink\RuntimeEnabledFeatures.h" />
+    <ClInclude Include="Canvas\Canvas2DContextAttributes.h" />
     <ClInclude Include="Canvas\CanvasGradient.h" />
     <ClInclude Include="Canvas\CanvasPathMethods.h" />
     <ClInclude Include="Canvas\CanvasPattern.h" />
+    <ClInclude Include="Canvas\CanvasRenderingContext2D.h" />
     <ClInclude Include="Canvas\CanvasStyle.h" />
+    <ClInclude Include="Canvas\Path2D.h" />
     <ClInclude Include="platform\CalculationValue.h" />
     <ClInclude Include="platform\fonts\Character.h" />
     <ClInclude Include="platform\fonts\Font.h" />
@@ -293,7 +298,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../;./blink;./Canvas;./;../wtf;../third_party\harfbuzz-ng\src;../third_party\skia\src\core;..\third_party\skia\include/core;../third_party\skia\include/utils;../third_party\skia\include/ports;../third_party\skia\include/effects;../third_party\skia\include/pathops;../third_party\skia\include/gpu;../third_party\skia\include/config;../third_party\libpng;../third_party\libjpeg_turbo;../third_party\zlib;../third_party\libwebp;../third_party\icu\source\common;../v8/include;../glew\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;./blink;./css;./Canvas;./;../wtf;../third_party\harfbuzz-ng\src;../third_party\skia\src\core;..\third_party\skia\include/core;../third_party\skia\include/utils;../third_party\skia\include/ports;../third_party\skia\include/effects;../third_party\skia\include/pathops;../third_party\skia\include/gpu;../third_party\skia\include/config;../third_party\libpng;../third_party\libjpeg_turbo;../third_party\zlib;../third_party\libwebp;../third_party\icu\source\common;../v8/include;../glew\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ExceptionHandling>false</ExceptionHandling>
