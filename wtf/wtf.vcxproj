@@ -40,7 +40,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <ExecutablePath>$(ExecutablePath);$(MSBuildProjectDirectory)\..\..\..\..\third_party\cygwin\bin\;$(MSBuildProjectDirectory)\..\..\..\..\third_party\python_26\</ExecutablePath>
-    <OutDir>build\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)\build\$(Configuration)\</OutDir>
     <IntDir>$(OutDir)obj\$(ProjectName)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>

@@ -42,6 +42,7 @@
 
 #include "wtf/Compiler.h"
 #include "wtf/WTFExport.h"
+#include "assert.h"
 
 #ifdef NDEBUG
 /* Disable ASSERT* macros in release mode. */
@@ -137,7 +138,7 @@ WTF_EXPORT void WTFInstallReportBacktraceOnCrashHook();
    To test for unknown errors and verify assumptions, use ASSERT instead, to avoid impacting performance in release builds.
 
    Signals are ignored by the crash reporter on OS X so we must do better.
-*/
+   */
 #ifndef CRASH
 #define CRASH() \
     (WTFReportBacktrace(), \
@@ -155,7 +156,7 @@ WTF_EXPORT void WTFInstallReportBacktraceOnCrashHook();
 /* BACKTRACE
 
   Print a backtrace to the same location as ASSERT messages.
-*/
+  */
 #if BACKTRACE_DISABLED
 
 #define BACKTRACE() ((void)0)
@@ -172,7 +173,7 @@ WTF_EXPORT void WTFInstallReportBacktraceOnCrashHook();
 
   These macros are compiled out of release builds.
   Expressions inside them are evaluated in debug builds only.
-*/
+  */
 #if OS(WIN)
 /* FIXME: Change to use something other than ASSERT to avoid this conflict with the underlying platform */
 #undef ASSERT
@@ -190,6 +191,7 @@ WTF_EXPORT void WTFInstallReportBacktraceOnCrashHook();
 #else
 
 #define ASSERT(assertion) \
+	assert(assertion); \
     (!(assertion) ? \
         (WTFReportAssertionFailure(__FILE__, __LINE__, WTF_PRETTY_FUNCTION, #assertion), \
          CRASH()) : \

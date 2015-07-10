@@ -149,11 +149,23 @@ protected:
 
 		SkPaint paint;
 		paint.setColor(0xFF0000ff);
+		paint.setStyle(SkPaint::kFill_Style);
 		canvas->translate(0, 0);
-		canvas->drawLine(0, 0, 100, 200, paint);
+		SkPath path;
+		path.moveTo(10, 10);
+		path.lineTo(300, 300);
+		path.lineTo(100, 10);
+		canvas->drawPath(path, paint);
+		//canvas->drawLine(0, 0, 100, 200, paint);
+
+		
 	
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
-
+		Color color(255, 102, 234);
+		ctx->setStrokeColor(1.0f, 1.0f, 0.0, 1.0f);
+		ctx->moveTo(10, 10);
+		ctx->lineTo(100, 100);
+		ctx->stroke();
     }
 
 private:

@@ -894,10 +894,10 @@ void CanvasRenderingContext2D::strokeInternal(const Path& path)
     inflateStrokeRect(bounds);
     FloatRect dirtyRect;
 
-    if (computeDirtyRect(bounds, &dirtyRect)) {
+    //if (computeDirtyRect(bounds, &dirtyRect)) {
         GraphicsContext::strokePath(path);
-        didDraw(dirtyRect);
-    }
+        //didDraw(dirtyRect);
+    //}
 }
 
 void CanvasRenderingContext2D::stroke()

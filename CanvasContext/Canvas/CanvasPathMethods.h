@@ -36,7 +36,7 @@ namespace WebCore {
 class ExceptionState;
 class FloatRect;
 
-class CanvasPathMethods {
+class PLATFORM_EXPORT CanvasPathMethods {
 public:
     virtual ~CanvasPathMethods() { }
 
