@@ -62,7 +62,7 @@ public:
 
 protected:
     // SkPixelRef implementation.
-    virtual bool onNewLockPixels(LockRec*) OVERRIDE;
+	virtual void *onLockPixels(SkColorTable**);
     virtual void onUnlockPixels() OVERRIDE;
     virtual bool onLockPixelsAreWritable() const OVERRIDE;
 

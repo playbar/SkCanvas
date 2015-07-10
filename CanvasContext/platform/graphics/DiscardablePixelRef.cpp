@@ -42,26 +42,27 @@ bool DiscardablePixelRefAllocator::allocPixelRef(SkBitmap* dst, SkColorTable* ct
 {
     // It should not be possible to have a non-null color table in Blink.
     ASSERT(!ctable);
+	ASSERT(false);
 
-    int64_t size = dst->computeSize64();
-    if (size < 0 || !sk_64_isS32(size))
-        return false;
+    //int64_t size = dst->computeSize64();
+    //if (size < 0 || !sk_64_isS32(size))
+    //    return false;
 
-    SkImageInfo info;
-    if (!dst->asImageInfo(&info))
-        return false;
+    //SkImageInfo info;
+    //if (!dst->asImageInfo(&info))
+    //    return false;
 
-    SkAutoTUnref<DiscardablePixelRef> pixelRef(new DiscardablePixelRef(info, dst->rowBytes(), adoptPtr(new SkMutex())));
-    if (pixelRef->allocAndLockDiscardableMemory(sk_64_asS32(size))) {
-        pixelRef->setURI(labelDiscardable);
-        dst->setPixelRef(pixelRef.get());
-        // This method is only called when a DiscardablePixelRef is created to back a SkBitmap.
-        // It is necessary to lock this SkBitmap to have a valid pointer to pixels. Otherwise,
-        // this SkBitmap could be assigned to another SkBitmap and locking/unlocking the other
-        // SkBitmap will make this one losing its pixels.
-        dst->lockPixels();
-        return true;
-    }
+    //SkAutoTUnref<DiscardablePixelRef> pixelRef(new DiscardablePixelRef(info, dst->rowBytes(), adoptPtr(new SkMutex())));
+    //if (pixelRef->allocAndLockDiscardableMemory(sk_64_asS32(size))) {
+    //    pixelRef->setURI(labelDiscardable);
+    //    dst->setPixelRef(pixelRef.get());
+    //    // This method is only called when a DiscardablePixelRef is created to back a SkBitmap.
+    //    // It is necessary to lock this SkBitmap to have a valid pointer to pixels. Otherwise,
+    //    // this SkBitmap could be assigned to another SkBitmap and locking/unlocking the other
+    //    // SkBitmap will make this one losing its pixels.
+    //    dst->lockPixels();
+    //    return true;
+    //}
 
     // Fallback to heap allocator if discardable memory is not available.
     return dst->allocPixels();
@@ -91,19 +92,19 @@ bool DiscardablePixelRef::allocAndLockDiscardableMemory(size_t bytes)
     return false;
 }
 
-bool DiscardablePixelRef::onNewLockPixels(LockRec* rec)
+void* DiscardablePixelRef::onLockPixels(SkColorTable**)
 {
 	ASSERT(false);
     //if (!m_lockedMemory && m_discardable->lock())
     //    m_lockedMemory = m_discardable->data();
 
-    if (m_lockedMemory) {
-        rec->fPixels = m_lockedMemory;
-        rec->fColorTable = 0;
-        rec->fRowBytes = m_rowBytes;
-        return true;
-    }
-    return false;
+    //if (m_lockedMemory) {
+    //    rec->fPixels = m_lockedMemory;
+    //    rec->fColorTable = 0;
+    //    rec->fRowBytes = m_rowBytes;
+    //    return true;
+    //}
+    return NULL;
 }
 
 void DiscardablePixelRef::onUnlockPixels()

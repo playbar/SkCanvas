@@ -83,7 +83,6 @@ PassRefPtr<SkXfermode> WebCoreCompositeToSkiaComposite(CompositeOperator op, bli
 {
     if (blendMode != blink::WebBlendModeNormal) {
         if ((uint8_t)blendMode >= SK_ARRAY_COUNT(gMapBlendOpsToXfermodeModes)) {
-            SkDEBUGF(("GraphicsContext::setPlatformCompositeOperation unknown blink::WebBlendMode %d\n", blendMode));
             return adoptRef(SkXfermode::Create(SkXfermode::kSrcOver_Mode));
         }
         SkXfermode::Mode mode = (SkXfermode::Mode)gMapBlendOpsToXfermodeModes[(uint8_t)blendMode];
@@ -97,7 +96,6 @@ PassRefPtr<SkXfermode> WebCoreCompositeToSkiaComposite(CompositeOperator op, bli
             return adoptRef(SkXfermode::Create((SkXfermode::Mode)table[i].m_xfermodeMode));
     }
 
-    SkDEBUGF(("GraphicsContext::setPlatformCompositeOperation unknown CompositeOperator %d\n", op));
     return adoptRef(SkXfermode::Create(SkXfermode::kSrcOver_Mode)); // fall-back
 }
 

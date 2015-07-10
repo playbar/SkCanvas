@@ -58,7 +58,7 @@ SkData* LazyDecodingPixelRef::onRefEncodedData()
     return 0;
 }
 
-bool LazyDecodingPixelRef::onNewLockPixels(LockRec* rec)
+void *LazyDecodingPixelRef::onLockPixels(SkColorTable**)
 {
     ASSERT(!m_lockedImageResource);
 
@@ -75,14 +75,14 @@ bool LazyDecodingPixelRef::onNewLockPixels(LockRec* rec)
     //    PlatformInstrumentation::didDecodeLazyPixelRef(getGenerationID());
     //}
     if (!m_lockedImageResource)
-        return false;
+        return NULL;
 
     ASSERT(!m_lockedImageResource->bitmap().isNull());
     ASSERT(m_lockedImageResource->scaledSize() == size);
-    rec->fPixels = m_lockedImageResource->bitmap().getAddr(0, 0);
-    rec->fColorTable = 0;
-    rec->fRowBytes = m_lockedImageResource->bitmap().rowBytes();
-    return true;
+    //rec->fPixels = m_lockedImageResource->bitmap().getAddr(0, 0);
+    //rec->fColorTable = 0;
+    //rec->fRowBytes = m_lockedImageResource->bitmap().rowBytes();
+    return NULL;
 }
 
 void LazyDecodingPixelRef::onUnlockPixels()

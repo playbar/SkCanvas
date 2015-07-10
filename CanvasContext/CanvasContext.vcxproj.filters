@@ -28,9 +28,6 @@
     <Filter Include="platform\font">
       <UniqueIdentifier>{292a6cca-bf9f-4ffb-879c-9e8119eeaee8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="platform\graphics\gpu">
-      <UniqueIdentifier>{0db658ca-4c7a-4526-b464-bbfbdf59ca5b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="platform\image-encoders">
       <UniqueIdentifier>{e5bf348e-e7df-49d5-9ff2-cfa8ac934b82}</UniqueIdentifier>
     </Filter>
