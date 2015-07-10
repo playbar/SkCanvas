@@ -42,8 +42,8 @@ static void call_draw(SkCanvas* canvas) {
     for (int j = 0; j < SK_ARRAY_COUNT(text); j++)
         text[j] = (uint16_t)((rand.nextU() & 0xFF) + 32);
 
-    SkScalar x = SkIntToScalar(10);
-    SkScalar y = SkIntToScalar(20);
+    float x = SkIntToScalar(10);
+    float y = SkIntToScalar(20);
 
     canvas->drawColor(SK_ColorWHITE);
     for (int i = 9; i < 36; i++)
@@ -92,9 +92,8 @@ public:
             status = pthread_create(&fMThreads[i], NULL,  measure_proc, NULL);
             SkASSERT(0 == status);
 
-            fBitmaps[i].allocPixels(SkImageInfo::Make(320, 240,
-                                                      kRGB_565_SkColorType,
-                                                      kOpaque_SkAlphaType));
+            fBitmaps[i].setConfig(SkBitmap::kRGB_565_Config, 320, 240);
+            fBitmaps[i].allocPixels();
             status = pthread_create(&fDThreads[i], NULL,  draw_proc, &fBitmaps[i]);
             SkASSERT(0 == status);
         }
@@ -123,8 +122,8 @@ protected:
     }
 
     virtual void onDrawContent(SkCanvas* canvas) {
-        SkScalar x = 0;
-        SkScalar y = 0;
+        float x = 0;
+        float y = 0;
         for (int i = 0; i < N; i++) {
             canvas->drawBitmap(fBitmaps[i], x, y);
             x += SkIntToScalar(fBitmaps[i].width());

@@ -10,7 +10,6 @@
 
 #include "SkOSMenu.h"
 #include "SkPath.h"
-#include "SkPicture.h"
 #include "SkScalar.h"
 #include "SkTDArray.h"
 #include "SkTouchGesture.h"
@@ -21,103 +20,49 @@ class GrRenderTarget;
 
 class SkCanvas;
 class SkData;
-class SkDeferredCanvas;
-class SkDocument;
 class SkEvent;
+class SkPicture;
 class SkTypeface;
 class SkViewFactory;
 
-class SampleWindow : public SkOSWindow {
+class SampleWindow : public SkOSWindow 
+{
     SkTDArray<const SkViewFactory*> fSamples;
 public:
-    enum DeviceType {
-        kRaster_DeviceType,
-        kPicture_DeviceType,
-#if SK_SUPPORT_GPU
-        kGPU_DeviceType,
-#if SK_ANGLE
-        kANGLE_DeviceType,
-#endif // SK_ANGLE
-#endif // SK_SUPPORT_GPU
-        kDeferred_DeviceType,
-        kDeviceTypeCnt
-    };
+	class DeviceManager : public SkRefCnt
+	{
+	public:
+		DeviceManager();
+		virtual ~DeviceManager();
+		virtual void setUpBackend(SampleWindow* win, int msaaSampleCount);
+		virtual void tearDownBackend(SampleWindow *win);
+		virtual SkCanvas* createCanvas();
+		virtual void publishCanvas(SkCanvas* canvas, SampleWindow* win);
+		virtual void windowSizeChanged(SampleWindow* win);
+		virtual GrContext* getGrContext();
+		virtual GrRenderTarget* getGrRenderTarget();
 
-    static bool IsGpuDeviceType(DeviceType devType) {
-    #if SK_SUPPORT_GPU
-        switch (devType) {
-            case kGPU_DeviceType:
-    #if SK_ANGLE
-            case kANGLE_DeviceType:
-    #endif // SK_ANGLE
-                return true;
-            default:
-                return false;
-        }
-    #endif // SK_SUPPORT_GPU
-        return false;
-    }
+	private:
+		GrContext*              fCurContext;
+		GrRenderTarget*         fCurRenderTarget;
+		int fMSAASampleCount;
 
-    /**
-     * SampleApp ports can subclass this manager class if they want to:
-     *      * filter the types of devices supported
-     *      * customize plugging of SkBaseDevice objects into an SkCanvas
-     *      * customize publishing the results of draw to the OS window
-     *      * manage GrContext / GrRenderTarget lifetimes
-     */
-    class DeviceManager : public SkRefCnt {
-    public:
-        SK_DECLARE_INST_COUNT(DeviceManager)
+		typedef SkRefCnt INHERITED;
+	};
 
-        virtual void setUpBackend(SampleWindow* win, int msaaSampleCount) = 0;
-
-        virtual void tearDownBackend(SampleWindow* win) = 0;
-
-        // called before drawing. should install correct device
-        // type on the canvas. Will skip drawing if returns false.
-        virtual SkSurface* createSurface(DeviceType dType, SampleWindow* win) = 0;
-
-        // called after drawing, should get the results onto the
-        // screen.
-        virtual void publishCanvas(DeviceType dType,
-                                   SkCanvas* canvas,
-                                   SampleWindow* win) = 0;
-
-        // called when window changes size, guaranteed to be called
-        // at least once before first draw (after init)
-        virtual void windowSizeChanged(SampleWindow* win) = 0;
-
-        // return the GrContext backing gpu devices (NULL if not built with GPU support)
-        virtual GrContext* getGrContext() = 0;
-
-        // return the GrRenderTarget backing gpu devices (NULL if not built with GPU support)
-        virtual GrRenderTarget* getGrRenderTarget() = 0;
-    private:
-        typedef SkRefCnt INHERITED;
-    };
 
     SampleWindow(void* hwnd, int argc, char** argv, DeviceManager*);
     virtual ~SampleWindow();
 
-    SkSurface* createSurface() override {
-        SkSurface* surface = NULL;
-        if (fDevManager) {
-            surface = fDevManager->createSurface(fDeviceType, this);
-        }
-        if (NULL == surface) {
-            surface = this->INHERITED::createSurface();
-        }
-        return surface;
-    }
+	virtual SkCanvas* createCanvas() SK_OVERRIDE;
 
-    void draw(SkCanvas*) override;
+    virtual void draw(SkCanvas* canvas);
 
-    void setDeviceType(DeviceType type);
+    void setDeviceType();
     void toggleRendering();
     void toggleSlideshow();
     void toggleFPS();
     void showOverview();
-    void toggleDistanceFieldFonts();
 
     GrContext* getGrContext() const { return fDevManager->getGrContext(); }
 
@@ -131,54 +76,53 @@ public:
     bool handleTouch(int ownerId, float x, float y,
             SkView::Click::State state);
     void saveToPdf();
+    SkData* getPDFData() { return fPDFData; }
     void postInvalDelay();
-
-    DeviceType getDeviceType() const { return fDeviceType; }
-
 protected:
-    void onDraw(SkCanvas* canvas) override;
-    bool onHandleKey(SkKey key) override;
-    bool onHandleChar(SkUnichar) override;
-    void onSizeChange() override;
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE;
+    virtual bool onHandleKey(SkKey key) SK_OVERRIDE;
+    virtual bool onHandleChar(SkUnichar) SK_OVERRIDE;
+    virtual void onSizeChange() SK_OVERRIDE;
 
-    SkCanvas* beforeChildren(SkCanvas*) override;
-    void afterChildren(SkCanvas*) override;
-    void beforeChild(SkView* child, SkCanvas* canvas) override;
-    void afterChild(SkView* child, SkCanvas* canvas) override;
+    virtual SkCanvas* beforeChildren(SkCanvas*) SK_OVERRIDE;
+    virtual void afterChildren(SkCanvas*) SK_OVERRIDE;
+    virtual void beforeChild(SkView* child, SkCanvas* canvas) SK_OVERRIDE;
+    virtual void afterChild(SkView* child, SkCanvas* canvas) SK_OVERRIDE;
 
-    bool onEvent(const SkEvent& evt) override;
-    bool onQuery(SkEvent* evt) override;
+    virtual bool onEvent(const SkEvent& evt) SK_OVERRIDE;
+    virtual bool onQuery(SkEvent* evt) SK_OVERRIDE;
 
     virtual bool onDispatchClick(int x, int y, Click::State, void* owner,
-                                 unsigned modi) override;
-    bool onClick(Click* click) override;
-    virtual Click* onFindClickHandler(SkScalar x, SkScalar y,
-                                      unsigned modi) override;
+                                 unsigned modi) SK_OVERRIDE;
+    virtual bool onClick(Click* click) SK_OVERRIDE;
+	virtual Click* onFindClickHandler(float x, float y,
+                                      unsigned modi) SK_OVERRIDE;
+
+    void registerPictFileSamples(char** argv, int argc);
+    void registerPictFileSample(char** argv, int argc);
 
 private:
-    class DefaultDeviceManager;
-
     int fCurrIndex;
-
-    //SkPictureRecorder fRecorder;
-    SkAutoTDelete<SkSurface> fDeferredSurface;
-    SkAutoTDelete<SkDeferredCanvas> fDeferredCanvas;
+    SkPicture* fPicture;
     SkPath fClipPath;
 
     SkTouchGesture fGesture;
-    SkScalar fZoomLevel;
-    SkScalar fZoomScale;
+	float fZoomLevel;
+	float fZoomScale;
 
-    DeviceType fDeviceType;
     DeviceManager* fDevManager;
 
     bool fSaveToPdf;
-    SkAutoTUnref<SkDocument> fPDFDocument;
+    SkCanvas* fPdfCanvas;
+    SkData* fPDFData;
 
     bool fUseClip;
+    bool fNClip;
     bool fAnimating;
     bool fRotate;
+	float fRotateAnimTime;
     bool fPerspAnim;
+	float fPerspAnimTime;
     bool fRequestGrabImage;
     bool fMeasureFPS;
     SkMSec fMeasureFPS_Time;
@@ -204,17 +148,15 @@ private:
     SkOSMenu::TriState fAAState;
     SkOSMenu::TriState fSubpixelState;
     int fHintingState;
-    int fFilterQualityIndex;
+    int fFilterLevelIndex;
     unsigned   fFlipAxis;
 
     int fMSAASampleCount;
 
     int fScrollTestX, fScrollTestY;
-    SkScalar fZoomCenterX, fZoomCenterY;
+	float fZoomCenterX, fZoomCenterY;
 
-    //Stores global settings
     SkOSMenu* fAppMenu; // We pass ownership to SkWindow, when we call addMenu
-    //Stores slide specific settings
     SkOSMenu* fSlideMenu; // We pass ownership to SkWindow, when we call addMenu
 
     int fTransitionNext;
@@ -222,7 +164,6 @@ private:
 
     void loadView(SkView*);
     void updateTitle();
-    bool getRawTitle(SkString*);
 
     bool zoomIn();
     bool zoomOut();
@@ -235,9 +176,6 @@ private:
     int findByTitle(const char*);
     void listTitles();
     SkSize tileSize() const;
-    bool sendAnimatePulse();
-
-    typedef SkOSWindow INHERITED;
 };
 
 #endif

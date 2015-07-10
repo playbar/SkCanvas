@@ -36,7 +36,8 @@ protected:
             SkBitmap mask;
             int w = SkScalarRoundToInt(r.width());
             int h = SkScalarRoundToInt(r.height());
-            mask.allocN32Pixels(w, h);
+            mask.setConfig(SkBitmap::kARGB_8888_Config, w, h);
+            mask.allocPixels();
             mask.eraseColor(SK_ColorTRANSPARENT);
             SkCanvas c(mask);
             SkRect bounds = r;
@@ -57,7 +58,7 @@ protected:
     virtual void onDrawContent(SkCanvas* canvas) {
         SkRect  r;
         r.set(SkIntToScalar(20), SkIntToScalar(20), SkIntToScalar(120), SkIntToScalar(120));
-        canvas->saveLayer(&r, NULL);
+        canvas->saveLayer(&r, NULL, SkCanvas::kARGB_ClipLayer_SaveFlag);
         canvas->drawColor(SK_ColorRED);
         drawMask(canvas, r);
         canvas->restore();

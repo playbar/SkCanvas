@@ -36,9 +36,9 @@ static void test_inv(const char label[], const SkMatrix44& mat) {
     SkDebugf("\n");
 }
 
-static void test_map(SkScalar x0, SkScalar y0, SkScalar z0,
+static void test_map(float x0, float y0, float z0,
                      const SkMatrix44& mat,
-                     SkScalar x1, SkScalar y1, SkScalar z1) {
+                     float x1, float y1, float z1) {
     SkVector4 src, dst;
     src.set(x0, y0, z0);
     dst = mat * src;
@@ -50,8 +50,8 @@ static void test_map(SkScalar x0, SkScalar y0, SkScalar z0,
 }
 
 static void test_33(const SkMatrix44& mat,
-                    SkScalar x0, SkScalar x1, SkScalar x2,
-                    SkScalar y0, SkScalar y1, SkScalar y2) {
+                    float x0, float x1, float x2,
+                    float y0, float y1, float y2) {
     SkMatrix dst = mat;
     if (dst[0] != x0 || dst[1] != x1 || dst[2] != x2 ||
         dst[3] != y0 || dst[4] != y1 || dst[5] != y2) {
@@ -134,7 +134,7 @@ public:
     TestLayer(SkColor c) : fColor(c) {}
 
 protected:
-    virtual void onDraw(SkCanvas* canvas, SkScalar opacity) {
+    virtual void onDraw(SkCanvas* canvas, float opacity) {
         SkRect r;
         r.set(0, 0, this->getWidth(), this->getHeight());
 

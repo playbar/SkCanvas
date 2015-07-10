@@ -83,7 +83,7 @@ public:
 
 protected:
     // overrides from SkEventSink
-    bool onQuery(SkEvent* evt) override {
+    virtual bool onQuery(SkEvent* evt) {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "Shaders");
             return true;
@@ -91,7 +91,7 @@ protected:
         return this->INHERITED::onQuery(evt);
     }
 
-    void onDrawContent(SkCanvas* canvas) override {
+    virtual void onDrawContent(SkCanvas* canvas) {
         canvas->drawBitmap(fBitmap, 0, 0);
 
         canvas->translate(SkIntToScalar(20), SkIntToScalar(120));
@@ -122,12 +122,12 @@ protected:
     }
 
     virtual SkView::Click* onFindClickHandler(SkScalar x, SkScalar y,
-                                              unsigned modi) override {
+                                              unsigned modi) SK_OVERRIDE {
         this->inval(NULL);
         return this->INHERITED::onFindClickHandler(x, y, modi);
     }
 
-    bool onClick(Click* click)  override {
+    virtual bool onClick(Click* click) {
         return this->INHERITED::onClick(click);
     }
 

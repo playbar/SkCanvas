@@ -17,26 +17,27 @@ public:
     }
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("bitmapsource");
     }
 
     void makeBitmap() {
-        fBitmap.allocN32Pixels(100, 100);
-        SkCanvas canvas(fBitmap);
+        fBitmap.setConfig(SkBitmap::kARGB_8888_Config, 100, 100);
+        fBitmap.allocPixels();
+        SkBitmapDevice device(fBitmap);
+        SkCanvas canvas(&device);
         canvas.clear(0x00000000);
         SkPaint paint;
         paint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&paint);
         paint.setColor(0xFFFFFFFF);
         paint.setTextSize(SkIntToScalar(96));
         const char* str = "e";
         canvas.drawText(str, strlen(str), SkIntToScalar(20), SkIntToScalar(70), paint);
     }
 
-    SkISize onISize() override { return SkISize::Make(500, 150); }
+    virtual SkISize onISize() SK_OVERRIDE { return SkISize::Make(500, 150); }
 
-    void onOnceBeforeDraw() override {
+    virtual void onOnceBeforeDraw() SK_OVERRIDE {
         this->makeBitmap();
     }
 
@@ -49,18 +50,18 @@ protected:
         canvas->restore();
     }
 
-    void onDraw(SkCanvas* canvas) override {
-        canvas->clear(SK_ColorBLACK);
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
+        canvas->clear(0x00000000);
         {
             SkRect srcRect = SkRect::MakeXYWH(20, 20, 30, 30);
             SkRect dstRect = SkRect::MakeXYWH(0, 10, 60, 60);
             SkRect clipRect = SkRect::MakeXYWH(0, 0, 100, 100);
             SkRect bounds;
             fBitmap.getBounds(&bounds);
-            SkAutoTUnref<SkImageFilter> bitmapSource(SkBitmapSource::Create(fBitmap));
-            SkAutoTUnref<SkImageFilter> bitmapSourceSrcRect(SkBitmapSource::Create(fBitmap, srcRect, srcRect));
-            SkAutoTUnref<SkImageFilter> bitmapSourceSrcRectDstRect(SkBitmapSource::Create(fBitmap, srcRect, dstRect));
-            SkAutoTUnref<SkImageFilter> bitmapSourceDstRectOnly(SkBitmapSource::Create(fBitmap, bounds, dstRect));
+            SkAutoTUnref<SkImageFilter> bitmapSource(new SkBitmapSource(fBitmap));
+            SkAutoTUnref<SkImageFilter> bitmapSourceSrcRect(new SkBitmapSource(fBitmap, srcRect, srcRect));
+            SkAutoTUnref<SkImageFilter> bitmapSourceSrcRectDstRect(new SkBitmapSource(fBitmap, srcRect, dstRect));
+            SkAutoTUnref<SkImageFilter> bitmapSourceDstRectOnly(new SkBitmapSource(fBitmap, bounds, dstRect));
 
             // Draw an unscaled bitmap.
             fillRectFiltered(canvas, clipRect, bitmapSource);

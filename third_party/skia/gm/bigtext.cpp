@@ -19,19 +19,17 @@ public:
     BigTextGM() {}
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("bigtext");
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() SK_OVERRIDE {
         return SkISize::Make(640, 480);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         SkPaint paint;
         paint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&paint);
         paint.setTextSize(1500);
 
         SkRect r;

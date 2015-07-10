@@ -20,17 +20,15 @@
 #include "SkColorPriv.h"
 #include "SkColorFilter.h"
 #include "SkDither.h"
-#include "sk_tool_utils.h"
 
 static void make_bm(SkBitmap* bm) {
-    const SkPMColor colors[] = {
-        SkPreMultiplyColor(SK_ColorRED), SkPreMultiplyColor(SK_ColorGREEN),
-        SkPreMultiplyColor(SK_ColorBLUE), SkPreMultiplyColor(SK_ColorWHITE)
+    const SkColor colors[] = {
+        SK_ColorRED, SK_ColorGREEN,
+        SK_ColorBLUE, SK_ColorWHITE
     };
     SkColorTable* ctable = new SkColorTable(colors, 4);
-    bm->allocPixels(SkImageInfo::Make(2, 2, kIndex_8_SkColorType,
-                                      kOpaque_SkAlphaType),
-                    NULL, ctable);
+    bm->setConfig(SkBitmap::kIndex8_Config, 2, 2);
+    bm->allocPixels(ctable);
     ctable->unref();
 
     *bm->getAddr8(0, 0) = 0;
@@ -41,17 +39,40 @@ static void make_bm(SkBitmap* bm) {
 
 static SkScalar draw_bm(SkCanvas* canvas, const SkBitmap& bm,
                         SkScalar x, SkScalar y, SkPaint* paint) {
+#if 1
     canvas->drawBitmap(bm, x, y, paint);
     return SkIntToScalar(bm.width()) * 5/4;
+#else
+    SkAutoCanvasRestore acr(canvas, true);
+    canvas->translate(x, y);
+
+    SkScalar w = SkIntToScalar(bm.width());
+    SkScalar h = SkIntToScalar(bm.height());
+    SkShader* s = SkShader::CreateBitmapShader(bm, SkShader::kRepeat_TileMode,
+                                               SkShader::kRepeat_TileMode);
+    paint->setShader(s)->unref();
+    canvas->drawRect(SkRect::MakeWH(w, h), *paint);
+    paint->setShader(NULL);
+    return w * 5/4;
+#endif
 }
 
 static SkScalar draw_set(SkCanvas* c, const SkBitmap& bm, SkScalar x, SkPaint* p) {
     x += draw_bm(c, bm, x, 0, p);
-    p->setFilterQuality(kLow_SkFilterQuality);
+    p->setFilterLevel(SkPaint::kLow_FilterLevel);
     x += draw_bm(c, bm, x, 0, p);
     p->setDither(true);
     return x + draw_bm(c, bm, x, 0, p);
 }
+
+static const char* gConfigNames[] = {
+    "unknown config",
+    "A8",
+    "Index8",
+    "565",
+    "4444",
+    "8888"
+};
 
 static SkScalar draw_row(SkCanvas* canvas, const SkBitmap& bm) {
     SkAutoCanvasRestore acr(canvas, true);
@@ -61,7 +82,7 @@ static SkScalar draw_row(SkCanvas* canvas, const SkBitmap& bm) {
     const int scale = 32;
 
     paint.setAntiAlias(true);
-    const char* name = sk_tool_utils::colortype_name(bm.colorType());
+    const char* name = gConfigNames[bm.config()];
     canvas->drawText(name, strlen(name), x, SkIntToScalar(bm.height())*scale*5/8,
                      paint);
     canvas->translate(SkIntToScalar(48), 0);
@@ -81,9 +102,9 @@ public:
 
     FilterView() {
         make_bm(&fBM8);
-        fBM8.copyTo(&fBM4444, kARGB_4444_SkColorType);
-        fBM8.copyTo(&fBM16, kRGB_565_SkColorType);
-        fBM8.copyTo(&fBM32, kN32_SkColorType);
+        fBM8.copyTo(&fBM4444, SkBitmap::kARGB_4444_Config);
+        fBM8.copyTo(&fBM16, SkBitmap::kRGB_565_Config);
+        fBM8.copyTo(&fBM32, SkBitmap::kARGB_8888_Config);
 
         this->setBGColor(0xFFDDDDDD);
     }

@@ -27,11 +27,10 @@
 #include "SkXfermode.h"
 #include "SkDrawFilter.h"
 
-static void make_paint(SkPaint* paint, const SkMatrix& localMatrix) {
+static void make_paint(SkPaint* paint) {
     SkColor colors[] = { 0, SK_ColorWHITE };
     SkPoint pts[] = { { 0, 0 }, { 0, SK_Scalar1*20 } };
-    SkShader* s = SkGradientShader::CreateLinear(pts, colors, NULL, 2, SkShader::kClamp_TileMode,
-                                                 0, &localMatrix);
+    SkShader* s = SkGradientShader::CreateLinear(pts, colors, NULL, 2, SkShader::kClamp_TileMode);
 
     paint->setShader(s)->unref();
     paint->setXfermodeMode(SkXfermode::kDstIn_Mode);
@@ -43,10 +42,10 @@ static void dump_layers(const char label[], SkCanvas* canvas) {
     SkCanvas::LayerIter iter(canvas, true);
     int index = 0;
     while (!iter.done()) {
-        SkImageInfo info = iter.device()->imageInfo();
+        const SkBitmap& bm = iter.device()->accessBitmap(false);
         const SkIRect& clip = iter.clip().getBounds();
         SkDebugf("Layer[%d] bitmap [%d %d] X=%d Y=%d clip=[%d %d %d %d] alpha=%d\n", index++,
-                 info.width(), info.height(), iter.x(), iter.y(),
+                 bm.width(), bm.height(), iter.x(), iter.y(),
                  clip.fLeft, clip.fTop, clip.fRight, clip.fBottom,
                  iter.paint().getAlpha());
         iter.next();
@@ -70,11 +69,11 @@ static void test_fade(SkCanvas* canvas) {
     canvas->clipRect(r);
 
     r.fBottom = SkIntToScalar(20);
-    canvas->saveLayer(&r, NULL);
+    canvas->saveLayer(&r, NULL, (SkCanvas::SaveFlags)(SkCanvas::kHasAlphaLayer_SaveFlag | SkCanvas::kFullColorLayer_SaveFlag));
 
     r.fTop = SkIntToScalar(80);
     r.fBottom = SkIntToScalar(100);
-    canvas->saveLayer(&r, NULL);
+    canvas->saveLayer(&r, NULL, (SkCanvas::SaveFlags)(SkCanvas::kHasAlphaLayer_SaveFlag | SkCanvas::kFullColorLayer_SaveFlag));
 
     // now draw the "content"
 
@@ -105,15 +104,18 @@ static void test_fade(SkCanvas* canvas) {
     dump_layers("outside layer alpha", canvas);
 
     // now apply an effect
-    SkMatrix m;
-    m.setScale(SK_Scalar1, -SK_Scalar1);
-    m.postTranslate(0, SkIntToScalar(100));
 
     SkPaint paint;
-    make_paint(&paint, m);
+    make_paint(&paint);
     r.set(0, 0, SkIntToScalar(100), SkIntToScalar(20));
 //    SkDebugf("--------- draw top grad\n");
     canvas->drawRect(r, paint);
+
+    SkMatrix m;
+    SkShader* s = paint.getShader();
+    m.setScale(SK_Scalar1, -SK_Scalar1);
+    m.postTranslate(0, SkIntToScalar(100));
+    s->setLocalMatrix(m);
 
     r.fTop = SkIntToScalar(80);
     r.fBottom = SkIntToScalar(100);
@@ -123,7 +125,7 @@ static void test_fade(SkCanvas* canvas) {
 
 class RedFilter : public SkDrawFilter {
 public:
-    bool filter(SkPaint* p, SkDrawFilter::Type) override {
+    virtual bool filter(SkPaint* p, SkDrawFilter::Type) SK_OVERRIDE {
         fColor = p->getColor();
         if (fColor == SK_ColorRED) {
             p->setColor(SK_ColorGREEN);
@@ -201,7 +203,9 @@ protected:
             r.set(SkIntToScalar(0), SkIntToScalar(0),
                   SkIntToScalar(220), SkIntToScalar(60));
 
-            canvas->saveLayer(&r, &p);
+            canvas->saveLayer(&r, &p, (SkCanvas::SaveFlags)(SkCanvas::kHasAlphaLayer_SaveFlag | SkCanvas::kFullColorLayer_SaveFlag));
+//            canvas->clipRect(r, SkRegion::kDifference_Op);
+//            canvas->clipRect(r, SkRegion::kIntersect_Op);
 
             r.set(SkIntToScalar(0), SkIntToScalar(0),
                   SkIntToScalar(220), SkIntToScalar(120));
@@ -211,11 +215,42 @@ protected:
             return;
         }
 
+        //canvas->translate(SkIntToScalar(20), SkIntToScalar(20));
         test_fade(canvas);
+        return;
+
+    //    canvas->setDrawFilter(new RedFilter)->unref();
+
+        SkRect  r;
+        SkPaint p;
+
+        canvas->translate(SkIntToScalar(220), SkIntToScalar(20));
+
+        p.setAntiAlias(true);
+        r.set(SkIntToScalar(20), SkIntToScalar(20),
+              SkIntToScalar(220), SkIntToScalar(120));
+
+        p.setColor(SK_ColorBLUE);
+     //   p.setMaskFilter(SkBlurMaskFilter::Create(SkIntToScalar(8), SkBlurMaskFilter::kNormal_BlurStyle))->unref();
+        canvas->drawRect(r, p);
+        p.setMaskFilter(NULL);
+
+        SkRect bounds = r;
+        bounds.fBottom = bounds.centerY();
+        canvas->saveLayer(&bounds, NULL, SkCanvas::kARGB_NoClipLayer_SaveFlag);
+
+        p.setColor(SK_ColorRED);
+        canvas->drawOval(r, p);
+
+        p.setAlpha(0x80);
+        p.setXfermodeMode(SkXfermode::kDstIn_Mode);
+        canvas->drawRect(bounds, p);
+
+        canvas->restore();
     }
 
     virtual SkView::Click* onFindClickHandler(SkScalar x, SkScalar y,
-                                              unsigned modi) override {
+                                              unsigned modi) SK_OVERRIDE {
         this->inval(NULL);
 
         return this->INHERITED::onFindClickHandler(x, y, modi);

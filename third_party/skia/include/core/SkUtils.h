@@ -103,10 +103,8 @@ public:
         retained, so DON'T DELETE IT.
     */
     SkAutoTrace(const char label[]) : fLabel(label) {
-        SkDebugf("--- trace: %s Enter\n", fLabel);
     }
     ~SkAutoTrace() {
-        SkDebugf("--- trace: %s Leave\n", fLabel);
     }
 private:
     const char* fLabel;

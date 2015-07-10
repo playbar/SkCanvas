@@ -12,10 +12,14 @@
 #include "SkColorPriv.h"
 #include "SkShader.h"
 
-static const struct {
+
+static const struct 
+{
     SkXfermode::Mode  fMode;
     const char*         fLabel;
-} gModes[] = {
+} 
+gModes[] =
+{
     { SkXfermode::kClear_Mode,    "Clear"     },
     { SkXfermode::kSrc_Mode,      "Src"       },
     { SkXfermode::kDst_Mode,      "Dst"       },
@@ -32,52 +36,58 @@ static const struct {
 
 const int gWidth = 64;
 const int gHeight = 64;
-const SkScalar W = SkIntToScalar(gWidth);
-const SkScalar H = SkIntToScalar(gHeight);
+const float W = SkIntToScalar(gWidth);
+const float H = SkIntToScalar(gHeight);
 
-static SkScalar drawCell(SkCanvas* canvas, SkXfermode* mode,
+static float drawCell(SkCanvas* canvas, SkXfermode* mode,
                          SkAlpha a0, SkAlpha a1) {
 
     SkPaint paint;
-    paint.setAntiAlias(true);
+	paint.setColor(0xFF0000ff);
 
-    SkRect r = SkRect::MakeWH(W, H);
-    r.inset(W/10, H/10);
+	paint.setAntiAlias(true);
 
-    paint.setColor(SK_ColorBLUE);
-    paint.setAlpha(a0);
-    canvas->drawOval(r, paint);
+	SkRect r = SkRect::MakeWH(W, H);
+	r.inset(W / 10, H / 10);
 
-    paint.setColor(SK_ColorRED);
-    paint.setAlpha(a1);
-    paint.setXfermode(mode);
+	paint.setColor(SK_ColorBLUE);
+	paint.setAlpha(a0);
+	canvas->drawOval(r, paint);
 
-    SkScalar offset = SK_Scalar1 / 3;
-    SkRect rect = SkRect::MakeXYWH(W / 4 + offset,
-                                   H / 4 + offset,
-                                   W / 2, H / 2);
+	paint.setColor(SK_ColorRED);
+	paint.setAlpha(a1);
+	paint.setXfermode(mode);
+
+    float offset = SK_Scalar1 / 3;
+	SkRect rect = SkRect::MakeXYWH(W / 4 + offset,
+		H / 4 + offset,
+		W / 2, H / 2);
     canvas->drawRect(rect, paint);
 
     return H;
 }
 
-static SkShader* make_bg_shader() {
+static SkShader* make_bg_shader() 
+{
     SkBitmap bm;
-    bm.allocN32Pixels(2, 2);
-    *bm.getAddr32(0, 0) = *bm.getAddr32(1, 1) = 0xFFFFFFFF;
+    bm.setConfig(SkBitmap::kARGB_8888_Config, 2, 2);
+    bm.allocPixels();
+    *bm.getAddr32(0, 0) = *bm.getAddr32(1, 1) = 0xFFFFffff;
     *bm.getAddr32(1, 0) = *bm.getAddr32(0, 1) = SkPackARGB32(0xFF, 0xCC,
                                                              0xCC, 0xCC);
 
+    SkShader* s = SkShader::CreateBitmapShader(bm,
+                                               SkShader::kRepeat_TileMode,
+                                               SkShader::kRepeat_TileMode);
+
     SkMatrix m;
     m.setScale(SkIntToScalar(6), SkIntToScalar(6));
-
-    return SkShader::CreateBitmapShader(bm,
-                                        SkShader::kRepeat_TileMode,
-                                        SkShader::kRepeat_TileMode,
-                                        &m);
+    s->setLocalMatrix(m);
+    return s;
 }
 
-class AARectsModesView : public SampleView {
+class AARectsModesView : public SampleView
+{
     SkPaint fBGPaint;
 public:
     AARectsModesView () {
@@ -86,15 +96,18 @@ public:
 
 protected:
     // overrides from SkEventSink
-    virtual bool onQuery(SkEvent* evt) {
-        if (SampleCode::TitleQ(*evt)) {
+    virtual bool onQuery(SkEvent* evt)
+	{
+        if (SampleCode::TitleQ(*evt)) 
+		{
             SampleCode::TitleR(evt, "AARectsModes");
             return true;
         }
         return this->INHERITED::onQuery(evt);
     }
 
-    virtual void onDrawContent(SkCanvas* canvas) {
+    virtual void onDrawContent(SkCanvas* canvas)
+	{
         const SkRect bounds = SkRect::MakeWH(W, H);
         static const SkAlpha gAlphaValue[] = { 0xFF, 0x88, 0x88 };
 
@@ -111,11 +124,15 @@ protected:
                 }
                 SkXfermode* mode = SkXfermode::Create(gModes[i].fMode);
 
+			
                 canvas->drawRect(bounds, fBGPaint);
                 canvas->saveLayer(&bounds, NULL);
-                SkScalar dy = drawCell(canvas, mode,
-                                       gAlphaValue[alpha & 1],
-                                       gAlphaValue[alpha & 2]);
+                float dy = drawCell(canvas, mode, gAlphaValue[alpha & 1], gAlphaValue[alpha & 2]);
+			
+				SkPaint paint;
+				paint.setColor(0xFFff0000);
+				SkRect rect = SkRect::MakeXYWH(W / 4, H / 4, W / 2, H / 2);
+				canvas->drawRect(rect, paint);
                 canvas->restore();
 
                 canvas->translate(0, dy * 5 / 4);
@@ -124,7 +141,14 @@ protected:
             canvas->restore();
             canvas->restore();
             canvas->translate(W * 5 / 4, 0);
+			
         }
+
+		SkPaint paint;
+		paint.setColor(0xFF0000ff);
+		canvas->translate(0, 0);
+		canvas->drawLine(0, 0, 100, 200, paint);
+	
     }
 
 private:

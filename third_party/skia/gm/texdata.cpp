@@ -12,9 +12,9 @@
 
 #if SK_SUPPORT_GPU
 #include "GrContext.h"
-#include "SkColorPriv.h"
-#include "effects/GrPorterDuffXferProcessor.h"
 #include "effects/GrSimpleTextureEffect.h"
+#include "SkColorPriv.h"
+#include "SkDevice.h"
 
 namespace skiagm {
 
@@ -27,16 +27,19 @@ public:
     }
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() {
         return SkString("texdata");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(2*S, 2*S);
+    virtual SkISize onISize() {
+        return make_isize(2*S, 2*S);
     }
 
-    void onDraw(SkCanvas* canvas) override {
-        GrRenderTarget* target = canvas->internal_private_accessTopLayerRenderTarget();
+    virtual uint32_t onGetFlags() const SK_OVERRIDE { return kGPUOnly_Flag; }
+
+    virtual void onDraw(SkCanvas* canvas) {
+        SkBaseDevice* device = canvas->getTopDevice();
+        GrRenderTarget* target = device->accessRenderTarget();
         GrContext* ctx = canvas->getGrContext();
         if (ctx && target) {
             SkAutoTArray<SkPMColor> gTextureData((2 * S) * (2 * S));
@@ -77,27 +80,27 @@ protected:
                     }
                 }
 
-                GrSurfaceDesc desc;
+                GrTextureDesc desc;
                 // use RT flag bit because in GL it makes the texture be bottom-up
-                desc.fFlags     = i ? kRenderTarget_GrSurfaceFlag :
-                                      kNone_GrSurfaceFlags;
+                desc.fFlags     = i ? kRenderTarget_GrTextureFlagBit :
+                                      kNone_GrTextureFlags;
                 desc.fConfig    = kSkia8888_GrPixelConfig;
                 desc.fWidth     = 2 * S;
                 desc.fHeight    = 2 * S;
-                GrTexture* texture = ctx->textureProvider()->createTexture(
-                    desc, false, gTextureData.get(), 0);
+                GrTexture* texture =
+                    ctx->createUncachedTexture(desc, gTextureData.get(), 0);
 
                 if (!texture) {
                     return;
                 }
-                SkAutoTUnref<GrTexture> au(texture);
+                SkAutoUnref au(texture);
 
-                // setup new clip
-                GrClip clip(SkRect::MakeWH(2*S, 2*S));
+                GrContext::AutoClip acs(ctx, SkRect::MakeWH(2*S, 2*S));
+
+                ctx->setRenderTarget(target);
 
                 GrPaint paint;
-                paint.setPorterDuffXPFactory(SkXfermode::kSrcOver_Mode);
-
+                paint.setBlendFunc(kOne_GrBlendCoeff, kISA_GrBlendCoeff);
                 SkMatrix vm;
                 if (i) {
                     vm.setRotate(90 * SK_Scalar1,
@@ -106,12 +109,13 @@ protected:
                 } else {
                     vm.reset();
                 }
+                ctx->setMatrix(vm);
                 SkMatrix tm;
                 tm = vm;
                 tm.postIDiv(2*S, 2*S);
-                paint.addColorTextureProcessor(texture, tm);
+                paint.addColorTextureEffect(texture, tm);
 
-                ctx->drawRect(target, clip, paint, vm, SkRect::MakeWH(2*S, 2*S));
+                ctx->drawRect(paint, SkRect::MakeWH(2*S, 2*S));
 
                 // now update the lower right of the texture in first pass
                 // or upper right in second pass
@@ -125,10 +129,8 @@ protected:
                 texture->writePixels(S, (i ? 0 : S), S, S,
                                      texture->config(), gTextureData.get(),
                                      4 * stride);
-                ctx->drawRect(target, clip, paint, vm, SkRect::MakeWH(2*S, 2*S));
+                ctx->drawRect(paint, SkRect::MakeWH(2*S, 2*S));
             }
-        } else {
-            this->drawGpuOnlyMessage(canvas);
         }
     }
 

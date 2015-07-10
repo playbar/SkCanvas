@@ -39,15 +39,15 @@ public:
     LerpXfermodeGM() {}
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("lerpmode");
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() SK_OVERRIDE {
         return SkISize::Make(240, 120);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         show_circlelayers(canvas, NULL);
         canvas->translate(150, 0);
         SkAutoTUnref<SkXfermode> mode(SkLerpXfermode::Create(0.5f));

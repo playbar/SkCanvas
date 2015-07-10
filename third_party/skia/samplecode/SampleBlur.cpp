@@ -23,9 +23,8 @@ static SkBitmap make_bitmap() {
     SkBitmap bm;
     SkColorTable* ctable = new SkColorTable(c, 256);
 
-    bm.allocPixels(SkImageInfo::Make(256, 256, kIndex_8_SkColorType,
-                                     kPremul_SkAlphaType),
-                   NULL, ctable);
+    bm.setConfig(SkBitmap::kIndex8_Config, 256, 256);
+    bm.allocPixels(ctable);
     ctable->unref();
 
     bm.lockPixels();
@@ -76,16 +75,16 @@ protected:
     virtual void onDrawContent(SkCanvas* canvas) {
         drawBG(canvas);
 
-        SkBlurStyle NONE = SkBlurStyle(-999);
+        SkBlurMaskFilter::BlurStyle NONE = SkBlurMaskFilter::BlurStyle(-999);
         static const struct {
-            SkBlurStyle fStyle;
-            int         fCx, fCy;
+            SkBlurMaskFilter::BlurStyle fStyle;
+            int                         fCx, fCy;
         } gRecs[] = {
             { NONE,                                 0,  0 },
-            { kInner_SkBlurStyle,  -1,  0 },
-            { kNormal_SkBlurStyle,  0,  1 },
-            { kSolid_SkBlurStyle,   0, -1 },
-            { kOuter_SkBlurStyle,   1,  0 },
+            { SkBlurMaskFilter::kInner_BlurStyle,  -1,  0 },
+            { SkBlurMaskFilter::kNormal_BlurStyle,  0,  1 },
+            { SkBlurMaskFilter::kSolid_BlurStyle,   0, -1 },
+            { SkBlurMaskFilter::kOuter_BlurStyle,   1,  0 },
         };
 
         SkPaint paint;
@@ -111,7 +110,7 @@ protected:
             }
             // draw text
             {
-                SkMaskFilter* mf = SkBlurMaskFilter::Create(kNormal_SkBlurStyle,
+                SkMaskFilter* mf = SkBlurMaskFilter::Create(SkBlurMaskFilter::kNormal_BlurStyle,
                                       SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(4)),
                                       flags);
                 paint.setMaskFilter(mf)->unref();

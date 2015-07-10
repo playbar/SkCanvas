@@ -28,9 +28,10 @@
 static SkShader* make_shader0(SkIPoint* size) {
     SkBitmap    bm;
     size->set(2, 2);
+    bm.setConfig(SkBitmap::kARGB_8888_Config, size->fX, size->fY);
     SkPMColor color0 = SkPreMultiplyARGB(0x80, 0x80, 0xff, 0x80);
     SkPMColor color1 = SkPreMultiplyARGB(0x40, 0xff, 0x00, 0xff);
-    bm.allocN32Pixels(size->fX, size->fY);
+    bm.allocPixels();
     bm.eraseColor(color0);
     bm.lockPixels();
     uint32_t* pixels = (uint32_t*) bm.getPixels();
@@ -47,7 +48,7 @@ static SkShader* make_shader1(const SkIPoint& size) {
                       { SkIntToScalar(size.fX), SkIntToScalar(size.fY) } };
     SkColor colors[] = { SK_ColorRED, SK_ColorGREEN, SK_ColorBLUE, SK_ColorRED };
     return SkGradientShader::CreateLinear(pts, colors, NULL,
-                    SK_ARRAY_COUNT(colors), SkShader::kMirror_TileMode);
+                    SK_ARRAY_COUNT(colors), SkShader::kMirror_TileMode, NULL);
 }
 
 class VerticesView : public SampleView {
@@ -77,7 +78,7 @@ public:
 
 protected:
     // overrides from SkEventSink
-    bool onQuery(SkEvent* evt) override {
+    virtual bool onQuery(SkEvent* evt)  {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "Vertices");
             return true;
@@ -85,12 +86,12 @@ protected:
         return this->INHERITED::onQuery(evt);
     }
 
-    SkScalar fScale;
+    float fScale;
 
-    void onDrawContent(SkCanvas* canvas) override {
+    virtual void onDrawContent(SkCanvas* canvas) {
         SkPaint paint;
         paint.setDither(true);
-        //paint.setFilterQuality(kLow_SkFilterQuality);
+        paint.setFilterLevel(SkPaint::kLow_FilterLevel);
 
         for (size_t i = 0; i < SK_ARRAY_COUNT(fRecs); i++) {
             canvas->save();
@@ -119,11 +120,11 @@ protected:
         }
     }
 
-    SkView::Click* onFindClickHandler(SkScalar x, SkScalar y, unsigned) override {
+    virtual SkView::Click* onFindClickHandler(float x, float y, unsigned) SK_OVERRIDE {
         return new Click(this);
     }
 
-    bool onClick(Click* click) override {
+    virtual bool onClick(Click* click) {
     //    fCurrX = click->fICurr.fX;
     //    fCurrY = click->fICurr.fY;
         this->inval(NULL);
@@ -158,8 +159,8 @@ private:
     }
 
     void make_fan(Rec* rec, int texWidth, int texHeight) {
-        const SkScalar tx = SkIntToScalar(texWidth);
-        const SkScalar ty = SkIntToScalar(texHeight);
+        const float tx = SkIntToScalar(texWidth);
+        const float ty = SkIntToScalar(texHeight);
         const int n = 24;
 
         rec->fMode = SkCanvas::kTriangleFan_VertexMode;
@@ -173,8 +174,8 @@ private:
         v[0].set(0, 0);
         t[0].set(0, 0);
         for (int i = 0; i < n; i++) {
-            SkScalar cos;
-            SkScalar sin = SkScalarSinCos(SK_ScalarPI * 2 * i / n, &cos);
+            float cos;
+            float sin = SkScalarSinCos(SK_ScalarPI * 2 * i / n, &cos);
             v[i+1].set(cos, sin);
             t[i+1].set(i*tx/n, ty);
         }
@@ -188,8 +189,8 @@ private:
     }
 
     void make_strip(Rec* rec, int texWidth, int texHeight) {
-        const SkScalar tx = SkIntToScalar(texWidth);
-        const SkScalar ty = SkIntToScalar(texHeight);
+        const float tx = SkIntToScalar(texWidth);
+        const float ty = SkIntToScalar(texHeight);
         const int n = 24;
 
         rec->fMode = SkCanvas::kTriangleStrip_VertexMode;
@@ -201,8 +202,8 @@ private:
         SkPoint* t = rec->fTexs;
 
         for (int i = 0; i < n; i++) {
-            SkScalar cos;
-            SkScalar sin = SkScalarSinCos(SK_ScalarPI * 2 * i / n, &cos);
+            float cos;
+            float sin = SkScalarSinCos(SK_ScalarPI * 2 * i / n, &cos);
             v[i*2 + 0].set(cos/2, sin/2);
             v[i*2 + 1].set(cos, sin);
 

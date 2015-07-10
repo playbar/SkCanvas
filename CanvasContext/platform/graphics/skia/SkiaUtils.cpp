@@ -36,6 +36,7 @@
 #include "SkRegion.h"
 #include "platform/graphics/GraphicsContext.h"
 #include "platform/graphics/ImageBuffer.h"
+#include "assert.h"
 
 namespace WebCore {
 
@@ -102,7 +103,6 @@ PassRefPtr<SkXfermode> WebCoreCompositeToSkiaComposite(CompositeOperator op, bli
 
 static U8CPU InvScaleByte(U8CPU component, uint32_t scale)
 {
-    SkASSERT(component == (uint8_t)component);
     return (component * scale + 0x8000) >> 16;
 }
 
@@ -115,7 +115,7 @@ SkColor SkPMColorToColor(SkPMColor pm)
         // A zero alpha value when there are non-zero R, G, or B channels is an
         // invalid premultiplied color (since all channels should have been
         // multiplied by 0 if a=0).
-        SkASSERT(false);
+        assert(false);
         // In production, return 0 to protect against division by zero.
         return 0;
     }

@@ -25,13 +25,12 @@ public:
     }
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("rects");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(1200, 900);
+    virtual SkISize onISize() SK_OVERRIDE {
+        return make_isize(1200, 900);
     }
 
     void makePaints() {
@@ -65,7 +64,7 @@ protected:
             p.setColor(SK_ColorWHITE);
             p.setAntiAlias(true);
             SkMaskFilter* mf = SkBlurMaskFilter::Create(
-                                   kNormal_SkBlurStyle,
+                                   SkBlurMaskFilter::kNormal_BlurStyle,
                                    SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(5)),
                                    SkBlurMaskFilter::kHighQuality_BlurFlag);
             p.setMaskFilter(mf)->unref();
@@ -96,12 +95,12 @@ protected:
             p.setColor(SK_ColorWHITE);
             p.setAntiAlias(true);
             SkBlurDrawLooper* shadowLooper =
-                SkBlurDrawLooper::Create(SK_ColorWHITE,
-                                         SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(10)),
-                                         SkIntToScalar(5), SkIntToScalar(10),
-                                         SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
-                                         SkBlurDrawLooper::kOverrideColor_BlurFlag |
-                                         SkBlurDrawLooper::kHighQuality_BlurFlag);
+                new SkBlurDrawLooper (SK_ColorWHITE,
+                                      SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(10)),
+                                      SkIntToScalar(5), SkIntToScalar(10),
+                                      SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
+                                      SkBlurDrawLooper::kOverrideColor_BlurFlag |
+                                      SkBlurDrawLooper::kHighQuality_BlurFlag);
             SkAutoUnref aurL0(shadowLooper);
             p.setLooper(shadowLooper);
             fPaints.push_back(p);
@@ -251,7 +250,7 @@ protected:
                           SK_Scalar1 * 100 * (testCount / 10) + 3 * SK_Scalar1 / 4);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         SkAutoCommentBlock acb(canvas, "onDraw");
 
         canvas->translate(20 * SK_Scalar1, 20 * SK_Scalar1);

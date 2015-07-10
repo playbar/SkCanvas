@@ -22,15 +22,15 @@ public:
     BlurQuickRejectGM() {}
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("blurquickreject");
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() SK_OVERRIDE {
         return SkISize::Make(kWidth, kHeight);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         static const SkScalar kBlurRadius = SkIntToScalar(20);
         static const SkScalar kBoxSize = SkIntToScalar(100);
 
@@ -55,8 +55,8 @@ protected:
         hairlinePaint.setStrokeWidth(0);
 
         SkPaint blurPaint;
-        blurPaint.setFilterQuality(kLow_SkFilterQuality);
-        SkMaskFilter* mf = SkBlurMaskFilter::Create(kNormal_SkBlurStyle,
+        blurPaint.setFilterLevel(SkPaint::kLow_FilterLevel);
+        SkMaskFilter* mf = SkBlurMaskFilter::Create(SkBlurMaskFilter::kNormal_BlurStyle,
                                                     SkBlurMask::ConvertRadiusToSigma(kBlurRadius));
         blurPaint.setMaskFilter(mf)->unref();
 

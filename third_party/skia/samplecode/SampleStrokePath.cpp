@@ -98,8 +98,8 @@ static const struct {
 class StrokePathView : public SampleView {
     SkScalar    fWidth;
     SkPath      fPath;
-protected:
-    void onOnceBeforeDraw() override {
+public:
+    StrokePathView() {
 //        test_blur();
         fWidth = SkIntToScalar(120);
 
@@ -122,8 +122,9 @@ protected:
         this->setBGColor(0xFFDDDDDD);
     }
 
+protected:
     // overrides from SkEventSink
-    bool onQuery(SkEvent* evt) override {
+    virtual bool onQuery(SkEvent* evt) {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "StrokePath");
             return true;
@@ -145,7 +146,7 @@ protected:
         }
     }
 
-    void onDrawContent(SkCanvas* canvas) override {
+    virtual void onDrawContent(SkCanvas* canvas) {
         test_huge_stroke(canvas); return;
         canvas->translate(SkIntToScalar(10), SkIntToScalar(10));
 
@@ -159,11 +160,11 @@ protected:
             paint.setColor(SK_ColorWHITE);
             canvas->translate(10, 30);
 
-            static const SkBlurStyle gStyle[] = {
-                kNormal_SkBlurStyle,
-                kInner_SkBlurStyle,
-                kOuter_SkBlurStyle,
-                kSolid_SkBlurStyle,
+            static const SkBlurMaskFilter::BlurStyle gStyle[] = {
+                SkBlurMaskFilter::kNormal_BlurStyle,
+                SkBlurMaskFilter::kInner_BlurStyle,
+                SkBlurMaskFilter::kOuter_BlurStyle,
+                SkBlurMaskFilter::kSolid_BlurStyle,
             };
             for (int x = 0; x < 5; x++) {
                 SkMaskFilter* mf;
@@ -209,7 +210,7 @@ protected:
     }
 
     virtual SkView::Click* onFindClickHandler(SkScalar x, SkScalar y,
-                                              unsigned modi) override {
+                                              unsigned modi) SK_OVERRIDE {
         this->inval(NULL);
         return this->INHERITED::onFindClickHandler(x, y, modi);
     }

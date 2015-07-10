@@ -21,12 +21,14 @@ static void paint_rgn(SkCanvas* canvas, const SkAAClip& clip,
 
     SkAutoMaskFreeImage amfi(mask.fImage);
 
-    bm.installMaskPixels(mask);
+    bm.setConfig(SkBitmap::kA8_Config, mask.fBounds.width(),
+                 mask.fBounds.height(), mask.fRowBytes);
+    bm.setPixels(mask.fImage);
 
     // need to copy for deferred drawing test to work
     SkBitmap bm2;
 
-    bm.deepCopyTo(&bm2);
+    bm.deepCopyTo(&bm2, SkBitmap::kA8_Config);
 
     canvas->drawBitmap(bm2,
                        SK_Scalar1 * mask.fBounds.fLeft,
@@ -49,10 +51,7 @@ public:
 
     SimpleClipGM(SkGeomTypes geomType)
     : fGeomType(geomType) {
-    }
 
-protected:
-    void onOnceBeforeDraw() override {
         // offset the rects a bit so we get anti-aliasing in the rect case
         fBase.set(100.65f,
                   100.65f,
@@ -67,6 +66,7 @@ protected:
         INHERITED::setBGColor(0xFFDDDDDD);
     }
 
+protected:
     void buildRgn(SkAAClip* clip, SkRegion::Op op) {
         clip->setPath(fBasePath, NULL, true);
 
@@ -136,7 +136,7 @@ protected:
     }
 
     virtual SkISize onISize() {
-        return SkISize::Make(640, 480);
+        return make_isize(640, 480);
     }
 
     virtual void onDraw(SkCanvas* canvas) {
@@ -156,7 +156,6 @@ protected:
 
         SkPaint textPaint;
         textPaint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&textPaint);
         textPaint.setTextSize(SK_Scalar1*24);
         int xOff = 0;
 

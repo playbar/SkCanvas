@@ -8,12 +8,12 @@
 #include "gm.h"
 #include "SkCanvas.h"
 #include "SkShader.h"
-#include "SkBlurMaskFilter.h"
+#include "SkStippleMaskFilter.h"
 
 namespace skiagm {
 
 /**
- * Stress test the GPU samplers by rendering a textured glyph with a mask and
+ * Stress test the samplers by rendering a textured glyph with a mask and
  * an AA clip
  */
 class SamplerStressGM : public GM {
@@ -28,13 +28,12 @@ public:
     }
 
 protected:
-
-    SkString onShortName() override {
-        return SkString("gpusamplerstress");
+    virtual SkString onShortName() {
+        return SkString("samplerstress");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(640, 480);
+    virtual SkISize onISize() {
+        return make_isize(640, 480);
     }
 
     /**
@@ -48,7 +47,13 @@ protected:
         static const int xSize = 16;
         static const int ySize = 16;
 
-        fTexture.allocN32Pixels(xSize, ySize);
+        fTexture.setConfig(SkBitmap::kARGB_8888_Config,
+                           xSize,
+                           ySize,
+                           xSize*sizeof(SkColor));
+
+        fTexture.allocPixels();
+        fTexture.lockPixels();
         SkPMColor* addr = fTexture.getAddr32(0, 0);
 
         for (int y = 0; y < ySize; ++y) {
@@ -64,11 +69,13 @@ protected:
             }
         }
 
+        fTexture.unlockPixels();
+
         fTextureCreated = true;
     }
 
     void createShader() {
-        if (fShader.get()) {
+        if (NULL != fShader.get()) {
             return;
         }
 
@@ -80,15 +87,15 @@ protected:
     }
 
     void createMaskFilter() {
-        if (fMaskFilter.get()) {
+        if (NULL != fMaskFilter.get()) {
             return;
         }
 
-        const SkScalar sigma = 1;
-        fMaskFilter.reset(SkBlurMaskFilter::Create(kNormal_SkBlurStyle, sigma));
+        fMaskFilter.reset(SkNEW(SkStippleMaskFilter));
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
+
         createShader();
         createMaskFilter();
 

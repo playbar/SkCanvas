@@ -8,7 +8,6 @@
 #include "SampleCode.h"
 #include "SkView.h"
 #include "SkCanvas.h"
-
 #include "SkAnimator.h"
 #include "SkStream.h"
 #include "SkDOM.h"
@@ -51,13 +50,15 @@ void SkAnimatorView::setURIBase(const char dir[]) {
 }
 
 bool SkAnimatorView::decodeFile(const char path[]) {
-    SkAutoTDelete<SkStream> is(SkStream::NewFromFile(path));
-    return is.get() != NULL && this->decodeStream(is.get());
+    SkFILEStream* is = new SkFILEStream(path);
+    SkAutoUnref aur(is);
+    return is->isValid() && this->decodeStream(is);
 }
 
 bool SkAnimatorView::decodeMemory(const void* buffer, size_t size) {
-    SkMemoryStream is(buffer, size);
-    return this->decodeStream(&is);
+    SkMemoryStream* is = new SkMemoryStream(buffer, size);
+    SkAutoUnref aur(is);
+    return this->decodeStream(is);
 }
 
 static const SkDOMNode* find_nodeID(const SkDOM& dom,

@@ -16,8 +16,8 @@
 
 class SelfTestGM : public skiagm::GM {
 public:
-    SelfTestGM(const char name[], SkColor color) :
-        fName(name), fColor(color) {}
+    SelfTestGM(const char name[], SkColor color, uint32_t flags) :
+        fName(name), fColor(color), fFlags(flags) {}
     const static int kWidth = 300;
     const static int kHeight = 200;
 
@@ -26,7 +26,7 @@ protected:
         return fName;
     }
 
-    SkISize onISize() { return SkISize::Make(kWidth, kHeight); }
+    SkISize onISize() { return skiagm::make_isize(kWidth, kHeight); }
 
     virtual void onDraw(SkCanvas* canvas) {
         SkPaint paint;
@@ -35,9 +35,12 @@ protected:
         canvas->drawRectCoords(0, 0, SkIntToScalar(kWidth), SkIntToScalar(kHeight), paint);
     }
 
+    virtual uint32_t onGetFlags() const { return fFlags; }
+
 private:
     const SkString fName;
     const SkColor fColor;
+    const uint32_t fFlags;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -49,10 +52,10 @@ static SkColor kTranslucentGreen = 0x7700EE00;
 static SkColor kTranslucentBlue  = 0x770000DD;
 
 static skiagm::GM* F1(void*) {
-    return new SelfTestGM("selftest1", kTranslucentGreen);
+    return new SelfTestGM("selftest1", kTranslucentGreen, 0);
 }
 static skiagm::GM* F2(void*) {
-    return new SelfTestGM("selftest2", kTranslucentBlue);
+    return new SelfTestGM("selftest2", kTranslucentBlue,  skiagm::GM::kSkipPipe_Flag);
 }
 
 static skiagm::GMRegistry gR1(F1);

@@ -12,7 +12,7 @@
 
 #include "SkTypes.h"
 
-class SkChunkAlloc : SkNoncopyable {
+class SK_API SkChunkAlloc : SkNoncopyable {
 public:
     SkChunkAlloc(size_t minSize);
     ~SkChunkAlloc();

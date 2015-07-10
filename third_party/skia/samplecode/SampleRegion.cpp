@@ -20,7 +20,8 @@ static void test_strokerect(SkCanvas* canvas) {
     int height = 100;
 
     SkBitmap bitmap;
-    bitmap.allocPixels(SkImageInfo::MakeA8(width*2, height*2));
+    bitmap.setConfig(SkBitmap::kA8_Config, width*2, height*2);
+    bitmap.allocPixels();
     bitmap.eraseColor(SK_ColorTRANSPARENT);
 
     SkScalar dx = 20;
@@ -122,7 +123,7 @@ inline float roundf(float x) { return (x-floor(x))>0.5 ? ceil(x) : floor(x); }
 
 #ifdef SK_DEBUG
 static void make_rgn(SkRegion* rgn, int left, int top, int right, int bottom,
-                     int count, int32_t runs[]) {
+                     size_t count, int32_t runs[]) {
     SkIRect r;
     r.set(left, top, right, bottom);
 
@@ -219,7 +220,7 @@ public:
 
 protected:
     // overrides from SkEventSink
-    bool onQuery(SkEvent* evt) override {
+    virtual bool onQuery(SkEvent* evt) {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "Regions");
             return true;
@@ -321,7 +322,7 @@ protected:
         canvas->drawPath(path, paint);
     }
 
-    void onDrawContent(SkCanvas* canvas) override {
+    virtual void onDrawContent(SkCanvas* canvas) {
         if (false) { // avoid bit rot, suppress warning
             test_strokerect(canvas);
             return;
@@ -394,12 +395,12 @@ protected:
     }
 
     virtual SkView::Click* onFindClickHandler(SkScalar x, SkScalar y,
-                                              unsigned modi) override {
+                                              unsigned modi) SK_OVERRIDE {
         return fRect.contains(SkScalarRoundToInt(x),
                               SkScalarRoundToInt(y)) ? new Click(this) : NULL;
     }
 
-    bool onClick(Click* click) override {
+    virtual bool onClick(Click* click) {
         fRect.offset(click->fICurr.fX - click->fIPrev.fX,
                      click->fICurr.fY - click->fIPrev.fY);
         this->inval(NULL);

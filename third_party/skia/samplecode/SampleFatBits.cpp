@@ -5,7 +5,6 @@
  * found in the LICENSE file.
  */
 
-#include "sk_tool_utils.h"
 #include "SampleCode.h"
 #include "SkView.h"
 #include "SkCanvas.h"
@@ -36,9 +35,27 @@ static void erase(SkSurface* surface) {
     surface->getCanvas()->clear(SK_ColorTRANSPARENT);
 }
 
+static SkShader* createChecker() {
+//    SkColor colors[] = { 0xFFFDFDFD, 0xFFF4F4F4 };
+    SkColor colors[] = { 0xFFFFFFFF, 0xFFFFFFFF };
+    SkBitmap bm;
+    bm.setConfig(SkBitmap::kARGB_8888_Config, 2, 2);
+    bm.allocPixels();
+    bm.lockPixels();
+    *bm.getAddr32(0, 0) = *bm.getAddr32(1, 1) = SkPreMultiplyColor(colors[0]);
+    *bm.getAddr32(0, 1) = *bm.getAddr32(1, 0) = SkPreMultiplyColor(colors[1]);
+    SkShader* s = SkShader::CreateBitmapShader(bm, SkShader::kRepeat_TileMode,
+                                               SkShader::kRepeat_TileMode);
+
+    SkMatrix m;
+    m.setScale(12, 12);
+    s->setLocalMatrix(m);
+    return s;
+}
+
 class FatBits {
 public:
-    FatBits() {
+    FatBits() : fShader(createChecker()) {
         fAA = false;
         fStyle = kHair_Style;
         fGrid = true;
@@ -87,12 +104,14 @@ public:
         fBounds.set(0, 0, SkIntToScalar(width * zoom), SkIntToScalar(height * zoom));
         fMatrix.setScale(SkIntToScalar(zoom), SkIntToScalar(zoom));
         fInverse.setScale(SK_Scalar1 / zoom, SK_Scalar1 / zoom);
-        fShader.reset(sk_tool_utils::create_checkerboard_shader(
-                              0xFFCCCCCC, 0xFFFFFFFF, zoom));
+        fShader->setLocalMatrix(fMatrix);
 
-        SkImageInfo info = SkImageInfo::MakeN32Premul(width, height);
+        SkImageInfo info = {
+            width, height, kPMColor_SkColorType, kPremul_SkAlphaType
+        };
         fMinSurface.reset(SkSurface::NewRaster(info));
-        info = info.makeWH(width * zoom, height * zoom);
+        info.fWidth *= zoom;
+        info.fHeight *= zoom;
         fMaxSurface.reset(SkSurface::NewRaster(info));
     }
 
@@ -394,7 +413,7 @@ public:
     }
 
 protected:
-    bool onQuery(SkEvent* evt) override {
+    virtual bool onQuery(SkEvent* evt) SK_OVERRIDE {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "FatBits");
             return true;
@@ -474,7 +493,7 @@ protected:
     }
 
     virtual SkView::Click* onFindClickHandler(SkScalar x, SkScalar y,
-                                              unsigned modi) override {
+                                              unsigned modi) SK_OVERRIDE {
         SkPoint pt = { x, y };
         int index = -1;
         int count = fFB.getTriangle() ? 3 : 2;
@@ -489,7 +508,7 @@ protected:
         return new IndexClick(this, index);
     }
 
-    bool onClick(Click* click) override {
+    virtual bool onClick(Click* click) SK_OVERRIDE {
         int index = IndexClick::GetIndex(click);
         if (index >= 0 && index <= 2) {
             fPts[index] = click->fCurr;

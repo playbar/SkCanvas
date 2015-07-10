@@ -148,7 +148,6 @@ void SkTouchGesture::touchBegin(void* owner, float x, float y) {
     if (index >= 0) {
         this->flushLocalM();
         fTouches.removeShuffle(index);
-        SkDebugf("---- already exists, removing\n");
     }
 
     if (fTouches.count() == 2) {
@@ -206,7 +205,6 @@ void SkTouchGesture::touchMoved(void* owner, float x, float y) {
     int index = this->findRec(owner);
     if (index < 0) {
         // not found, so I guess we should add it...
-        SkDebugf("---- add missing begin\n");
         this->appendNewRec(owner, x, y);
         index = fTouches.count() - 1;
     }
@@ -256,7 +254,6 @@ void SkTouchGesture::touchEnd(void* owner) {
 
     int index = this->findRec(owner);
     if (index < 0) {
-        SkDebugf("--- not found\n");
         return;
     }
 

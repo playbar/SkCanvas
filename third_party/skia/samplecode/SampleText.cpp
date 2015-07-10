@@ -1,18 +1,19 @@
+
 /*
  * Copyright 2011 Google Inc.
  *
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 #include "SampleCode.h"
 #include "SkView.h"
 #include "SkCanvas.h"
-#include "SkReadBuffer.h"
-#include "SkWriteBuffer.h"
+#include "Sk64.h"
+#include "SkFlattenableBuffers.h"
 #include "SkGradientShader.h"
 #include "SkGraphics.h"
 #include "SkImageDecoder.h"
+#include "SkKernel33MaskFilter.h"
 #include "SkPath.h"
 #include "SkRandom.h"
 #include "SkRegion.h"
@@ -27,6 +28,77 @@
 #include "SkStream.h"
 #include "SkXMLParser.h"
 
+class ReduceNoise : public SkKernel33ProcMaskFilter {
+public:
+    ReduceNoise(int percent256) : SkKernel33ProcMaskFilter(percent256) {}
+    virtual uint8_t computeValue(uint8_t* const* srcRows) const {
+        int c = srcRows[1][1];
+        int min = 255, max = 0;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (i != 1 || j != 1)
+                {
+                    int v = srcRows[i][j];
+                    if (max < v)
+                        max = v;
+                    if  (min > v)
+                        min = v;
+                }
+        if (c > max) c = max;
+    //    if (c < min) c = min;
+        return c;
+    }
+
+#ifdef SK_DEVELOPER
+    virtual void toString(SkString* str) const SK_OVERRIDE {
+        str->append("ReduceNoise: (");
+        this->INHERITED::toString(str);
+        str->append(")");
+    }
+#endif
+
+    SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(ReduceNoise)
+
+private:
+    ReduceNoise(SkFlattenableReadBuffer& rb) : SkKernel33ProcMaskFilter(rb) {}
+
+    typedef SkKernel33ProcMaskFilter INHERITED;
+};
+
+class Darken : public SkKernel33ProcMaskFilter {
+public:
+    Darken(int percent256) : SkKernel33ProcMaskFilter(percent256) {}
+    virtual uint8_t computeValue(uint8_t* const* srcRows) const {
+        int c = srcRows[1][1];
+        float f = c / 255.f;
+
+        if (c >= 0) {
+            f = sqrtf(f);
+        } else {
+            f *= f;
+        }
+        SkASSERT(f >= 0 && f <= 1);
+        return (int)(f * 255);
+    }
+
+#ifdef SK_DEVELOPER
+    virtual void toString(SkString* str) const SK_OVERRIDE {
+        str->append("Darken: (");
+        this->INHERITED::toString(str);
+        str->append(")");
+    }
+#endif
+
+    SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(Darken)
+
+private:
+    Darken(SkFlattenableReadBuffer& rb) : SkKernel33ProcMaskFilter(rb) {}
+
+    typedef SkKernel33ProcMaskFilter INHERITED;
+};
+
+static SkMaskFilter* makemf() { return new Darken(0x30); }
+
 static void test_breakText() {
     SkPaint paint;
     const char* text = "sdfkljAKLDFJKEWkldfjlk#$%&sdfs.dsj";
@@ -37,7 +109,8 @@ static void test_breakText() {
     SkScalar nn = 0;
     for (SkScalar w = 0; w <= width; w += SK_Scalar1) {
         SkScalar m;
-        size_t n = paint.breakText(text, length, w, &m);
+        size_t n = paint.breakText(text, length, w, &m,
+                                    SkPaint::kBackward_TextBufferDirection);
 
         SkASSERT(n <= length);
         SkASSERT(m <= width);
@@ -62,6 +135,74 @@ static void test_breakText() {
     SkASSERT(mm == width);
 }
 
+static SkRandom gRand;
+
+class SkPowerMode : public SkXfermode {
+public:
+    SkPowerMode(SkScalar exponent) { this->init(exponent); }
+
+    virtual void xfer16(uint16_t dst[], const SkPMColor src[], int count,
+                        const SkAlpha aa[]) const SK_OVERRIDE;
+
+    typedef SkFlattenable* (*Factory)(SkFlattenableReadBuffer&);
+
+    SK_DEVELOPER_TO_STRING()
+    SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkPowerMode)
+
+private:
+    SkScalar fExp;          // user's value
+    uint8_t fTable[256];    // cache
+
+    void init(SkScalar exponent);
+    SkPowerMode(SkFlattenableReadBuffer& b) : INHERITED(b) {
+        // read the exponent
+        this->init(SkFixedToScalar(b.readFixed()));
+    }
+    virtual void flatten(SkFlattenableWriteBuffer& b) const SK_OVERRIDE {
+        this->INHERITED::flatten(b);
+        b.writeFixed(SkScalarToFixed(fExp));
+    }
+
+    typedef SkXfermode INHERITED;
+};
+
+void SkPowerMode::init(SkScalar e) {
+    fExp = e;
+    float ee = SkScalarToFloat(e);
+
+    printf("------ %g\n", ee);
+    for (int i = 0; i < 256; i++) {
+        float x = i / 255.f;
+     //   printf(" %d %g", i, x);
+        x = powf(x, ee);
+     //   printf(" %g", x);
+        int xx = SkScalarRoundToInt(x * 255);
+     //   printf(" %d\n", xx);
+        fTable[i] = SkToU8(xx);
+    }
+}
+
+void SkPowerMode::xfer16(uint16_t dst[], const SkPMColor src[], int count,
+                         const SkAlpha aa[]) const {
+    for (int i = 0; i < count; i++) {
+        SkPMColor c = src[i];
+        int r = SkGetPackedR32(c);
+        int g = SkGetPackedG32(c);
+        int b = SkGetPackedB32(c);
+        r = fTable[r];
+        g = fTable[g];
+        b = fTable[b];
+        dst[i] = SkPack888ToRGB16(r, g, b);
+    }
+}
+
+#ifdef SK_DEVELOPER
+void SkPowerMode::toString(SkString* str) const {
+    str->append("SkPowerMode: exponent ");
+    str->appendScalar(fExp);
+}
+#endif
+
 static const struct {
     const char* fName;
     uint32_t    fFlags;
@@ -72,8 +213,9 @@ static const struct {
     { "Subpixel", SkPaint::kSubpixelText_Flag, true }
 };
 
-static void DrawTheText(SkCanvas* canvas, const char text[], size_t length, SkScalar x, SkScalar y,
-                        const SkPaint& paint, SkScalar clickX) {
+static void DrawTheText(SkCanvas* canvas, const char text[], size_t length,
+                        SkScalar x, SkScalar y, const SkPaint& paint,
+                        SkScalar clickX, SkMaskFilter* mf) {
     SkPaint p(paint);
 
 #if 0
@@ -96,6 +238,7 @@ static void DrawTheText(SkCanvas* canvas, const char text[], size_t length, SkSc
 
 #ifdef SK_DEBUG
     if (true) {
+    //    p.setMaskFilter(mf);
         p.setSubpixelText(false);
         p.setLinearText(true);
         x += SkIntToScalar(180);
@@ -107,15 +250,21 @@ static void DrawTheText(SkCanvas* canvas, const char text[], size_t length, SkSc
 class TextSpeedView : public SampleView {
 public:
     TextSpeedView() {
+        fMF = makemf();
+
         fHints = 0;
         fClickX = 0;
 
         test_breakText();
     }
 
+    virtual ~TextSpeedView() {
+        SkSafeUnref(fMF);
+    }
+
 protected:
     // overrides from SkEventSink
-    bool onQuery(SkEvent* evt) override {
+    virtual bool onQuery(SkEvent* evt) {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "Text");
             return true;
@@ -124,8 +273,8 @@ protected:
     }
 
     static void make_textstrip(SkBitmap* bm) {
-        bm->allocPixels(SkImageInfo::Make(200, 18, kRGB_565_SkColorType,
-                                          kOpaque_SkAlphaType));
+        bm->setConfig(SkBitmap::kRGB_565_Config, 200, 18);
+        bm->allocPixels();
         bm->eraseColor(SK_ColorWHITE);
 
         SkCanvas    canvas(*bm);
@@ -143,7 +292,7 @@ protected:
             pts[i].set(rand->nextUScalar1() * 640, rand->nextUScalar1() * 480);
     }
 
-    void onDrawContent(SkCanvas* canvas) override {
+    virtual void onDrawContent(SkCanvas* canvas) {
         SkAutoCanvasRestore restore(canvas, false);
         {
             SkRect r;
@@ -177,7 +326,8 @@ protected:
             for (SkScalar dx = 0; dx <= SkIntToScalar(3)/4;
                                             dx += SkIntToScalar(1) /* /4 */) {
                 y += paint.getFontSpacing();
-                DrawTheText(canvas, text, length, SkIntToScalar(20) + dx, y, paint, fClickX);
+                DrawTheText(canvas, text, length, SkIntToScalar(20) + dx, y,
+                            paint, fClickX, fMF);
             }
         }
         if (gHints[index].fFlushCache) {
@@ -186,19 +336,20 @@ protected:
     }
 
     virtual SkView::Click* onFindClickHandler(SkScalar x, SkScalar y,
-                                              unsigned modi) override {
+                                              unsigned modi) SK_OVERRIDE {
         fClickX = x;
         this->inval(NULL);
         return this->INHERITED::onFindClickHandler(x, y, modi);
     }
 
-    bool onClick(Click* click) override {
+    virtual bool onClick(Click* click) {
         return this->INHERITED::onClick(click);
     }
 
 private:
     int fHints;
     SkScalar fClickX;
+    SkMaskFilter* fMF;
 
     typedef SampleView INHERITED;
 };

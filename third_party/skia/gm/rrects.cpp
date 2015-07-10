@@ -6,11 +6,6 @@
  */
 
 #include "gm.h"
-#if SK_SUPPORT_GPU
-#include "GrTest.h"
-#include "effects/GrRRectEffect.h"
-#endif
-#include "SkDevice.h"
 #include "SkRRect.h"
 
 namespace skiagm {
@@ -19,133 +14,54 @@ namespace skiagm {
 
 class RRectGM : public GM {
 public:
-    enum Type {
-        kBW_Draw_Type,
-        kAA_Draw_Type,
-        kBW_Clip_Type,
-        kAA_Clip_Type,
-        kEffect_Type,
-    };
-    RRectGM(Type type) : fType(type) {
+    RRectGM(bool doAA, bool doClip) : fDoAA(doAA), fDoClip(doClip) {
         this->setBGColor(0xFFDDDDDD);
         this->setUpRRects();
     }
 
 protected:
-    SkString onShortName() override {
+    SkString onShortName() {
         SkString name("rrect");
-        switch (fType) {
-            case kBW_Draw_Type:
-                name.append("_draw_bw");
-                break;
-            case kAA_Draw_Type:
-                name.append("_draw_aa");
-                break;
-            case kBW_Clip_Type:
-                name.append("_clip_bw");
-                break;
-            case kAA_Clip_Type:
-                name.append("_clip_aa");
-                break;
-            case kEffect_Type:
-                name.append("_effect");
-                break;
+        if (fDoClip) {
+            name.append("_clip");
         }
+        if (fDoAA) {
+            name.append("_aa");
+        } else {
+            name.append("_bw");
+        }
+
         return name;
     }
 
-    SkISize onISize() override { return SkISize::Make(kImageWidth, kImageHeight); }
+    virtual SkISize onISize() { return make_isize(kImageWidth, kImageHeight); }
 
-    void onDraw(SkCanvas* canvas) override {
-        GrContext* context = NULL;
-#if SK_SUPPORT_GPU
-        GrRenderTarget* rt = canvas->internal_private_accessTopLayerRenderTarget();
-        context = rt ? rt->getContext() : NULL;
-#endif
-        if (kEffect_Type == fType && NULL == context) {
-            this->drawGpuOnlyMessage(canvas);
-            return;
-        }
+    virtual void onDraw(SkCanvas* canvas) {
 
         SkPaint paint;
-        if (kAA_Draw_Type == fType) {
-            paint.setAntiAlias(true);
-        }
+        // when clipping the AA is pushed into the clip operation
+        paint.setAntiAlias(fDoClip ? false : fDoAA);
 
-        static const SkRect kMaxTileBound = SkRect::MakeWH(SkIntToScalar(kTileX),
-                                                           SkIntToScalar(kTileY));
-#ifdef SK_DEBUG
-        static const SkRect kMaxImageBound = SkRect::MakeWH(SkIntToScalar(kImageWidth),
-                                                            SkIntToScalar(kImageHeight));
-#endif
+        static const SkRect kMaxTileBound = SkRect::MakeWH(SkIntToScalar(kTileX), SkIntToScalar(kTileY));
 
-#if SK_SUPPORT_GPU
-        int lastEdgeType = (kEffect_Type == fType) ? kLast_GrProcessorEdgeType: 0;
-#else
-        int lastEdgeType = 0;
-#endif
-
-        int y = 1;
-        for (int et = 0; et <= lastEdgeType; ++et) {
-            int x = 1;
-            for (int curRRect = 0; curRRect < kNumRRects; ++curRRect) {
-                bool drew = true;
-#ifdef SK_DEBUG
+        int curRRect = 0;
+        for (int y = 1; y < kImageHeight; y += kTileY) {
+            for (int x = 1; x < kImageWidth; x += kTileX) {
+                if (curRRect >= kNumRRects) {
+                    break;
+                }
                 SkASSERT(kMaxTileBound.contains(fRRects[curRRect].getBounds()));
-                SkRect imageSpaceBounds = fRRects[curRRect].getBounds();
-                imageSpaceBounds.offset(SkIntToScalar(x), SkIntToScalar(y));
-                SkASSERT(kMaxImageBound.contains(imageSpaceBounds));
-#endif
+
                 canvas->save();
                     canvas->translate(SkIntToScalar(x), SkIntToScalar(y));
-                    if (kEffect_Type == fType) {
-#if SK_SUPPORT_GPU
-                        GrTestTarget tt;
-                        context->getTestTarget(&tt);
-                        if (NULL == tt.target()) {
-                            SkDEBUGFAIL("Couldn't get Gr test target.");
-                            return;
-                        }
-                        GrPipelineBuilder pipelineBuilder;
-
-                        SkRRect rrect = fRRects[curRRect];
-                        rrect.offset(SkIntToScalar(x), SkIntToScalar(y));
-                        GrPrimitiveEdgeType edgeType = (GrPrimitiveEdgeType) et;
-                        SkAutoTUnref<GrFragmentProcessor> fp(GrRRectEffect::Create(edgeType,
-                                                                                   rrect));
-                        if (fp) {
-                            pipelineBuilder.addCoverageProcessor(fp);
-                            pipelineBuilder.setRenderTarget(rt);
-
-                            SkRect bounds = rrect.getBounds();
-                            bounds.outset(2.f, 2.f);
-
-                            tt.target()->drawSimpleRect(&pipelineBuilder,
-                                                        0xff000000,
-                                                        SkMatrix::I(),
-                                                        bounds);
-                        } else {
-                            drew = false;
-                        }
-#endif
-                    } else if (kBW_Clip_Type == fType || kAA_Clip_Type == fType) {
-                        bool aaClip = (kAA_Clip_Type == fType);
-                        canvas->clipRRect(fRRects[curRRect], SkRegion::kReplace_Op, aaClip);
+                    if (fDoClip) {
+                        canvas->clipRRect(fRRects[curRRect], SkRegion::kReplace_Op, fDoAA);
                         canvas->drawRect(kMaxTileBound, paint);
                     } else {
                         canvas->drawRRect(fRRects[curRRect], paint);
                     }
+                    ++curRRect;
                 canvas->restore();
-                if (drew) {
-                    x = x + kTileX;
-                    if (x > kImageWidth) {
-                        x = 1;
-                        y += kTileY;
-                    }
-                }
-            }
-            if (x != 1) {
-                y += kTileY;
             }
         }
     }
@@ -158,11 +74,6 @@ protected:
         fRRects[0].setRect(SkRect::MakeWH(kTileX-2, kTileY-2));
         fRRects[1].setOval(SkRect::MakeWH(kTileX-2, kTileY-2));
         fRRects[2].setRectXY(SkRect::MakeWH(kTileX-2, kTileY-2), 10, 10);
-        fRRects[3].setRectXY(SkRect::MakeWH(kTileX-2, kTileY-2), 10, 5);
-        // small circular corners are an interesting test case for gpu clipping
-        fRRects[4].setRectXY(SkRect::MakeWH(kTileX-2, kTileY-2), 1, 1);
-        fRRects[5].setRectXY(SkRect::MakeWH(kTileX-2, kTileY-2), 0.5f, 0.5f);
-        fRRects[6].setRectXY(SkRect::MakeWH(kTileX-2, kTileY-2), 0.2f, 0.2f);
 
         // The first complex case needs special handling since it is a square
         fRRects[kNumSimpleCases].setRectRadii(SkRect::MakeWH(kTileY-2, kTileY-2), gRadii[0]);
@@ -172,7 +83,8 @@ protected:
     }
 
 private:
-    Type fType;
+    bool fDoAA;
+    bool fDoClip;   // use clipRRect & drawRect instead of drawRRect
 
     static const int kImageWidth = 640;
     static const int kImageHeight = 480;
@@ -180,8 +92,8 @@ private:
     static const int kTileX = 80;
     static const int kTileY = 40;
 
-    static const int kNumSimpleCases = 7;
-    static const int kNumComplexCases = 35;
+    static const int kNumSimpleCases = 3;
+    static const int kNumComplexCases = 19;
     static const SkVector gRadii[kNumComplexCases][4];
 
     static const int kNumRRects = kNumSimpleCases + kNumComplexCases;
@@ -224,43 +136,13 @@ const SkVector RRectGM::gRadii[kNumComplexCases][4] = {
     { { 0, 0 }, { 100, 400 }, { 0, 0 }, { 0, 0 } },
     { { 0, 0 }, { 400, 400 }, { 0, 0 }, { 0, 0 } },
     { { 400, 400 }, { 400, 400 }, { 400, 400 }, { 400, 400 } },
-
-    // circular corner tabs
-    { { 0, 0 }, { 20, 20 }, { 20, 20 }, { 0, 0 } },
-    { { 20, 20 }, { 20, 20 }, { 0, 0 }, { 0, 0 } },
-    { { 0, 0 }, { 0, 0 }, { 20, 20 }, { 20, 20 } },
-    { { 20, 20 }, { 0, 0 }, { 0, 0 }, { 20, 20 } },
-
-    // small radius circular corner tabs
-    { { 0, 0 }, { 0.2f, 0.2f }, { 0.2f, 0.2f }, { 0, 0 } },
-    { { 0.3f, 0.3f }, { 0.3f, .3f }, { 0, 0 }, { 0, 0 } },
-
-    // single circular corner cases
-    { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 15, 15 } },
-    { { 0, 0 }, { 0, 0 }, { 15, 15 }, { 0, 0 } },
-    { { 0, 0 }, { 15, 15 }, { 0, 0 }, { 0, 0 } },
-    { { 15, 15 }, { 0, 0 }, { 0, 0 }, { 0, 0 } },
-
-    // nine patch elliptical
-    { { 5, 7 }, { 8, 7 }, { 8, 12 }, { 5, 12 } },
-    { { 0, 7 }, { 8, 7 }, { 8, 12 }, { 0, 12 } },
-
-    // nine patch elliptical, small radii
-    { { 0.4f, 7 }, { 8, 7 }, { 8, 12 }, { 0.4f, 12 } },
-    { { 0.4f, 0.4f }, { 8, 0.4f }, { 8, 12 }, { 0.4f, 12 } },
-    { { 20, 0.4f }, { 18, 0.4f }, { 18, 0.4f }, { 20, 0.4f } },
-    { { 0.3f, 0.4f }, { 0.3f, 0.4f }, { 0.3f, 0.4f }, { 0.3f, 0.4f } },
-
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
-DEF_GM( return new RRectGM(RRectGM::kAA_Draw_Type); )
-DEF_GM( return new RRectGM(RRectGM::kBW_Draw_Type); )
-DEF_GM( return new RRectGM(RRectGM::kAA_Clip_Type); )
-DEF_GM( return new RRectGM(RRectGM::kBW_Clip_Type); )
-#if SK_SUPPORT_GPU
-DEF_GM( return new RRectGM(RRectGM::kEffect_Type); )
-#endif
+DEF_GM( return new RRectGM(false, false); )
+DEF_GM( return new RRectGM(true, false); )
+DEF_GM( return new RRectGM(false, true); )
+DEF_GM( return new RRectGM(true, true); )
 
 }

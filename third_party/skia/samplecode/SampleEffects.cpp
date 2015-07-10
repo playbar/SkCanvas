@@ -24,7 +24,7 @@ static void paint_proc0(SkPaint*) {
 
 static void paint_proc1(SkPaint* paint) {
     paint->setMaskFilter(SkBlurMaskFilter::Create(
-                                kNormal_SkBlurStyle,
+                                SkBlurMaskFilter::kNormal_BlurStyle,
                                 SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(2))))->unref();
 }
 

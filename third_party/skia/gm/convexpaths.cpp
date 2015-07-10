@@ -9,9 +9,9 @@
 #include "SkRandom.h"
 #include "SkTArray.h"
 
-class SkDoOnce : SkNoncopyable {
+class SkOnce : SkNoncopyable {
 public:
-    SkDoOnce() { fDidOnce = false; }
+    SkOnce() { fDidOnce = false; }
 
     bool needToDo() const { return !fDidOnce; }
     bool alreadyDone() const { return fDidOnce; }
@@ -27,21 +27,20 @@ private:
 namespace skiagm {
 
 class ConvexPathsGM : public GM {
-    SkDoOnce fOnce;
+    SkOnce fOnce;
 public:
     ConvexPathsGM() {
         this->setBGColor(0xFF000000);
     }
 
 protected:
-
     virtual SkString onShortName() {
         return SkString("convexpaths");
     }
 
 
     virtual SkISize onISize() {
-        return SkISize::Make(1200, 1100);
+        return make_isize(1200, 1100);
     }
 
     void makePaths() {
@@ -262,7 +261,7 @@ protected:
 
     SkPaint paint;
     paint.setAntiAlias(true);
-    SkRandom rand;
+    SkLCGRandom rand;
     canvas->translate(20 * SK_Scalar1, 20 * SK_Scalar1);
 
     // As we've added more paths this has gotten pretty big. Scale the whole thing down.

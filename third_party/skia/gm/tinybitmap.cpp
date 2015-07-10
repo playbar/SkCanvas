@@ -18,9 +18,8 @@ static SkBitmap make_bitmap() {
     SkColorTable* ctable = new SkColorTable(c, SK_ARRAY_COUNT(c));
 
     SkBitmap bm;
-    bm.allocPixels(SkImageInfo::Make(1, 1, kIndex_8_SkColorType,
-                                     kPremul_SkAlphaType),
-                   NULL, ctable);
+    bm.setConfig(SkBitmap::kIndex8_Config, 1, 1);
+    bm.allocPixels(ctable);
     ctable->unref();
 
     bm.lockPixels();
@@ -40,7 +39,7 @@ protected:
         return SkString("tinybitmap");
     }
 
-    virtual SkISize onISize() { return SkISize::Make(100, 100); }
+    virtual SkISize onISize() { return make_isize(100, 100); }
 
     virtual void onDraw(SkCanvas* canvas) {
         SkBitmap bm = make_bitmap();

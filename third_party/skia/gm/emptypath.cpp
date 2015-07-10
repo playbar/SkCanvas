@@ -21,7 +21,7 @@ protected:
         return SkString("emptypath");
     }
 
-    SkISize onISize() { return SkISize::Make(600, 280); }
+    SkISize onISize() { return make_isize(600, 280); }
 
     void drawEmpty(SkCanvas* canvas,
                     SkColor color,
@@ -63,7 +63,6 @@ protected:
         SkPaint titlePaint;
         titlePaint.setColor(SK_ColorBLACK);
         titlePaint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&titlePaint);
         titlePaint.setLCDRenderText(true);
         titlePaint.setTextSize(15 * SK_Scalar1);
         const char title[] = "Empty Paths Drawn Into Rectangle Clips With "
@@ -73,7 +72,7 @@ protected:
                             20 * SK_Scalar1,
                             titlePaint);
 
-        SkRandom rand;
+        SkLCGRandom rand;
         SkRect rect = SkRect::MakeWH(100*SK_Scalar1, 30*SK_Scalar1);
         int i = 0;
         canvas->save();
@@ -106,7 +105,6 @@ protected:
                 SkPaint labelPaint;
                 labelPaint.setColor(color);
                 labelPaint.setAntiAlias(true);
-                sk_tool_utils::set_portable_typeface(&labelPaint);
                 labelPaint.setLCDRenderText(true);
                 labelPaint.setTextSize(12 * SK_Scalar1);
                 canvas->drawText(gStyles[style].fName,

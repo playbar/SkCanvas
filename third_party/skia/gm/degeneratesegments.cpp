@@ -26,7 +26,7 @@ protected:
         return SkString("degeneratesegments");
     }
 
-    SkISize onISize() { return SkISize::Make(896, 930); }
+    SkISize onISize() { return make_isize(896, 930); }
 
     typedef SkPoint (*AddSegmentFunc)(SkPath&, SkPoint&);
 
@@ -287,7 +287,6 @@ protected:
         SkPaint titlePaint;
         titlePaint.setColor(SK_ColorBLACK);
         titlePaint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&titlePaint);
         titlePaint.setLCDRenderText(true);
         titlePaint.setTextSize(15 * SK_Scalar1);
         const char title[] = "Random Paths Drawn Into Rectangle Clips With "
@@ -298,7 +297,7 @@ protected:
                             20 * SK_Scalar1,
                             titlePaint);
 
-        SkRandom rand;
+        SkLCGRandom rand;
         SkRect rect = SkRect::MakeWH(220*SK_Scalar1, 50*SK_Scalar1);
         canvas->save();
         canvas->translate(2*SK_Scalar1, 30 * SK_Scalar1); // The title
@@ -348,7 +347,6 @@ protected:
                 SkPaint labelPaint;
                 labelPaint.setColor(color);
                 labelPaint.setAntiAlias(true);
-                sk_tool_utils::set_portable_typeface(&labelPaint);
                 labelPaint.setLCDRenderText(true);
                 labelPaint.setTextSize(10 * SK_Scalar1);
                 canvas->drawText(style.fName,

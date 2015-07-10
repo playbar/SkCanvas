@@ -42,16 +42,15 @@ public:
     }
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return fName;
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() SK_OVERRIDE {
         return SkISize::Make(800, 800);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         const SkColor colors[] = { 0xFF555555, 0xFF444444 };
         const int colorCount = SK_ARRAY_COUNT(colors);
 

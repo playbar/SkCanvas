@@ -1,19 +1,21 @@
+
 /*
  * Copyright 2011 Google Inc.
  *
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 #include "SampleCode.h"
 #include "SkBlurMask.h"
 #include "SkView.h"
 #include "SkCanvas.h"
+#include "Sk64.h"
 #include "SkColorShader.h"
 #include "SkEmbossMaskFilter.h"
 #include "SkGradientShader.h"
 #include "SkGraphics.h"
 #include "SkImageDecoder.h"
+#include "SkKernel33MaskFilter.h"
 #include "SkPath.h"
 #include "SkRandom.h"
 #include "SkRegion.h"
@@ -52,7 +54,7 @@ protected:
         paint.setAntiAlias(true);
         paint.setStyle(SkPaint::kStroke_Style);
         paint.setStrokeWidth(SkIntToScalar(10));
-        paint.setMaskFilter(SkEmbossMaskFilter::Create(
+        paint.setMaskFilter(new SkEmbossMaskFilter(
             SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(4)), fLight))->unref();
         paint.setShader(new SkColorShader(SK_ColorBLUE))->unref();
         paint.setDither(true);

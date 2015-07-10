@@ -22,19 +22,18 @@ public:
     PolygonsGM() {}
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("polygons");
     }
 
-    SkISize onISize() override {
-        int width = kNumPolygons * kCellSize + 40;
-        int height = (kNumJoins * kNumStrokeWidths + kNumExtraStyles) * kCellSize + 40;
+    virtual SkISize onISize() SK_OVERRIDE {
+        size_t width = kNumPolygons * kCellSize + 40;
+        size_t height = (kNumJoins * kNumStrokeWidths + kNumExtraStyles) * kCellSize + 40;
         return SkISize::Make(width, height);
     }
 
     // Construct all polygons
-    void onOnceBeforeDraw() override {
+    virtual void onOnceBeforeDraw() SK_OVERRIDE {
         SkPoint p0[] = {{0, 0}, {60, 0}, {90, 40}};  // triangle
         SkPoint p1[] = {{0, 0}, {0, 40}, {60, 40}, {40, 0}};  // trapezoid
         SkPoint p2[] = {{0, 0}, {40, 40}, {80, 40}, {40, 0}};  // diamond
@@ -85,7 +84,7 @@ protected:
         canvas->translate(x, y);
     }
 
-    static void SetColorAndAlpha(SkPaint* paint, SkRandom* rand) {
+    static void SetColorAndAlpha(SkPaint* paint, SkLCGRandom* rand) {
         SkColor color = rand->nextU();
         color |= 0xff000000;
         paint->setColor(color);
@@ -94,7 +93,7 @@ protected:
         }
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         // Stroke widths are:
         // 0(may use hairline rendering), 10(common case for stroke-style)
         // 40(>= geometry width/height, make the contour filled in fact)
@@ -110,7 +109,7 @@ protected:
         SkPaint paint;
         paint.setAntiAlias(true);
 
-        SkRandom rand;
+        SkLCGRandom rand;
         // For stroke style painter
         paint.setStyle(SkPaint::kStroke_Style);
         for (int join = 0; join < kNumJoins; ++join) {

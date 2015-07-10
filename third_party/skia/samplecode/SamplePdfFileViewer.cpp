@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2013 Google Inc.
  *
@@ -11,6 +12,7 @@
 #include "SkDumpCanvas.h"
 #include "SkView.h"
 #include "SkCanvas.h"
+#include "Sk64.h"
 #include "SkGradientShader.h"
 #include "SkGraphics.h"
 #include "SkImageDecoder.h"

@@ -8,6 +8,7 @@
 
 
 #include "SkEvent.h"
+#include "SkParse.h"
 
 void SkEvent::initialize(const char* type, size_t typeLen,
                          SkEventSinkID targetID) {
@@ -117,8 +118,6 @@ void SkEvent::setType(const SkString& type)
 
 ////////////////////////////////////////////////////////////////////////////
 
-#include "SkParse.h"
-
 void SkEvent::inflate(const SkDOM& dom, const SkDOM::Node* node)
 {
     const char* name = dom.findAttr(node, "type");
@@ -137,14 +136,12 @@ void SkEvent::inflate(const SkDOM& dom, const SkDOM::Node* node)
     {
         if (strcmp(dom.getName(node), "data"))
         {
-            SkDEBUGCODE(SkDebugf("SkEvent::inflate unrecognized subelement <%s>\n", dom.getName(node));)
             continue;
         }
 
         name = dom.findAttr(node, "name");
         if (name == NULL)
         {
-            SkDEBUGCODE(SkDebugf("SkEvent::inflate missing required \"name\" attribute in <data> subelement\n");)
             continue;
         }
 
@@ -162,89 +159,13 @@ void SkEvent::inflate(const SkDOM& dom, const SkDOM::Node* node)
         }
         else if ((value = dom.findAttr(node, "string")) != NULL)
             this->setString(name, value);
-#ifdef SK_DEBUG
-        else
-        {
-            SkDebugf("SkEvent::inflate <data name=\"%s\"> subelement missing required type attribute [S32 | scalar | string]\n", name);
-        }
-#endif
+
     }
 }
 
-#ifdef SK_DEBUG
-
-    #ifndef SkScalarToFloat
-        #define SkScalarToFloat(x)  ((x) / 65536.f)
-    #endif
-
-    void SkEvent::dump(const char title[])
-    {
-        if (title)
-            SkDebugf("%s ", title);
-
-        SkString    etype;
-        this->getType(&etype);
-        SkDebugf("event<%s> fast32=%d", etype.c_str(), this->getFast32());
-
-        const SkMetaData&   md = this->getMetaData();
-        SkMetaData::Iter    iter(md);
-        SkMetaData::Type    mtype;
-        int                 count;
-        const char*         name;
-
-        while ((name = iter.next(&mtype, &count)) != NULL)
-        {
-            SkDebugf(" <%s>=", name);
-            switch (mtype) {
-            case SkMetaData::kS32_Type:     // vector version???
-                {
-                    int32_t value;
-                    md.findS32(name, &value);
-                    SkDebugf("%d ", value);
-                }
-                break;
-            case SkMetaData::kScalar_Type:
-                {
-                    const float* values = md.findScalars(name, &count, NULL);
-                    SkDebugf("%f", SkScalarToFloat(values[0]));
-                    for (int i = 1; i < count; i++)
-                        SkDebugf(", %f", SkScalarToFloat(values[i]));
-                    SkDebugf(" ");
-                }
-                break;
-            case SkMetaData::kString_Type:
-                {
-                    const char* value = md.findString(name);
-                    SkDebugf("<%s> ", value);
-                }
-                break;
-            case SkMetaData::kPtr_Type:     // vector version???
-                {
-                    void*   value;
-                    md.findPtr(name, &value);
-                    SkDebugf("%p ", value);
-                }
-                break;
-            case SkMetaData::kBool_Type:    // vector version???
-                {
-                    bool    value;
-                    md.findBool(name, &value);
-                    SkDebugf("%s ", value ? "true" : "false");
-                }
-                break;
-            default:
-                break;
-            }
-        }
-        SkDebugf("\n");
-    }
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef SK_DEBUG
-// #define SK_TRACE_EVENTSx
-#endif
 
 #ifdef SK_TRACE_EVENTS
     static void event_log(const char s[])

@@ -60,7 +60,7 @@ static void gen_paths(const SkTDArray<SkScalar>& topData,
         x += xDelta;
     }
 
-    if (bottomData) {
+    if (NULL != bottomData) {
         SkASSERT(bottomData->count() == topData.count());
         // iterate backwards over the previous graph's data to generate the bottom of the filled
         // area (and account for leftShift).
@@ -88,7 +88,7 @@ public:
     }
 
 protected:
-    bool onQuery(SkEvent* evt) override {
+    virtual bool onQuery(SkEvent* evt) SK_OVERRIDE {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "Chart");
             return true;
@@ -96,7 +96,7 @@ protected:
         return this->INHERITED::onQuery(evt);
     }
 
-    void onDrawContent(SkCanvas* canvas) override {
+    virtual void onDrawContent(SkCanvas* canvas) SK_OVERRIDE {
         bool sizeChanged = false;
         if (canvas->getDeviceSize() != fSize) {
             fSize = canvas->getDeviceSize();

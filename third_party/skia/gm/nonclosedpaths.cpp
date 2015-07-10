@@ -32,13 +32,12 @@ public:
     };
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("nonclosedpaths");
     }
 
     // 12 * 18 + 3 cases, every case is 100 * 100 pixels.
-    SkISize onISize() override {
+    virtual SkISize onISize() SK_OVERRIDE {
         return SkISize::Make(1220, 1920);
     }
 
@@ -67,12 +66,12 @@ protected:
         canvas->translate(x, y);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         // Stroke widths are:
         // 0(may use hairline rendering), 10(common case for stroke-style)
         // 40 and 50(>= geometry width/height, make the contour filled in fact)
         static const int kStrokeWidth[] = {0, 10, 40, 50};
-        int numWidths = SK_ARRAY_COUNT(kStrokeWidth);
+        size_t numWidths = SK_ARRAY_COUNT(kStrokeWidth);
 
         static const SkPaint::Style kStyle[] = {
             SkPaint::kStroke_Style, SkPaint::kStrokeAndFill_Style
@@ -99,7 +98,7 @@ protected:
             for (size_t style = 0; style < SK_ARRAY_COUNT(kStyle); ++style) {
                 for (size_t cap = 0; cap < SK_ARRAY_COUNT(kCap); ++cap) {
                     for (size_t join = 0; join < SK_ARRAY_COUNT(kJoin); ++join) {
-                        for (int width = 0; width < numWidths; ++width) {
+                        for (size_t width = 0; width < numWidths; ++width) {
                             canvas->save();
                             SetLocation(canvas, counter, SkPaint::kJoinCount * numWidths);
 

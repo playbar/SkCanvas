@@ -10,7 +10,8 @@
 #include "SkBlurImageFilter.h"
 
 static void make_bm(SkBitmap* bm) {
-    bm->allocN32Pixels(100, 100);
+    bm->setConfig(SkBitmap::kARGB_8888_Config, 100, 100);
+    bm->allocPixels();
     bm->eraseColor(SK_ColorBLUE);
 
     SkCanvas canvas(*bm);
@@ -62,16 +63,15 @@ public:
     SpriteBitmapGM() {}
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() {
         return SkString("spritebitmap");
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() {
         return SkISize::Make(640, 480);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
         SkBitmap bm;
         make_bm(&bm);
 
@@ -79,7 +79,7 @@ protected:
         int dy = 10;
 
         SkScalar sigma = 8;
-        SkAutoTUnref<SkImageFilter> filter(SkBlurImageFilter::Create(sigma, sigma));
+        SkAutoTUnref<SkImageFilter> filter(new SkBlurImageFilter(sigma, sigma));
 
         draw_2_bitmaps(canvas, bm, false, dx, dy);
         dy += bm.height() + 20;

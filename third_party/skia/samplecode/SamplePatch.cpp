@@ -1,12 +1,11 @@
+
 /*
  * Copyright 2011 Google Inc.
  *
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 #include "SampleCode.h"
-#include "SkAnimTimer.h"
 #include "SkView.h"
 #include "SkCanvas.h"
 #include "SkGradientShader.h"
@@ -43,7 +42,7 @@ static SkShader* make_shader1(const SkIPoint& size) {
                       { SkIntToScalar(size.fX), SkIntToScalar(size.fY) } };
     SkColor colors[] = { SK_ColorRED, SK_ColorGREEN, SK_ColorBLUE, SK_ColorRED };
     return SkGradientShader::CreateLinear(pts, colors, NULL,
-                    SK_ARRAY_COUNT(colors), SkShader::kMirror_TileMode);
+                    SK_ARRAY_COUNT(colors), SkShader::kMirror_TileMode, NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -207,29 +206,26 @@ void Patch::draw(SkCanvas* canvas, const SkPaint& paint, int nu, int nv,
 
 static void drawpatches(SkCanvas* canvas, const SkPaint& paint, int nu, int nv,
                         Patch* patch) {
+
     SkAutoCanvasRestore ar(canvas, true);
 
-    patch->draw(canvas, paint, nu, nv, false, false);
+    patch->draw(canvas, paint, 10, 10, false, false);
     canvas->translate(SkIntToScalar(180), 0);
-    patch->draw(canvas, paint, nu, nv, true, false);
+    patch->draw(canvas, paint, 10, 10, true, false);
     canvas->translate(SkIntToScalar(180), 0);
-    patch->draw(canvas, paint, nu, nv, false, true);
+    patch->draw(canvas, paint, 10, 10, false, true);
     canvas->translate(SkIntToScalar(180), 0);
-    patch->draw(canvas, paint, nu, nv, true, true);
+    patch->draw(canvas, paint, 10, 10, true, true);
 }
 
-const SkScalar DX = 20;
-const SkScalar DY = 0;
-
 class PatchView : public SampleView {
-    SkScalar    fAngle;
     SkShader*   fShader0;
     SkShader*   fShader1;
     SkIPoint    fSize0, fSize1;
     SkPoint     fPts[12];
 
 public:
-    PatchView() : fAngle(0) {
+    PatchView() {
         fShader0 = make_shader0(&fSize0);
         fSize1 = fSize0;
         if (fSize0.fX == 0 || fSize0.fY == 0) {
@@ -271,14 +267,11 @@ protected:
     }
 
     virtual void onDrawContent(SkCanvas* canvas) {
-        const int nu = 10;
-        const int nv = 10;
-
         SkPaint paint;
         paint.setDither(true);
-        paint.setFilterQuality(kLow_SkFilterQuality);
+        paint.setFilterLevel(SkPaint::kLow_FilterLevel);
 
-        canvas->translate(DX, DY);
+        canvas->translate(SkIntToScalar(20), 0);
 
         Patch   patch;
 
@@ -292,7 +285,7 @@ protected:
         patch.setBounds(fSize0.fX, fSize0.fY);
 
         patch.setPatch(fPts);
-        drawpatches(canvas, paint, nu, nv, &patch);
+        drawpatches(canvas, paint, 10, 10, &patch);
 
         paint.setShader(NULL);
         paint.setAntiAlias(true);
@@ -303,25 +296,8 @@ protected:
 
         paint.setAntiAlias(false);
         paint.setShader(fShader1);
-        if (true) {
-            SkMatrix m;
-            m.setSkew(1, 0);
-            SkShader* s = SkShader::CreateLocalMatrixShader(paint.getShader(), m);
-            paint.setShader(s)->unref();
-        }
-        if (true) {
-            SkMatrix m;
-            m.setRotate(fAngle);
-            SkShader* s = SkShader::CreateLocalMatrixShader(paint.getShader(), m);
-            paint.setShader(s)->unref();
-        }
         patch.setBounds(fSize1.fX, fSize1.fY);
-        drawpatches(canvas, paint, nu, nv, &patch);
-    }
-
-    bool onAnimate(const SkAnimTimer& timer) override {
-        fAngle = timer.scaled(60, 360);
-        return true;
+        drawpatches(canvas, paint, 10, 10, &patch);
     }
 
     class PtClick : public Click {
@@ -335,19 +311,17 @@ protected:
     }
 
     virtual SkView::Click* onFindClickHandler(SkScalar x, SkScalar y,
-                                              unsigned modi) override {
-        x -= DX;
-        y -= DY;
+                                              unsigned modi) SK_OVERRIDE {
         for (size_t i = 0; i < SK_ARRAY_COUNT(fPts); i++) {
             if (hittest(fPts[i], x, y)) {
-                return new PtClick(this, (int)i);
+                return new PtClick(this, i);
             }
         }
         return this->INHERITED::onFindClickHandler(x, y, modi);
     }
 
     virtual bool onClick(Click* click) {
-        fPts[((PtClick*)click)->fIndex].set(click->fCurr.fX - DX, click->fCurr.fY - DY);
+        fPts[((PtClick*)click)->fIndex].set(click->fCurr.fX, click->fCurr.fY);
         this->inval(NULL);
         return true;
     }

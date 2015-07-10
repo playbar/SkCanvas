@@ -19,13 +19,12 @@ public:
     }
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() {
         return SkString("fontscaler");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(1450, 750);
+    virtual SkISize onISize() {
+        return make_isize(1450, 750);
     }
 
     static void rotate_about(SkCanvas* canvas,
@@ -36,7 +35,7 @@ protected:
         canvas->translate(-px, -py);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
         SkPaint paint;
 
         paint.setAntiAlias(true);
@@ -44,7 +43,7 @@ protected:
         //With freetype the default (normal hinting) can be really ugly.
         //Most distros now set slight (vertical hinting only) in any event.
         paint.setHinting(SkPaint::kSlight_Hinting);
-        sk_tool_utils::set_portable_typeface(&paint, "Times Roman", SkTypeface::kNormal);
+        SkSafeUnref(paint.setTypeface(SkTypeface::CreateFromName("Times Roman", SkTypeface::kNormal)));
 
         const char* text = "Hamburgefons ooo mmm";
         const size_t textLen = strlen(text);
@@ -69,10 +68,12 @@ protected:
                     canvas->drawRect(r, p);
                 }
 
+                int index = 0;
                 for (int ps = 6; ps <= 22; ps++) {
                     paint.setTextSize(SkIntToScalar(ps));
                     canvas->drawText(text, textLen, x, y, paint);
                     y += paint.getFontMetrics(NULL);
+                    index += 1;
                 }
             }
             canvas->translate(0, SkIntToScalar(360));

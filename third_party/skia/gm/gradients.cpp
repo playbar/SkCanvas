@@ -1,10 +1,10 @@
+
 /*
  * Copyright 2011 Google Inc.
  *
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 #include "gm.h"
 #include "SkGradientShader.h"
 
@@ -40,58 +40,57 @@ static const GradData gGradData[] = {
 };
 
 static SkShader* MakeLinear(const SkPoint pts[2], const GradData& data,
-                            SkShader::TileMode tm, const SkMatrix& localMatrix) {
+                            SkShader::TileMode tm, SkUnitMapper* mapper) {
     return SkGradientShader::CreateLinear(pts, data.fColors, data.fPos,
-                                          data.fCount, tm, 0, &localMatrix);
+                                          data.fCount, tm, mapper);
 }
 
 static SkShader* MakeRadial(const SkPoint pts[2], const GradData& data,
-                            SkShader::TileMode tm, const SkMatrix& localMatrix) {
+                            SkShader::TileMode tm, SkUnitMapper* mapper) {
     SkPoint center;
     center.set(SkScalarAve(pts[0].fX, pts[1].fX),
                SkScalarAve(pts[0].fY, pts[1].fY));
     return SkGradientShader::CreateRadial(center, center.fX, data.fColors,
-                                          data.fPos, data.fCount, tm, 0, &localMatrix);
+                                          data.fPos, data.fCount, tm, mapper);
 }
 
 static SkShader* MakeSweep(const SkPoint pts[2], const GradData& data,
-                           SkShader::TileMode, const SkMatrix& localMatrix) {
+                           SkShader::TileMode, SkUnitMapper* mapper) {
     SkPoint center;
     center.set(SkScalarAve(pts[0].fX, pts[1].fX),
                SkScalarAve(pts[0].fY, pts[1].fY));
     return SkGradientShader::CreateSweep(center.fX, center.fY, data.fColors,
-                                         data.fPos, data.fCount, 0, &localMatrix);
+                                         data.fPos, data.fCount, mapper);
 }
 
 static SkShader* Make2Radial(const SkPoint pts[2], const GradData& data,
-                             SkShader::TileMode tm, const SkMatrix& localMatrix) {
+                             SkShader::TileMode tm, SkUnitMapper* mapper) {
     SkPoint center0, center1;
     center0.set(SkScalarAve(pts[0].fX, pts[1].fX),
                 SkScalarAve(pts[0].fY, pts[1].fY));
     center1.set(SkScalarInterp(pts[0].fX, pts[1].fX, SkIntToScalar(3)/5),
                 SkScalarInterp(pts[0].fY, pts[1].fY, SkIntToScalar(1)/4));
-    return SkGradientShader::CreateTwoPointConical(
-                                                   center1, (pts[1].fX - pts[0].fX) / 7,
-                                                   center0, (pts[1].fX - pts[0].fX) / 2,
-                                                   data.fColors, data.fPos, data.fCount, tm,
-                                                   0, &localMatrix);
+    return SkGradientShader::CreateTwoPointRadial(
+                                                  center1, (pts[1].fX - pts[0].fX) / 7,
+                                                  center0, (pts[1].fX - pts[0].fX) / 2,
+                                                  data.fColors, data.fPos, data.fCount, tm, mapper);
 }
 
 static SkShader* Make2Conical(const SkPoint pts[2], const GradData& data,
-                             SkShader::TileMode tm, const SkMatrix& localMatrix) {
+                             SkShader::TileMode tm, SkUnitMapper* mapper) {
     SkPoint center0, center1;
-    SkScalar radius0 = (pts[1].fX - pts[0].fX) / 10;
-    SkScalar radius1 = (pts[1].fX - pts[0].fX) / 3;
+    SkScalar radius0 = SkScalarDiv(pts[1].fX - pts[0].fX, 10);
+    SkScalar radius1 = SkScalarDiv(pts[1].fX - pts[0].fX, 3);
     center0.set(pts[0].fX + radius0, pts[0].fY + radius0);
     center1.set(pts[1].fX - radius1, pts[1].fY - radius1);
     return SkGradientShader::CreateTwoPointConical(center1, radius1,
                                                    center0, radius0,
                                                    data.fColors, data.fPos,
-                                                   data.fCount, tm, 0, &localMatrix);
+                                                   data.fCount, tm, mapper);
 }
 
 typedef SkShader* (*GradMaker)(const SkPoint pts[2], const GradData& data,
-                               SkShader::TileMode tm, const SkMatrix& localMatrix);
+                               SkShader::TileMode tm, SkUnitMapper* mapper);
 static const GradMaker gGradMakers[] = {
     MakeLinear, MakeRadial, MakeSweep, Make2Radial, Make2Conical
 };
@@ -105,7 +104,6 @@ public:
     }
 
 protected:
-
     SkString onShortName() {
         return SkString("gradients");
     }
@@ -127,14 +125,14 @@ protected:
         for (size_t i = 0; i < SK_ARRAY_COUNT(gGradData); i++) {
             canvas->save();
             for (size_t j = 0; j < SK_ARRAY_COUNT(gGradMakers); j++) {
-                SkMatrix scale = SkMatrix::I();
+                SkShader* shader = gGradMakers[j](pts, gGradData[i], tm, NULL);
 
                 if (i == 5) { // if the clamp case
+                    SkMatrix scale;
                     scale.setScale(0.5f, 0.5f);
                     scale.postTranslate(25.f, 25.f);
+                    shader->setLocalMatrix(scale);
                 }
-
-                SkShader* shader = gGradMakers[j](pts, gGradData[i], tm, scale);
 
                 paint.setShader(shader);
                 canvas->drawRect(r, paint);
@@ -149,7 +147,6 @@ protected:
 private:
     typedef GM INHERITED;
 };
-DEF_GM( return new GradientsGM; )
 
 // Based on the original gradient slide, but with perspective applied to the
 // gradient shaders' local matrices
@@ -160,7 +157,6 @@ public:
     }
 
 protected:
-
     SkString onShortName() {
         return SkString("gradients_local_perspective");
     }
@@ -182,13 +178,17 @@ protected:
         for (size_t i = 0; i < SK_ARRAY_COUNT(gGradData); i++) {
             canvas->save();
             for (size_t j = 0; j < SK_ARRAY_COUNT(gGradMakers); j++) {
+                SkShader* shader = gGradMakers[j](pts, gGradData[i], tm, NULL);
+
                 // apply an increasing y perspective as we move to the right
                 SkMatrix perspective;
                 perspective.setIdentity();
-                perspective.setPerspY(SkIntToScalar(i+1) / 500);
-                perspective.setSkewX(SkIntToScalar(i+1) / 10);
+                perspective.setPerspY(SkScalarDiv(SkIntToScalar((unsigned) i+1),
+                                      SkIntToScalar(500)));
+                perspective.setSkewX(SkScalarDiv(SkIntToScalar((unsigned) i+1),
+                                     SkIntToScalar(10)));
 
-                SkShader* shader = gGradMakers[j](pts, gGradData[i], tm, perspective);
+                shader->setLocalMatrix(perspective);
 
                 paint.setShader(shader);
                 canvas->drawRect(r, paint);
@@ -203,7 +203,6 @@ protected:
 private:
     typedef GM INHERITED;
 };
-DEF_GM( return new GradientsLocalPerspectiveGM; )
 
 // Based on the original gradient slide, but with perspective applied to
 // the view matrix
@@ -218,8 +217,8 @@ protected:
     virtual void onDraw(SkCanvas* canvas) {
         SkMatrix perspective;
         perspective.setIdentity();
-        perspective.setPerspY(0.001f);
-        perspective.setSkewX(SkIntToScalar(8) / 25);
+        perspective.setPerspY(SkScalarDiv(SK_Scalar1, SkIntToScalar(1000)));
+        perspective.setSkewX(SkScalarDiv(SkIntToScalar(8), SkIntToScalar(25)));
         canvas->concat(perspective);
         INHERITED::onDraw(canvas);
     }
@@ -227,7 +226,6 @@ protected:
 private:
     typedef GradientsGM INHERITED;
 };
-DEF_GM( return new GradientsViewPerspectiveGM; )
 
 /*
  Inspired by this <canvas> javascript, where we need to detect that we are not
@@ -271,9 +269,9 @@ protected:
         SkPoint c1;
         c1.iset(0, 25);
         SkScalar r1 = SkIntToScalar(150);
-        SkShader* s = SkGradientShader::CreateTwoPointConical(c0, r0, c1, r1, colors,
-                                                              pos, SK_ARRAY_COUNT(pos),
-                                                              SkShader::kClamp_TileMode);
+        SkShader* s = SkGradientShader::CreateTwoPointRadial(c0, r0, c1, r1, colors,
+                                                             pos, SK_ARRAY_COUNT(pos),
+                                                             SkShader::kClamp_TileMode);
         SkPaint paint;
         paint.setShader(s)->unref();
         canvas->drawPaint(paint);
@@ -282,7 +280,6 @@ protected:
 private:
     typedef GM INHERITED;
 };
-DEF_GM( return new GradientsDegenrate2PointGM; )
 
 /// Tests correctness of *optimized* codepaths in gradients.
 
@@ -312,7 +309,7 @@ protected:
         SkShader* shader = SkGradientShader::CreateRadial(
             SkPoint(center),
             SkIntToScalar(200), gColors, NULL, 5,
-            SkShader::kClamp_TileMode);
+            SkShader::kClamp_TileMode, NULL);
         paint.setShader(shader);
         canvas->drawRect(r, paint);
         shader->unref();
@@ -321,7 +318,6 @@ protected:
 private:
     typedef GM INHERITED;
 };
-DEF_GM( return new ClampedGradientsGM; )
 
 /// Checks quality of large radial gradients, which may display
 /// some banding.
@@ -331,13 +327,12 @@ public:
     RadialGradientGM() {}
 
 protected:
-
-    SkString onShortName() override { return SkString("radial_gradient"); }
-    SkISize onISize() override { return SkISize::Make(1280, 1280); }
+    SkString onShortName() { return SkString("radial_gradient"); }
+    virtual SkISize onISize() { return SkISize::Make(1280, 1280); }
     void drawBG(SkCanvas* canvas) {
         canvas->drawColor(0xFF000000);
     }
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
         const SkISize dim = this->getISize();
 
         this->drawBG(canvas);
@@ -364,22 +359,21 @@ protected:
 private:
     typedef GM INHERITED;
 };
-DEF_GM( return new RadialGradientGM; )
+
 
 class RadialGradient2GM : public GM {
 public:
     RadialGradient2GM() {}
 
 protected:
-
-    SkString onShortName() override { return SkString("radial_gradient2"); }
-    SkISize onISize() override { return SkISize::Make(800, 400); }
+    SkString onShortName() { return SkString("radial_gradient2"); }
+    virtual SkISize onISize() { return SkISize::Make(800, 400); }
     void drawBG(SkCanvas* canvas) {
         canvas->drawColor(0xFF000000);
     }
 
     // Reproduces the example given in bug 7671058.
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
         SkPaint paint1, paint2, paint3;
         paint1.setStyle(SkPaint::kFill_Style);
         paint2.setStyle(SkPaint::kFill_Style);
@@ -402,17 +396,17 @@ protected:
             SkAutoTUnref<SkShader> sweep(
                     SkGradientShader::CreateSweep(cx, cy, sweep_colors,
                                                   NULL, SK_ARRAY_COUNT(sweep_colors),
-                                                  flags[i], NULL));
+                                                  NULL, flags[i]));
             SkAutoTUnref<SkShader> radial1(
                     SkGradientShader::CreateRadial(center, radius, colors1,
                                                    NULL, SK_ARRAY_COUNT(colors1),
                                                    SkShader::kClamp_TileMode,
-                                                   flags[i], NULL));
+                                                   NULL, flags[i]));
             SkAutoTUnref<SkShader> radial2(
                     SkGradientShader::CreateRadial(center, radius, colors2,
                                                    NULL, SK_ARRAY_COUNT(colors2),
                                                    SkShader::kClamp_TileMode,
-                                                   flags[i], NULL));
+                                                   NULL, flags[i]));
             paint1.setShader(sweep);
             paint2.setShader(radial1);
             paint3.setShader(radial2);
@@ -428,36 +422,27 @@ protected:
 private:
     typedef GM INHERITED;
 };
-DEF_GM( return new RadialGradient2GM; )
 
-// Shallow radial (shows banding on raster)
-class RadialGradient3GM : public GM {
-    SkAutoTUnref<SkShader> fShader;
+///////////////////////////////////////////////////////////////////////////////
 
-protected:
-    SkString onShortName() override { return SkString("radial_gradient3"); }
+static GM* MyFactory(void*) { return new GradientsGM; }
+static GMRegistry reg(MyFactory);
 
-    SkISize onISize() override { return SkISize::Make(500, 500); }
+static GM* MyFactory2(void*) { return new GradientsDegenrate2PointGM; }
+static GMRegistry reg2(MyFactory2);
 
-    bool runAsBench() const override { return true; }
+static GM* MyFactory3(void*) { return new ClampedGradientsGM; }
+static GMRegistry reg3(MyFactory3);
 
-    void onOnceBeforeDraw() override {
-        const SkPoint center = { 0, 0 };
-        const SkScalar kRadius = 3000;
-        const SkColor gColors[] = { 0xFFFFFFFF, 0xFF000000 };
-        fShader.reset(SkGradientShader::CreateRadial(center, kRadius, gColors, NULL, 2,
-                                                     SkShader::kClamp_TileMode));
-    }
+static GM* MyFactory4(void*) { return new RadialGradientGM; }
+static GMRegistry reg4(MyFactory4);
 
-    void onDraw(SkCanvas* canvas) override {
-        SkPaint paint;
-        paint.setShader(fShader);
-        canvas->drawRect(SkRect::MakeWH(500, 500), paint);
-    }
-    
-private:
-    typedef GM INHERITED;
-};
-DEF_GM( return new RadialGradient3GM; )
+static GM* MyFactory5(void*) { return new GradientsLocalPerspectiveGM; }
+static GMRegistry reg5(MyFactory5);
 
+static GM* MyFactory6(void*) { return new GradientsViewPerspectiveGM; }
+static GMRegistry reg6(MyFactory6);
+
+static GM* MyFactory7(void*) { return new RadialGradient2GM; }
+static GMRegistry reg7(MyFactory7);
 }

@@ -28,6 +28,22 @@
 #include "SkOSFile.h"
 #include "SkStream.h"
 
+static void check_for_nonwhite(const SkBitmap& bm, int alpha) {
+    if (bm.config() != SkBitmap::kRGB_565_Config) {
+        return;
+    }
+
+    for (int y = 0; y < bm.height(); y++) {
+        for (int x = 0; x < bm.width(); x++) {
+            uint16_t c = *bm.getAddr16(x, y);
+            if (c != 0xFFFF) {
+                SkDebugf("------ nonwhite alpha=%x [%d %d] %x\n", alpha, x, y, c);
+                return;
+            }
+        }
+    }
+}
+
 class TextAlphaView : public SampleView {
 public:
     TextAlphaView() {
@@ -36,7 +52,7 @@ public:
 
 protected:
     // overrides from SkEventSink
-    bool onQuery(SkEvent* evt) override {
+    virtual bool onQuery(SkEvent* evt)  {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "TextAlpha");
             return true;
@@ -44,7 +60,7 @@ protected:
         return this->INHERITED::onQuery(evt);
     }
 
-    void onDrawContent(SkCanvas* canvas) override {
+    virtual void onDrawContent(SkCanvas* canvas) {
         const char* str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         SkPaint paint;
         SkScalar    x = SkIntToScalar(10);
@@ -54,8 +70,8 @@ protected:
 
         paint.setARGB(fByte, 0xFF, 0xFF, 0xFF);
 
-        //paint.setMaskFilter(SkBlurMaskFilter::Create(kNormal_SkBlurStyle,
-        //                            SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(3))));
+        paint.setMaskFilter(SkBlurMaskFilter::Create(SkBlurMaskFilter::kNormal_BlurStyle,
+                                    SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(3))));
         paint.getMaskFilter()->unref();
 
         SkRandom rand;
@@ -67,13 +83,23 @@ protected:
             canvas->drawText(str, strlen(str), x, y, paint);
             y += paint.getFontMetrics(NULL);
         }
+        if (false) { // avoid bit rot, suppress warning
+            check_for_nonwhite(canvas->getDevice()->accessBitmap(false), fByte);
+            SkDebugf("------ byte %x\n", fByte);
+        }
+
+        if (false) {
+            fByte += 1;
+            fByte &= 0xFF;
+            this->inval(NULL);
+        }
     }
 
-    SkView::Click* onFindClickHandler(SkScalar x, SkScalar y, unsigned) override {
+    virtual SkView::Click* onFindClickHandler(SkScalar x, SkScalar y, unsigned) SK_OVERRIDE {
         return new Click(this);
     }
 
-    bool onClick(Click* click) override {
+    virtual bool onClick(Click* click) {
         int y = click->fICurr.fY;
         if (y < 0) {
             y = 0;

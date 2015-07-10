@@ -84,7 +84,6 @@
 //#  endif
 //#endif
 
-#define GLEWAPI extern
 
 #ifdef __cplusplus
 extern "C" {

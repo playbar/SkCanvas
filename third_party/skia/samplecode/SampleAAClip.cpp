@@ -17,9 +17,6 @@ static void testop(const SkIRect& r0, const SkIRect& r1, SkRegion::Op op,
     c0.setRect(r0);
     c1.setRect(r1);
     c2.op(c0, c1, op);
-
-    SkDEBUGCODE(SkIRect r2 = c2.getBounds());
-    SkASSERT(r2 == expectedR);
 }
 
 static const struct {
@@ -46,7 +43,9 @@ static void drawClip(SkCanvas* canvas, const SkAAClip& clip) {
     clip.copyToMask(&mask);
     SkAutoMaskFreeImage amfi(mask.fImage);
 
-    bm.installMaskPixels(mask);
+    bm.setConfig(SkBitmap::kA8_Config, mask.fBounds.width(),
+                 mask.fBounds.height(), mask.fRowBytes);
+    bm.setPixels(mask.fImage);
 
     SkPaint paint;
     canvas->drawBitmap(bm,

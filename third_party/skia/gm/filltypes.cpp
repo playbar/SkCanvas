@@ -25,17 +25,17 @@ public:
     }
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() {
         return SkString("filltypes");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(835, 840);
+    virtual SkISize onISize() {
+        return make_isize(835, 840);
     }
 
     void showPath(SkCanvas* canvas, int x, int y, SkPath::FillType ft,
                   SkScalar scale, const SkPaint& paint) {
+
         const SkRect r = { 0, 0, SkIntToScalar(150), SkIntToScalar(150) };
 
         canvas->save();
@@ -61,7 +61,7 @@ protected:
                  scale, paint);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
         this->makePath();
 
         canvas->translate(SkIntToScalar(20), SkIntToScalar(20));

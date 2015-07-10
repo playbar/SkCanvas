@@ -23,15 +23,15 @@ public:
     }
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("bigblurs");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(kWidth, kHeight);
+    virtual SkISize onISize() SK_OVERRIDE {
+        return make_isize(kWidth, kHeight);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         static const int kBig = 65536;
         static const SkScalar kSigma = SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(4));
 
@@ -69,8 +69,9 @@ protected:
         int desiredX = 0, desiredY = 0;
 
         for (int i = 0; i < 2; ++i) {
-            for (int j = 0; j <= kLastEnum_SkBlurStyle; ++j) {
-                SkMaskFilter* mf = SkBlurMaskFilter::Create((SkBlurStyle)j, kSigma);
+            for (int j = 0; j < SkBlurMaskFilter::kBlurStyleCount; ++j) {
+                SkMaskFilter* mf = SkBlurMaskFilter::Create((SkBlurMaskFilter::BlurStyle)j,
+                                                            kSigma);
                 blurPaint.setMaskFilter(mf)->unref();
 
                 for (int k = 0; k < (int)SK_ARRAY_COUNT(origins); ++k) {
@@ -106,7 +107,7 @@ protected:
 private:
     static const int kCloseUpSize = 64;
     static const int kWidth = 5 * kCloseUpSize;
-    static const int kHeight = 2 * (kLastEnum_SkBlurStyle + 1) * kCloseUpSize;
+    static const int kHeight = 2 * SkBlurMaskFilter::kBlurStyleCount * kCloseUpSize;
 
     typedef GM INHERITED;
 };

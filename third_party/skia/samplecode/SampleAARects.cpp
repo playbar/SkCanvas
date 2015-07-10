@@ -14,7 +14,8 @@
 
 static SkBitmap createBitmap(int n) {
     SkBitmap bitmap;
-    bitmap.allocN32Pixels(n, n);
+    bitmap.setConfig(SkBitmap::kARGB_8888_Config, n, n);
+    bitmap.allocPixels();
     bitmap.eraseColor(SK_ColorGREEN);
 
     SkCanvas canvas(bitmap);
@@ -73,8 +74,8 @@ protected:
 
         SkRect rect;
 
-        SkScalar dx = SkIntToScalar(80);
-        SkScalar dy = SkIntToScalar(100);
+        float dx = SkIntToScalar(80);
+        float dy = SkIntToScalar(100);
         SkMatrix matrix;
         for (size_t p = 0; p < SK_ARRAY_COUNT(paints); ++p) {
             for (int stroke = 0; stroke < 2; ++stroke) {

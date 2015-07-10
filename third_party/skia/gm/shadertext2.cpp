@@ -7,11 +7,13 @@
 #include "gm.h"
 #include "SkCanvas.h"
 #include "SkGradientShader.h"
+#include "SkUnitMappers.h"
 
 namespace skiagm {
 
-static void makebm(SkBitmap* bm, int w, int h) {
-    bm->allocN32Pixels(w, h);
+static void makebm(SkBitmap* bm, SkBitmap::Config config, int w, int h) {
+    bm->setConfig(config, w, h);
+    bm->allocPixels();
     bm->eraseColor(SK_ColorTRANSPARENT);
 
     SkCanvas    canvas(*bm);
@@ -25,8 +27,14 @@ static void makebm(SkBitmap* bm, int w, int h) {
 
     SkPaint     paint;
 
+    SkUnitMapper*   um = NULL;
+
+    um = new SkCosineMapper;
+
+    SkAutoUnref au(um);
+
     paint.setShader(SkGradientShader::CreateLinear(kPts0, kColors0, kPos,
-                    SK_ARRAY_COUNT(kColors0), SkShader::kClamp_TileMode))->unref();
+                    SK_ARRAY_COUNT(kColors0), SkShader::kClamp_TileMode, um))->unref();
     canvas.drawPaint(paint);
     paint.setShader(SkGradientShader::CreateLinear(kPts1, kColors1, kPos,
                     SK_ARRAY_COUNT(kColors1), SkShader::kClamp_TileMode))->unref();
@@ -48,13 +56,13 @@ public:
 
 protected:
 
-    SkString onShortName() override {
+    SkString onShortName() {
         return SkString("shadertext2");
     }
 
-    SkISize onISize() override { return SkISize::Make(1800, 900); }
+    SkISize onISize() { return make_isize(1800, 900); }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
         static const char kText[] = "SKIA";
         static const int kTextLen = SK_ARRAY_COUNT(kText) - 1;
         static const int kPointSize = 55;
@@ -85,18 +93,20 @@ protected:
 
         static SkBitmap bmp;
         if (bmp.isNull()) {
-            makebm(&bmp, kPointSize / 2, kPointSize / 2);
+            makebm(&bmp, SkBitmap::kARGB_8888_Config, kPointSize / 2, kPointSize / 2);
         }
 
+        SkAutoTUnref<SkShader> shader(SkShader::CreateBitmapShader(bmp,
+                                                                   SkShader::kMirror_TileMode,
+                                                                   SkShader::kRepeat_TileMode));
         SkPaint fillPaint;
         fillPaint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&fillPaint);
         fillPaint.setTextSize(SkIntToScalar(kPointSize));
-        fillPaint.setFilterQuality(kLow_SkFilterQuality);
+        fillPaint.setFilterLevel(SkPaint::kLow_FilterLevel);
+        fillPaint.setShader(shader);
 
         SkPaint outlinePaint;
         outlinePaint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&outlinePaint);
         outlinePaint.setTextSize(SkIntToScalar(kPointSize));
         outlinePaint.setStyle(SkPaint::kStroke_Style);
         outlinePaint.setStrokeWidth(0.f);
@@ -112,7 +122,6 @@ protected:
         SkPaint labelPaint;
         labelPaint.setColor(0xff000000);
         labelPaint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&labelPaint);
         labelPaint.setTextSize(12.f);
 
         canvas->translate(15.f, 15.f);
@@ -141,7 +150,7 @@ protected:
         for (int s = 0; s < 2; ++s) {
             SkPaint& paint = s ? strokePaint : fillPaint;
 
-            SkScalar columnH = 0;
+            SkScalar columnH;
             for (int m = 0; m < matrices.count(); ++m) {
                 columnH = 0;
                 canvas->save();
@@ -150,11 +159,7 @@ protected:
                 canvas->translate(0, kPadY / 2 + kPointSize);
                 columnH += kPadY / 2 + kPointSize;
                 for (int lm = 0; lm < localMatrices.count(); ++lm) {
-                    paint.setShader(
-                            SkShader::CreateBitmapShader(bmp,
-                                                         SkShader::kMirror_TileMode,
-                                                         SkShader::kRepeat_TileMode,
-                                                         &localMatrices[lm].fMatrix))->unref();
+                    shader->setLocalMatrix(localMatrices[lm].fMatrix);
 
                     canvas->save();
                         canvas->concat(matrices[m].fMatrix);
@@ -199,12 +204,19 @@ protected:
         }
     }
 
+    virtual uint32_t onGetFlags() const SK_OVERRIDE {
+        // disable 565 for now, til mike fixes the debug assert
+        return this->INHERITED::onGetFlags() | kSkip565_Flag;
+    }
+
 private:
     typedef GM INHERITED;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifndef SK_BUILD_FOR_ANDROID
 static GM* MyFactory(void*) { return new ShaderText2GM; }
 static GMRegistry reg(MyFactory);
+#endif
 }

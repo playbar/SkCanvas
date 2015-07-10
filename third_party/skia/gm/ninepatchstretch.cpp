@@ -7,13 +7,33 @@
 
 #include "gm.h"
 
-static void make_bitmap(SkBitmap* bitmap, SkIRect* center) {
+#if SK_SUPPORT_GPU
+#include "SkGpuDevice.h"
+#else
+class GrContext;
+#endif
+
+static void make_bitmap(SkBitmap* bitmap, GrContext* ctx, SkIRect* center) {
+    SkBaseDevice* dev;
+
     const int kFixed = 28;
     const int kStretchy = 8;
     const int kSize = 2*kFixed + kStretchy;
 
-    bitmap->allocN32Pixels(kSize, kSize);
-    SkCanvas canvas(*bitmap);
+#if SK_SUPPORT_GPU
+    if (ctx) {
+        dev = new SkGpuDevice(ctx, SkBitmap::kARGB_8888_Config, kSize, kSize);
+        *bitmap = dev->accessBitmap(false);
+    } else
+#endif
+    {
+        bitmap->setConfig(SkBitmap::kARGB_8888_Config, kSize, kSize);
+        bitmap->allocPixels();
+        dev = new SkBitmapDevice(*bitmap);
+    }
+
+    SkCanvas canvas(dev);
+    dev->unref();
     canvas.clear(SK_ColorTRANSPARENT);
 
     SkRect r = SkRect::MakeWH(SkIntToScalar(kSize), SkIntToScalar(kSize));
@@ -49,13 +69,13 @@ protected:
     }
 
     virtual SkISize onISize() {
-        return SkISize::Make(400, 400);
+        return make_isize(400, 400);
     }
 
     virtual void onDraw(SkCanvas* canvas) {
         SkBitmap bm;
         SkIRect center;
-        make_bitmap(&bm, &center);
+        make_bitmap(&bm, NULL /*SampleCode::GetGr()*/, &center);
 
         // amount of bm that should not be stretched (unless we have to)
         const SkScalar fixed = SkIntToScalar(bm.width() - center.width());
@@ -73,7 +93,7 @@ protected:
         SkScalar y = SkIntToScalar(100);
 
         SkPaint paint;
-        paint.setFilterQuality(kLow_SkFilterQuality);
+        paint.setFilterLevel(SkPaint::kLow_FilterLevel);
 
         for (int iy = 0; iy < 2; ++iy) {
             for (int ix = 0; ix < 2; ++ix) {

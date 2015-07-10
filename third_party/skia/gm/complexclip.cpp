@@ -18,27 +18,27 @@ static const SkColor gClipAColor = SK_ColorBLUE;
 static const SkColor gClipBColor = SK_ColorRED;
 
 class ComplexClipGM : public GM {
+    bool fDoAAClip;
+    bool fDoSaveLayer;
 public:
-    ComplexClipGM(bool aaclip, bool saveLayer, bool invertDraw)
+    ComplexClipGM(bool aaclip, bool saveLayer)
     : fDoAAClip(aaclip)
-    , fDoSaveLayer(saveLayer)
-    , fInvertDraw(invertDraw) {
+    , fDoSaveLayer(saveLayer) {
         this->setBGColor(0xFFDDDDDD);
+//        this->setBGColor(SkColorSetRGB(0xB0,0xDD,0xB0));
     }
 
 protected:
 
-
     SkString onShortName() {
         SkString str;
-        str.printf("complexclip_%s%s%s",
+        str.printf("complexclip_%s%s",
                    fDoAAClip ? "aa" : "bw",
-                   fDoSaveLayer ? "_layer" : "",
-                   fInvertDraw ? "_invert" : "");
+                   fDoSaveLayer ? "_layer" : "");
         return str;
     }
 
-    SkISize onISize() { return SkISize::Make(970, 780); }
+    SkISize onISize() { return make_isize(970, 780); }
 
     virtual void onDraw(SkCanvas* canvas) {
         SkPath path;
@@ -56,11 +56,7 @@ protected:
         path.quadTo(SkIntToScalar(150), SkIntToScalar(150), SkIntToScalar(125), SkIntToScalar(150));
         path.lineTo(SkIntToScalar(50),  SkIntToScalar(150));
         path.close();
-        if (fInvertDraw) {
-            path.setFillType(SkPath::kInverseEvenOdd_FillType);
-        } else {
-            path.setFillType(SkPath::kEvenOdd_FillType);
-        }
+        path.setFillType(SkPath::kEvenOdd_FillType);
         SkPaint pathPaint;
         pathPaint.setAntiAlias(true);
         pathPaint.setColor(gPathColor);
@@ -83,7 +79,6 @@ protected:
 
         SkPaint paint;
         paint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&paint);
         paint.setTextSize(SkIntToScalar(20));
 
         static const struct {
@@ -134,16 +129,6 @@ protected:
                     canvas->clipPath(clipA, SkRegion::kIntersect_Op, fDoAAClip);
                     canvas->clipPath(clipB, gOps[op].fOp, fDoAAClip);
 
-                    // In the inverse case we need to prevent the draw from covering the whole
-                    // canvas.
-                    if (fInvertDraw) {
-                        SkRect rectClip = clipA.getBounds();
-                        rectClip.join(path.getBounds());
-                        rectClip.join(path.getBounds());
-                        rectClip.outset(5, 5);
-                        canvas->clipRect(rectClip);
-                    }
-
                     // draw path clipped
                     canvas->drawPath(path, pathPaint);
                 canvas->restore();
@@ -191,22 +176,22 @@ private:
         canvas->drawPath(clipB, paint);
     }
 
-    bool fDoAAClip;
-    bool fDoSaveLayer;
-    bool fInvertDraw;
-
     typedef GM INHERITED;
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
-DEF_GM( return SkNEW_ARGS(ComplexClipGM, (false, false, false)); )
-DEF_GM( return SkNEW_ARGS(ComplexClipGM, (false, false, true));  )
-DEF_GM( return SkNEW_ARGS(ComplexClipGM, (false, true,  false)); )
-DEF_GM( return SkNEW_ARGS(ComplexClipGM, (false, true,  true));  )
-DEF_GM( return SkNEW_ARGS(ComplexClipGM, (true,  false, false)); )
-DEF_GM( return SkNEW_ARGS(ComplexClipGM, (true,  false, true));  )
-DEF_GM( return SkNEW_ARGS(ComplexClipGM, (true,  true,  false)); )
-DEF_GM( return SkNEW_ARGS(ComplexClipGM, (true,  true,  true));  )
+// aliased and anti-aliased w/o a layer
+static GM* gFact0(void*) { return new ComplexClipGM(false, false); }
+static GM* gFact1(void*) { return new ComplexClipGM(true, false); }
+
+// aliased and anti-aliased w/ a layer
+static GM* gFact2(void*) { return new ComplexClipGM(false, true); }
+static GM* gFact3(void*) { return new ComplexClipGM(true, true); }
+
+static GMRegistry gReg0(gFact0);
+static GMRegistry gReg1(gFact1);
+static GMRegistry gReg2(gFact2);
+static GMRegistry gReg3(gFact3);
 
 }

@@ -17,17 +17,18 @@ public:
             SK_ColorRED, SK_ColorGREEN, SK_ColorBLUE,
             SK_ColorMAGENTA, SK_ColorCYAN, SK_ColorYELLOW
         };
+        SkShader* s = SkGradientShader::CreateSweep(0,0, colors, NULL,
+                                                    SK_ARRAY_COUNT(colors));
         SkMatrix local;
         local.setRotate(180);
-        SkShader* s = SkGradientShader::CreateSweep(0,0, colors, NULL,
-                                                    SK_ARRAY_COUNT(colors), 0, &local);
+        s->setLocalMatrix(local);
 
         SkPaint paint;
         paint.setAntiAlias(true);
         paint.setShader(s)->unref();
 
-        SkTypeface* orig = sk_tool_utils::create_portable_typeface("Times",
-                                                            SkTypeface::kBold);
+        SkTypeface* orig = SkTypeface::CreateFromName("Times",
+                                                      SkTypeface::kBold);
         if (NULL == orig) {
             orig = SkTypeface::RefDefault();
         }
@@ -40,15 +41,15 @@ public:
     }
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("colortype");
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() SK_OVERRIDE {
         return SkISize::Make(640, 480);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         SkPaint paint;
         paint.setAntiAlias(true);
         paint.setTypeface(fColorType);
@@ -58,6 +59,10 @@ protected:
             canvas->translate(0, paint.getFontMetrics(NULL));
             canvas->drawText("Hamburgefons", 12, 10, 10, paint);
         }
+    }
+
+    virtual uint32_t onGetFlags() const {
+        return kSkipPipe_Flag | kSkipPicture_Flag;
     }
 
 private:

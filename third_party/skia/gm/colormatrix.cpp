@@ -12,9 +12,9 @@
 #define WIDTH 500
 #define HEIGHT 500
 
-class SkDoOnce {
+class SkOnce {
 public:
-    SkDoOnce() : fOnce(false) {};
+    SkOnce() : fOnce(false) {};
 
     bool once() const {
         if (fOnce) {
@@ -29,17 +29,17 @@ private:
 };
 
 static void setColorMatrix(SkPaint* paint, const SkColorMatrix& matrix) {
-    paint->setColorFilter(SkColorMatrixFilter::Create(matrix))->unref();
+    paint->setColorFilter(SkNEW_ARGS(SkColorMatrixFilter, (matrix)))->unref();
 }
 
 static void setArray(SkPaint* paint, const SkScalar array[]) {
-    paint->setColorFilter(SkColorMatrixFilter::Create(array))->unref();
+    paint->setColorFilter(SkNEW_ARGS(SkColorMatrixFilter, (array)))->unref();
 }
 
 namespace skiagm {
 
 class ColorMatrixGM : public GM {
-    SkDoOnce fOnce;
+    SkOnce fOnce;
     void init() {
         if (fOnce.once()) {
             fSolidBitmap = this->createSolidBitmap(64, 64);
@@ -58,12 +58,13 @@ protected:
     }
 
     virtual SkISize onISize() {
-        return SkISize::Make(WIDTH, HEIGHT);
+        return make_isize(WIDTH, HEIGHT);
     }
 
     SkBitmap createSolidBitmap(int width, int height) {
         SkBitmap bm;
-        bm.allocN32Pixels(width, height);
+        bm.setConfig(SkBitmap::kARGB_8888_Config, width, height);
+        bm.allocPixels();
         SkCanvas canvas(bm);
         canvas.clear(0x0);
         for (int y = 0; y < height; ++y) {
@@ -80,7 +81,8 @@ protected:
     // creates a bitmap with shades of transparent gray.
     SkBitmap createTransparentBitmap(int width, int height) {
         SkBitmap bm;
-        bm.allocN32Pixels(width, height);
+        bm.setConfig(SkBitmap::kARGB_8888_Config, width, height);
+        bm.allocPixels();
         SkCanvas canvas(bm);
         canvas.clear(0x0);
 
@@ -103,6 +105,7 @@ protected:
         const SkBitmap bmps[] = { fSolidBitmap, fTransparentBitmap };
 
         for (size_t i = 0; i < SK_ARRAY_COUNT(bmps); ++i) {
+
             matrix.setIdentity();
             setColorMatrix(&paint, matrix);
             canvas->drawBitmap(bmps[i], 0, 0, &paint);

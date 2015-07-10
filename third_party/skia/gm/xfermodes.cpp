@@ -14,7 +14,8 @@ namespace skiagm {
 
 static void make_bitmaps(int w, int h, SkBitmap* src, SkBitmap* dst,
                          SkBitmap* transparent) {
-    src->allocN32Pixels(w, h);
+    src->setConfig(SkBitmap::kARGB_8888_Config, w, h);
+    src->allocPixels();
     src->eraseColor(SK_ColorTRANSPARENT);
 
     SkPaint p;
@@ -31,7 +32,8 @@ static void make_bitmaps(int w, int h, SkBitmap* src, SkBitmap* dst,
         c.drawOval(r, p);
     }
 
-    dst->allocN32Pixels(w, h);
+    dst->setConfig(SkBitmap::kARGB_8888_Config, w, h);
+    dst->allocPixels();
     dst->eraseColor(SK_ColorTRANSPARENT);
 
     {
@@ -41,7 +43,8 @@ static void make_bitmaps(int w, int h, SkBitmap* src, SkBitmap* dst,
         c.drawRect(r, p);
     }
 
-    transparent->allocN32Pixels(w, h);
+    transparent->setConfig(SkBitmap::kARGB_8888_Config, w, h);
+    transparent->allocPixels();
     transparent->eraseColor(SK_ColorTRANSPARENT);
 }
 
@@ -84,17 +87,13 @@ class XfermodesGM : public GM {
         bool restoreNeeded = false;
         m.setTranslate(x, y);
 
-        canvas->drawBitmap(fSrcB, x, y, &p);
+        canvas->drawBitmapMatrix(fSrcB, m, &p);
         p.setXfermode(mode);
         switch (srcType) {
-            case kSmallTransparentImage_SrcType: {
+            case kSmallTransparentImage_SrcType:
                 m.postScale(SK_ScalarHalf, SK_ScalarHalf, x, y);
-
-                SkAutoCanvasRestore acr(canvas, true);
-                canvas->concat(m);
-                canvas->drawBitmap(fTransparent, 0, 0, &p);
+                canvas->drawBitmapMatrix(fTransparent, m, &p);
                 break;
-            }
             case kQuarterClearInLayer_SrcType: {
                 SkRect bounds = SkRect::MakeXYWH(x, y, SkIntToScalar(W),
                                                  SkIntToScalar(H));
@@ -116,7 +115,7 @@ class XfermodesGM : public GM {
                 break;
             }
             case kRectangleWithMask_SrcType: {
-                canvas->save();
+                canvas->save(SkCanvas::kClip_SaveFlag);
                 restoreNeeded = true;
                 SkScalar w = SkIntToScalar(W);
                 SkScalar h = SkIntToScalar(H);
@@ -139,12 +138,9 @@ class XfermodesGM : public GM {
             case kRectangleImageWithAlpha_SrcType:
                 p.setAlpha(0x88);
                 // Fall through.
-            case kRectangleImage_SrcType: {
-                SkAutoCanvasRestore acr(canvas, true);
-                canvas->concat(m);
-                canvas->drawBitmap(fDstB, 0, 0, &p);
+            case kRectangleImage_SrcType:
+                canvas->drawBitmapMatrix(fDstB, m, &p);
                 break;
-            }
             default:
                 break;
         }
@@ -154,10 +150,9 @@ class XfermodesGM : public GM {
         }
     }
 
-    void onOnceBeforeDraw() override {
-        fBG.installPixels(SkImageInfo::Make(2, 2, kARGB_4444_SkColorType,
-                                            kOpaque_SkAlphaType),
-                          gData, 4);
+    virtual void onOnceBeforeDraw() SK_OVERRIDE {
+        fBG.setConfig(SkBitmap::kARGB_4444_Config, 2, 2, 4, kOpaque_SkAlphaType);
+        fBG.setPixels(gData);
 
         make_bitmaps(W, H, &fSrcB, &fDstB, &fTransparent);
     }
@@ -168,15 +163,15 @@ public:
     XfermodesGM() {}
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() {
         return SkString("xfermodes");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(1990, 640);
+    virtual SkISize onISize() {
+        return make_isize(1990, 640);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
         canvas->translate(SkIntToScalar(10), SkIntToScalar(20));
 
         const struct {
@@ -223,16 +218,15 @@ protected:
 
         const SkScalar w = SkIntToScalar(W);
         const SkScalar h = SkIntToScalar(H);
-        SkMatrix m;
-        m.setScale(SkIntToScalar(6), SkIntToScalar(6));
         SkShader* s = SkShader::CreateBitmapShader(fBG,
                                                    SkShader::kRepeat_TileMode,
-                                                   SkShader::kRepeat_TileMode,
-                                                   &m);
+                                                   SkShader::kRepeat_TileMode);
+        SkMatrix m;
+        m.setScale(SkIntToScalar(6), SkIntToScalar(6));
+        s->setLocalMatrix(m);
 
         SkPaint labelP;
         labelP.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&labelP);
         labelP.setTextAlign(SkPaint::kCenter_Align);
 
         const int W = 5;
@@ -255,7 +249,7 @@ protected:
                 p.setShader(s);
                 canvas->drawRect(r, p);
 
-                canvas->saveLayer(&r, NULL);
+                canvas->saveLayer(&r, NULL, SkCanvas::kARGB_ClipLayer_SaveFlag);
                 draw_mode(canvas, mode, static_cast<SrcType>(sourceType),
                           r.fLeft, r.fTop);
                 canvas->restore();

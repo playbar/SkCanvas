@@ -21,8 +21,8 @@ public:
     VertText2GM() {
         const int pointSize = 24;
         textHeight = SkIntToScalar(pointSize);
-        fProp = sk_tool_utils::create_portable_typeface("Helvetica", SkTypeface::kNormal);
-        fMono = sk_tool_utils::create_portable_typeface("Courier New", SkTypeface::kNormal);
+        fProp = SkTypeface::CreateFromName("Helvetica", SkTypeface::kNormal);
+        fMono = SkTypeface::CreateFromName("Courier New", SkTypeface::kNormal);
     }
 
     virtual ~VertText2GM() {
@@ -32,14 +32,14 @@ public:
 
 protected:
 
-
-    SkString onShortName() override {
+    SkString onShortName() {
         return SkString("verttext2");
     }
 
-    SkISize onISize() override { return SkISize::Make(640, 480); }
+    SkISize onISize() { return make_isize(640, 480); }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
+
         for (int i = 0; i < 3; ++i) {
             SkPaint paint;
             paint.setColor(SK_ColorRED);

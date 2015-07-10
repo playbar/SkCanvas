@@ -108,17 +108,19 @@ static SkScalar drawCell(SkCanvas* canvas, SkXfermode* mode,
 
 static SkShader* make_bg_shader() {
     SkBitmap bm;
-    bm.allocN32Pixels(2, 2);
+    bm.setConfig(SkBitmap::kARGB_8888_Config, 2, 2);
+    bm.allocPixels();
     *bm.getAddr32(0, 0) = *bm.getAddr32(1, 1) = 0xFFFFFFFF;
     *bm.getAddr32(1, 0) = *bm.getAddr32(0, 1) = SkPackARGB32(0xFF, 0xCC,
                                                              0xCC, 0xCC);
 
-    const SkMatrix m = SkMatrix::MakeScale(SkIntToScalar(6), SkIntToScalar(6));
     SkShader* s = SkShader::CreateBitmapShader(bm,
                                                SkShader::kRepeat_TileMode,
-                                               SkShader::kRepeat_TileMode,
-                                               &m);
+                                               SkShader::kRepeat_TileMode);
 
+    SkMatrix m;
+    m.setScale(SkIntToScalar(6), SkIntToScalar(6));
+    s->setLocalMatrix(m);
     return s;
 }
 
@@ -133,13 +135,13 @@ namespace skiagm {
 
     protected:
 
-        SkString onShortName() override {
+        virtual SkString onShortName() {
             return SkString("aarectmodes");
         }
 
-        SkISize onISize() override { return SkISize::Make(640, 480); }
+        virtual SkISize onISize() { return make_isize(640, 480); }
 
-        void onDraw(SkCanvas* canvas) override {
+        virtual void onDraw(SkCanvas* canvas) {
             if (false) { // avoid bit rot, suppress warning
                 test4(canvas);
             }

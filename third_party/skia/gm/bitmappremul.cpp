@@ -22,15 +22,15 @@ static const int SLIDE_SIZE = 256;
 static const int PIXEL_SIZE_8888 = SLIDE_SIZE / 256;
 static const int PIXEL_SIZE_4444 = SLIDE_SIZE / 16;
 
-static void init_bitmap(SkColorType ct, SkBitmap* bitmap) {
-    bitmap->allocPixels(SkImageInfo::Make(SLIDE_SIZE, SLIDE_SIZE, ct,
-                                          kPremul_SkAlphaType));
+static void init_bitmap(SkBitmap::Config config, SkBitmap* bitmap) {
+    bitmap->setConfig(config, SLIDE_SIZE, SLIDE_SIZE);
+    bitmap->allocPixels();
     bitmap->eraseColor(SK_ColorWHITE);
 }
 
 static SkBitmap make_argb8888_gradient() {
     SkBitmap bitmap;
-    init_bitmap(kN32_SkColorType, &bitmap);
+    init_bitmap(SkBitmap::kARGB_8888_Config, &bitmap);
     uint8_t rowColor = 0;
     for (int y = 0; y < SLIDE_SIZE; y++) {
         uint32_t* dst = bitmap.getAddr32(0, y);
@@ -47,7 +47,7 @@ static SkBitmap make_argb8888_gradient() {
 
 static SkBitmap make_argb4444_gradient() {
     SkBitmap bitmap;
-    init_bitmap(kARGB_4444_SkColorType, &bitmap);
+    init_bitmap(SkBitmap::kARGB_4444_Config, &bitmap);
     uint8_t rowColor = 0;
     for (int y = 0; y < SLIDE_SIZE; y++) {
         uint16_t* dst = bitmap.getAddr16(0, y);
@@ -64,7 +64,7 @@ static SkBitmap make_argb4444_gradient() {
 
 static SkBitmap make_argb8888_stripes() {
     SkBitmap bitmap;
-    init_bitmap(kN32_SkColorType, &bitmap);
+    init_bitmap(SkBitmap::kARGB_8888_Config, &bitmap);
     uint8_t rowColor = 0;
     for (int y = 0; y < SLIDE_SIZE; y++) {
         uint32_t* dst = bitmap.getAddr32(0, y);
@@ -83,8 +83,8 @@ static SkBitmap make_argb8888_stripes() {
 
 static SkBitmap make_argb4444_stripes() {
     SkBitmap bitmap;
-    init_bitmap(kARGB_4444_SkColorType, &bitmap);
-    uint8_t rowColor = 0;
+    init_bitmap(SkBitmap::kARGB_4444_Config, &bitmap);
+    uint8_t rowColor = 0;;
     for (int y = 0; y < SLIDE_SIZE; y++) {
         uint16_t* dst = bitmap.getAddr16(0, y);
         for (int x = 0; x < SLIDE_SIZE; x++) {
@@ -109,15 +109,15 @@ public:
     }
 
 protected:
-    SkString onShortName() override {
+    SkString onShortName() SK_OVERRIDE {
         return SkString("bitmap_premul");
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() SK_OVERRIDE {
         return SkISize::Make(SLIDE_SIZE * 2, SLIDE_SIZE * 2);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         SkScalar slideSize = SkIntToScalar(SLIDE_SIZE);
         canvas->drawBitmap(make_argb8888_gradient(), 0, 0);
         canvas->drawBitmap(make_argb4444_gradient(), slideSize, 0);

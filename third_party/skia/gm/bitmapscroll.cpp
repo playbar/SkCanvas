@@ -26,7 +26,10 @@ static void make_bitmap(int quarterWidth, int quarterHeight, SkBitmap *bitmap) {
     pAlphaGray.setColor(0x66888888);
 
     // Prepare bitmap, and a canvas that draws into it.
-    bitmap->allocN32Pixels(quarterWidth*4, quarterHeight*4);
+    bitmap->reset();
+    bitmap->setConfig(SkBitmap::kARGB_8888_Config,
+                      quarterWidth*4, quarterHeight*4);
+    bitmap->allocPixels();
     SkCanvas canvas(*bitmap);
 
     SkScalar w = SkIntToScalar(quarterWidth);
@@ -59,15 +62,15 @@ public:
     }
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() {
         return SkString("bitmapscroll");
     }
 
-    SkISize onISize() override {
-      return SkISize::Make(800, 600);
+    virtual SkISize onISize() {
+      return make_isize(800, 600);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
         this->init();
         SkIRect scrollCenterRegion = SkIRect::MakeXYWH(
             quarterWidth, quarterHeight, quarterWidth*2+1, quarterHeight*2+1);
@@ -105,7 +108,6 @@ protected:
     void drawLabel(SkCanvas* canvas, const char *text, int startX, int startY,
                  int endX, int endY) {
         SkPaint paint;
-        sk_tool_utils::set_portable_typeface(&paint);
         paint.setColor(0xFF000000);
         SkPath path;
         path.moveTo(SkIntToScalar(startX), SkIntToScalar(startY));
@@ -130,7 +132,7 @@ protected:
                 // scrollRect() should always return true, even if it's a no-op
                 SkBitmap scrolledBitmap;
                 SkDEBUGCODE(bool copyToReturnValue = )origBitmap.copyTo(
-                    &scrolledBitmap, origBitmap.colorType());
+                    &scrolledBitmap, origBitmap.config());
                 SkASSERT(copyToReturnValue);
                 SkDEBUGCODE(bool scrollRectReturnValue = )scrolledBitmap.scrollRect(
                     subset, scrollX * xMult, scrollY * yMult);

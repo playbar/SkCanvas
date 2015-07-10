@@ -27,20 +27,18 @@ public:
     }
 
 protected:
-    virtual SkISize onISize() override {
+    virtual SkISize onISize() {
         return SkISize::Make(520, 160);
     }
 
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("drawlooper");
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         this->init();
 
         SkPaint  paint;
-        paint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&paint);
         paint.setTextSize(SkIntToScalar(72));
         paint.setLooper(fLooper);
 
@@ -73,25 +71,26 @@ private:
             { 0x88000000, SkPaint::kFill_Style, 0, SkIntToScalar(10), SkIntToScalar(3) }
         };
 
-        SkLayerDrawLooper::Builder looperBuilder;
+        fLooper = new SkLayerDrawLooper;
 
         SkLayerDrawLooper::LayerInfo info;
+        info.fFlagsMask = SkPaint::kAntiAlias_Flag;
         info.fPaintBits = SkLayerDrawLooper::kStyle_Bit | SkLayerDrawLooper::kMaskFilter_Bit;
         info.fColorMode = SkXfermode::kSrc_Mode;
 
         for (size_t i = 0; i < SK_ARRAY_COUNT(gParams); i++) {
             info.fOffset.set(gParams[i].fOffset, gParams[i].fOffset);
-            SkPaint* paint = looperBuilder.addLayer(info);
+            SkPaint* paint = fLooper->addLayer(info);
+            paint->setAntiAlias(true);
             paint->setColor(gParams[i].fColor);
             paint->setStyle(gParams[i].fStyle);
             paint->setStrokeWidth(gParams[i].fWidth);
             if (gParams[i].fBlur > 0) {
-                SkMaskFilter* mf = SkBlurMaskFilter::Create(kNormal_SkBlurStyle,
+                SkMaskFilter* mf = SkBlurMaskFilter::Create(SkBlurMaskFilter::kNormal_BlurStyle,
                                          SkBlurMask::ConvertRadiusToSigma(gParams[i].fBlur));
                 paint->setMaskFilter(mf)->unref();
             }
         }
-        fLooper = looperBuilder.detachLooper();
     }
 
     typedef GM INHERITED;

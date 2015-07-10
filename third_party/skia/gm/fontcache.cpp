@@ -12,6 +12,20 @@
 
 // GM to stress the GPU font cache
 
+const char* gFamilyNames[] = {
+    "sans-serif", "serif", "monospace"
+};
+
+const SkTypeface::Style gStyles[] = {
+    SkTypeface::kNormal, SkTypeface::kItalic
+};
+
+const SkScalar gTextSizes[] = {
+    12, 14, 16, 18, 20, 22, 24, 26, 28, 30
+};
+
+#define TYPEFACE_COUNT (SK_ARRAY_COUNT(gFamilyNames)*SK_ARRAY_COUNT(gStyles))
+
 static SkScalar draw_string(SkCanvas* canvas, const SkString& text, SkScalar x,
                            SkScalar y, const SkPaint& paint) {
     canvas->drawText(text.c_str(), text.size(), x, y, paint);
@@ -21,62 +35,81 @@ static SkScalar draw_string(SkCanvas* canvas, const SkString& text, SkScalar x,
 class FontCacheGM : public skiagm::GM {
 public:
     FontCacheGM() {
-        fTypefaces[0] = NULL;
-        fTypefaces[1] = NULL;
+        for (size_t i = 0; i < TYPEFACE_COUNT; ++i) {
+            fTypefaces[i] = NULL;
+        }
     }
 
     virtual ~FontCacheGM() {
-        SkSafeUnref(fTypefaces[0]);
-        SkSafeUnref(fTypefaces[1]);
+        for (size_t i = 0; i < TYPEFACE_COUNT; ++i) {
+            SkSafeUnref(fTypefaces[i]);
+        }
     }
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("fontcache");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(1280, 640);
+    virtual SkISize onISize() SK_OVERRIDE {
+        return SkISize::Make(640, 320);
     }
 
-    void onOnceBeforeDraw() override {
-        fTypefaces[0] = sk_tool_utils::create_portable_typeface("serif", SkTypeface::kItalic);
-        fTypefaces[1] = sk_tool_utils::create_portable_typeface("sans-serif", SkTypeface::kItalic);
+    virtual void onOnceBeforeDraw() SK_OVERRIDE {
+        int typefaceCount = 0;
+        for (size_t i = 0; i < SK_ARRAY_COUNT(gFamilyNames); ++i) {
+            for (size_t j = 0; j < SK_ARRAY_COUNT(gStyles); ++j) {
+                fTypefaces[typefaceCount++] = SkTypeface::CreateFromName(gFamilyNames[i],
+                                                                          gStyles[j]);
+            }
+        }
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
+        SkScalar y = 32;
         SkPaint paint;
         paint.setAntiAlias(true);
         paint.setLCDRenderText(true);
         paint.setSubpixelText(true);
-        paint.setTypeface(fTypefaces[0]);
-        paint.setTextSize(192);
 
-        // Make sure the nul character does not cause problems.
-        paint.measureText("\0", 1);
+        SkString text("Ham");
 
-        SkScalar x = 20;
-        SkScalar y = 128;
-        SkString text("ABCDEFGHIJ");
-        draw_string(canvas, text, x, y, paint);
-        y += 100;
-        SkString text2("KLMNOPQRS");
-        draw_string(canvas, text2, x, y, paint);
-        y += 100;
-        SkString text3("TUVWXYZ012");
-        draw_string(canvas, text3, x, y, paint);
-        y += 100;
-        paint.setTypeface(fTypefaces[1]);
-        draw_string(canvas, text, x, y, paint);
-        y += 100;
-        draw_string(canvas, text2, x, y, paint);
-        y += 100;
-        draw_string(canvas, text3, x, y, paint);
-        y += 100;
+        // draw some initial text to partially fill the GPU cache
+        for (size_t i = 0; i < 2; ++i) {
+            paint.setTypeface(fTypefaces[i]);
+            SkScalar x = 20;
+
+            for (size_t j = 0; j < SK_ARRAY_COUNT(gTextSizes); ++j) {
+                paint.setTextSize(gTextSizes[j]);
+                x = draw_string(canvas, text, x, y, paint) + 19;
+            }
+            y += 32;
+        }
+
+        // force a flush
+        canvas->flush();
+
+        // draw again, and more to overflow the cache
+        for (size_t i = 0; i < TYPEFACE_COUNT; ++i) {
+            paint.setTypeface(fTypefaces[i]);
+            SkScalar x = 20;
+
+            for (size_t j = 0; j < SK_ARRAY_COUNT(gTextSizes); ++j) {
+                paint.setTextSize(gTextSizes[j]);
+                x = draw_string(canvas, text, x, y, paint) + 19;
+            }
+            y += 32;
+        }
+
+    }
+
+    virtual uint32_t onGetFlags() const SK_OVERRIDE {
+        // this GM is meant only for the GPU
+        return kGPUOnly_Flag;
     }
 
 private:
-    SkTypeface* fTypefaces[2];
+    SkTypeface* fTypefaces[TYPEFACE_COUNT];
     typedef GM INHERITED;
 };
 

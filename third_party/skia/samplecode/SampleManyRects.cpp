@@ -26,7 +26,7 @@ public:
     ManyRectsView() {}
 
 protected:
-    bool onQuery(SkEvent* evt) override {
+    virtual bool onQuery(SkEvent* evt) SK_OVERRIDE {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "ManyRects");
             return true;

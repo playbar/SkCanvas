@@ -39,7 +39,6 @@ static void draw_text(SkCanvas* canvas, const SkRect& r, SkImageFilter* imf) {
     paint.setImageFilter(imf);
     paint.setColor(SK_ColorGREEN);
     paint.setAntiAlias(true);
-    sk_tool_utils::set_portable_typeface(&paint);
     paint.setTextSize(r.height()/2);
     paint.setTextAlign(SkPaint::kCenter_Align);
     canvas->save();
@@ -55,7 +54,8 @@ static void draw_bitmap(SkCanvas* canvas, const SkRect& r, SkImageFilter* imf) {
     r.roundOut(&bounds);
 
     SkBitmap bm;
-    bm.allocN32Pixels(bounds.width(), bounds.height());
+    bm.setConfig(SkBitmap::kARGB_8888_Config, bounds.width(), bounds.height());
+    bm.allocPixels();
     bm.eraseColor(SK_ColorTRANSPARENT);
     SkCanvas c(bm);
     draw_path(&c, r, NULL);
@@ -74,7 +74,8 @@ static void draw_sprite(SkCanvas* canvas, const SkRect& r, SkImageFilter* imf) {
     r.roundOut(&bounds);
 
     SkBitmap bm;
-    bm.allocN32Pixels(bounds.width(), bounds.height());
+    bm.setConfig(SkBitmap::kARGB_8888_Config, bounds.width(), bounds.height());
+    bm.allocPixels();
     bm.eraseColor(SK_ColorRED);
     SkCanvas c(bm);
 
@@ -102,13 +103,21 @@ protected:
         return SkString("dropshadowimagefilter");
     }
 
-    virtual SkISize onISize() { return SkISize::Make(400, 656); }
+    virtual SkISize onISize() { return SkISize::Make(400, 700); }
 
     void draw_frame(SkCanvas* canvas, const SkRect& r) {
         SkPaint paint;
         paint.setStyle(SkPaint::kStroke_Style);
         paint.setColor(SK_ColorRED);
         canvas->drawRect(r, paint);
+    }
+
+    virtual uint32_t onGetFlags() const {
+        // Because of the use of drawSprite, this test is excluded
+        // from scaled replay tests because drawSprite ignores the
+        // reciprocal scale that is applied at record time, which is
+        // the intended behavior of drawSprite.
+        return kSkipScaledReplay_Flag;
     }
 
     virtual void onDraw(SkCanvas* canvas) {
@@ -126,20 +135,12 @@ protected:
 
         SkImageFilter* filters[] = {
             NULL,
-            SkDropShadowImageFilter::Create(7.0f, 0.0f, 0.0f, 3.0f, SK_ColorBLUE,
-                SkDropShadowImageFilter::kDrawShadowAndForeground_ShadowMode),
-            SkDropShadowImageFilter::Create(0.0f, 7.0f, 3.0f, 0.0f, SK_ColorBLUE,
-                SkDropShadowImageFilter::kDrawShadowAndForeground_ShadowMode),
-            SkDropShadowImageFilter::Create(7.0f, 7.0f, 3.0f, 3.0f, SK_ColorBLUE,
-                SkDropShadowImageFilter::kDrawShadowAndForeground_ShadowMode),
-            SkDropShadowImageFilter::Create(7.0f, 7.0f, 3.0f, 3.0f, SK_ColorBLUE,
-                SkDropShadowImageFilter::kDrawShadowAndForeground_ShadowMode, cfif, NULL),
-            SkDropShadowImageFilter::Create(7.0f, 7.0f, 3.0f, 3.0f, SK_ColorBLUE,
-                SkDropShadowImageFilter::kDrawShadowAndForeground_ShadowMode, NULL, &cropRect),
-            SkDropShadowImageFilter::Create(7.0f, 7.0f, 3.0f, 3.0f, SK_ColorBLUE,
-                SkDropShadowImageFilter::kDrawShadowAndForeground_ShadowMode, NULL, &bogusRect),
-            SkDropShadowImageFilter::Create(7.0f, 7.0f, 3.0f, 3.0f, SK_ColorBLUE,
-                SkDropShadowImageFilter::kDrawShadowOnly_ShadowMode),
+            new SkDropShadowImageFilter(7.0f, 0.0f, 0.0f, 3.0f, SK_ColorBLUE),
+            new SkDropShadowImageFilter(0.0f, 7.0f, 3.0f, 0.0f, SK_ColorBLUE),
+            new SkDropShadowImageFilter(7.0f, 7.0f, 3.0f, 3.0f, SK_ColorBLUE),
+            new SkDropShadowImageFilter(7.0f, 7.0f, 3.0f, 3.0f, SK_ColorBLUE, cfif),
+            new SkDropShadowImageFilter(7.0f, 7.0f, 3.0f, 3.0f, SK_ColorBLUE, NULL, &cropRect),
+            new SkDropShadowImageFilter(7.0f, 7.0f, 3.0f, 3.0f, SK_ColorBLUE, NULL, &bogusRect),
         };
 
         SkRect r = SkRect::MakeWH(SkIntToScalar(64), SkIntToScalar(64));

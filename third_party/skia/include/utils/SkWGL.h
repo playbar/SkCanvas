@@ -56,7 +56,7 @@
 #define SK_ERROR_INVALID_VERSION                    0x2095
 #define SK_ERROR_INVALID_PROFILE                    0x2096
 
-class SkWGLExtensions {
+class SK_API SkWGLExtensions {
 public:
     SkWGLExtensions();
     /**
@@ -110,6 +110,6 @@ private:
  * (including non-MSAA) will be created. If preferCoreProfile is true but a core profile cannot be
  * created then a compatible profile context will be created.
  */
-HGLRC SkCreateWGLContext(HDC dc, int msaaSampleCount, bool preferCoreProfile);
+SK_API HGLRC SkCreateWGLContext(HDC dc, int msaaSampleCount, bool preferCoreProfile);
 
 #endif

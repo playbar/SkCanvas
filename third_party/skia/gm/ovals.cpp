@@ -26,13 +26,12 @@ public:
     }
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("ovals");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(1200, 900);
+    virtual SkISize onISize() SK_OVERRIDE {
+        return make_isize(1200, 900);
     }
 
     void makePaints() {
@@ -135,7 +134,7 @@ protected:
         return SkHSVToColor(hsv);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         SkRandom rand(1);
         canvas->translate(20 * SK_Scalar1, 20 * SK_Scalar1);
         SkRect oval = SkRect::MakeLTRB(-20, -30, 20, 30);

@@ -21,7 +21,7 @@ class SkCanvas;
     #undef Status
 #endif
 
-class SkGPipeReader {
+class SK_API SkGPipeReader {
 public:
     SkGPipeReader();
     SkGPipeReader(SkCanvas* target);
@@ -60,7 +60,7 @@ private:
 
 class SkGPipeCanvas;
 
-class SkGPipeController {
+class SK_API SkGPipeController {
 public:
     SkGPipeController() : fCanvas(NULL) {}
     virtual ~SkGPipeController();

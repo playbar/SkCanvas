@@ -38,7 +38,8 @@ static SkShader* make_trans_black_shader() {
 // draws a background behind each test rect to see transparency
 static SkShader* make_bg_shader(int checkSize) {
     SkBitmap bmp;
-    bmp.allocN32Pixels(2 * checkSize, 2 * checkSize);
+    bmp.setConfig(SkBitmap::kARGB_8888_Config, 2 * checkSize, 2 * checkSize);
+    bmp.allocPixels();
     SkCanvas canvas(bmp);
     canvas.clear(0xFF800000);
     SkPaint paint;
@@ -65,7 +66,7 @@ protected:
     }
 
     virtual SkISize onISize() {
-        return SkISize::Make(WIDTH, HEIGHT);
+        return make_isize(WIDTH, HEIGHT);
     }
 
     virtual void onDraw(SkCanvas* canvas) {

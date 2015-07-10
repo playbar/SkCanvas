@@ -17,7 +17,8 @@
 
 static SkBitmap make_bm() {
     SkBitmap bm;
-    bm.allocN32Pixels(WW, HH);
+    bm.setConfig(SkBitmap::kARGB_8888_Config, WW, HH);
+    bm.allocPixels();
     bm.eraseColor(SK_ColorTRANSPARENT);
     return bm;
 }
@@ -57,7 +58,6 @@ static void show_k_text(SkCanvas* canvas, SkScalar x, SkScalar y, const SkScalar
     SkPaint paint;
     paint.setTextSize(SkIntToScalar(24));
     paint.setAntiAlias(true);
-    sk_tool_utils::set_portable_typeface(&paint);
     for (int i = 0; i < 4; ++i) {
         SkString str;
         str.appendScalar(k[i]);

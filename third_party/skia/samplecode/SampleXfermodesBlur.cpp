@@ -1,18 +1,20 @@
+
 /*
  * Copyright 2011 Google Inc.
  *
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 #include "SampleCode.h"
 #include "SkView.h"
 #include "SkBlurMask.h"
 #include "SkCanvas.h"
+#include "Sk64.h"
 #include "SkCornerPathEffect.h"
 #include "SkGradientShader.h"
 #include "SkGraphics.h"
 #include "SkImageDecoder.h"
+#include "SkKernel33MaskFilter.h"
 #include "SkPath.h"
 #include "SkRandom.h"
 #include "SkRegion.h"
@@ -43,15 +45,15 @@ class XfermodesBlurView : public SampleView {
     SkBitmap    fSrcB, fDstB;
 
     void draw_mode(SkCanvas* canvas, SkXfermode* mode, int alpha,
-                   SkScalar x, SkScalar y) {
+                   float x, float y) {
         SkPaint p;
-        SkMaskFilter* mf = SkBlurMaskFilter::Create(kNormal_SkBlurStyle,
+        SkMaskFilter* mf = SkBlurMaskFilter::Create(SkBlurMaskFilter::kNormal_BlurStyle,
                                        SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(5)),
                                        SkBlurMaskFilter::kNone_BlurFlag);
         p.setMaskFilter(mf)->unref();
 
-        SkScalar ww = SkIntToScalar(W);
-        SkScalar hh = SkIntToScalar(H);
+        float ww = SkIntToScalar(W);
+        float hh = SkIntToScalar(H);
 
         // draw a circle covering the upper
         // left three quarters of the canvas
@@ -75,8 +77,8 @@ public:
     const static int W = 64;
     const static int H = 64;
     XfermodesBlurView() {
-        fBG.installPixels(SkImageInfo::Make(2, 2, kARGB_4444_SkColorType, kPremul_SkAlphaType),
-                          gBG, 4);
+        fBG.setConfig(SkBitmap::kARGB_4444_Config, 2, 2, 4, kOpaque_SkAlphaType);
+        fBG.setPixels(gBG);
     }
 
 protected:
@@ -147,14 +149,14 @@ protected:
             { SkXfermode::kExclusion_Mode,    "Exclusion"     },*/
         };
 
-        const SkScalar w = SkIntToScalar(W);
-        const SkScalar h = SkIntToScalar(H);
-        SkMatrix m;
-        m.setScale(SkIntToScalar(6), SkIntToScalar(6));
+        const float w = SkIntToScalar(W);
+        const float h = SkIntToScalar(H);
         SkShader* s = SkShader::CreateBitmapShader(fBG,
                                                    SkShader::kRepeat_TileMode,
-                                                   SkShader::kRepeat_TileMode,
-                                                   &m);
+                                                   SkShader::kRepeat_TileMode);
+        SkMatrix m;
+        m.setScale(SkIntToScalar(6), SkIntToScalar(6));
+        s->setLocalMatrix(m);
 
         SkPaint labelP;
         labelP.setAntiAlias(true);
@@ -164,9 +166,9 @@ protected:
 
         const int W = 5;
 
-        SkScalar x0 = 0;
+        float x0 = 0;
         for (int twice = 0; twice < 2; twice++) {
-            SkScalar x = x0, y = 0;
+            float x = x0, y = 0;
             for (size_t i = 0; i < SK_ARRAY_COUNT(gModes); i++) {
                 SkXfermode* mode = SkXfermode::Create(gModes[i].fMode);
                 SkAutoUnref aur(mode);
@@ -178,7 +180,7 @@ protected:
                 p.setShader(s);
                 canvas->drawRect(r, p);
 
-                canvas->saveLayer(&r, NULL);
+                canvas->saveLayer(&r, NULL, SkCanvas::kARGB_ClipLayer_SaveFlag);
                 draw_mode(canvas, mode, twice ? 0x88 : 0xFF, r.fLeft, r.fTop);
                 canvas->restore();
 

@@ -51,7 +51,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\third_party\wtl\include;..\third_party\skia\include\core;..\third_party\skia\include\effects;..\third_party\skia\include\images;..\third_party\skia\include\lazy;..\third_party\skia\include\pathops;..\third_party\skia\include\pdf;..\third_party\skia\include\pipe;..\third_party\skia\include\ports;..\third_party\skia\include\utils;..\third_party\skia\src\core;..\third_party\skia\src\opts;..\third_party\skia\src\image;..\third_party\skia\src\ports;..\third_party\skia\src\sfnt;..\third_party\skia\src\utils;..\third_party\skia\src\lazy;..;config;..\third_party\skia\include\gpu;..\third_party\skia\src\gpu;..\third_party\skia\include\utils\win;..\third_party\skia\src\utils\win;..\third_party\zlib;C:\Program Files (x86)\Windows Kits\8.0\Include\shared;C:\Program Files (x86)\Windows Kits\8.0\Include\um;C:\Program Files (x86)\Windows Kits\8.0\Include\winrt;$(VSInstallDir)\VC\atlmfc\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\third_party\wtl\include;..\third_party\skia\include\xml;..\third_party\skia\include\views;..\third_party\skia\include\core;..\third_party\skia\include\effects;..\third_party\skia\include\images;..\third_party\skia\include\lazy;..\third_party\skia\include\pathops;..\third_party\skia\include\pdf;..\third_party\skia\include\pipe;..\third_party\skia\include\ports;..\third_party\skia\include\utils;..\third_party\skia\src\core;..\third_party\skia\src\opts;..\third_party\skia\src\image;..\third_party\skia\src\ports;..\third_party\skia\src\sfnt;..\third_party\skia\src\utils;..\third_party\skia\src\lazy;..;config;..\third_party\skia\include\gpu;..\third_party\skia\src\gpu;..\third_party\skia\include\utils\win;..\third_party\skia\src\utils\win;..\third_party\zlib;C:\Program Files (x86)\Windows Kits\8.0\Include\shared;C:\Program Files (x86)\Windows Kits\8.0\Include\um;C:\Program Files (x86)\Windows Kits\8.0\Include\winrt;$(VSInstallDir)\VC\atlmfc\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <BufferSecurityCheck>true</BufferSecurityCheck>
@@ -61,7 +61,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <MinimalRebuild>false</MinimalRebuild>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;V8_DEPRECATION_WARNINGS;BLINK_SCALE_FILTERS_AT_RECORD_TIME;_WIN32_WINNT=0x0602;WINVER=0x0602;WIN32;_WINDOWS;NOMINMAX;PSAPI_VERSION=1;_CRT_RAND_S;CERT_CHAIN_PARA_HAS_EXTRA_FIELDS;WIN32_LEAN_AND_MEAN;_ATL_NO_OPENGL;_SECURE_ATL;CHROMIUM_BUILD;COMPONENT_BUILD;TOOLKIT_VIEWS=1;USE_AURA=1;USE_ASH=1;USE_DEFAULT_RENDER_THEME=1;USE_LIBJPEG_TURBO=1;ENABLE_ONE_CLICK_SIGNIN;ENABLE_REMOTING=1;ENABLE_WEBRTC=1;ENABLE_PEPPER_CDMS;ENABLE_CONFIGURATION_POLICY;ENABLE_INPUT_SPEECH;ENABLE_NOTIFICATIONS;ENABLE_HIDPI=1;ENABLE_NEW_GAMEPAD_API=1;NO_TCMALLOC;ENABLE_EGLIMAGE=1;__STD_C;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NTDDI_VERSION=0x06020000;_USING_V110_SDK71_;ENABLE_TASK_MANAGER=1;ENABLE_EXTENSIONS=1;ENABLE_PLUGIN_INSTALLATION=1;ENABLE_PLUGINS=1;ENABLE_SESSION_SERVICE=1;ENABLE_THEMES=1;ENABLE_AUTOFILL_DIALOG=1;ENABLE_BACKGROUND=1;ENABLE_AUTOMATION=1;ENABLE_GOOGLE_NOW=1;CLD_VERSION=2;ENABLE_FULL_PRINTING=1;ENABLE_PRINTING=1;ENABLE_SPELLCHECK=1;ENABLE_CAPTIVE_PORTAL_DETECTION=1;ENABLE_APP_LIST=1;ENABLE_SETTINGS_APP=1;ENABLE_MANAGED_USERS=1;ENABLE_MDNS=1;SKIA_DLL;SKIA_IMPLEMENTATION=1;GR_GL_IGNORE_ES3_MSAA=0;SK_ENABLE_INST_COUNT=0;SK_SUPPORT_GPU=1;GR_GL_CUSTOM_SETUP_HEADER="GrGLConfig_chrome.h";SK_ENABLE_LEGACY_API_ALIASING=1;SK_ATTR_DEPRECATED=SK_NOTHING_ARG1;SK_SUPPORT_LEGACY_LAYERRASTERIZER_API=1;SK_WILL_NEVER_DRAW_PERSPECTIVE_TEXT;SK_SUPPORT_LEGACY_COMPATIBLEDEVICE_CONFIG=1;SK_SUPPORT_LEGACY_PUBLICEFFECTCONSTRUCTORS=1;SK_SUPPORT_LEGACY_WRITEPIXELSCONFIG;SK_SUPPORT_LEGACY_GETCLIPTYPE;SK_SUPPORT_LEGACY_GETTOTALCLIP;SK_SUPPORT_LEGACY_GETTOPDEVICE;SK_SUPPORT_LEGACY_GETDEVICECAPABILITIES;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=0;SK_DISABLE_OFFSETIMAGEFILTER_OPTIMIZATION;SK_DISABLE_PIXELREF_LOCKCOUNT_BALANCE_CHECK;IGNORE_ROT_AA_RECT_OPT;SK_IGNORE_BLURRED_RRECT_OPT;SK_IGNORE_QUAD_RR_CORNERS_OPT;SK_GDI_ALWAYS_USE_TEXTMETRICS_FOR_FONT_METRICS;SK_DEFAULT_FONT_CACHE_LIMIT=(20%2A1024%2A1024);SK_USE_DISCARDABLE_SCALEDIMAGECACHE;SK_DEFAULT_FONT_CACHE_COUNT_LIMIT=256;SK_GAMMA_SRGB;SK_GAMMA_CONTRAST=0.5;SK_HIGH_QUALITY_IS_LANCZOS;SK_DEFERRED_CANVAS_USES_FACTORIES=1;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;DYNAMIC_ANNOTATIONS_ENABLED=1;WTF_USE_DYNAMIC_ANNOTATIONS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;V8_DEPRECATION_WARNINGS;BLINK_SCALE_FILTERS_AT_RECORD_TIME;_WIN32_WINNT=0x0602;WINVER=0x0602;WIN32;_WINDOWS;NOMINMAX;PSAPI_VERSION=1;_CRT_RAND_S;CERT_CHAIN_PARA_HAS_EXTRA_FIELDS;WIN32_LEAN_AND_MEAN;_ATL_NO_OPENGL;_SECURE_ATL;CHROMIUM_BUILD;COMPONENT_BUILD;TOOLKIT_VIEWS=1;USE_AURA=1;USE_ASH=1;USE_DEFAULT_RENDER_THEME=1;USE_LIBJPEG_TURBO=1;ENABLE_ONE_CLICK_SIGNIN;ENABLE_REMOTING=1;ENABLE_WEBRTC=1;ENABLE_PEPPER_CDMS;ENABLE_CONFIGURATION_POLICY;ENABLE_INPUT_SPEECH;ENABLE_NOTIFICATIONS;ENABLE_HIDPI=1;ENABLE_NEW_GAMEPAD_API=1;NO_TCMALLOC;ENABLE_EGLIMAGE=1;__STD_C;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;NTDDI_VERSION=0x06020000;_USING_V110_SDK71_;ENABLE_TASK_MANAGER=1;ENABLE_EXTENSIONS=1;ENABLE_PLUGIN_INSTALLATION=1;ENABLE_PLUGINS=1;ENABLE_SESSION_SERVICE=1;ENABLE_THEMES=1;ENABLE_AUTOFILL_DIALOG=1;ENABLE_BACKGROUND=1;ENABLE_AUTOMATION=1;ENABLE_GOOGLE_NOW=1;CLD_VERSION=2;ENABLE_FULL_PRINTING=1;ENABLE_PRINTING=1;ENABLE_SPELLCHECK=1;ENABLE_CAPTIVE_PORTAL_DETECTION=1;ENABLE_APP_LIST=1;ENABLE_SETTINGS_APP=1;ENABLE_MANAGED_USERS=1;ENABLE_MDNS=1;SKIA_DLL;SKIA_IMPLEMENTATION=1;GR_GL_IGNORE_ES3_MSAA=0;SK_ENABLE_INST_COUNT=0;SK_SUPPORT_GPU=1;GR_GL_CUSTOM_SETUP_HEADER="GrGLConfig_chrome.h";SK_ENABLE_LEGACY_API_ALIASING=1;SK_ATTR_DEPRECATED=SK_NOTHING_ARG1;SK_SUPPORT_LEGACY_LAYERRASTERIZER_API=1;SK_WILL_NEVER_DRAW_PERSPECTIVE_TEXT;SK_SUPPORT_LEGACY_COMPATIBLEDEVICE_CONFIG=1;SK_SUPPORT_LEGACY_PUBLICEFFECTCONSTRUCTORS=1;SK_SUPPORT_LEGACY_WRITEPIXELSCONFIG;SK_SUPPORT_LEGACY_GETCLIPTYPE;SK_SUPPORT_LEGACY_GETTOTALCLIP;SK_SUPPORT_LEGACY_GETTOPDEVICE;SK_SUPPORT_LEGACY_GETDEVICECAPABILITIES;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=0;SK_DISABLE_OFFSETIMAGEFILTER_OPTIMIZATION;SK_DISABLE_PIXELREF_LOCKCOUNT_BALANCE_CHECK;IGNORE_ROT_AA_RECT_OPT;SK_IGNORE_BLURRED_RRECT_OPT;SK_IGNORE_QUAD_RR_CORNERS_OPT;SK_GDI_ALWAYS_USE_TEXTMETRICS_FOR_FONT_METRICS;SK_DEFAULT_FONT_CACHE_LIMIT=(20%2A1024%2A1024);SK_USE_DISCARDABLE_SCALEDIMAGECACHE;SK_DEFAULT_FONT_CACHE_COUNT_LIMIT=256;SK_GAMMA_SRGB;SK_GAMMA_CONTRAST=0.5;SK_HIGH_QUALITY_IS_LANCZOS;SK_DEFERRED_CANVAS_USES_FACTORIES=1;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;DYNAMIC_ANNOTATIONS_ENABLED=1;WTF_USE_DYNAMIC_ANNOTATIONS=1;GLEW_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWarningAsError>false</TreatWarningAsError>
@@ -273,7 +273,10 @@
     <None Include="skia.gyp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\third_party\skia\src\core\SkOrderedReadBuffer.h" />
+    <ClInclude Include="..\third_party\skia\src\core\SkOrderedWriteBuffer.h" />
     <ClInclude Include="..\third_party\skia\src\images\SkScaledBitmapSampler.h" />
+    <ClInclude Include="..\third_party\skia\src\image\SkDataPixelRef.h" />
     <ClInclude Include="..\third_party\skia\src\ports\SkFontHost_FreeType_common.h" />
     <ClInclude Include="..\third_party\skia\src\sfnt\SkOTTable_name.h" />
     <ClInclude Include="..\third_party\skia\src\sfnt\SkOTUtils.h" />
@@ -518,6 +521,7 @@
     <ClInclude Include="..\third_party\skia\include\effects\SkMagnifierImageFilter.h" />
     <ClInclude Include="..\third_party\skia\include\pdf\SkPDFDevice.h" />
     <ClInclude Include="..\third_party\skia\include\pdf\SkPDFDocument.h" />
+    <ClInclude Include="..\third_party\skia\src\xml\SkBML_Verbs.h" />
     <ClInclude Include="ext\convolver.h" />
     <ClInclude Include="ext\image_operations.h" />
     <ClInclude Include="ext\lazy_pixel_ref.h" />
@@ -648,10 +652,16 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\third_party\skia\src\core\Sk64.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkFlate.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkFlattenableBuffers.cpp" />
+    <ClCompile Include="..\third_party\skia\src\core\SkImageFilterUtils.cpp" />
+    <ClCompile Include="..\third_party\skia\src\core\SkOrderedReadBuffer.cpp" />
+    <ClCompile Include="..\third_party\skia\src\core\SkOrderedWriteBuffer.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkPaintOptionsAndroid.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\glew.c" />
+    <ClCompile Include="..\third_party\skia\src\gpu\GrGpuFactory.cpp" />
+    <ClCompile Include="..\third_party\skia\src\image\SkDataPixelRef.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkImageDecoder_empty.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkScaledBitmapSampler.cpp" />
     <ClCompile Include="..\third_party\skia\src\opts\opts_check_SSE2.cpp" />
@@ -663,6 +673,7 @@
     <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_stdio.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkTLS_win.cpp" />
+    <ClCompile Include="..\third_party\skia\src\ports\SkXMLParser_empty.cpp" />
     <ClCompile Include="..\third_party\skia\src\sfnt\SkOTTable_name.cpp" />
     <ClCompile Include="..\third_party\skia\src\sfnt\SkOTUtils.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\debugger\SkDebugCanvas.cpp" />
@@ -673,9 +684,11 @@
     <ClCompile Include="..\third_party\skia\src\utils\SkCanvasStack.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkCanvasStateUtils.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkDeferredCanvas.cpp" />
+    <ClCompile Include="..\third_party\skia\src\utils\SkInterpolator.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkMatrix44.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkNullCanvas.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkNWayCanvas.cpp" />
+    <ClCompile Include="..\third_party\skia\src\utils\SkParse.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkPictureUtils.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkProxyCanvas.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkRTConf.cpp" />
@@ -905,6 +918,11 @@
     <ClCompile Include="..\third_party\skia\src\effects\gradients\SkTwoPointRadialGradient.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\gradients\SkTwoPointConicalGradient.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\gradients\SkSweepGradient.cpp" />
+    <ClCompile Include="..\third_party\skia\src\utils\win\SkWGL_win.cpp" />
+    <ClCompile Include="..\third_party\skia\src\xml\SkBML_XMLParser.cpp" />
+    <ClCompile Include="..\third_party\skia\src\xml\SkDOM.cpp" />
+    <ClCompile Include="..\third_party\skia\src\xml\SkXMLParser.cpp" />
+    <ClCompile Include="..\third_party\skia\src\xml\SkXMLWriter.cpp" />
     <ClCompile Include="ext\convolver.cc" />
     <ClCompile Include="ext\google_logging.cc" />
     <ClCompile Include="ext\image_operations.cc" />

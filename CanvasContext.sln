@@ -532,9 +532,9 @@ Global
 		{ADD38764-ADC0-CFF5-B3A4-853C834CDC3D}.Release MX|Win32.ActiveCfg = Release|Win32
 		{ADD38764-ADC0-CFF5-B3A4-853C834CDC3D}.Release MX|Win32.Build.0 = Release|Win32
 		{ADD38764-ADC0-CFF5-B3A4-853C834CDC3D}.Release MX|x64.ActiveCfg = Release|Win32
-		{ADD38764-ADC0-CFF5-B3A4-853C834CDC3D}.Release_Developer|Win32.ActiveCfg = Release_Developer|Win32
-		{ADD38764-ADC0-CFF5-B3A4-853C834CDC3D}.Release_Developer|Win32.Build.0 = Release_Developer|Win32
-		{ADD38764-ADC0-CFF5-B3A4-853C834CDC3D}.Release_Developer|x64.ActiveCfg = Release_Developer|Win32
+		{ADD38764-ADC0-CFF5-B3A4-853C834CDC3D}.Release_Developer|Win32.ActiveCfg = Release|Win32
+		{ADD38764-ADC0-CFF5-B3A4-853C834CDC3D}.Release_Developer|Win32.Build.0 = Release|Win32
+		{ADD38764-ADC0-CFF5-B3A4-853C834CDC3D}.Release_Developer|x64.ActiveCfg = Release|Win32
 		{ADD38764-ADC0-CFF5-B3A4-853C834CDC3D}.Release|Win32.ActiveCfg = Release|Win32
 		{ADD38764-ADC0-CFF5-B3A4-853C834CDC3D}.Release|Win32.Build.0 = Release|Win32
 		{ADD38764-ADC0-CFF5-B3A4-853C834CDC3D}.Release|x64.ActiveCfg = Release|Win32

@@ -29,7 +29,7 @@ protected:
     }
 
     virtual SkISize onISize() {
-        return SkISize::Make(700, 500);
+        return make_isize(700, 500);
     }
 
     virtual void onDraw(SkCanvas* canvas) {
@@ -61,7 +61,6 @@ private:
         canvas->drawRect(rect, paint);
 
         paint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&paint);
         paint.setTextSize(SkIntToScalar(25));
         paint.setColor(SK_ColorBLACK);
         canvas->drawText(text, strlen(text), x, y, paint);

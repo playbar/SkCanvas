@@ -35,10 +35,10 @@ static void textStrokePath(SkCanvas* canvas) {
 
     canvas->drawPath(path, paint);
 
-    paint.setLooper(SkBlurDrawLooper::Create(SK_ColorBLACK,
-                                             SkBlurMask::ConvertRadiusToSigma(0.002f),
-                                             0.0f,
-                                             0.0f))->unref();
+    paint.setLooper(new SkBlurDrawLooper(SK_ColorBLACK,
+                                         SkBlurMask::ConvertRadiusToSigma(0.002f),
+                                         0.0f,
+                                         0.0f))->unref();
 
     const char* text = "DRAWING STROKED TEXT WITH A BLUR ON A PATH";
     size_t      len = strlen(text);
@@ -93,8 +93,7 @@ public:
     SkPath      fPath;
     SkScalar    fHOffset;
 
-protected:
-    void onOnceBeforeDraw() override {
+    TextOnPathView() {
         SkRect r;
         r.set(SkIntToScalar(100), SkIntToScalar(100),
               SkIntToScalar(300), SkIntToScalar(300));
@@ -104,8 +103,9 @@ protected:
         fHOffset = SkIntToScalar(50);
     }
 
+protected:
     // overrides from SkEventSink
-    bool onQuery(SkEvent* evt) override {
+    virtual bool onQuery(SkEvent* evt) {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "Text On Path");
             return true;
@@ -113,7 +113,7 @@ protected:
         return this->INHERITED::onQuery(evt);
     }
 
-    void onDrawContent(SkCanvas* canvas) override {
+    virtual void onDrawContent(SkCanvas* canvas) {
         SkPaint paint;
         paint.setAntiAlias(true);
         paint.setTextSize(SkIntToScalar(48));
@@ -151,13 +151,13 @@ protected:
             this->inval(NULL);
     }
 
-    SkView::Click* onFindClickHandler(SkScalar x, SkScalar y, unsigned modi) override {
+    virtual SkView::Click* onFindClickHandler(SkScalar x, SkScalar y, unsigned modi) SK_OVERRIDE {
         fHints += 1;
         this->inval(NULL);
         return this->INHERITED::onFindClickHandler(x, y, modi);
     }
 
-    bool onClick(Click* click) override {
+    virtual bool onClick(Click* click) {
         return this->INHERITED::onClick(click);
     }
 

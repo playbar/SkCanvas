@@ -128,17 +128,3 @@ void SkViewInflate::addIDStr(SkTDArray<IDStr>* list, SkView* view, const char* s
     memcpy(pair->fStr, str, len);
 }
 
-#ifdef SK_DEBUG
-void SkViewInflate::dump() const
-{
-    const IDStr* iter = fListenTo.begin();
-    const IDStr* stop = fListenTo.end();
-    for (; iter < stop; iter++)
-        SkDebugf("inflate: listenTo(\"%s\")\n", iter->fStr);
-
-    iter = fBroadcastTo.begin();
-    stop = fBroadcastTo.end();
-    for (; iter < stop; iter++)
-        SkDebugf("inflate: broadcastFrom(\"%s\")\n", iter->fStr);
-}
-#endif

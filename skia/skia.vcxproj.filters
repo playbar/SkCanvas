@@ -7834,9 +7834,6 @@
     <Filter Include="..\third_party\skia\src">
       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\third_party\skia\src\pdf">
-      <UniqueIdentifier>{56480206-DE3F-C823-DE52-8906D4B76BB3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
     </Filter>
@@ -12037,6 +12034,9 @@
     <Filter Include="ext\_excluded_files">
       <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
     </Filter>
+    <Filter Include="..\third_party\skia\src\xml">
+      <UniqueIdentifier>{639c4747-2d83-405d-b691-6e4b0dd92b56}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\skia\src\core\SkFlate.cpp">
@@ -14233,5 +14233,61 @@
     <ClCompile Include="..\third_party\skia\src\core\SkFlattenableBuffers.cpp">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\core\Sk64.cpp">
+      <Filter>..\third_party\skia\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\gpu\GrGpuFactory.cpp">
+      <Filter>..\third_party\skia\src\gpu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\core\SkOrderedWriteBuffer.cpp">
+      <Filter>..\third_party\skia\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\image\SkDataPixelRef.cpp">
+      <Filter>..\third_party\skia\src\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\core\SkOrderedReadBuffer.cpp">
+      <Filter>..\third_party\skia\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\core\SkImageFilterUtils.cpp">
+      <Filter>..\third_party\skia\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\utils\SkInterpolator.cpp">
+      <Filter>..\third_party\skia\src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\utils\SkParse.cpp">
+      <Filter>..\third_party\skia\src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\utils\win\SkWGL_win.cpp">
+      <Filter>..\third_party\skia\src\utils\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\xml\SkBML_XMLParser.cpp">
+      <Filter>..\third_party\skia\src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\xml\SkDOM.cpp">
+      <Filter>..\third_party\skia\src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\xml\SkXMLParser.cpp">
+      <Filter>..\third_party\skia\src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\xml\SkXMLWriter.cpp">
+      <Filter>..\third_party\skia\src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkXMLParser_empty.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\third_party\skia\src\core\SkOrderedWriteBuffer.h">
+      <Filter>..\third_party\skia\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\skia\src\image\SkDataPixelRef.h">
+      <Filter>..\third_party\skia\src\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\skia\src\core\SkOrderedReadBuffer.h">
+      <Filter>..\third_party\skia\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\skia\src\xml\SkBML_Verbs.h">
+      <Filter>..\third_party\skia\src\xml</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

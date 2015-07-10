@@ -21,8 +21,8 @@
 #define FILTER_WIDTH    SkIntToScalar(150)
 #define FILTER_HEIGHT   SkIntToScalar(200)
 
-static SkImageFilter* make0() { return SkDownSampleImageFilter::Create(SK_Scalar1 / 5); }
-static SkImageFilter* make1() { return SkOffsetImageFilter::Create(SkIntToScalar(16), SkIntToScalar(16)); }
+static SkImageFilter* make0() { return new SkDownSampleImageFilter(SK_Scalar1 / 5); }
+static SkImageFilter* make1() { return new SkOffsetImageFilter(SkIntToScalar(16), SkIntToScalar(16)); }
 static SkImageFilter* make2() {
     SkColorFilter* cf = SkColorFilter::CreateModeFilter(SK_ColorBLUE,
                                                         SkXfermode::kSrcIn_Mode);
@@ -30,30 +30,30 @@ static SkImageFilter* make2() {
     return SkColorFilterImageFilter::Create(cf);
 }
 static SkImageFilter* make3() {
-    return SkBlurImageFilter::Create(8, 0);
+    return new SkBlurImageFilter(8, 0);
 }
 
 static SkImageFilter* make4() {
-    SkImageFilter* outer = SkOffsetImageFilter::Create(SkIntToScalar(16), SkIntToScalar(16));
-    SkImageFilter* inner = SkDownSampleImageFilter::Create(SK_Scalar1 / 5);
+    SkImageFilter* outer = new SkOffsetImageFilter(SkIntToScalar(16), SkIntToScalar(16));
+    SkImageFilter* inner = new SkDownSampleImageFilter(SK_Scalar1 / 5);
     SkAutoUnref aur0(outer);
     SkAutoUnref aur1(inner);
-    return SkComposeImageFilter::Create(outer, inner);
+    return new SkComposeImageFilter(outer, inner);
 }
 static SkImageFilter* make5() {
-    SkImageFilter* first = SkOffsetImageFilter::Create(SkIntToScalar(16), SkIntToScalar(16));
-    SkImageFilter* second = SkDownSampleImageFilter::Create(SK_Scalar1 / 5);
+    SkImageFilter* first = new SkOffsetImageFilter(SkIntToScalar(16), SkIntToScalar(16));
+    SkImageFilter* second = new SkDownSampleImageFilter(SK_Scalar1 / 5);
     SkAutoUnref aur0(first);
     SkAutoUnref aur1(second);
-    return SkMergeImageFilter::Create(first, second);
+    return new SkMergeImageFilter(first, second);
 }
 
 static SkImageFilter* make6() {
-    SkImageFilter* outer = SkOffsetImageFilter::Create(SkIntToScalar(16), SkIntToScalar(16));
-    SkImageFilter* inner = SkDownSampleImageFilter::Create(SK_Scalar1 / 5);
+    SkImageFilter* outer = new SkOffsetImageFilter(SkIntToScalar(16), SkIntToScalar(16));
+    SkImageFilter* inner = new SkDownSampleImageFilter(SK_Scalar1 / 5);
     SkAutoUnref aur0(outer);
     SkAutoUnref aur1(inner);
-    SkImageFilter* compose = SkComposeImageFilter::Create(outer, inner);
+    SkImageFilter* compose = new SkComposeImageFilter(outer, inner);
     SkAutoUnref aur2(compose);
 
     SkColorFilter* cf = SkColorFilter::CreateModeFilter(0x880000FF,
@@ -62,15 +62,15 @@ static SkImageFilter* make6() {
     SkImageFilter* blue = SkColorFilterImageFilter::Create(cf);
     SkAutoUnref aur4(blue);
 
-    return SkMergeImageFilter::Create(compose, blue);
+    return new SkMergeImageFilter(compose, blue);
 }
 
 static SkImageFilter* make7() {
-    SkImageFilter* outer = SkOffsetImageFilter::Create(SkIntToScalar(16), SkIntToScalar(16));
+    SkImageFilter* outer = new SkOffsetImageFilter(SkIntToScalar(16), SkIntToScalar(16));
     SkImageFilter* inner = make3();
     SkAutoUnref aur0(outer);
     SkAutoUnref aur1(inner);
-    SkImageFilter* compose = SkComposeImageFilter::Create(outer, inner);
+    SkImageFilter* compose = new SkComposeImageFilter(outer, inner);
     SkAutoUnref aur2(compose);
 
     SkColorFilter* cf = SkColorFilter::CreateModeFilter(0x880000FF,
@@ -79,7 +79,7 @@ static SkImageFilter* make7() {
     SkImageFilter* blue = SkColorFilterImageFilter::Create(cf);
     SkAutoUnref aur4(blue);
 
-    return SkMergeImageFilter::Create(compose, blue);
+    return new SkMergeImageFilter(compose, blue);
 }
 
 static void draw0(SkCanvas* canvas) {
@@ -97,13 +97,13 @@ public:
 
 protected:
 
-    SkString onShortName() override {
+    virtual SkString onShortName() {
         return SkString("testimagefilters");
     }
 
-    SkISize onISize() override { return SkISize::Make(700, 460); }
+    virtual SkISize onISize() { return SkISize::Make(700, 460); }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
 //        this->drawSizeBounds(canvas, 0xFFCCCCCC);
 
         static SkImageFilter* (*gFilterProc[])() = {
@@ -117,7 +117,7 @@ protected:
 
         canvas->translate(SkIntToScalar(8), SkIntToScalar(8));
 
-        for (int i = 0; i < (int)SK_ARRAY_COUNT(gFilterProc); ++i) {
+        for (size_t i = 0; i < SK_ARRAY_COUNT(gFilterProc); ++i) {
             int ix = i % 4;
             int iy = i / 4;
 

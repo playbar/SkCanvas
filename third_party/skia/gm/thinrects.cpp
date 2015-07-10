@@ -17,15 +17,15 @@ public:
     }
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("thinrects");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(240, 320);
+    virtual SkISize onISize() SK_OVERRIDE {
+        return make_isize(240, 320);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
 
         SkPaint white;
         white.setColor(SK_ColorWHITE);

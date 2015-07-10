@@ -9,7 +9,8 @@
 #include "SkCanvas.h"
 
 static void make_bm(SkBitmap* bm) {
-    bm->allocN32Pixels(60, 60);
+    bm->setConfig(SkBitmap::kARGB_8888_Config, 60, 60);
+    bm->allocPixels();
     bm->eraseColor(0);
 
     SkCanvas canvas(*bm);
@@ -56,15 +57,15 @@ public:
     }
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() {
         return SkString("bitmaprecttest");
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() {
         return SkISize::Make(320, 240);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         test_bitmaprect(canvas);
     }
 

@@ -1,14 +1,14 @@
+
 /*
  * Copyright 2011 Google Inc.
  *
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 #include "SampleCode.h"
-#include "SkAnimTimer.h"
 #include "SkView.h"
 #include "SkCanvas.h"
+#include "Sk64.h"
 #include "SkGradientShader.h"
 #include "SkString.h"
 
@@ -38,6 +38,7 @@ static void draw_gradient2(SkCanvas* canvas, const SkRect& rect, SkScalar delta)
 
 
 class DegenerateTwoPtRadialsView : public SampleView {
+
 public:
     DegenerateTwoPtRadialsView() {
         fTime = 0;
@@ -45,7 +46,8 @@ public:
     }
 
 protected:
-    bool onQuery(SkEvent* evt) override {
+    // overrides from SkEventSink
+    virtual bool onQuery(SkEvent* evt) {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "DegenerateTwoPtRadials");
             return true;
@@ -53,7 +55,8 @@ protected:
         return this->INHERITED::onQuery(evt);
     }
 
-    void onDrawContent(SkCanvas* canvas) override {
+    virtual void onDrawContent(SkCanvas* canvas) {
+        fTime += SampleCode::GetAnimSecondsDelta();
         SkScalar delta = fTime / 15.f;
         int intPart = SkScalarFloorToInt(delta);
         delta = delta - SK_Scalar1 * intPart;
@@ -75,11 +78,7 @@ protected:
         paint.setAntiAlias(true);
         paint.setColor(SK_ColorBLACK);
         canvas->drawText(txt.c_str(), txt.size(), l + w/2 + w*DELTA_SCALE*delta, t + h + SK_Scalar1 * 10, paint);
-    }
-
-    bool onAnimate(const SkAnimTimer& timer) override {
-        fTime = SkDoubleToScalar(timer.secs() / 15);
-        return true;
+        this->inval(NULL);
     }
 
 private:

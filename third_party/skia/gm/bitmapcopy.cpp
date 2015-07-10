@@ -9,23 +9,23 @@
 
 namespace skiagm {
 
-static const char* gColorTypeNames[] = {
-    "unknown",
+static const char* gConfigNames[] = {
+    "unknown config",
     "A8",
+    "Index8",
     "565",
     "4444",
-    "8888",
-    "8888",
-    "Index8",
+    "8888"
 };
 
-static const SkColorType gColorTypes[] = {
-    kRGB_565_SkColorType,
-    kARGB_4444_SkColorType,
-    kN32_SkColorType,
+SkBitmap::Config gConfigs[] = {
+  SkBitmap::kRGB_565_Config,
+  SkBitmap::kARGB_4444_Config,  // TODO(edisonn): Should we remove it from GM?
+                                // it fails to copy in bitmap with this config.
+  SkBitmap::kARGB_8888_Config,
 };
 
-#define NUM_CONFIGS SK_ARRAY_COUNT(gColorTypes)
+#define NUM_CONFIGS (sizeof(gConfigs) / sizeof(SkBitmap::Config))
 
 static void draw_checks(SkCanvas* canvas, int width, int height) {
     SkPaint paint;
@@ -57,35 +57,35 @@ protected:
     }
 
     virtual SkISize onISize() {
-        return SkISize::Make(540, 330);
+        return make_isize(540, 330);
     }
 
     virtual void onDraw(SkCanvas* canvas) {
         SkPaint paint;
-        SkScalar horizMargin = 10;
-        SkScalar vertMargin = 10;
+        SkScalar horizMargin(SkIntToScalar(10));
+        SkScalar vertMargin(SkIntToScalar(10));
 
-        SkBitmap src;
-        src.allocN32Pixels(40, 40);
-        SkCanvas canvasTmp(src);
+        SkBitmapDevice devTmp(SkBitmap::kARGB_8888_Config, 40, 40, false);
+        SkCanvas canvasTmp(&devTmp);
 
         draw_checks(&canvasTmp, 40, 40);
+        SkBitmap src = canvasTmp.getTopDevice()->accessBitmap(false);
 
         for (unsigned i = 0; i < NUM_CONFIGS; ++i) {
-            src.copyTo(&fDst[i], gColorTypes[i]);
+            if (!src.deepCopyTo(&fDst[i], gConfigs[i])) {
+                src.copyTo(&fDst[i], gConfigs[i]);
+            }
         }
 
         canvas->clear(0xFFDDDDDD);
         paint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&paint);
-        
         SkScalar width = SkIntToScalar(40);
         SkScalar height = SkIntToScalar(40);
         if (paint.getFontSpacing() > height) {
             height = paint.getFontSpacing();
         }
         for (unsigned i = 0; i < NUM_CONFIGS; i++) {
-            const char* name = gColorTypeNames[src.colorType()];
+            const char* name = gConfigNames[src.config()];
             SkScalar textWidth = paint.measureText(name, strlen(name));
             if (textWidth > width) {
                 width = textWidth;
@@ -98,7 +98,7 @@ protected:
         for (unsigned i = 0; i < NUM_CONFIGS; i++) {
             canvas->save();
             // Draw destination config name
-            const char* name = gColorTypeNames[fDst[i].colorType()];
+            const char* name = gConfigNames[fDst[i].config()];
             SkScalar textWidth = paint.measureText(name, strlen(name));
             SkScalar x = (width - textWidth) / SkScalar(2);
             SkScalar y = paint.getFontSpacing() / SkScalar(2);
@@ -114,12 +114,17 @@ protected:
         }
     }
 
+    virtual uint32_t onGetFlags() const { return kSkipPicture_Flag
+                                               | kSkipPipe_Flag; }
+
 private:
     typedef GM INHERITED;
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
+#ifndef SK_BUILD_FOR_ANDROID
 static GM* MyFactory(void*) { return new BitmapCopyGM; }
 static GMRegistry reg(MyFactory);
+#endif
 }

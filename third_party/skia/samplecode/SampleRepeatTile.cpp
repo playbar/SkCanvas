@@ -14,7 +14,8 @@
 static void make_bitmap(SkBitmap* bm) {
     const int W = 100;
     const int H = 100;
-    bm->allocN32Pixels(W, H);
+    bm->setConfig(SkBitmap::kARGB_8888_Config, W, H);
+    bm->allocPixels();
 
     SkPaint paint;
     SkCanvas canvas(*bm);
@@ -49,7 +50,7 @@ public:
 
 protected:
     // overrides from SkEventSink
-    bool onQuery(SkEvent* evt) override {
+    virtual bool onQuery(SkEvent* evt) {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "RepeatTile");
             return true;
@@ -57,7 +58,7 @@ protected:
         return this->INHERITED::onQuery(evt);
     }
 
-    void onDrawContent(SkCanvas* canvas) override {
+    virtual void onDrawContent(SkCanvas* canvas) {
         SkPaint paint;
         make_paint(&paint, SkShader::kRepeat_TileMode);
 
@@ -66,13 +67,13 @@ protected:
         canvas->drawPaint(paint);
     }
 
-    SkView::Click* onFindClickHandler(SkScalar x, SkScalar y, unsigned modi) override {
+    virtual SkView::Click* onFindClickHandler(SkScalar x, SkScalar y, unsigned modi) SK_OVERRIDE {
         this->inval(NULL);
 
         return this->INHERITED::onFindClickHandler(x, y, modi);
     }
 
-    bool onClick(Click* click) override {
+    virtual bool onClick(Click* click) {
         return this->INHERITED::onClick(click);
     }
 

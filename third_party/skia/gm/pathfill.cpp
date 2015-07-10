@@ -117,23 +117,23 @@ static const MakePathProc gProcs[] = {
 class PathFillGM : public skiagm::GM {
     SkPath  fPath[N];
     SkScalar fDY[N];
-protected:
-    void onOnceBeforeDraw() override {
+public:
+    PathFillGM() {
         for (size_t i = 0; i < N; i++) {
             fDY[i] = gProcs[i](&fPath[i]);
         }
     }
 
-
-    SkString onShortName() override {
+protected:
+    virtual SkString onShortName() {
         return SkString("pathfill");
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() {
         return SkISize::Make(640, 480);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
         SkPaint paint;
         paint.setAntiAlias(true);
 
@@ -151,18 +151,19 @@ private:
 class PathInverseFillGM : public skiagm::GM {
     SkPath  fPath[N];
     SkScalar fDY[N];
-protected:
-    void onOnceBeforeDraw() override {
+public:
+    PathInverseFillGM() {
         for (size_t i = 0; i < N; i++) {
             fDY[i] = gProcs[i](&fPath[i]);
         }
     }
 
-    SkString onShortName() override {
+protected:
+    virtual SkString onShortName() {
         return SkString("pathinvfill");
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() {
         return SkISize::Make(450, 220);
     }
 
@@ -179,7 +180,7 @@ protected:
         canvas->restore();
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
         SkPath path;
 
         path.addCircle(SkIntToScalar(50), SkIntToScalar(50), SkIntToScalar(40));

@@ -31,7 +31,7 @@ protected:
         canvas->save();
         paint.setColor(SK_ColorBLUE);
         SkMaskFilter* mf = SkBlurMaskFilter::Create(
-            kNormal_SkBlurStyle,
+            SkBlurMaskFilter::kNormal_BlurStyle,
             SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(128)),
             SkBlurMaskFilter::kHighQuality_BlurFlag);
         paint.setMaskFilter(mf)->unref();

@@ -24,7 +24,7 @@ public:
     TypefaceGM() {
         fFaces = new SkTypeface*[SK_ARRAY_COUNT(gFaces)];
         for (size_t i = 0; i < SK_ARRAY_COUNT(gFaces); i++) {
-            fFaces[i] = sk_tool_utils::create_portable_typeface(gFaces[i], SkTypeface::kNormal);
+            fFaces[i] = SkTypeface::CreateFromName(gFaces[i], SkTypeface::kNormal);
         }
     }
 
@@ -36,21 +36,21 @@ public:
     }
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("typeface");
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() SK_OVERRIDE {
         return SkISize::Make(640, 480);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         SkString text("Typefaces are fun!");
         SkScalar y = 0;
 
         SkPaint paint;
         paint.setAntiAlias(true);
-        for (int i = 0; i < (int)SK_ARRAY_COUNT(gFaces); i++) {
+        for (size_t i = 0; i < SK_ARRAY_COUNT(gFaces); i++) {
             this->drawWithFace(text, i, y, paint, canvas);
         }
         // Now go backwards
@@ -159,8 +159,8 @@ class TypefaceStylesGM : public skiagm::GM {
 public:
     TypefaceStylesGM(bool applyKerning) : fApplyKerning(applyKerning) {
         for (int i = 0; i < gFaceStylesCount; i++) {
-            fFaces[i] = sk_tool_utils::create_portable_typeface(gFaceStyles[i].fName,
-                                                         gFaceStyles[i].fStyle);
+            fFaces[i] = SkTypeface::CreateFromName(gFaceStyles[i].fName,
+                                                   gFaceStyles[i].fStyle);
         }
     }
 
@@ -171,7 +171,7 @@ public:
     }
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         SkString name("typefacestyles");
         if (fApplyKerning) {
             name.append("_kerning");
@@ -179,11 +179,11 @@ protected:
         return name;
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() SK_OVERRIDE {
         return SkISize::Make(640, 480);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         SkPaint paint;
         paint.setAntiAlias(true);
         paint.setTextSize(SkIntToScalar(30));

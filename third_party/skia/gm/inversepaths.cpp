@@ -70,16 +70,15 @@ public:
     }
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() {
         return SkString("inverse_paths");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(800, 900);
+    virtual SkISize onISize() {
+        return make_isize(800, 900);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
         SkScalar cx = slideWidth / 2 + slideBoundary;
         SkScalar cy = slideHeight / 2 + slideBoundary;
         SkScalar dx = slideWidth + 2 * slideBoundary;

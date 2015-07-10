@@ -60,16 +60,19 @@ static SkScalar drawCell(SkCanvas* canvas, SkXfermode* mode, SkAlpha a0, SkAlpha
 
 static SkShader* make_bg_shader() {
     SkBitmap bm;
-    bm.allocN32Pixels(2, 2);
+    bm.setConfig(SkBitmap::kARGB_8888_Config, 2, 2);
+    bm.allocPixels();
     *bm.getAddr32(0, 0) = *bm.getAddr32(1, 1) = 0xFFFFFFFF;
     *bm.getAddr32(1, 0) = *bm.getAddr32(0, 1) = SkPackARGB32(0xFF, 0xCC, 0xCC, 0xCC);
 
+    SkShader* s = SkShader::CreateBitmapShader(bm,
+                                               SkShader::kRepeat_TileMode,
+                                               SkShader::kRepeat_TileMode);
+
     SkMatrix m;
     m.setScale(SkIntToScalar(6), SkIntToScalar(6));
-    return SkShader::CreateBitmapShader(bm,
-                                        SkShader::kRepeat_TileMode,
-                                        SkShader::kRepeat_TileMode,
-                                        &m);
+    s->setLocalMatrix(m);
+    return s;
 }
 
 namespace skiagm {
@@ -78,17 +81,18 @@ namespace skiagm {
         SkPaint fBGPaint;
 
     protected:
-        SkString onShortName() override {
+
+        virtual SkString onShortName() SK_OVERRIDE {
             return SkString("hairmodes");
         }
 
-        virtual SkISize onISize() override { return SkISize::Make(640, 480); }
+        virtual SkISize onISize() { return make_isize(640, 480); }
 
-        void onOnceBeforeDraw() override {
+        virtual void onOnceBeforeDraw() SK_OVERRIDE {
             fBGPaint.setShader(make_bg_shader())->unref();
         }
 
-        void onDraw(SkCanvas* canvas) override {
+        virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
             const SkRect bounds = SkRect::MakeWH(W, H);
             static const SkAlpha gAlphaValue[] = { 0xFF, 0x88, 0x88 };
 
@@ -120,6 +124,9 @@ namespace skiagm {
                 canvas->translate(W * 5 / 4, 0);
             }
         }
+
+        // disable pdf for now, since it crashes on mac
+        virtual uint32_t onGetFlags() const { return kSkipPDF_Flag; }
 
     private:
         typedef GM INHERITED;

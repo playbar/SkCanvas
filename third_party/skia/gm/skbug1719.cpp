@@ -24,21 +24,21 @@ public:
     SkBug1719GM() {}
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("skbug1719");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(300, 100);
+    virtual SkISize onISize() SK_OVERRIDE {
+        return make_isize(300, 100);
     }
 
-    void onDrawBackground(SkCanvas* canvas) override {
+    virtual void onDrawBackground(SkCanvas* canvas) SK_OVERRIDE {
         SkPaint bgPaint;
         bgPaint.setColor(0xFF303030);
         canvas->drawPaint(bgPaint);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         canvas->translate(SkIntToScalar(-800), SkIntToScalar(-650));
 
         // The data is lifted from an SKP that exhibited the bug.
@@ -80,7 +80,7 @@ protected:
         paint.setAntiAlias(true);
         paint.setColor(0xFF000000);
         paint.setMaskFilter(
-            SkBlurMaskFilter::Create(kNormal_SkBlurStyle,
+            SkBlurMaskFilter::Create(SkBlurMaskFilter::kNormal_BlurStyle,
                                      0.78867501f,
                                      SkBlurMaskFilter::kHighQuality_BlurFlag))->unref();
         paint.setColorFilter(

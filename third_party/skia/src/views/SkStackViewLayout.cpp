@@ -181,16 +181,7 @@ void SkStackViewLayout::onLayoutChildren(SkView* parent)
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef SK_DEBUG
-    static void assert_no_attr(const SkDOM& dom, const SkDOM::Node* node, const char attr[])
-    {
-        const char* value = dom.findAttr(node, attr);
-        if (value)
-            SkDebugf("unknown attribute %s=\"%s\"\n", attr, value);
-    }
-#else
-    #define assert_no_attr(dom, node, attr)
-#endif
+#define assert_no_attr(dom, node, attr)
 
 void SkStackViewLayout::onInflate(const SkDOM& dom, const SkDOM::Node* node)
 {

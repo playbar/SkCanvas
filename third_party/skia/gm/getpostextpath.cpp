@@ -16,12 +16,11 @@ public:
     GetPosTextPathGM() {}
 
 protected:
-
-    SkString onShortName() override {
+    SkString onShortName() {
         return SkString("getpostextpath");
     }
 
-    SkISize onISize() override { return SkISize::Make(480, 780); }
+    SkISize onISize() { return skiagm::make_isize(480, 780); }
 
     static void strokePath(SkCanvas* canvas, const SkPath& path) {
         SkPaint paint;
@@ -31,15 +30,14 @@ protected:
         canvas->drawPath(path, paint);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
         // explicitly add spaces, to test a prev. bug
         const char* text = "Ham bur ge fons";
-        int len = SkToInt(strlen(text));
+        size_t len = strlen(text);
         SkPath path;
 
         SkPaint paint;
         paint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&paint);
         paint.setTextSize(SkIntToScalar(48));
 
         canvas->translate(SkIntToScalar(10), SkIntToScalar(64));
@@ -53,10 +51,10 @@ protected:
         SkAutoTArray<SkScalar> widths(len);
         paint.getTextWidths(text, len, &widths[0]);
 
-        SkRandom rand;
+        SkLCGRandom rand;
         SkScalar x = SkIntToScalar(20);
         SkScalar y = SkIntToScalar(100);
-        for (int i = 0; i < len; ++i) {
+        for (size_t i = 0; i < len; ++i) {
             pos[i].set(x, y + rand.nextSScalar1() * 24);
             x += widths[i];
         }

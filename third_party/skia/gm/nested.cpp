@@ -19,8 +19,7 @@ public:
     }
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         SkString name("nested");
         if (fDoAA) {
             name.append("_aa");
@@ -30,8 +29,8 @@ protected:
         return name;
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(kImageWidth, kImageHeight);
+    virtual SkISize onISize() SK_OVERRIDE {
+        return make_isize(kImageWidth, kImageHeight);
     }
 
     enum Shapes {
@@ -60,7 +59,7 @@ protected:
         }
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
 
         SkPaint shapePaint;
         shapePaint.setColor(SK_ColorBLACK);

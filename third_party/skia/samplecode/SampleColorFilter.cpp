@@ -5,7 +5,6 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-#include "sk_tool_utils.h"
 #include "SampleCode.h"
 #include "SkView.h"
 #include "SkCanvas.h"
@@ -85,9 +84,28 @@ static void test_5bits() {
     SkDebugf("--- trunc: %d %d  round: %d %d new: %d %d\n", e0, ae0, e1, ae1, e2, ae2);
 }
 
+// No longer marked static, since it is externed in SampleUnpremul.
+SkShader* createChecker();
+SkShader* createChecker() {
+    SkBitmap bm;
+    bm.setConfig(SkBitmap::kARGB_8888_Config, 2, 2);
+    bm.allocPixels();
+    bm.lockPixels();
+    *bm.getAddr32(0, 0) = *bm.getAddr32(1, 1) = SkPreMultiplyColor(0xFFFFFFFF);
+    *bm.getAddr32(0, 1) = *bm.getAddr32(1, 0) = SkPreMultiplyColor(0xFFCCCCCC);
+    SkShader* s = SkShader::CreateBitmapShader(bm, SkShader::kRepeat_TileMode,
+                                               SkShader::kRepeat_TileMode);
+
+    SkMatrix m;
+    m.setScale(12, 12);
+    s->setLocalMatrix(m);
+    return s;
+}
+
 static SkBitmap createBitmap(int n) {
     SkBitmap bitmap;
-    bitmap.allocN32Pixels(n, n);
+    bitmap.setConfig(SkBitmap::kARGB_8888_Config, n, n);
+    bitmap.allocPixels();
     bitmap.eraseColor(SK_ColorTRANSPARENT);
 
     SkCanvas canvas(bitmap);
@@ -118,8 +136,7 @@ class ColorFilterView : public SampleView {
 public:
     ColorFilterView() {
         fBitmap = createBitmap(N);
-        fShader = sk_tool_utils::create_checkerboard_shader(
-                0xFFCCCCCC, 0xFFFFFFFF, 12);
+        fShader = createChecker();
 
         if (false) { // avoid bit rot, suppress warning
             test_5bits();

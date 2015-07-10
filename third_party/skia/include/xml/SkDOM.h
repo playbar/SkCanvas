@@ -17,7 +17,7 @@
 struct SkDOMNode;
 struct SkDOMAttr;
 
-class SkDOM {
+class SK_API SkDOM {
 public:
     SkDOM();
     ~SkDOM();

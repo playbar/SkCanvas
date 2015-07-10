@@ -113,7 +113,8 @@ private:
     SkMaskFilter* createBlur() {
         static const SkScalar kBlurSigma = SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(25));
 
-        return SkBlurMaskFilter::Create(kNormal_SkBlurStyle, kBlurSigma,
+        return SkBlurMaskFilter::Create(SkBlurMaskFilter::kNormal_BlurStyle,
+                                        kBlurSigma,
                                         SkBlurMaskFilter::kHighQuality_BlurFlag);
     }
 
@@ -162,23 +163,24 @@ private:
 
     // Create a 1-tier drawlooper
     SkLayerDrawLooper* create1Looper(SkScalar xOff, SkScalar yOff, SkColor color) {
-        SkLayerDrawLooper::Builder looperBuilder;
+        SkLayerDrawLooper* looper = new SkLayerDrawLooper;
         SkLayerDrawLooper::LayerInfo info;
 
+        info.fFlagsMask = 0;
         info.fPaintBits = SkLayerDrawLooper::kColorFilter_Bit |
                           SkLayerDrawLooper::kMaskFilter_Bit;
         info.fColorMode = SkXfermode::kSrc_Mode;
         info.fOffset.set(xOff, yOff);
         info.fPostTranslate = false;
 
-        SkPaint* paint = looperBuilder.addLayer(info);
+        SkPaint* paint = looper->addLayer(info);
 
         paint->setMaskFilter(this->createBlur())->unref();
 
         SkColorFilter* cf = SkColorFilter::CreateModeFilter(color, SkXfermode::kSrcIn_Mode);
         paint->setColorFilter(cf)->unref();
 
-        return looperBuilder.detachLooper();
+        return looper;
     }
 
     void draw1x4(SkCanvas* canvas, SkScalar x, SkScalar y) {
@@ -206,9 +208,10 @@ private:
 
     // Create a 4-tier draw looper
     SkLayerDrawLooper* create4Looper(SkScalar xOff, SkScalar yOff) {
-        SkLayerDrawLooper::Builder looperBuilder;
+        SkLayerDrawLooper* looper = new SkLayerDrawLooper;
         SkLayerDrawLooper::LayerInfo info;
 
+        info.fFlagsMask = 0;
         info.fPaintBits = SkLayerDrawLooper::kColorFilter_Bit |
                           SkLayerDrawLooper::kMaskFilter_Bit;
         info.fColorMode = SkXfermode::kSrc_Mode;
@@ -218,7 +221,7 @@ private:
 
         for (int i = 3; i >= 0; --i) {
             info.fOffset.set(xOff+gBlurOffsets[i].fX, yOff+gBlurOffsets[i].fY);
-            paint = looperBuilder.addLayer(info);
+            paint = looper->addLayer(info);
 
             paint->setMaskFilter(this->createBlur())->unref();
 
@@ -226,7 +229,7 @@ private:
             paint->setColorFilter(cf)->unref();
         }
 
-        return looperBuilder.detachLooper();
+        return looper;
     }
 
     typedef GM INHERITED;

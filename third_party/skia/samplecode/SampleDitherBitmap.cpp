@@ -37,7 +37,7 @@ static void draw_gradient(SkCanvas* canvas) {
     draw_rect(canvas, r, p);
 }
 
-static bool test_pathregion() {
+static void test_pathregion() {
     SkPath path;
     SkRegion region;
     path.moveTo(25071800.f, -141823808.f);
@@ -49,7 +49,8 @@ static bool test_pathregion() {
     SkIRect bounds;
     path.getBounds().round(&bounds);
     SkRegion clip(bounds);
-    return region.setPath(path, clip); // <-- !! DOWN !!
+    bool result = region.setPath(path, clip); // <-- !! DOWN !!
+    SkDebugf("----- result %d\n", result);
 }
 
 static SkBitmap make_bitmap() {
@@ -57,11 +58,11 @@ static SkBitmap make_bitmap() {
     for (int i = 0; i < 256; i++) {
         c[i] = SkPackARGB32(0xFF, i, 0, 0);
     }
-    SkColorTable* ctable = new SkColorTable(c, 256);
+    SkColorTable* ctable = new SkColorTable(c, 256, kOpaque_SkAlphaType);
 
     SkBitmap bm;
-    bm.allocPixels(SkImageInfo::Make(256, 32, kIndex_8_SkColorType, kPremul_SkAlphaType),
-                   NULL, ctable);
+    bm.setConfig(SkBitmap::kIndex8_Config, 256, 32);
+    bm.allocPixels(ctable);
     ctable->unref();
 
     bm.lockPixels();
@@ -78,12 +79,11 @@ static SkBitmap make_bitmap() {
 class DitherBitmapView : public SampleView {
     SkBitmap    fBM8;
     SkBitmap    fBM32;
-    bool        fResult;
 public:
     DitherBitmapView() {
-        fResult = test_pathregion();
+        test_pathregion();
         fBM8 = make_bitmap();
-        //fBM8.copyTo(&fBM32, kN32_SkColorType);
+        fBM8.copyTo(&fBM32, SkBitmap::kARGB_8888_Config);
 
         this->setBGColor(0xFFDDDDDD);
     }
@@ -101,6 +101,14 @@ protected:
     static void setBitmapOpaque(SkBitmap* bm, bool isOpaque) {
         SkAutoLockPixels alp(*bm);  // needed for ctable
         bm->setAlphaType(isOpaque ? kOpaque_SkAlphaType : kPremul_SkAlphaType);
+#if 0
+        SkColorTable* ctable = bm->getColorTable();
+        if (ctable) {
+            if (ctable->isOpaque() != isOpaque) {
+                // how do we change a colortable? don't want to
+            }
+        }
+#endif
     }
 
     static void draw2(SkCanvas* canvas, const SkBitmap& bm) {
@@ -130,14 +138,6 @@ protected:
 
         canvas->translate(0, SkIntToScalar(fBM8.height() *3));
         draw_gradient(canvas);
-
-        char resultTrue[] = "SkRegion::setPath returned true";
-        char resultFalse[] = "SkRegion::setPath returned false";
-        SkPaint p;
-        if (fResult)
-            canvas->drawText(resultTrue, sizeof(resultTrue) - 1, 0, 50, p);
-        else
-            canvas->drawText(resultFalse, sizeof(resultFalse) - 1, 0, 50, p);
     }
 
 private:

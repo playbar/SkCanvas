@@ -1,46 +1,46 @@
+
 /*
  * Copyright 2011 Google Inc.
  *
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
-#include "gm.h"
-
-#include "Resources.h"
 #include "SampleCode.h"
-#include "SkCanvas.h"
-#include "SkColorFilter.h"
-#include "SkColorPriv.h"
 #include "SkData.h"
-#include "SkImageGenerator.h"
+#include "SkDecodingImageGenerator.h"
 #include "SkDumpCanvas.h"
+#include "SkView.h"
+#include "SkCanvas.h"
+#include "Sk64.h"
 #include "SkGradientShader.h"
 #include "SkGraphics.h"
 #include "SkImageDecoder.h"
 #include "SkOSFile.h"
 #include "SkPath.h"
 #include "SkPicture.h"
-#include "SkPictureRecorder.h"
 #include "SkRandom.h"
 #include "SkRegion.h"
 #include "SkShader.h"
-#include "SkStream.h"
+#include "SkUtils.h"
+#include "SkColorPriv.h"
+#include "SkColorFilter.h"
 #include "SkTime.h"
 #include "SkTypeface.h"
-#include "SkUtils.h"
-#include "SkView.h"
-#include "SkXMLParser.h"
 #include "SkXfermode.h"
+#include "SkStream.h"
+#include "SkXMLParser.h"
+
+#include "gm.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
 static SkBitmap load_bitmap() {
     SkBitmap bm;
-    SkString pngFilename = GetResourcePath("mandrill_512.png");
-    SkAutoDataUnref data(SkData::NewFromFileName(pngFilename.c_str()));
+    SkString directory = skiagm::GM::GetResourcePath();
+    SkString path = SkOSPath::SkPathJoin(directory.c_str(), "mandrill_512.png");
+    SkAutoDataUnref data(SkData::NewFromFileName(path.c_str()));
     if (data.get() != NULL) {
-        SkInstallDiscardablePixelRef(data, &bm);
+        SkDecodingImageGenerator::Install(data.get(), &bm);
     }
     return bm;
 }
@@ -61,30 +61,24 @@ public:
 
         fBitmap = load_bitmap();
 
-        SkPictureRecorder recorder;
-
-        recorder.beginRecording(100, 100, NULL, 0);
-        fSubPicture = recorder.endRecording();
-
-        SkCanvas* canvas = recorder.beginRecording(100, 100, NULL, 0);
+        fPicture = new SkPicture;
+        SkCanvas* canvas = fPicture->beginRecording(100, 100);
         SkPaint paint;
         paint.setAntiAlias(true);
 
         canvas->drawBitmap(fBitmap, 0, 0, NULL);
 
         drawCircle(canvas, 50, SK_ColorBLACK);
-        canvas->drawPicture(fSubPicture);
+        fSubPicture = new SkPicture;
+        canvas->drawPicture(*fSubPicture);
         canvas->translate(SkIntToScalar(50), 0);
-        canvas->drawPicture(fSubPicture);
+        canvas->drawPicture(*fSubPicture);
         canvas->translate(0, SkIntToScalar(50));
-        canvas->drawPicture(fSubPicture);
+        canvas->drawPicture(*fSubPicture);
         canvas->translate(SkIntToScalar(-50), 0);
-        canvas->drawPicture(fSubPicture);
-
-        fPicture = recorder.endRecording();
-
-        // fPicture now has (4) references to fSubPicture. We can release our ref,
-        // and just unref fPicture in our destructor, and it will in turn take care of
+        canvas->drawPicture(*fSubPicture);
+        // fPicture now has (4) references to us. We can release ours, and just
+        // unref fPicture in our destructor, and it will in turn take care of
         // the other references to fSubPicture
         fSubPicture->unref();
     }
@@ -95,7 +89,7 @@ public:
 
 protected:
     // overrides from SkEventSink
-    bool onQuery(SkEvent* evt) override {
+    virtual bool onQuery(SkEvent* evt) {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "Picture");
             return true;
@@ -111,11 +105,16 @@ protected:
         canvas->drawBitmap(fBitmap, 0, 0, NULL);
         canvas->restore();
 
+        const char beforeStr[] = "before circle";
+        const char afterStr[] = "after circle";
+
         paint.setAntiAlias(true);
 
         paint.setColor(SK_ColorRED);
+        canvas->drawData(beforeStr, sizeof(beforeStr));
         canvas->drawCircle(SkIntToScalar(50), SkIntToScalar(50),
                            SkIntToScalar(40), paint);
+        canvas->drawData(afterStr, sizeof(afterStr));
         paint.setColor(SK_ColorBLACK);
         paint.setTextSize(SkIntToScalar(40));
         canvas->drawText("Picture", 7, SkIntToScalar(50), SkIntToScalar(62),
@@ -123,33 +122,52 @@ protected:
 
     }
 
-    void onDrawContent(SkCanvas* canvas) override {
-        this->drawSomething(canvas);
+    virtual void onDrawContent(SkCanvas* canvas) {
+        drawSomething(canvas);
 
-        SkPictureRecorder recorder;
-        this->drawSomething(recorder.beginRecording(100, 100, NULL, 0));
-        SkAutoTUnref<SkPicture> pict(recorder.endRecording());
+        SkPicture* pict = new SkPicture;
+        SkAutoUnref aur(pict);
+
+        drawSomething(pict->beginRecording(100, 100));
+        pict->endRecording();
 
         canvas->save();
         canvas->translate(SkIntToScalar(300), SkIntToScalar(50));
         canvas->scale(-SK_Scalar1, -SK_Scalar1);
         canvas->translate(-SkIntToScalar(100), -SkIntToScalar(50));
-        canvas->drawPicture(pict);
+        canvas->drawPicture(*pict);
         canvas->restore();
 
         canvas->save();
         canvas->translate(SkIntToScalar(200), SkIntToScalar(150));
         canvas->scale(SK_Scalar1, -SK_Scalar1);
         canvas->translate(0, -SkIntToScalar(50));
-        canvas->drawPicture(pict);
+        canvas->drawPicture(*pict);
         canvas->restore();
 
         canvas->save();
         canvas->translate(SkIntToScalar(100), SkIntToScalar(100));
         canvas->scale(-SK_Scalar1, SK_Scalar1);
         canvas->translate(-SkIntToScalar(100), 0);
-        canvas->drawPicture(pict);
+        canvas->drawPicture(*pict);
         canvas->restore();
+
+#ifdef SK_DEVELOPER
+        if (false) {
+            SkDebugfDumper dumper;
+            SkDumpCanvas dumpCanvas(&dumper);
+            dumpCanvas.drawPicture(*pict);
+        }
+#endif
+
+        // test that we can re-record a subpicture, and see the results
+
+        SkRandom rand(SampleCode::GetAnimTime());
+        canvas->translate(SkIntToScalar(10), SkIntToScalar(250));
+        drawCircle(fSubPicture->beginRecording(50, 50), 25,
+                   rand.nextU() | 0xFF000000);
+        canvas->drawPicture(*fPicture);
+        delayInval(500);
     }
 
 private:
@@ -159,7 +177,7 @@ private:
         (new SkEvent(INVAL_ALL_TYPE, this->getSinkID()))->postDelay(delay);
     }
 
-    bool onEvent(const SkEvent& evt) override {
+    virtual bool onEvent(const SkEvent& evt) {
         if (evt.isType(INVAL_ALL_TYPE)) {
             this->inval(NULL);
             return true;

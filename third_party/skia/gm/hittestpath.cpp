@@ -34,16 +34,15 @@ public:
     HitTestPathGM () {}
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() {
         return SkString("hittestpath");
     }
 
-    SkISize onISize() override { return SkISize::Make(700, 460); }
+    virtual SkISize onISize() { return SkISize::Make(700, 460); }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) {
         SkPath path;
-        SkRandom rand;
+        SkLCGRandom rand;
 
         int scale = 300;
         for (int i = 0; i < 4; ++i) {

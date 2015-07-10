@@ -6,15 +6,14 @@
  */
 
 #include "gm.h"
-
-#include "Resources.h"
 #include "SkGradientShader.h"
+
+#include "SkTypeface.h"
 #include "SkImageDecoder.h"
 #include "SkStream.h"
-#include "SkTypeface.h"
 
 static void setTypeface(SkPaint* paint, const char name[], SkTypeface::Style style) {
-    sk_tool_utils::set_portable_typeface(paint, name, style);
+    SkSafeUnref(paint->setTypeface(SkTypeface::CreateFromName(name, style)));
 }
 
 static SkSize computeSize(const SkBitmap& bm, const SkMatrix& mat) {
@@ -24,26 +23,28 @@ static SkSize computeSize(const SkBitmap& bm, const SkMatrix& mat) {
     return SkSize::Make(bounds.width(), bounds.height());
 }
 
-static void draw_cell(SkCanvas* canvas, const SkBitmap& bm, const SkMatrix& mat, SkScalar dx,
-                      SkFilterQuality lvl) {
+static void draw_row(SkCanvas* canvas, const SkBitmap& bm, const SkMatrix& mat, SkScalar dx) {
     SkPaint paint;
-    paint.setFilterQuality(lvl);
 
     SkAutoCanvasRestore acr(canvas, true);
-    canvas->translate(dx, 0);
-    canvas->concat(mat);
-    canvas->drawBitmap(bm, 0, 0, &paint);
-}
 
-static void draw_row(SkCanvas* canvas, const SkBitmap& bm, const SkMatrix& mat, SkScalar dx) {
-    draw_cell(canvas, bm, mat, 0 * dx, kNone_SkFilterQuality);
-    draw_cell(canvas, bm, mat, 1 * dx, kLow_SkFilterQuality);
-    draw_cell(canvas, bm, mat, 2 * dx, kMedium_SkFilterQuality);
-    draw_cell(canvas, bm, mat, 3 * dx, kHigh_SkFilterQuality);
+    canvas->drawBitmapMatrix(bm, mat, &paint);
+
+    paint.setFilterLevel(SkPaint::kLow_FilterLevel);
+    canvas->translate(dx, 0);
+    canvas->drawBitmapMatrix(bm, mat, &paint);
+
+    paint.setFilterLevel(SkPaint::kMedium_FilterLevel);
+    canvas->translate(dx, 0);
+    canvas->drawBitmapMatrix(bm, mat, &paint);
+
+    paint.setFilterLevel(SkPaint::kHigh_FilterLevel);
+    canvas->translate(dx, 0);
+    canvas->drawBitmapMatrix(bm, mat, &paint);
 }
 
 class FilterBitmapGM : public skiagm::GM {
-    void onOnceBeforeDraw() override {
+    void onOnceBeforeDraw() {
 
         this->makeBitmap();
 
@@ -70,19 +71,18 @@ public:
     }
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return fName;
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() SK_OVERRIDE {
         return SkISize::Make(1024, 768);
     }
 
     virtual void makeBitmap() = 0;
     virtual SkScalar getScale() = 0;
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
 
         canvas->translate(10, 10);
         for (size_t i = 0; i < SK_ARRAY_COUNT(fMatrix); ++i) {
@@ -110,12 +110,13 @@ class FilterBitmapTextGM: public FilterBitmapGM {
   protected:
       float fTextSize;
 
-      SkScalar getScale() override {
+      SkScalar getScale() SK_OVERRIDE {
           return 32.f/fTextSize;
       }
 
-      void makeBitmap() override {
-          fBM.allocN32Pixels(int(fTextSize * 8), int(fTextSize * 6));
+      void makeBitmap() SK_OVERRIDE {
+          fBM.setConfig(SkBitmap::kARGB_8888_Config, int(fTextSize * 8), int(fTextSize * 6));
+          fBM.allocPixels();
           SkCanvas canvas(fBM);
           canvas.drawColor(SK_ColorWHITE);
 
@@ -138,24 +139,25 @@ class FilterBitmapTextGM: public FilterBitmapGM {
 };
 
 class FilterBitmapCheckerboardGM: public FilterBitmapGM {
-public:
-    FilterBitmapCheckerboardGM(int size, int num_checks, bool convertToG8 = false)
-        : fSize(size), fNumChecks(num_checks), fConvertToG8(convertToG8)
-    {
-        fName.printf("filterbitmap_checkerboard_%d_%d%s",
-                     fSize, fNumChecks, convertToG8 ? "_g8" : "");
-    }
+  public:
+      FilterBitmapCheckerboardGM(int size, int num_checks)
+      : fSize(size), fNumChecks(num_checks)
+        {
+            fName.printf("filterbitmap_checkerboard_%d_%d", fSize, fNumChecks);
+        }
 
   protected:
       int fSize;
       int fNumChecks;
 
-      SkScalar getScale() override {
+      SkScalar getScale() SK_OVERRIDE {
           return 192.f/fSize;
       }
 
-      void makeBitmap() override {
-          fBM.allocN32Pixels(fSize, fSize);
+      void makeBitmap() SK_OVERRIDE {
+          fBM.setConfig(SkBitmap::kARGB_8888_Config, fSize, fSize);
+          fBM.allocPixels();
+          SkAutoLockPixels lock(fBM);
           for (int y = 0; y < fSize; y ++) {
               for (int x = 0; x < fSize; x ++) {
                   SkPMColor* s = fBM.getAddr32(x, y);
@@ -168,58 +170,51 @@ public:
                   }
               }
           }
-          if (fConvertToG8) {
-              SkBitmap tmp;
-              fBM.copyTo(&tmp, kGray_8_SkColorType);
-              fBM = tmp;
-          }
       }
-private:
-    const bool fConvertToG8;
-    typedef FilterBitmapGM INHERITED;
+  private:
+      typedef FilterBitmapGM INHERITED;
 };
 
 class FilterBitmapImageGM: public FilterBitmapGM {
-public:
-    FilterBitmapImageGM(const char filename[], bool convertToG8 = false)
-        : fFilename(filename), fConvertToG8(convertToG8)
-    {
-        fName.printf("filterbitmap_image_%s%s", filename, convertToG8 ? "_g8" : "");
-    }
+  public:
+      FilterBitmapImageGM(const char filename[])
+      : fFilename(filename)
+        {
+            fName.printf("filterbitmap_image_%s", filename);
+        }
 
-protected:
+  protected:
       SkString fFilename;
       int fSize;
 
-      SkScalar getScale() override {
+      SkScalar getScale() SK_OVERRIDE {
           return 192.f/fSize;
       }
 
-      void makeBitmap() override {
-          SkImageDecoder* codec = NULL;
-          SkString resourcePath = GetResourcePath(fFilename.c_str());
-          SkFILEStream stream(resourcePath.c_str());
+      void makeBitmap() SK_OVERRIDE {
+          SkString path(skiagm::GM::gResourcePath);
+          path.append("/");
+          path.append(fFilename);
+
+          SkImageDecoder *codec = NULL;
+          SkFILEStream stream(path.c_str());
           if (stream.isValid()) {
               codec = SkImageDecoder::Factory(&stream);
           }
           if (codec) {
               stream.rewind();
-              codec->decode(&stream, &fBM, kN32_SkColorType, SkImageDecoder::kDecodePixels_Mode);
+              codec->decode(&stream, &fBM, SkBitmap::kARGB_8888_Config,
+                  SkImageDecoder::kDecodePixels_Mode);
               SkDELETE(codec);
           } else {
-              fBM.allocN32Pixels(1, 1);
+              fBM.setConfig(SkBitmap::kARGB_8888_Config, 1, 1);
+              fBM.allocPixels();
               *(fBM.getAddr32(0,0)) = 0xFF0000FF; // red == bad
           }
           fSize = fBM.height();
-          if (fConvertToG8) {
-              SkBitmap tmp;
-              fBM.copyTo(&tmp, kGray_8_SkColorType);
-              fBM = tmp;
-          }
       }
-private:
-    const bool fConvertToG8;
-    typedef FilterBitmapGM INHERITED;
+  private:
+      typedef FilterBitmapGM INHERITED;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -229,15 +224,12 @@ DEF_GM( return new FilterBitmapTextGM(7); )
 DEF_GM( return new FilterBitmapTextGM(10); )
 DEF_GM( return new FilterBitmapCheckerboardGM(4,4); )
 DEF_GM( return new FilterBitmapCheckerboardGM(32,32); )
-DEF_GM( return new FilterBitmapCheckerboardGM(32,32, true); )
 DEF_GM( return new FilterBitmapCheckerboardGM(32,8); )
 DEF_GM( return new FilterBitmapCheckerboardGM(32,2); )
 DEF_GM( return new FilterBitmapCheckerboardGM(192,192); )
 DEF_GM( return new FilterBitmapImageGM("mandrill_16.png"); )
 DEF_GM( return new FilterBitmapImageGM("mandrill_32.png"); )
 DEF_GM( return new FilterBitmapImageGM("mandrill_64.png"); )
-DEF_GM( return new FilterBitmapImageGM("mandrill_64.png", true); )
 DEF_GM( return new FilterBitmapImageGM("mandrill_128.png"); )
 DEF_GM( return new FilterBitmapImageGM("mandrill_256.png"); )
 DEF_GM( return new FilterBitmapImageGM("mandrill_512.png"); )
-DEF_GM( return new FilterBitmapImageGM("color_wheel.png"); )

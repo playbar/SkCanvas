@@ -5,20 +5,8 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release_Developer|Win32">
-      <Configuration>Release_Developer</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
@@ -30,13 +18,15 @@
     <ProjectGuid>{ADD38764-ADC0-CFF5-B3A4-853C834CDC3D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SampleApp</RootNamespace>
-    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
-  <PropertyGroup Label="Locals">
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -49,47 +39,18 @@
     <ExecutablePath>$(ExecutablePath);$(MSBuildProjectDirectory)\..\..\gyp\bin\;$(MSBuildProjectDirectory)\..\..\gyp\bin\</ExecutablePath>
     <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir>..\..\gyp\out\$(Configuration)\</OutDir>
+    <OutDir>..\build\$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
     <TargetPath>$(OutDir)\$(ProjectName)$(TargetExt)</TargetPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\gpu;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\include\animator;..\..\third_party\etc1;..\..\experimental;..\..\tools\flags;..\..\include\core;..\..\include\c;..\..\include\config;..\..\include\pathops;..\..\include\pipe;..\..\gyp\config\win;..\..\include\codec;..\..\include\effects;..\..\include\images;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\src\utils;..\..\include\utils\win;..\..\include\gpu;..\..\tools;..\..\include\views;..\..\include\views\animated;..\..\include\xml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\v8\include;..\..\;..\..\CanvasContext\blink;..\..\CanvasContext\icu\include;..\..\CanvasContext;..\..\src\core;..\..\src\effects;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\effects;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\include\utils\win;..\..\include\gpu;..\..\include\views;..\..\include\animator;..\..\include\xml;..\..\experimental;..\..\include\pdf;..\..\include\views\animated;..\..\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <DisableSpecificWarnings>4275;4345;4355;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ExceptionHandling>false</ExceptionHandling>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;SK_INTERNAL;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_FORCE_DISTANCE_FIELD_TEXT=0;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <TreatWarningAsError>true</TreatWarningAsError>
-      <WarningLevel>Level3</WarningLevel>
-    </ClCompile>
-    <Link>
-      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib;windowscodecs.lib</AdditionalDependencies>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <LargeAddressAware>true</LargeAddressAware>
-      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
-      <SubSystem>Windows</SubSystem>
-    </Link>
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\gpu;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\include\animator;..\..\third_party\etc1;..\..\experimental;..\..\tools\flags;..\..\include\core;..\..\include\c;..\..\include\config;..\..\include\pathops;..\..\include\pipe;..\..\gyp\config\win;..\..\include\codec;..\..\include\effects;..\..\include\images;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\src\utils;..\..\include\utils\win;..\..\include\gpu;..\..\tools;..\..\include\views;..\..\include\views\animated;..\..\include\xml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SK_INTERNAL;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_FORCE_DISTANCE_FIELD_TEXT=0;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\gpu;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\include\animator;..\..\third_party\etc1;..\..\experimental;..\..\tools\flags;..\..\include\core;..\..\include\c;..\..\include\config;..\..\include\pathops;..\..\include\pipe;..\..\gyp\config\win;..\..\include\codec;..\..\include\effects;..\..\include\images;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\src\utils;..\..\include\utils\win;..\..\include\gpu;..\..\tools;..\..\include\views;..\..\include\views\animated;..\..\include\xml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4275;4345;4355;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <ExceptionHandling>false</ExceptionHandling>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_DEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -97,29 +58,26 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib;windowscodecs.lib;skia_core.lib;skia_ports.lib;skia_utils.lib;skia_views.lib;skia_xml.lib;skia_skgpu.lib;skia_images.lib;skia_animator.lib;skia_codec.lib;skia_effects.lib;skia_opts.lib;skia_opts_sse41.lib;skia_opts_ssse3.lib;libetc1.lib;libSkKTX.lib;sk_tool_utils.lib;flags.lib;lua.lib;skia_pdf.lib;resources.lib;libjpeg.lib;libwebp_dec.lib;libwebp_dsp.lib;libwebp_demux.lib;libwebp_enc.lib;libwebp_utils.lib;skia_skgputest.lib;skflate.lib;zlib.lib</AdditionalDependencies>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib;windowscodecs.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <LargeAddressAware>true</LargeAddressAware>
       <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>..\..\gyp\out\$(Configuration)\;..\..\gyp\out\$(Configuration)\lib\</AdditionalLibraryDirectories>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\gpu;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\include\animator;..\..\third_party\etc1;..\..\experimental;..\..\tools\flags;..\..\include\core;..\..\include\c;..\..\include\config;..\..\include\pathops;..\..\include\pipe;..\..\gyp\config\win;..\..\include\codec;..\..\include\effects;..\..\include\images;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\src\utils;..\..\include\utils\win;..\..\include\gpu;..\..\tools;..\..\include\views;..\..\include\views\animated;..\..\include\xml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SK_INTERNAL;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_FORCE_DISTANCE_FIELD_TEXT=0;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\effects;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\include\utils\win;..\..\include\gpu;..\..\include\views;..\..\include\animator;..\..\include\xml;..\..\experimental;..\..\include\pdf;..\..\include\views\animated;..\..\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_DEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\gpu;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\include\animator;..\..\third_party\etc1;..\..\experimental;..\..\tools\flags;..\..\include\core;..\..\include\c;..\..\include\config;..\..\include\pathops;..\..\include\pipe;..\..\gyp\config\win;..\..\include\codec;..\..\include\effects;..\..\include\images;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\src\utils;..\..\include\utils\win;..\..\include\gpu;..\..\tools;..\..\include\views;..\..\include\views\animated;..\..\include\xml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\effects;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\include\utils\win;..\..\include\gpu;..\..\include\views;..\..\include\animator;..\..\include\xml;..\..\experimental;..\..\include\pdf;..\..\include\views\animated;..\..\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4275;4345;4355;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <ExceptionHandling>false</ExceptionHandling>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <Optimization>Full</Optimization>
-      <PreprocessorDefinitions>NDEBUG;SK_INTERNAL;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_FORCE_DISTANCE_FIELD_TEXT=0;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -133,27 +91,25 @@
     <Link>
       <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib;windowscodecs.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
       <SubSystem>Windows</SubSystem>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\gpu;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\include\animator;..\..\third_party\etc1;..\..\experimental;..\..\tools\flags;..\..\include\core;..\..\include\c;..\..\include\config;..\..\include\pathops;..\..\include\pipe;..\..\gyp\config\win;..\..\include\codec;..\..\include\effects;..\..\include\images;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\src\utils;..\..\include\utils\win;..\..\include\gpu;..\..\tools;..\..\include\views;..\..\include\views\animated;..\..\include\xml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SK_INTERNAL;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_FORCE_DISTANCE_FIELD_TEXT=0;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\effects;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\include\utils\win;..\..\include\gpu;..\..\include\views;..\..\include\animator;..\..\include\xml;..\..\experimental;..\..\include\pdf;..\..\include\views\animated;..\..\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\gpu;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\include\animator;..\..\third_party\etc1;..\..\experimental;..\..\tools\flags;..\..\include\core;..\..\include\c;..\..\include\config;..\..\include\pathops;..\..\include\pipe;..\..\gyp\config\win;..\..\include\codec;..\..\include\effects;..\..\include\images;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\src\utils;..\..\include\utils\win;..\..\include\gpu;..\..\tools;..\..\include\views;..\..\include\views\animated;..\..\include\xml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\effects;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\include\utils\win;..\..\include\gpu;..\..\include\views;..\..\include\animator;..\..\include\xml;..\..\experimental;..\..\include\pdf;..\..\include\views\animated;..\..\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4275;4345;4355;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <ExceptionHandling>false</ExceptionHandling>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <Optimization>Full</Optimization>
-      <PreprocessorDefinitions>NDEBUG;SK_INTERNAL;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_FORCE_DISTANCE_FIELD_TEXT=0;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;NDEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_RELEASE;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -167,148 +123,52 @@
     <Link>
       <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib;windowscodecs.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
       <SubSystem>Windows</SubSystem>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\gpu;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\include\animator;..\..\third_party\etc1;..\..\experimental;..\..\tools\flags;..\..\include\core;..\..\include\c;..\..\include\config;..\..\include\pathops;..\..\include\pipe;..\..\gyp\config\win;..\..\include\codec;..\..\include\effects;..\..\include\images;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\src\utils;..\..\include\utils\win;..\..\include\gpu;..\..\tools;..\..\include\views;..\..\include\views\animated;..\..\include\xml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SK_INTERNAL;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_FORCE_DISTANCE_FIELD_TEXT=0;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;NDEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\gpu;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\include\animator;..\..\third_party\etc1;..\..\experimental;..\..\tools\flags;..\..\include\core;..\..\include\c;..\..\include\config;..\..\include\pathops;..\..\include\pipe;..\..\gyp\config\win;..\..\include\codec;..\..\include\effects;..\..\include\images;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\src\utils;..\..\include\utils\win;..\..\include\gpu;..\..\tools;..\..\include\views;..\..\include\views\animated;..\..\include\xml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4275;4345;4355;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <ExceptionHandling>false</ExceptionHandling>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <Optimization>Full</Optimization>
-      <PreprocessorDefinitions>NDEBUG;SK_INTERNAL;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_FORCE_DISTANCE_FIELD_TEXT=0;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;NDEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <TreatWarningAsError>true</TreatWarningAsError>
-      <WarningLevel>Level3</WarningLevel>
-      <WholeProgramOptimization>true</WholeProgramOptimization>
-    </ClCompile>
-    <Lib>
-      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
-    </Lib>
-    <Link>
-      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib;windowscodecs.lib</AdditionalDependencies>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <LargeAddressAware>true</LargeAddressAware>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
-      <SubSystem>Windows</SubSystem>
-    </Link>
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\gpu;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\include\animator;..\..\third_party\etc1;..\..\experimental;..\..\tools\flags;..\..\include\core;..\..\include\c;..\..\include\config;..\..\include\pathops;..\..\include\pipe;..\..\gyp\config\win;..\..\include\codec;..\..\include\effects;..\..\include\images;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\src\utils;..\..\include\utils\win;..\..\include\gpu;..\..\tools;..\..\include\views;..\..\include\views\animated;..\..\include\xml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SK_INTERNAL;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_FORCE_DISTANCE_FIELD_TEXT=0;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;NDEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\gpu;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\include\animator;..\..\third_party\etc1;..\..\experimental;..\..\tools\flags;..\..\include\core;..\..\include\c;..\..\include\config;..\..\include\pathops;..\..\include\pipe;..\..\gyp\config\win;..\..\include\codec;..\..\include\effects;..\..\include\images;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\src\utils;..\..\include\utils\win;..\..\include\gpu;..\..\tools;..\..\include\views;..\..\include\views\animated;..\..\include\xml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4275;4345;4355;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <ExceptionHandling>false</ExceptionHandling>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <Optimization>Full</Optimization>
-      <PreprocessorDefinitions>NDEBUG;SK_INTERNAL;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_FORCE_DISTANCE_FIELD_TEXT=0;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <TreatWarningAsError>false</TreatWarningAsError>
-      <WarningLevel>Level3</WarningLevel>
-      <WholeProgramOptimization>true</WholeProgramOptimization>
-    </ClCompile>
-    <Lib>
-      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
-    </Lib>
-    <Link>
-      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib;windowscodecs.lib;skia_core.lib;skia_ports.lib;skia_utils.lib;skia_views.lib;skia_xml.lib;skia_skgpu.lib;skia_images.lib;skia_animator.lib;skia_codec.lib;skia_effects.lib;skia_opts.lib;skia_opts_sse41.lib;skia_opts_ssse3.lib;libetc1.lib;libSkKTX.lib;sk_tool_utils.lib;flags.lib;lua.lib;skia_pdf.lib;resources.lib;libjpeg.lib;libwebp_dec.lib;libwebp_dsp.lib;libwebp_demux.lib;libwebp_enc.lib;libwebp_utils.lib;skia_skgputest.lib;skflate.lib;zlib.lib</AdditionalDependencies>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <LargeAddressAware>true</LargeAddressAware>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
-      <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>..\..\gyp\out\$(Configuration)\;..\..\gyp\out\$(Configuration)\lib\</AdditionalLibraryDirectories>
-    </Link>
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\gpu;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\include\animator;..\..\third_party\etc1;..\..\experimental;..\..\tools\flags;..\..\include\core;..\..\include\c;..\..\include\config;..\..\include\pathops;..\..\include\pipe;..\..\gyp\config\win;..\..\include\codec;..\..\include\effects;..\..\include\images;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\src\utils;..\..\include\utils\win;..\..\include\gpu;..\..\tools;..\..\include\views;..\..\include\views\animated;..\..\include\xml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SK_INTERNAL;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_FORCE_DISTANCE_FIELD_TEXT=0;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\effects;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\include\utils\win;..\..\include\gpu;..\..\include\views;..\..\include\animator;..\..\include\xml;..\..\experimental;..\..\include\pdf;..\..\include\views\animated;..\..\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_RELEASE;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\gm\gm.h" />
-    <ClInclude Include="..\..\samplecode\GMSampleView.h" />
     <ClInclude Include="..\..\samplecode\OverView.h" />
-    <ClInclude Include="..\..\samplecode\SampleCode.h" />
     <ClInclude Include="..\..\src\pipe\utils\SamplePipeControllers.h" />
-    <ClInclude Include="..\..\src\gpu\GrTestBatch.h" />
-    <ClInclude Include="..\..\src\utils\debugger\SkDrawCommand.h" />
-    <ClInclude Include="..\..\src\utils\debugger\SkDebugCanvas.h" />
-    <ClInclude Include="..\..\src\utils\debugger\SkObjectParser.h" />
+    <ClInclude Include="..\..\samplecode\GMSampleView.h" />
+    <ClInclude Include="..\..\samplecode\TransitionView.h" />
+    <ClInclude Include="..\..\src\views\SkTagList.h" />
+    <ClInclude Include="..\..\src\views\SkViewPriv.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\gm\gm.cpp" />
-    <ClCompile Include="..\..\samplecode\GMSampleView.cpp" />
-    <ClCompile Include="..\..\samplecode\ClockFaceView.cpp" />
     <ClCompile Include="..\..\samplecode\OverView.cpp" />
-    <ClCompile Include="..\..\samplecode\Sample2PtRadial.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleAAClip.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleAARects.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleAll.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleAnimator.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleApp.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleBigGradient.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleChart.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleCircle.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleClip.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleClipDrawMatch.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleClock.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleColorFilter.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleComplexClip.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleConcavePaths.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleCull.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleDegenerateTwoPtRadials.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleDither.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleDitherBitmap.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleEmptyPath.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleFillType.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleFontScalerTest.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleGradients.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleHairCurves.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleHairline.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleLayerMask.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleLines.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleManyRects.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleMeasure.cpp" />
-    <ClCompile Include="..\..\samplecode\SamplePathClip.cpp" />
-    <ClCompile Include="..\..\samplecode\SamplePathEffects.cpp" />
-    <ClCompile Include="..\..\samplecode\SamplePoints.cpp" />
-    <ClCompile Include="..\..\samplecode\SamplePolyToPoly.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleRegion.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleRepeatTile.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleShaders.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleShaderText.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleStringArt.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleText.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleTextAlpha.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleTextBox.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleTinyBitmap.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleVertices.cpp" />
     <ClCompile Include="..\..\src\pipe\utils\SamplePipeControllers.cpp" />
-    <ClCompile Include="..\..\src\utils\debugger\SkDrawCommand.cpp" />
-    <ClCompile Include="..\..\src\utils\debugger\SkDebugCanvas.cpp" />
-    <ClCompile Include="..\..\src\utils\debugger\SkObjectParser.cpp" />
+    <ClCompile Include="..\..\samplecode\SampleAARectModes.cpp" />
+    <ClCompile Include="..\..\samplecode\SampleApp.cpp" />
+    <ClCompile Include="..\..\samplecode\TransitionView.cpp" />
+    <ClCompile Include="..\..\src\views\SkBGViewArtist.cpp" />
+    <ClCompile Include="..\..\src\views\SkEvent.cpp" />
+    <ClCompile Include="..\..\src\views\SkEventSink.cpp" />
+    <ClCompile Include="..\..\src\views\SkOSMenu.cpp" />
+    <ClCompile Include="..\..\src\views\SkParsePaint.cpp" />
+    <ClCompile Include="..\..\src\views\SkProgressView.cpp" />
+    <ClCompile Include="..\..\src\views\SkStackViewLayout.cpp" />
+    <ClCompile Include="..\..\src\views\SkTagList.cpp" />
+    <ClCompile Include="..\..\src\views\SkTextBox.cpp" />
+    <ClCompile Include="..\..\src\views\SkTouchGesture.cpp" />
+    <ClCompile Include="..\..\src\views\SkView.cpp" />
+    <ClCompile Include="..\..\src\views\SkViewInflate.cpp" />
+    <ClCompile Include="..\..\src\views\SkViewPriv.cpp" />
+    <ClCompile Include="..\..\src\views\SkWindow.cpp" />
+    <ClCompile Include="..\..\src\views\win\skia_win.cpp" />
+    <ClCompile Include="..\..\src\views\win\SkOSWindow_win.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\skia\skia.vcxproj">
+      <Project>{e77b9faf-f871-b19c-6b84-2bc13ea5d6aa}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

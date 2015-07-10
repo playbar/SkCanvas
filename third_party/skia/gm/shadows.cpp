@@ -28,61 +28,61 @@ public:
     SkPath fCirclePath;
     SkRect fRect;
 
-protected:
-    void onOnceBeforeDraw() override {
+    ShadowsGM() {
         this->setBGColor(0xFFDDDDDD);
         fCirclePath.addCircle(SkIntToScalar(20), SkIntToScalar(20), SkIntToScalar(10) );
         fRect.set(SkIntToScalar(10), SkIntToScalar(10),
                   SkIntToScalar(30), SkIntToScalar(30));
     }
 
+protected:
     virtual SkString onShortName() {
         return SkString("shadows");
     }
 
     virtual SkISize onISize() {
-        return SkISize::Make(200, 120);
+        return make_isize(200, 120);
     }
 
     virtual void onDraw(SkCanvas* canvas) {
     SkBlurDrawLooper* shadowLoopers[5];
     shadowLoopers[0] =
-        SkBlurDrawLooper::Create(SK_ColorBLUE,
-                                 SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(10)),
-                                 SkIntToScalar(5), SkIntToScalar(10),
-                                 SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
-                                 SkBlurDrawLooper::kOverrideColor_BlurFlag |
-                                 SkBlurDrawLooper::kHighQuality_BlurFlag);
+        new SkBlurDrawLooper (SK_ColorBLUE,
+                              SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(10)),
+                              SkIntToScalar(5), SkIntToScalar(10),
+                              SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
+                              SkBlurDrawLooper::kOverrideColor_BlurFlag |
+                              SkBlurDrawLooper::kHighQuality_BlurFlag);
     SkAutoUnref aurL0(shadowLoopers[0]);
     shadowLoopers[1] =
-        SkBlurDrawLooper::Create(SK_ColorBLUE,
-                                 SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(10)),
-                                 SkIntToScalar(5), SkIntToScalar(10),
-                                 SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
-                                 SkBlurDrawLooper::kOverrideColor_BlurFlag);
+        new SkBlurDrawLooper (SK_ColorBLUE,
+                              SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(10)),
+                              SkIntToScalar(5), SkIntToScalar(10),
+                              SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
+                              SkBlurDrawLooper::kOverrideColor_BlurFlag);
     SkAutoUnref aurL1(shadowLoopers[1]);
     shadowLoopers[2] =
-        SkBlurDrawLooper::Create(SK_ColorBLACK,
-                                 SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(5)),
-                                 SkIntToScalar(5),
-                                 SkIntToScalar(10),
-                                 SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
-                                 SkBlurDrawLooper::kHighQuality_BlurFlag);
+        new SkBlurDrawLooper (SK_ColorBLACK,
+                              SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(5)),
+                              SkIntToScalar(5),
+                              SkIntToScalar(10),
+                              SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
+                              SkBlurDrawLooper::kHighQuality_BlurFlag);
     SkAutoUnref aurL2(shadowLoopers[2]);
     shadowLoopers[3] =
-        SkBlurDrawLooper::Create(0x7FFF0000,
-                                 SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(5)),
-                                 SkIntToScalar(-5), SkIntToScalar(-10),
-                                 SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
-                                 SkBlurDrawLooper::kOverrideColor_BlurFlag |
-                                 SkBlurDrawLooper::kHighQuality_BlurFlag);
+        new SkBlurDrawLooper (0x7FFF0000,
+                              SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(5)),
+                              SkIntToScalar(-5), SkIntToScalar(-10),
+                              SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
+                              SkBlurDrawLooper::kOverrideColor_BlurFlag |
+                              SkBlurDrawLooper::kHighQuality_BlurFlag);
     SkAutoUnref aurL3(shadowLoopers[3]);
     shadowLoopers[4] =
-        SkBlurDrawLooper::Create(SK_ColorBLACK, SkIntToScalar(0),
-                                 SkIntToScalar(5), SkIntToScalar(5),
-                                 SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
-                                 SkBlurDrawLooper::kOverrideColor_BlurFlag |
-                                 SkBlurDrawLooper::kHighQuality_BlurFlag);
+        new SkBlurDrawLooper (SK_ColorBLACK, SkIntToScalar(0),
+                              SkIntToScalar(5), SkIntToScalar(5),
+                              SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
+                              SkBlurDrawLooper::kOverrideColor_BlurFlag |
+                              SkBlurDrawLooper::kHighQuality_BlurFlag);
     SkAutoUnref aurL4(shadowLoopers[4]);
 
     static const struct {

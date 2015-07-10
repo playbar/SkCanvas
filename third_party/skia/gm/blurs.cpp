@@ -1,46 +1,46 @@
+
 /*
  * Copyright 2011 Google Inc.
  *
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 #include "gm.h"
 #include "SkBlurMask.h"
 #include "SkBlurMaskFilter.h"
 
-class BlursGM : public skiagm::GM {
+namespace skiagm {
+
+class BlursGM : public GM {
 public:
     BlursGM() {
         this->setBGColor(0xFFDDDDDD);
     }
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() {
         return SkString("blurs");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(700, 500);
+    virtual SkISize onISize() {
+        return make_isize(700, 500);
     }
 
-    void onDraw(SkCanvas* canvas) override {
-        SkBlurStyle NONE = SkBlurStyle(-999);
+    virtual void onDraw(SkCanvas* canvas) {
+        SkBlurMaskFilter::BlurStyle NONE = SkBlurMaskFilter::BlurStyle(-999);
         static const struct {
-            SkBlurStyle fStyle;
-            int         fCx, fCy;
+            SkBlurMaskFilter::BlurStyle fStyle;
+            int                         fCx, fCy;
         } gRecs[] = {
-            { NONE,                 0,  0 },
-            { kInner_SkBlurStyle,  -1,  0 },
-            { kNormal_SkBlurStyle,  0,  1 },
-            { kSolid_SkBlurStyle,   0, -1 },
-            { kOuter_SkBlurStyle,   1,  0 },
+            { NONE,                                 0,  0 },
+            { SkBlurMaskFilter::kInner_BlurStyle,  -1,  0 },
+            { SkBlurMaskFilter::kNormal_BlurStyle,  0,  1 },
+            { SkBlurMaskFilter::kSolid_BlurStyle,   0, -1 },
+            { SkBlurMaskFilter::kOuter_BlurStyle,   1,  0 },
         };
 
         SkPaint paint;
         paint.setAntiAlias(true);
-        sk_tool_utils::set_portable_typeface(&paint);
         paint.setTextSize(SkIntToScalar(25));
         canvas->translate(SkIntToScalar(-40), SkIntToScalar(0));
 
@@ -64,7 +64,7 @@ protected:
             }
             // draw text
             {
-                SkMaskFilter* mf = SkBlurMaskFilter::Create(kNormal_SkBlurStyle,
+                SkMaskFilter* mf = SkBlurMaskFilter::Create(SkBlurMaskFilter::kNormal_BlurStyle,
                                            SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(4)),
                                            flags);
                 paint.setMaskFilter(mf)->unref();
@@ -87,80 +87,12 @@ protected:
     }
 
 private:
-    typedef skiagm::GM INHERITED;
+    typedef GM INHERITED;
 };
-DEF_GM( return new BlursGM; )
 
-//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
-// exercise a special-case of blurs, which is two nested rects. These are drawn specially,
-// and possibly cached.
-//
-// in particular, we want to notice that the 2nd rect draws slightly differently, since it
-// is translated a fractional amount.
-//
-class Blur2RectsGM : public skiagm::GM {
-public:
-    SkString onShortName() override {
-        return SkString("blur2rects");
-    }
+static GM* MyFactory(void*) { return new BlursGM; }
+static GMRegistry reg(MyFactory);
 
-    SkISize onISize() override {
-        return SkISize::Make(700, 500);
-    }
-
-    void onDraw(SkCanvas* canvas) override {
-        SkPaint paint;
-
-        paint.setMaskFilter(SkBlurMaskFilter::Create(kNormal_SkBlurStyle,
-                                                     2.3f))->unref();
-
-        SkRect outer = SkRect::MakeXYWH(10.125f, 10.125f, 100.125f, 100);
-        SkRect inner = SkRect::MakeXYWH(20.25f, 20.125f, 80, 80);
-        SkPath path;
-        path.addRect(outer, SkPath::kCW_Direction);
-        path.addRect(inner, SkPath::kCCW_Direction);
-
-        canvas->drawPath(path, paint);
-        // important to translate by a factional amount to exercise a different "phase"
-        // of the same path w.r.t. the pixel grid
-        SkScalar dx = SkScalarRoundToScalar(path.getBounds().width()) + 14 + 0.25f;
-        canvas->translate(dx, 0);
-        canvas->drawPath(path, paint);
-    }
-};
-DEF_GM( return new Blur2RectsGM; )
-
-class Blur2RectsNonNinePatchGM : public skiagm::GM {
-public:
-    SkString onShortName() override {
-        return SkString("blur2rectsnonninepatch");
-    }
-
-    SkISize onISize() override {
-        return SkISize::Make(700, 500);
-    }
-
-    void onDraw(SkCanvas* canvas) override {
-        SkPaint paint;
-        paint.setMaskFilter(SkBlurMaskFilter::Create(kNormal_SkBlurStyle,
-                                                     4.3f))->unref();
-
-        SkRect outer = SkRect::MakeXYWH(10, 110, 100, 100);
-        SkRect inner = SkRect::MakeXYWH(50, 150, 10, 10);
-        SkPath path;
-        path.addRect(outer, SkPath::kCW_Direction);
-        path.addRect(inner, SkPath::kCW_Direction);
-        canvas->drawPath(path, paint);
-
-        SkScalar dx = SkScalarRoundToScalar(path.getBounds().width()) + 40 + 0.25f;
-        canvas->translate(dx, 0);
-        canvas->drawPath(path, paint);
-
-        // Translate to outside of clip bounds.
-        canvas->translate(-dx, 0);
-        canvas->translate(-30, -150);
-        canvas->drawPath(path, paint);
-    }
-};
-DEF_GM( return new Blur2RectsNonNinePatchGM; )
+}

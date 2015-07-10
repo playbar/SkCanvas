@@ -75,9 +75,7 @@ inline void operator delete(void* p) {
 ///////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef SkDebugf
-    void SkDebugf(const char format[], ...);
-#endif
+//#define SkDebugf
 
 #ifdef SK_DEBUG
     #define SkDEBUGCODE(code)			code

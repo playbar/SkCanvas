@@ -20,16 +20,15 @@ public:
     }
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("arcofzorro");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(1000, 1000);
+    virtual SkISize onISize() SK_OVERRIDE {
+        return make_isize(1000, 1000);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         SkRandom rand;
 
         SkRect rect = SkRect::MakeXYWH(10, 10, 200, 200);

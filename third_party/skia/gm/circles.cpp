@@ -25,13 +25,12 @@ public:
     }
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("circles");
     }
 
-    SkISize onISize() override {
-        return SkISize::Make(1200, 900);
+    virtual SkISize onISize() SK_OVERRIDE {
+        return make_isize(1200, 900);
     }
 
     void makePaints() {
@@ -53,7 +52,7 @@ protected:
         SkPaint p;
         p.setAntiAlias(true);
         SkMaskFilter* mf = SkBlurMaskFilter::Create(
-                               kNormal_SkBlurStyle,
+                               SkBlurMaskFilter::kNormal_BlurStyle,
                                SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(5)),
                                SkBlurMaskFilter::kHighQuality_BlurFlag);
         p.setMaskFilter(mf)->unref();
@@ -82,12 +81,12 @@ protected:
         SkPaint p;
         p.setAntiAlias(true);
         SkBlurDrawLooper* shadowLooper =
-            SkBlurDrawLooper::Create(SK_ColorBLUE,
-                                     SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(10)),
-                                     SkIntToScalar(5), SkIntToScalar(10),
-                                     SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
-                                     SkBlurDrawLooper::kOverrideColor_BlurFlag |
-                                     SkBlurDrawLooper::kHighQuality_BlurFlag);
+            new SkBlurDrawLooper (SK_ColorBLUE,
+                                  SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(10)),
+                                  SkIntToScalar(5), SkIntToScalar(10),
+                                  SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
+                                  SkBlurDrawLooper::kOverrideColor_BlurFlag |
+                                  SkBlurDrawLooper::kHighQuality_BlurFlag);
         SkAutoUnref aurL0(shadowLooper);
         p.setLooper(shadowLooper);
         fPaints.push_back(p);
@@ -152,19 +151,8 @@ protected:
         }
     }
 
-    void onDraw(SkCanvas* canvas) override {
-        // Draw a giant AA circle as the background.
-        SkISize size = this->getISize();
-        SkScalar giantRadius = SkTMin(SkIntToScalar(size.fWidth),
-                                      SkIntToScalar(size.fHeight)) / 2.f;
-        SkPoint giantCenter = SkPoint::Make(SkIntToScalar(size.fWidth/2),
-                                            SkIntToScalar(size.fHeight/2));
-        SkPaint giantPaint;
-        giantPaint.setAntiAlias(true);
-        giantPaint.setColor(0x80808080);
-        canvas->drawCircle(giantCenter.fX, giantCenter.fY, giantRadius, giantPaint);
-        
-        SkRandom rand;
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
+        SkLCGRandom rand;
         canvas->translate(20 * SK_Scalar1, 20 * SK_Scalar1);
         int i;
         for (i = 0; i < fPaints.count(); ++i) {

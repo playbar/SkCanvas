@@ -11,7 +11,8 @@
 #include "SkPath.h"
 
 static void make_bm(SkBitmap* bm, int width, int height, SkColor colors[2]) {
-    bm->allocN32Pixels(width, height);
+    bm->setConfig(SkBitmap::kARGB_8888_Config, width, height);
+    bm->allocPixels();
     SkCanvas canvas(*bm);
     SkPoint center = {SkIntToScalar(width)/2, SkIntToScalar(height)/2};
     SkScalar radius = 40;
@@ -59,15 +60,15 @@ public:
     VeryLargeBitmapGM() {}
 
 protected:
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("verylargebitmap");
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() SK_OVERRIDE {
         return SkISize::Make(500, 600);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         int veryBig = 65*1024; // 64K < size
         int big = 33*1024;     // 32K < size < 64K
         // smaller than many max texture sizes, but large enough to gpu-tile for memory reasons.
@@ -99,11 +100,28 @@ protected:
         show_bm(canvas, veryBig, small, colors);
     }
 
+    virtual uint32_t onGetFlags() const {
+#ifdef SK_BUILD_FOR_WIN32
+        // The Windows bot runs out of memory in replay modes on this test in 32bit builds:
+        // http://skbug.com/1756
+        return kSkipPicture_Flag            |
+               kSkipPipe_Flag               |
+               kSkipPipeCrossProcess_Flag   |
+               kSkipTiled_Flag              |
+               kSkipScaledReplay_Flag;
+#else
+        return 0;
+#endif
+    }
+
 private:
     typedef skiagm::GM INHERITED;
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
+// This GM allocates more memory than Android devices are capable of fulfilling.
+#ifndef SK_BUILD_FOR_ANDROID
 static skiagm::GM* MyFactory(void*) { return new VeryLargeBitmapGM; }
 static skiagm::GMRegistry reg(MyFactory);
+#endif

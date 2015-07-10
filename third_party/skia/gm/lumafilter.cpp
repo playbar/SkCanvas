@@ -18,7 +18,6 @@ static SkColor  kColor2 = SkColorSetARGB(0xff, 0x80, 0xff, 0);
 static void draw_label(SkCanvas* canvas, const char* label,
                        const SkPoint& offset) {
     SkPaint paint;
-    sk_tool_utils::set_portable_typeface(&paint);
     size_t len = strlen(label);
 
     SkScalar width = paint.measureText(label, len);
@@ -98,16 +97,15 @@ public:
     }
 
 protected:
-
-    SkString onShortName() override {
+    virtual SkString onShortName() SK_OVERRIDE {
         return SkString("lumafilter");
     }
 
-    SkISize onISize() override {
+    virtual SkISize onISize() SK_OVERRIDE {
         return SkISize::Make(600, 420);
     }
 
-    void onDraw(SkCanvas* canvas) override {
+    virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE {
         SkXfermode::Mode modes[] = { SkXfermode::kSrcOver_Mode,
                                      SkXfermode::kDstOver_Mode,
                                      SkXfermode::kSrcATop_Mode,
