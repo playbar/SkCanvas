@@ -491,16 +491,14 @@ public:
     */
     float mapRadius(float radius) const;
 
-	typedef void(*MapXYProc)(const SkMatrix& mat, float x, float y,
+	typedef void( *MapXYProc)(const SkMatrix& mat, float x, float y,
                                  SkPoint* result);
 
     static MapXYProc GetMapXYProc(TypeMask mask) {
         return gMapXYProcs[mask & kAllMasks];
     }
 
-    MapXYProc getMapXYProc() const {
-        return GetMapXYProc(this->getType());
-	}
+	MapXYProc getMapXYProc() const;
 
     typedef void (*MapPtsProc)(const SkMatrix& mat, SkPoint dst[],
                                   const SkPoint src[], int count);
@@ -671,7 +669,7 @@ private:
     static void RotTrans_xy(const SkMatrix&, float, float, SkPoint*);
     static void Persp_xy(const SkMatrix&, float, float, SkPoint*);
 
-    static const MapXYProc gMapXYProcs[];
+	static const MapXYProc gMapXYProcs[];
 
     static void Identity_pts(const SkMatrix&, SkPoint[], const SkPoint[], int);
     static void Trans_pts(const SkMatrix&, SkPoint dst[], const SkPoint[], int);

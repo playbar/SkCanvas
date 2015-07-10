@@ -1141,6 +1141,11 @@ void SkMatrix::Identity_xy(const SkMatrix& m, float sx, float sy,
     pt->fY = sy;
 }
 
+SkMatrix::MapXYProc SkMatrix::getMapXYProc() const
+{
+	return GetMapXYProc(this->getType());
+}
+
 const SkMatrix::MapXYProc SkMatrix::gMapXYProcs[] = {
     SkMatrix::Identity_xy, SkMatrix::Trans_xy,
     SkMatrix::Scale_xy,    SkMatrix::ScaleTrans_xy,
