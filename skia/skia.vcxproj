@@ -661,10 +661,18 @@
     <ClCompile Include="..\third_party\skia\src\core\SkPaintOptionsAndroid.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\glew.c" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrGpuFactory.cpp" />
+    <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder.cpp" />
+    <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_FactoryRegistrar.cpp" />
+    <ClCompile Include="..\third_party\skia\src\images\SkImageEncoder.cpp" />
+    <ClCompile Include="..\third_party\skia\src\images\SkImageEncoder_Factory.cpp" />
+    <ClCompile Include="..\third_party\skia\src\images\SkImageRef.cpp" />
+    <ClCompile Include="..\third_party\skia\src\images\SkImageRefPool.cpp" />
+    <ClCompile Include="..\third_party\skia\src\images\SkImageRef_GlobalPool.cpp" />
+    <ClCompile Include="..\third_party\skia\src\images\SkImages.cpp" />
     <ClCompile Include="..\third_party\skia\src\image\SkDataPixelRef.cpp" />
-    <ClCompile Include="..\third_party\skia\src\ports\SkImageDecoder_empty.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkScaledBitmapSampler.cpp" />
     <ClCompile Include="..\third_party\skia\src\opts\opts_check_SSE2.cpp" />
+    <ClCompile Include="..\third_party\skia\src\ports\SkImageDecoder_WIC.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkPurgeableMemoryBlock_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win_dw.cpp" />
@@ -672,6 +680,7 @@
     <ClCompile Include="..\third_party\skia\src\ports\SkGlobalInitialization_chromium.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_stdio.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_win.cpp" />
+    <ClCompile Include="..\third_party\skia\src\ports\SkTime_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkTLS_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkXMLParser_empty.cpp" />
     <ClCompile Include="..\third_party\skia\src\sfnt\SkOTTable_name.cpp" />
@@ -692,6 +701,7 @@
     <ClCompile Include="..\third_party\skia\src\utils\SkPictureUtils.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkProxyCanvas.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkRTConf.cpp" />
+    <ClCompile Include="..\third_party\skia\src\utils\win\SkAutoCoInitialize.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\win\SkDWriteFontFileStream.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\win\SkDWriteGeometrySink.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\win\SkHRESULT.cpp" />
@@ -918,6 +928,7 @@
     <ClCompile Include="..\third_party\skia\src\effects\gradients\SkTwoPointRadialGradient.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\gradients\SkTwoPointConicalGradient.cpp" />
     <ClCompile Include="..\third_party\skia\src\effects\gradients\SkSweepGradient.cpp" />
+    <ClCompile Include="..\third_party\skia\src\utils\win\SkIStream.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\win\SkWGL_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\xml\SkBML_XMLParser.cpp" />
     <ClCompile Include="..\third_party\skia\src\xml\SkDOM.cpp" />

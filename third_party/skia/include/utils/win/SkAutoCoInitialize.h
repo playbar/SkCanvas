@@ -18,7 +18,7 @@
  * An instance of this class initializes COM on creation
  * and closes the COM library on destruction.
  */
-class SkAutoCoInitialize : SkNoncopyable {
+class SK_API SkAutoCoInitialize : SkNoncopyable {
 private:
     HRESULT fHR;
 public:

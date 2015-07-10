@@ -27,7 +27,7 @@ class SkRegion;
     Base class for intercepting the device bounds of shapes before they are drawn.
     Install a subclass of this in your canvas.
 */
-class SkBounder : public SkRefCnt {
+class SK_API SkBounder : public SkRefCnt {
 public:
     SK_DECLARE_INST_COUNT(SkBounder)
 

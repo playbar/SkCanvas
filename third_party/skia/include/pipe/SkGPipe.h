@@ -94,7 +94,7 @@ private:
     SkGPipeCanvas* fCanvas;
 };
 
-class SkGPipeWriter {
+class SK_API SkGPipeWriter {
 public:
     SkGPipeWriter();
     ~SkGPipeWriter();

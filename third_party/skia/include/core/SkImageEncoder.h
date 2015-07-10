@@ -15,7 +15,7 @@ class SkBitmap;
 class SkData;
 class SkWStream;
 
-class SkImageEncoder {
+class SK_API SkImageEncoder {
 public:
     enum Type {
         kUnknown_Type,

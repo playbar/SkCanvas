@@ -12045,9 +12045,6 @@
     <ClCompile Include="..\third_party\skia\src\core\SkPaintOptionsAndroid.cpp">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkImageDecoder_empty.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\images\SkScaledBitmapSampler.cpp">
       <Filter>..\third_party\skia\src\images</Filter>
     </ClCompile>
@@ -14273,6 +14270,42 @@
       <Filter>..\third_party\skia\src\xml</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\ports\SkXMLParser_empty.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\images\SkImageEncoder.cpp">
+      <Filter>..\third_party\skia\src\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder.cpp">
+      <Filter>..\third_party\skia\src\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_FactoryRegistrar.cpp">
+      <Filter>..\third_party\skia\src\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkImageDecoder_WIC.cpp">
+      <Filter>..\third_party\skia\src\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\images\SkImageEncoder_Factory.cpp">
+      <Filter>..\third_party\skia\src\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\utils\win\SkAutoCoInitialize.cpp">
+      <Filter>..\third_party\skia\src\utils\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\utils\win\SkIStream.cpp">
+      <Filter>..\third_party\skia\src\utils\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\images\SkImages.cpp">
+      <Filter>..\third_party\skia\src\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\images\SkImageRef_GlobalPool.cpp">
+      <Filter>..\third_party\skia\src\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\images\SkImageRef.cpp">
+      <Filter>..\third_party\skia\src\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\images\SkImageRefPool.cpp">
+      <Filter>..\third_party\skia\src\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkTime_win.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
   </ItemGroup>
