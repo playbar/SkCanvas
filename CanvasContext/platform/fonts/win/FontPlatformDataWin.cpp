@@ -69,7 +69,6 @@ void FontPlatformData::setupPaint(SkPaint* paint, GraphicsContext* context) cons
         SkPaint::kLCDRenderText_Flag |
         SkPaint::kGenA8FromLCD_Flag;
 
-    SkASSERT(!(textFlags & ~textFlagsMask));
     uint32_t flags = paint->getFlags();
     flags &= ~textFlagsMask;
     flags |= textFlags;

@@ -39,8 +39,6 @@
 #include "wtf/Vector.h"
 #include "wtf/text/WTFString.h"
 
-namespace blink { class WebLayer; }
-
 namespace WebCore {
 
 class CanvasImageSource;
@@ -60,7 +58,7 @@ class TextMetrics;
 
 //typedef HashMap<String, RefPtr<MutableStylePropertySet> > MutableStylePropertyMap;
 
-class CanvasRenderingContext2D FINAL: public GraphicsContext, public CanvasPathMethods {
+class PLATFORM_EXPORT CanvasRenderingContext2D FINAL : public GraphicsContext, public CanvasPathMethods{
 public:
     static PassOwnPtr<CanvasRenderingContext2D> create(SkCanvas* canvas, const Canvas2DContextAttributes* attrs, bool usesCSSCompatibilityParseMode)
     {
@@ -184,20 +182,20 @@ public:
 
     void setCompositeOperation(const String&);
 
-    PassRefPtr<CanvasGradient> createLinearGradient(float x0, float y0, float x1, float y1, ExceptionState&);
-    PassRefPtr<CanvasGradient> createRadialGradient(float x0, float y0, float r0, float x1, float y1, float r1, ExceptionState&);
-    PassRefPtr<CanvasPattern> createPattern(CanvasImageSource*, const String& repetitionType, ExceptionState&);
+    PassRefPtr<CanvasGradient> createLinearGradient(float x0, float y0, float x1, float y1);
+    PassRefPtr<CanvasGradient> createRadialGradient(float x0, float y0, float r0, float x1, float y1, float r1 );
+    PassRefPtr<CanvasPattern> createPattern(CanvasImageSource*, const String& repetitionType);
 
-    PassRefPtr<ImageData> createImageData(PassRefPtr<ImageData>, ExceptionState&) const;
-    PassRefPtr<ImageData> createImageData(float width, float height, ExceptionState&) const;
-    PassRefPtr<ImageData> getImageData(float sx, float sy, float sw, float sh, ExceptionState&) const;
-    void putImageData(ImageData*, float dx, float dy, ExceptionState&);
-    void putImageData(ImageData*, float dx, float dy, float dirtyX, float dirtyY, float dirtyWidth, float dirtyHeight, ExceptionState&);
+    PassRefPtr<ImageData> createImageData(PassRefPtr<ImageData>) const;
+    PassRefPtr<ImageData> createImageData(float width, float height) const;
+    PassRefPtr<ImageData> getImageData(float sx, float sy, float sw, float sh ) const;
+    void putImageData(ImageData*, float dx, float dy);
+    void putImageData(ImageData*, float dx, float dy, float dirtyX, float dirtyY, float dirtyWidth, float dirtyHeight);
 
     // Slated for deprecation:
-    void webkitPutImageDataHD(ImageData* image, float dx, float dy, ExceptionState& e) { putImageData(image, dx, dy, e); }
-    void webkitPutImageDataHD(ImageData* image, float dx, float dy, float dirtyX, float dirtyY, float dirtyWidth, float dirtyHeight, ExceptionState& e) { putImageData(image, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight, e); }
-    PassRefPtr<ImageData> webkitGetImageDataHD(float sx, float sy, float sw, float sh, ExceptionState&) const;
+    void webkitPutImageDataHD(ImageData* image, float dx, float dy) { putImageData(image, dx, dy); }
+    void webkitPutImageDataHD(ImageData* image, float dx, float dy, float dirtyX, float dirtyY, float dirtyWidth, float dirtyHeight) { putImageData(image, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight); }
+    PassRefPtr<ImageData> webkitGetImageDataHD(float sx, float sy, float sw, float sh) const;
     float webkitBackingStorePixelRatio() const { return 1; }
 
     void reset();

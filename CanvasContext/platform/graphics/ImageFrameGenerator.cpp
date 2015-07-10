@@ -58,8 +58,9 @@ public:
         if (info != m_info || m_rowBytes != dst->rowBytes())
             return false;
 
-        if (!dst->installPixels(m_info, m_pixels, m_rowBytes, 0, 0))
-            return false;
+		ASSERT(false);
+        //if (!dst->installPixels(m_info, m_pixels, m_rowBytes, 0, 0))
+        //    return false;
         dst->lockPixels();
         return true;
     }
@@ -304,8 +305,9 @@ PassOwnPtr<ScaledImageFragment> ImageFrameGenerator::decode(size_t index, ImageD
     // This is confusing and should be cleaned up when we can deprecate the use
     // case for Android discardable memory.
     SkBitmap copyBitmap;
-    if (!fullSizeBitmap.copyTo(&copyBitmap, fullSizeBitmap.colorType(), m_discardableAllocator.get()))
-        return nullptr;
+	ASSERT(false);
+    //if (!fullSizeBitmap.copyTo(&copyBitmap, fullSizeBitmap.colorType(), m_discardableAllocator.get()))
+    //    return nullptr;
 
     if (isCacheComplete)
         return ScaledImageFragment::createComplete(m_fullSize, index, copyBitmap);

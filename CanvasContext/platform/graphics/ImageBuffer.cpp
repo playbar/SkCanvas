@@ -102,8 +102,9 @@ bool ImageBuffer::isValid() const
 static SkBitmap deepSkBitmapCopy(const SkBitmap& bitmap)
 {
     SkBitmap tmp;
-    if (!bitmap.deepCopyTo(&tmp))
-        bitmap.copyTo(&tmp, bitmap.colorType());
+	ASSERT(false);
+    //if (!bitmap.deepCopyTo(&tmp))
+    //    bitmap.copyTo(&tmp, bitmap.colorType());
 
     return tmp;
 }
@@ -231,7 +232,6 @@ void ImageBuffer::transformColorSpace(ColorSpace srcColorSpace, ColorSpace dstCo
     if (bitmap.isNull())
         return;
 
-    ASSERT(bitmap.colorType() == kPMColor_SkColorType);
     IntSize size = m_surface->size();
     SkAutoLockPixels bitmapLock(bitmap);
     for (int y = 0; y < size.height(); ++y) {
@@ -266,7 +266,7 @@ PassRefPtr<Uint8ClampedArray> getImageData(const IntRect& rect, GraphicsContext*
 
     RefPtr<Uint8ClampedArray> result = Uint8ClampedArray::createUninitialized(rect.width() * rect.height() * 4);
 
-    unsigned char* data = result->data();
+    //unsigned char* data = result->data();
 
     if (rect.x() < 0
         || rect.y() < 0
@@ -274,9 +274,10 @@ PassRefPtr<Uint8ClampedArray> getImageData(const IntRect& rect, GraphicsContext*
         || rect.maxY() > size.height())
         result->zeroFill();
 
-    unsigned destBytesPerRow = 4 * rect.width();
+    //unsigned destBytesPerRow = 4 * rect.width();
     SkBitmap destBitmap;
-    destBitmap.installPixels(SkImageInfo::MakeN32Premul(rect.width(), rect.height()), data, destBytesPerRow);
+	ASSERT(false);
+    //destBitmap.installPixels(SkImageInfo::MakeN32Premul(rect.width(), rect.height()), data, destBytesPerRow);
 
     SkCanvas::Config8888 config8888;
     if (multiplied == Premultiplied)

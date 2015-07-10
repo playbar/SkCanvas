@@ -108,6 +108,21 @@ struct SkImageInfo {
     SkColorType fColorType;
     SkAlphaType fAlphaType;
 
+	static SkImageInfo Make(int width, int height, SkColorType ct, SkAlphaType at) {
+		SkImageInfo info = {
+			width, height, ct, at
+		};
+		return info;
+	}
+
+
+	static SkImageInfo MakeN32(int width, int height, SkAlphaType at) {
+		SkImageInfo info = {
+			width, height, kPMColor_SkColorType, at
+		};
+		return info;
+	}
+
     bool isOpaque() const {
         return SkAlphaTypeIsOpaque(fAlphaType);
     }

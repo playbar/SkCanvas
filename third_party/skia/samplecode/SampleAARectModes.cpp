@@ -11,6 +11,9 @@
 #include "SkDevice.h"
 #include "SkColorPriv.h"
 #include "SkShader.h"
+#include "CanvasRenderingContext2D.h"
+using namespace WebCore;
+using namespace WTF;
 
 
 static const struct 
@@ -149,6 +152,8 @@ protected:
 		canvas->translate(0, 0);
 		canvas->drawLine(0, 0, 100, 200, paint);
 	
+		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
+
     }
 
 private:

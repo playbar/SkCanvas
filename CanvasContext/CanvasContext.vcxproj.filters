@@ -405,6 +405,12 @@
     <ClCompile Include="Canvas\Canvas2DContextAttributes.cpp">
       <Filter>Canvas</Filter>
     </ClCompile>
+    <ClCompile Include="Canvas\ImageData.cpp">
+      <Filter>Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\graphics\GraphicsTypes.cpp">
+      <Filter>platform\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -703,6 +709,15 @@
     </ClInclude>
     <ClInclude Include="Canvas\CanvasImageSource.h">
       <Filter>Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas\ImageData.h">
+      <Filter>Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas\TextMetrics.h">
+      <Filter>Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="platform\graphics\graphicstypes.h">
+      <Filter>platform\graphics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

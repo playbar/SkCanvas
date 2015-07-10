@@ -20,30 +20,11 @@ public:
     typedef uint32_t Scale;
 
     // index this table with alpha [0..255]
-    static const Scale* GetScaleTable() {
-        return gTable;
-    }
+	static const Scale* GetScaleTable();
 
-    static Scale GetScale(U8CPU alpha) {
-        return gTable[alpha];
-    }
+	static Scale GetScale(U8CPU alpha);
 
-    /** Usage:
-
-        const Scale* table = SkUnPreMultiply::GetScaleTable();
-
-        for (...) {
-            unsigned a = ...
-            SkUnPreMultiply::Scale scale = table[a];
-
-            red = SkUnPreMultiply::ApplyScale(scale, red);
-            ...
-            // now red is unpremultiplied
-        }
-    */
-    static U8CPU ApplyScale(Scale scale, U8CPU component) {
-        return (scale * component + (1 << 23)) >> 24;
-    }
+	static U8CPU ApplyScale(Scale scale, U8CPU component);
 
     static SkColor PMColorToColor(SkPMColor c);
 

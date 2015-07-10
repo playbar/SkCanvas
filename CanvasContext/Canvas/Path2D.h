@@ -72,11 +72,12 @@ private:
     {
     }
 
-    //Path2D(const String& pathData)
-    //    : CanvasPathMethods()
-    //{
-    //    buildPathFromString(pathData, m_path);
-    //}
+    Path2D(const String& pathData)
+        : CanvasPathMethods()
+    {
+		ASSERT(false);
+        //buildPathFromString(pathData, m_path);
+    }
 };
 
 }

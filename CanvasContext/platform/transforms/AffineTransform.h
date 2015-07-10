@@ -103,6 +103,7 @@ public:
 
     double xScale() const;
     double yScale() const;
+	void deref(){};
 
     double det() const;
     bool isInvertible() const;

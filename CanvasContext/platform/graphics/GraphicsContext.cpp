@@ -1150,30 +1150,31 @@ void GraphicsContext::writePixels(const SkImageInfo& info, const void* pixels, s
 {
     if (paintingDisabled())
         return;
+	ASSERT(false);
+    //m_canvas->writePixels(info, pixels, rowBytes, x, y);
 
-    m_canvas->writePixels(info, pixels, rowBytes, x, y);
+    //if (m_trackOpaqueRegion) {
+    //    SkRect rect = SkRect::MakeXYWH(x, y, info.width(), info.height());
+    //    SkPaint paint;
 
-    if (m_trackOpaqueRegion) {
-        SkRect rect = SkRect::MakeXYWH(x, y, info.width(), info.height());
-        SkPaint paint;
+    //    paint.setXfermodeMode(SkXfermode::kSrc_Mode);
+    //    if (kOpaque_SkAlphaType != info.alphaType())
+    //        paint.setAlpha(0x80); // signal to m_opaqueRegion that we are not fully opaque
 
-        paint.setXfermodeMode(SkXfermode::kSrc_Mode);
-        if (kOpaque_SkAlphaType != info.alphaType())
-            paint.setAlpha(0x80); // signal to m_opaqueRegion that we are not fully opaque
-
-        m_opaqueRegion.didDrawRect(this, rect, paint, 0);
-        // more efficient would be to call markRectAsOpaque or MarkRectAsNonOpaque directly,
-        // rather than cons-ing up a paint with an xfermode and alpha
-    }
+    //    m_opaqueRegion.didDrawRect(this, rect, paint, 0);
+    //    // more efficient would be to call markRectAsOpaque or MarkRectAsNonOpaque directly,
+    //    // rather than cons-ing up a paint with an xfermode and alpha
+    //}
 }
 
 void GraphicsContext::writePixels(const SkBitmap& bitmap, int x, int y)
 {
-    if (!bitmap.getTexture()) {
-        SkAutoLockPixels alp(bitmap);
-        if (bitmap.getPixels())
-            writePixels(bitmap.info(), bitmap.getPixels(), bitmap.rowBytes(), x, y);
-    }
+	ASSERT(false);
+    //if (!bitmap.getTexture()) {
+    //    SkAutoLockPixels alp(bitmap);
+    //    if (bitmap.getPixels())
+    //        writePixels(bitmap.info(), bitmap.getPixels(), bitmap.rowBytes(), x, y);
+    //}
 }
 
 void GraphicsContext::drawBitmap(const SkBitmap& bitmap, SkScalar left, SkScalar top, const SkPaint* paint)
@@ -1342,7 +1343,8 @@ void GraphicsContext::fillBetweenRoundedRects(const IntRect& outer, const IntSiz
     SkPaint paint(immutableState()->fillPaint());
     paint.setColor(color.rgb());
 
-    m_canvas->drawDRRect(rrOuter, rrInner, paint);
+	ASSERT(false);
+    //m_canvas->drawDRRect(rrOuter, rrInner, paint);
 
     if (m_trackOpaqueRegion)
         m_opaqueRegion.didDrawBounded(this, rrOuter.getBounds(), paint);
@@ -1721,19 +1723,19 @@ PassOwnPtr<ImageBuffer> GraphicsContext::createCompatibleBuffer(const IntSize& s
     // Make the buffer larger if the context's transform is scaling it so we need a higher
     // resolution than one pixel per unit. Also set up a corresponding scale factor on the
     // graphics context.
-
+	ASSERT(false);
     AffineTransform transform = getCTM(DefinitelyIncludeDeviceScale);
     IntSize scaledSize(static_cast<int>(ceil(size.width() * transform.xScale())), static_cast<int>(ceil(size.height() * transform.yScale())));
 
-    SkAlphaType alphaType = (opacityMode == Opaque) ? kOpaque_SkAlphaType : kPremul_SkAlphaType;
-    SkImageInfo info = SkImageInfo::MakeN32(size.width(), size.height(), alphaType);
-    RefPtr<SkSurface> skSurface = adoptRef(m_canvas->newSurface(info));
-    if (!skSurface)
-        return nullptr;
-    OwnPtr<ImageBufferSurface> surface = adoptPtr(new CompatibleImageBufferSurface(skSurface.release(), scaledSize, opacityMode));
-    ASSERT(surface->isValid());
-    OwnPtr<ImageBuffer> buffer = adoptPtr(new ImageBuffer(surface.release()));
-
+    //SkAlphaType alphaType = (opacityMode == Opaque) ? kOpaque_SkAlphaType : kPremul_SkAlphaType;
+    //SkImageInfo info = SkImageInfo::MakeN32(size.width(), size.height(), alphaType);
+    //RefPtr<SkSurface> skSurface = adoptRef(m_canvas->newSurface(info));
+    //if (!skSurface)
+    //    return nullptr;
+    //OwnPtr<ImageBufferSurface> surface = adoptPtr(new CompatibleImageBufferSurface(skSurface.release(), scaledSize, opacityMode));
+   //ASSERT(surface->isValid());
+    //OwnPtr<ImageBuffer> buffer = adoptPtr(new ImageBuffer(surface.release()));
+	OwnPtr<ImageBuffer> buffer;
     buffer->context()->scale(FloatSize(static_cast<float>(scaledSize.width()) / size.width(),
         static_cast<float>(scaledSize.height()) / size.height()));
 

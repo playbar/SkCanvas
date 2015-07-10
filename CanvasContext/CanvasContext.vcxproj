@@ -42,6 +42,7 @@
     <ClCompile Include="Canvas\CanvasPattern.cpp" />
     <ClCompile Include="Canvas\CanvasRenderingContext2D.cpp" />
     <ClCompile Include="Canvas\CanvasStyle.cpp" />
+    <ClCompile Include="Canvas\ImageData.cpp" />
     <ClCompile Include="platform\CalculationValue.cpp" />
     <ClCompile Include="platform\fonts\Character.cpp" />
     <ClCompile Include="platform\fonts\Font.cpp" />
@@ -88,6 +89,7 @@
     <ClCompile Include="platform\graphics\GraphicsContext.cpp" />
     <ClCompile Include="platform\graphics\GraphicsContextAnnotation.cpp" />
     <ClCompile Include="platform\graphics\GraphicsContextState.cpp" />
+    <ClCompile Include="platform\graphics\GraphicsTypes.cpp" />
     <ClCompile Include="platform\graphics\Image.cpp" />
     <ClCompile Include="platform\graphics\ImageBuffer.cpp" />
     <ClCompile Include="platform\graphics\ImageBufferSurface.cpp" />
@@ -149,7 +151,9 @@
     <ClInclude Include="Canvas\CanvasPattern.h" />
     <ClInclude Include="Canvas\CanvasRenderingContext2D.h" />
     <ClInclude Include="Canvas\CanvasStyle.h" />
+    <ClInclude Include="Canvas\ImageData.h" />
     <ClInclude Include="Canvas\Path2D.h" />
+    <ClInclude Include="Canvas\TextMetrics.h" />
     <ClInclude Include="platform\CalculationValue.h" />
     <ClInclude Include="platform\fonts\Character.h" />
     <ClInclude Include="platform\fonts\Font.h" />
@@ -189,6 +193,7 @@
     <ClInclude Include="platform\graphics\GraphicsContext.h" />
     <ClInclude Include="platform\graphics\GraphicsContextAnnotation.h" />
     <ClInclude Include="platform\graphics\GraphicsContextState.h" />
+    <ClInclude Include="platform\graphics\graphicstypes.h" />
     <ClInclude Include="platform\graphics\image.h" />
     <ClInclude Include="platform\graphics\ImageBuffer.h" />
     <ClInclude Include="platform\graphics\imagebuffersurface.h" />
@@ -293,7 +298,7 @@
     <ExecutablePath>$(ExecutablePath);$(MSBuildProjectDirectory)</ExecutablePath>
     <IntDir>$(OutDir)obj\$(ProjectName)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)\build\$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
     <TargetPath>$(OutDir)\$(ProjectName)\(TargetExt)</TargetPath>
   </PropertyGroup>
@@ -317,6 +322,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../v8/lib;../build\Debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/wd"4701"  /wd"4800" %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>$(OutDir)$(ProjectName)$(TargetExt)</OutputFile>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>..\..\include\xml;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\effects;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\include\utils\win;..\..\include\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

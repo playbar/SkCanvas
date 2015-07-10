@@ -45,12 +45,12 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\v8\include;..\..\;..\..\CanvasContext\blink;..\..\CanvasContext\icu\include;..\..\CanvasContext;..\..\src\core;..\..\src\effects;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\effects;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\include\utils\win;..\..\include\gpu;..\..\include\views;..\..\include\animator;..\..\include\xml;..\..\experimental;..\..\include\pdf;..\..\include\views\animated;..\..\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\third_party\icu\source\common;..\..\..\..\CanvasContext\blink;..\..\..\..\CanvasContext;..\..\..\..\;..\..\..\..\wtf;..\..\..\..\CanvasContext\Canvas;..\..\v8\include;..\..\;..\..\src\core;..\..\src\effects;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\effects;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\include\utils\win;..\..\include\gpu;..\..\include\views;..\..\include\animator;..\..\include\xml;..\..\experimental;..\..\include\pdf;..\..\include\views\animated;..\..\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ExceptionHandling>false</ExceptionHandling>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_DEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_DEBUG;SK_DEVELOPER=1;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -166,8 +166,14 @@
     <ClCompile Include="..\..\src\views\win\SkOSWindow_win.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\CanvasContext\CanvasContext.vcxproj">
+      <Project>{2a6c3c8b-ebe6-430a-ba22-5666208647dc}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\skia\skia.vcxproj">
       <Project>{e77b9faf-f871-b19c-6b84-2bc13ea5d6aa}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\wtf\wtf.vcxproj">
+      <Project>{b1d307e3-f9b0-1691-ff18-9e07c0556c54}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

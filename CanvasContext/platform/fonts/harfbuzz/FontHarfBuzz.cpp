@@ -99,8 +99,6 @@ void Font::drawGlyphs(GraphicsContext* gc, const SimpleFontData* font,
     const GlyphBuffer& glyphBuffer, unsigned from, unsigned numGlyphs,
     const FloatPoint& point, const FloatRect& textRect) const
 {
-    SkASSERT(sizeof(GlyphBufferGlyph) == sizeof(uint16_t)); // compile-time assert
-
     SkScalar x = SkFloatToScalar(point.x());
     SkScalar y = SkFloatToScalar(point.y());
 

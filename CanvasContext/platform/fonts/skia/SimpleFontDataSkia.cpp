@@ -222,8 +222,6 @@ FloatRect SimpleFontData::platformBoundsForGlyph(Glyph glyph) const
     if (!m_platformData.size())
         return FloatRect();
 
-    SkASSERT(sizeof(glyph) == 2); // compile-time assert
-
     SkPaint paint;
     m_platformData.setupPaint(&paint);
 
@@ -236,8 +234,6 @@ float SimpleFontData::platformWidthForGlyph(Glyph glyph) const
 {
     if (!m_platformData.size())
         return 0;
-
-    SkASSERT(sizeof(glyph) == 2); // compile-time assert
 
     SkPaint paint;
 

@@ -43,7 +43,6 @@ namespace WebCore {
 bool GlyphPage::fill(unsigned offset, unsigned length, UChar* buffer, unsigned bufferLength, const SimpleFontData* fontData)
 {
     if (SkUTF16_IsHighSurrogate(buffer[bufferLength-1])) {
-        SkDebugf("%s last char is high-surrogate", __FUNCTION__);
         return false;
     }
 
