@@ -217,7 +217,6 @@ static void CreateTable() {
         comment.reset();
     }
     SkDebugf("// original = %d : replacement = %d\n", originalSize, replacement);
-    SkASSERT(0); // always stop after creating table
 }
 #endif
 

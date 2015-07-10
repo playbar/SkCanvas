@@ -14308,6 +14308,9 @@
     <ClCompile Include="..\third_party\skia\src\ports\SkTime_win.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\utils\SkParseColor.cpp">
+      <Filter>..\third_party\skia\src\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\third_party\skia\src\core\SkOrderedWriteBuffer.h">

@@ -58,3 +58,4 @@ glew/config/
 CanvasContext.rar
 *.gif
 *.jpg
+build/

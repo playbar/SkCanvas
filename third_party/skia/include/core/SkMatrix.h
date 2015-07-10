@@ -11,6 +11,7 @@
 #define SkMatrix_DEFINED
 
 #include "SkRect.h"
+#include "assert.h"
 
 class SkString;
 
@@ -426,6 +427,7 @@ public:
     void mapHomogeneousPoints(float dst[], const float src[], int count) const;
 
     void mapXY(float x, float y, SkPoint* result) const {
+		//assert(false);
         this->getMapXYProc()(*this, x, y, result);
     }
 
@@ -489,7 +491,7 @@ public:
     */
     float mapRadius(float radius) const;
 
-    typedef void (*MapXYProc)(const SkMatrix& mat, float x, float y,
+	typedef void(*MapXYProc)(const SkMatrix& mat, float x, float y,
                                  SkPoint* result);
 
     static MapXYProc GetMapXYProc(TypeMask mask) {
@@ -498,7 +500,7 @@ public:
 
     MapXYProc getMapXYProc() const {
         return GetMapXYProc(this->getType());
-    }
+	}
 
     typedef void (*MapPtsProc)(const SkMatrix& mat, SkPoint dst[],
                                   const SkPoint src[], int count);
@@ -529,7 +531,7 @@ public:
         return 0 == memcmp(fMat, m.fMat, sizeof(fMat));
     }
 
-    friend bool operator==(const SkMatrix& a, const SkMatrix& b);
+    friend SK_API bool operator==(const SkMatrix& a, const SkMatrix& b);
     friend bool operator!=(const SkMatrix& a, const SkMatrix& b) {
         return !(a == b);
     }

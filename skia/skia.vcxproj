@@ -698,6 +698,7 @@
     <ClCompile Include="..\third_party\skia\src\utils\SkNullCanvas.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkNWayCanvas.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkParse.cpp" />
+    <ClCompile Include="..\third_party\skia\src\utils\SkParseColor.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkPictureUtils.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkProxyCanvas.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkRTConf.cpp" />

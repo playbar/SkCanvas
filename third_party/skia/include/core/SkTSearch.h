@@ -102,9 +102,9 @@ int SkTSearch(T* base[], int count, T* target, size_t elemSize) {
     return SkTSearch(base, count, target, elemSize, functor);
 }
 
-int SkStrSearch(const char*const* base, int count, const char target[],
+SK_API int SkStrSearch(const char*const* base, int count, const char target[],
                 size_t target_len, size_t elemSize);
-int SkStrSearch(const char*const* base, int count, const char target[],
+SK_API int SkStrSearch(const char*const* base, int count, const char target[],
                 size_t elemSize);
 
 /** Like SkStrSearch, but treats target as if it were all lower-case. Assumes that

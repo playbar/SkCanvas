@@ -43,7 +43,7 @@ extern SkMemset32Proc sk_memset32;
 #define kMaxBytesInUTF8Sequence     4
 
 #ifdef SK_DEBUG
-    int SkUTF8_LeadByteToCount(unsigned c);
+ SK_API   int SkUTF8_LeadByteToCount(unsigned c);
 #else
     #define SkUTF8_LeadByteToCount(c)   ((((0xE5 << 24) >> ((unsigned)c >> 4 << 1)) & 3) + 1)
 #endif
@@ -54,8 +54,8 @@ inline int SkUTF8_CountUTF8Bytes(const char utf8[]) {
 
 int         SkUTF8_CountUnichars(const char utf8[]);
 int         SkUTF8_CountUnichars(const char utf8[], size_t byteLength);
-SkUnichar   SkUTF8_ToUnichar(const char utf8[]);
-SkUnichar   SkUTF8_NextUnichar(const char**);
+SK_API SkUnichar   SkUTF8_ToUnichar(const char utf8[]);
+SK_API SkUnichar   SkUTF8_NextUnichar(const char**);
 SkUnichar   SkUTF8_PrevUnichar(const char**);
 
 /** Return the number of bytes need to convert a unichar

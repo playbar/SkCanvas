@@ -24,7 +24,7 @@ int32_t SkMulDiv(int32_t numer1, int32_t numer2, int32_t denom);
  *  It is an error for denom to be 0. There is no special handling if
  *  the result overflows 32bits.
  */
-int32_t SkDivBits(int32_t numer, int32_t denom, int shift);
+SK_API int32_t SkDivBits(int32_t numer, int32_t denom, int shift);
 
 /**
  *  Return the integer square root of value, with a bias of bitBias
