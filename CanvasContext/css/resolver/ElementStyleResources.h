@@ -34,13 +34,13 @@ class CSSCursorImageValue;
 class CSSImageValue;
 class CSSImageGeneratorValue;
 class CSSImageSetValue;
-class CSSSVGDocumentValue;
+//class CSSSVGDocumentValue;
 class CSSValue;
 class FilterOperation;
 class StyleImage;
 class TextLinkColors;
 
-typedef HashMap<FilterOperation*, RefPtr<CSSSVGDocumentValue> > PendingSVGDocumentMap;
+//typedef HashMap<FilterOperation*, RefPtr<CSSSVGDocumentValue> > PendingSVGDocumentMap;
 typedef HashMap<CSSPropertyID, RefPtr<CSSValue> > PendingImagePropertyMap;
 
 // Holds information about resources, requested by stylesheets.
@@ -58,16 +58,14 @@ public:
     PassRefPtr<StyleImage> cursorOrPendingFromValue(CSSPropertyID, CSSCursorImageValue*);
 
     const PendingImagePropertyMap& pendingImageProperties() const { return m_pendingImageProperties; }
-    const PendingSVGDocumentMap& pendingSVGDocuments() const { return m_pendingSVGDocuments; }
+    //const PendingSVGDocumentMap& pendingSVGDocuments() const { return m_pendingSVGDocuments; }
 
     float deviceScaleFactor() const { return m_deviceScaleFactor; }
     void setDeviceScaleFactor(float deviceScaleFactor) { m_deviceScaleFactor = deviceScaleFactor; }
 
-    void addPendingSVGDocument(FilterOperation*, CSSSVGDocumentValue*);
-
 private:
     PendingImagePropertyMap m_pendingImageProperties;
-    PendingSVGDocumentMap m_pendingSVGDocuments;
+    //PendingSVGDocumentMap m_pendingSVGDocuments;
     float m_deviceScaleFactor;
 };
 

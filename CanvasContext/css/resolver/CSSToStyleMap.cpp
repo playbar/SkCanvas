@@ -33,7 +33,6 @@
 #include "css/CSSBorderImageSliceValue.h"
 #include "css/CSSPrimitiveValue.h"
 #include "css/CSSPrimitiveValueMappings.h"
-#include "css/CSSTimingFunctionValue.h"
 #include "css/Pair.h"
 #include "css/Rect.h"
 #include "css/resolver/StyleResolverState.h"

@@ -29,8 +29,8 @@
 #include "CSSValueKeywords.h"
 #include "css/CSSCalculationValue.h"
 #include "css/CSSToLengthConversionData.h"
-#include "core/dom/TextLinkColors.h"
-#include "core/rendering/RenderObject.h"
+#include "dom/TextLinkColors.h"
+//#include "core/rendering/RenderObject.h"
 #include "platform/geometry/IntSize.h"
 #include "platform/graphics/Gradient.h"
 #include "platform/graphics/GradientGeneratedImage.h"
@@ -42,44 +42,44 @@ using namespace std;
 
 namespace WebCore {
 
-void CSSGradientColorStop::trace(Visitor* visitor)
-{
-    visitor->trace(m_position);
-    visitor->trace(m_color);
-}
-
-PassRefPtr<Image> CSSGradientValue::image(RenderObject* renderer, const IntSize& size)
-{
-    if (size.isEmpty())
-        return nullptr;
-
-    bool cacheable = isCacheable();
-    if (cacheable) {
-        if (!clients().contains(renderer))
-            return nullptr;
-
-        // Need to look up our size.  Create a string of width*height to use as a hash key.
-        Image* result = getImage(renderer, size);
-        if (result)
-            return result;
-    }
-
-    // We need to create an image.
-    RefPtr<Gradient> gradient;
-
-    RenderStyle* rootStyle = renderer->document().documentElement()->renderStyle();
-    CSSToLengthConversionData conversionData(renderer->style(), rootStyle, renderer->view());
-    if (isLinearGradientValue())
-        gradient = toCSSLinearGradientValue(this)->createGradient(conversionData, size);
-    else
-        gradient = toCSSRadialGradientValue(this)->createGradient(conversionData, size);
-
-    RefPtr<Image> newImage = GradientGeneratedImage::create(gradient, size);
-    if (cacheable)
-        putImage(size, newImage);
-
-    return newImage.release();
-}
+//void CSSGradientColorStop::trace(Visitor* visitor)
+//{
+//    visitor->trace(m_position);
+//    visitor->trace(m_color);
+//}
+//
+//PassRefPtr<Image> CSSGradientValue::image(RenderObject* renderer, const IntSize& size)
+//{
+//    if (size.isEmpty())
+//        return nullptr;
+//
+//    bool cacheable = isCacheable();
+//    if (cacheable) {
+//        if (!clients().contains(renderer))
+//            return nullptr;
+//
+//        // Need to look up our size.  Create a string of width*height to use as a hash key.
+//        Image* result = getImage(renderer, size);
+//        if (result)
+//            return result;
+//    }
+//
+//    // We need to create an image.
+//    RefPtr<Gradient> gradient;
+//
+//    RenderStyle* rootStyle = renderer->document().documentElement()->renderStyle();
+//    CSSToLengthConversionData conversionData(renderer->style(), rootStyle, renderer->view());
+//    if (isLinearGradientValue())
+//        gradient = toCSSLinearGradientValue(this)->createGradient(conversionData, size);
+//    else
+//        gradient = toCSSRadialGradientValue(this)->createGradient(conversionData, size);
+//
+//    RefPtr<Image> newImage = GradientGeneratedImage::create(gradient, size);
+//    if (cacheable)
+//        putImage(size, newImage);
+//
+//    return newImage.release();
+//}
 
 // Should only ever be called for deprecated gradients.
 static inline bool compareStops(const CSSGradientColorStop& a, const CSSGradientColorStop& b)
@@ -111,7 +111,7 @@ struct GradientStop {
     { }
 };
 
-PassRefPtrWillBeRawPtr<CSSGradientValue> CSSGradientValue::gradientWithStylesResolved(const TextLinkColors& textLinkColors, Color currentColor)
+PassRefPtr<CSSGradientValue> CSSGradientValue::gradientWithStylesResolved(const TextLinkColors& textLinkColors, Color currentColor)
 {
     bool derived = false;
     for (unsigned i = 0; i < m_stops.size(); i++)
@@ -121,7 +121,7 @@ PassRefPtrWillBeRawPtr<CSSGradientValue> CSSGradientValue::gradientWithStylesRes
             break;
         }
 
-    RefPtrWillBeRawPtr<CSSGradientValue> result;
+    RefPtr<CSSGradientValue> result;
     if (!derived)
         result = this;
     else if (isLinearGradientValue())
@@ -455,24 +455,24 @@ bool CSSGradientValue::isCacheable() const
     return true;
 }
 
-bool CSSGradientValue::knownToBeOpaque(const RenderObject*) const
-{
-    for (size_t i = 0; i < m_stops.size(); ++i) {
-        if (m_stops[i].m_resolvedColor.hasAlpha())
-            return false;
-    }
-    return true;
-}
+//bool CSSGradientValue::knownToBeOpaque(const RenderObject*) const
+//{
+//    for (size_t i = 0; i < m_stops.size(); ++i) {
+//        if (m_stops[i].m_resolvedColor.hasAlpha())
+//            return false;
+//    }
+//    return true;
+//}
 
-void CSSGradientValue::traceAfterDispatch(Visitor* visitor)
-{
-    visitor->trace(m_firstX);
-    visitor->trace(m_firstY);
-    visitor->trace(m_secondX);
-    visitor->trace(m_secondY);
-    visitor->trace(m_stops);
-    CSSImageGeneratorValue::traceAfterDispatch(visitor);
-}
+//void CSSGradientValue::traceAfterDispatch(Visitor* visitor)
+//{
+//    visitor->trace(m_firstX);
+//    visitor->trace(m_firstY);
+//    visitor->trace(m_secondX);
+//    visitor->trace(m_secondY);
+//    visitor->trace(m_stops);
+//    CSSImageGeneratorValue::traceAfterDispatch(visitor);
+//}
 
 String CSSLinearGradientValue::customCSSText() const
 {
@@ -747,11 +747,11 @@ bool CSSLinearGradientValue::equals(const CSSLinearGradientValue& other) const
     return equalXandY && m_stops == other.m_stops;
 }
 
-void CSSLinearGradientValue::traceAfterDispatch(Visitor* visitor)
-{
-    visitor->trace(m_angle);
-    CSSGradientValue::traceAfterDispatch(visitor);
-}
+//void CSSLinearGradientValue::traceAfterDispatch(Visitor* visitor)
+//{
+//    visitor->trace(m_angle);
+//    CSSGradientValue::traceAfterDispatch(visitor);
+//}
 
 String CSSRadialGradientValue::customCSSText() const
 {
@@ -1181,15 +1181,15 @@ bool CSSRadialGradientValue::equals(const CSSRadialGradientValue& other) const
     return equalShape && equalSizingBehavior && equalHorizontalAndVerticalSize && m_stops == other.m_stops;
 }
 
-void CSSRadialGradientValue::traceAfterDispatch(Visitor* visitor)
-{
-    visitor->trace(m_firstRadius);
-    visitor->trace(m_secondRadius);
-    visitor->trace(m_shape);
-    visitor->trace(m_sizingBehavior);
-    visitor->trace(m_endHorizontalSize);
-    visitor->trace(m_endVerticalSize);
-    CSSGradientValue::traceAfterDispatch(visitor);
-}
+//void CSSRadialGradientValue::traceAfterDispatch(Visitor* visitor)
+//{
+//    visitor->trace(m_firstRadius);
+//    visitor->trace(m_secondRadius);
+//    visitor->trace(m_shape);
+//    visitor->trace(m_sizingBehavior);
+//    visitor->trace(m_endHorizontalSize);
+//    visitor->trace(m_endVerticalSize);
+//    CSSGradientValue::traceAfterDispatch(visitor);
+//}
 
 } // namespace WebCore

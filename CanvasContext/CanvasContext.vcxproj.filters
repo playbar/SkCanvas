@@ -564,6 +564,27 @@
     <ClCompile Include="dom\TextLinkColors.cpp">
       <Filter>dom</Filter>
     </ClCompile>
+    <ClCompile Include="style\StyleGeneratedImage.cpp">
+      <Filter>style</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSCursorImageValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSImageValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSMarkup.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSImageSetValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSBorderImageSliceValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\Rect.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -1060,6 +1081,30 @@
     </ClInclude>
     <ClInclude Include="dom\TextLinkColors.h">
       <Filter>dom</Filter>
+    </ClInclude>
+    <ClInclude Include="style\StyleGeneratedImage.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="style\StylePendingImage.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSCursorImageValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSImageValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSMarkup.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSImageSetValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSBorderImageSliceValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\Rect.h">
+      <Filter>css</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

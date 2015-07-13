@@ -24,7 +24,6 @@
 
 #include "CSSPropertyNames.h"
 #include "css/resolver/ElementStyleResources.h"
-#include "platform/animation/TimingFunction.h"
 #include "wtf/Noncopyable.h"
 
 namespace WebCore {
@@ -69,7 +68,7 @@ public:
     void mapAnimationName(CSSAnimationData*, CSSValue*) const;
     void mapAnimationPlayState(CSSAnimationData*, CSSValue*) const;
     void mapAnimationProperty(CSSAnimationData*, CSSValue*) const;
-    static PassRefPtr<TimingFunction> animationTimingFunction(CSSValue*, bool allowInitial);
+    //static PassRefPtr<TimingFunction> animationTimingFunction(CSSValue*, bool allowInitial);
     void mapAnimationTimingFunction(CSSAnimationData*, CSSValue*) const;
 
     void mapNinePieceImage(RenderStyle* mutableStyle, CSSPropertyID, CSSValue*, NinePieceImage&);

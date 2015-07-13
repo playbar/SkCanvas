@@ -24,11 +24,9 @@
 #include "css/resolver/ElementStyleResources.h"
 
 #include "css/CSSGradientValue.h"
-#include "css/CSSSVGDocumentValue.h"
 #include "style/StyleGeneratedImage.h"
 #include "style/StyleImage.h"
 #include "style/StylePendingImage.h"
-#include "platform/graphics/filters/FilterOperation.h"
 
 namespace WebCore {
 
@@ -88,11 +86,6 @@ PassRefPtr<StyleImage> ElementStyleResources::cursorOrPendingFromValue(CSSProper
     if (image && image->isPendingImage())
         m_pendingImageProperties.set(property, value);
     return image.release();
-}
-
-void ElementStyleResources::addPendingSVGDocument(FilterOperation* filterOperation, CSSSVGDocumentValue* cssSVGDocumentValue)
-{
-    m_pendingSVGDocuments.set(filterOperation, cssSVGDocumentValue);
 }
 
 }
