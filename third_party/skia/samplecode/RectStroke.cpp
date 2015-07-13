@@ -16,11 +16,11 @@ using namespace WebCore;
 using namespace WTF;
 
 
-class RectView : public SampleView
+class RectStrokeView : public SampleView
 {
     SkPaint fBGPaint;
 public:
-	RectView() 
+	RectStrokeView()
 	{
     }
 
@@ -30,7 +30,7 @@ protected:
 	{
         if (SampleCode::TitleQ(*evt)) 
 		{
-            SampleCode::TitleR(evt, "Rect");
+            SampleCode::TitleR(evt, "RectStroke");
             return true;
         }
         return this->INHERITED::onQuery(evt);
@@ -40,7 +40,8 @@ protected:
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
 		//ctx->beginPath();
-		//ctx->setLineWidth(4);
+		ctx->setStrokeColor(1.0f, 0.0f, 0.0, 1.0f);
+		ctx->setLineWidth(4);
 		ctx->rect(20, 20, 150, 100);
 		ctx->stroke();
 
@@ -52,5 +53,5 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static SkView* MyFactory() { return new RectView; }
+static SkView* MyFactory() { return new RectStrokeView; }
 static SkViewRegister reg(MyFactory);
