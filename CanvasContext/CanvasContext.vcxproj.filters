@@ -55,8 +55,14 @@
     <Filter Include="url">
       <UniqueIdentifier>{4b54de0c-fe74-43b3-820a-58362d32bd47}</UniqueIdentifier>
     </Filter>
-    <Filter Include="css\parser">
-      <UniqueIdentifier>{9f763acb-7687-4178-8f71-f0e718c7866b}</UniqueIdentifier>
+    <Filter Include="style">
+      <UniqueIdentifier>{fb3ba589-30c4-4a9c-ad0b-3c76e96a1adf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dom">
+      <UniqueIdentifier>{4519387f-c8e0-4858-9fd3-81d7ca1c601a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="css\resolver">
+      <UniqueIdentifier>{32006688-f8bb-45df-9ad2-654f8c1a84e4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -477,6 +483,78 @@
     <ClCompile Include="css\CSSInitialValue.cpp">
       <Filter>css</Filter>
     </ClCompile>
+    <ClCompile Include="css\CSSCalculationValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSSelector.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="dom\QualifiedName.cpp">
+      <Filter>dom</Filter>
+    </ClCompile>
+    <ClCompile Include="blink\HTMLNames.cpp">
+      <Filter>blink</Filter>
+    </ClCompile>
+    <ClCompile Include="blink\SVGNames.cpp">
+      <Filter>blink</Filter>
+    </ClCompile>
+    <ClCompile Include="blink\XLinkNames.cpp">
+      <Filter>blink</Filter>
+    </ClCompile>
+    <ClCompile Include="blink\XMLNames.cpp">
+      <Filter>blink</Filter>
+    </ClCompile>
+    <ClCompile Include="blink\XMLNSNames.cpp">
+      <Filter>blink</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSOMUtils.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSSelectorList.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSToLengthConversionData.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="style\RenderStyle.cpp">
+      <Filter>style</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSAnimationData.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSAnimationDataList.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSLineBoxContainValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="style\CounterDirectives.cpp">
+      <Filter>style</Filter>
+    </ClCompile>
+    <ClCompile Include="style\NinePieceImage.cpp">
+      <Filter>style</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\LengthBox.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="style\BasicShapes.cpp">
+      <Filter>style</Filter>
+    </ClCompile>
+    <ClCompile Include="css\Pair.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\BasicShapeFunctions.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\resolver\StyleResolverState.cpp">
+      <Filter>css\resolver</Filter>
+    </ClCompile>
+    <ClCompile Include="css\resolver\CSSToStyleMap.cpp">
+      <Filter>css\resolver</Filter>
+    </ClCompile>
+    <ClCompile Include="css\resolver\ElementStyleResources.cpp">
+      <Filter>css\resolver</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -856,6 +934,114 @@
     </ClInclude>
     <ClInclude Include="css\CSSInitialValue.h">
       <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSCalculationValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSPrimitiveValueMappings.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSSelector.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="dom\QualifiedName.h">
+      <Filter>dom</Filter>
+    </ClInclude>
+    <ClInclude Include="blink\HTMLNames.h">
+      <Filter>blink</Filter>
+    </ClInclude>
+    <ClInclude Include="blink\SVGNames.h">
+      <Filter>blink</Filter>
+    </ClInclude>
+    <ClInclude Include="blink\XLinkNames.h">
+      <Filter>blink</Filter>
+    </ClInclude>
+    <ClInclude Include="blink\XMLNames.h">
+      <Filter>blink</Filter>
+    </ClInclude>
+    <ClInclude Include="blink\XMLNSNames.h">
+      <Filter>blink</Filter>
+    </ClInclude>
+    <ClInclude Include="style\RenderStyleConstants.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSOMUtils.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSSelectorList.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSReflectionDirection.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSToLengthConversionData.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="style\RenderStyle.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSAnimationData.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSAnimationDataList.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSLineBoxContainValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="style\BorderValue.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="css\StyleColor.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="style\CounterDirectives.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="style\DataRef.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="style\LineClampValue.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="style\NinePieceImage.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="style\BorderImageLengthBox.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="style\BorderImageLength.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="style\StyleImage.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="platform\LengthBox.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="style\OutlineValue.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="style\ShapeValue.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="style\BasicShapes.h">
+      <Filter>style</Filter>
+    </ClInclude>
+    <ClInclude Include="css\Pair.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\BasicShapeFunctions.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\resolver\StyleResolverState.h">
+      <Filter>css\resolver</Filter>
+    </ClInclude>
+    <ClInclude Include="css\resolver\CSSToStyleMap.h">
+      <Filter>css\resolver</Filter>
+    </ClInclude>
+    <ClInclude Include="css\resolver\ElementStyleResources.h">
+      <Filter>css\resolver</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

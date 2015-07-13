@@ -25,9 +25,9 @@
 
 #include "CSSPropertyNames.h"
 #include "CSSValueKeywords.h"
-#include "core/css/CSSCalculationValue.h"
-#include "core/css/CSSFilterValue.h"
-#include "core/css/CSSGradientValue.h"
+#include "CSSCalculationValue.h"
+#include "CSSFilterValue.h"
+#include "CSSGradientValue.h"
 #include "core/css/CSSParserMode.h"
 #include "core/css/CSSParserValues.h"
 #include "core/css/CSSProperty.h"

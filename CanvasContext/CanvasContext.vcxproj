@@ -35,7 +35,12 @@
     <ClCompile Include="..\third_party\libpng\pngwutil.c" />
     <ClCompile Include="blink\ColorData.cpp" />
     <ClCompile Include="blink\FontFamilyNames.cpp" />
+    <ClCompile Include="blink\HTMLNames.cpp" />
     <ClCompile Include="blink\RuntimeEnabledFeatures.cpp" />
+    <ClCompile Include="blink\SVGNames.cpp" />
+    <ClCompile Include="blink\XLinkNames.cpp" />
+    <ClCompile Include="blink\XMLNames.cpp" />
+    <ClCompile Include="blink\XMLNSNames.cpp" />
     <ClCompile Include="Canvas\Canvas2DContextAttributes.cpp" />
     <ClCompile Include="Canvas\CanvasGradient.cpp" />
     <ClCompile Include="Canvas\CanvasPathMethods.cpp" />
@@ -43,20 +48,34 @@
     <ClCompile Include="Canvas\CanvasRenderingContext2D.cpp" />
     <ClCompile Include="Canvas\CanvasStyle.cpp" />
     <ClCompile Include="Canvas\ImageData.cpp" />
+    <ClCompile Include="css\BasicShapeFunctions.cpp" />
     <ClCompile Include="css\BisonCSSParser.cpp" />
+    <ClCompile Include="css\CSSAnimationData.cpp" />
+    <ClCompile Include="css\CSSAnimationDataList.cpp" />
     <ClCompile Include="css\CSSArrayFunctionValue.cpp" />
     <ClCompile Include="css\CSSBasicShapes.cpp" />
+    <ClCompile Include="css\CSSCalculationValue.cpp" />
     <ClCompile Include="css\CSSInheritedValue.cpp" />
     <ClCompile Include="css\CSSInitialValue.cpp" />
+    <ClCompile Include="css\CSSLineBoxContainValue.cpp" />
+    <ClCompile Include="css\CSSOMUtils.cpp" />
     <ClCompile Include="css\CSSParserMode.cpp" />
     <ClCompile Include="css\CSSParserValues.cpp" />
     <ClCompile Include="css\CSSPrimitiveValue.cpp" />
     <ClCompile Include="css\CSSPropertyNames.cpp" />
+    <ClCompile Include="css\CSSSelector.cpp" />
+    <ClCompile Include="css\CSSSelectorList.cpp" />
+    <ClCompile Include="css\CSSToLengthConversionData.cpp" />
     <ClCompile Include="css\CSSValue.cpp" />
     <ClCompile Include="css\CSSValueKeywords.cpp" />
     <ClCompile Include="css\CSSValueList.cpp" />
     <ClCompile Include="css\CSSValuePool.cpp" />
+    <ClCompile Include="css\Pair.cpp" />
+    <ClCompile Include="css\resolver\CSSToStyleMap.cpp" />
+    <ClCompile Include="css\resolver\ElementStyleResources.cpp" />
+    <ClCompile Include="css\resolver\StyleResolverState.cpp" />
     <ClCompile Include="css\StylePropertySet.cpp" />
+    <ClCompile Include="dom\QualifiedName.cpp" />
     <ClCompile Include="platform\CalculationValue.cpp" />
     <ClCompile Include="platform\fonts\Character.cpp" />
     <ClCompile Include="platform\fonts\Font.cpp" />
@@ -132,6 +151,7 @@
     <ClCompile Include="platform\image-encoders\skia\PNGImageEncoder.cpp" />
     <ClCompile Include="platform\image-encoders\skia\WEBPImageEncoder.cpp" />
     <ClCompile Include="platform\Length.cpp" />
+    <ClCompile Include="platform\LengthBox.cpp" />
     <ClCompile Include="platform\LengthFunctions.cpp" />
     <ClCompile Include="platform\Logging.cpp" />
     <ClCompile Include="platform\NotImplemented.cpp" />
@@ -149,6 +169,10 @@
     <ClCompile Include="platform\ThreadTimers.cpp" />
     <ClCompile Include="platform\transforms\AffineTransform.cpp" />
     <ClCompile Include="platform\transforms\TransformationMatrix.cpp" />
+    <ClCompile Include="style\BasicShapes.cpp" />
+    <ClCompile Include="style\CounterDirectives.cpp" />
+    <ClCompile Include="style\NinePieceImage.cpp" />
+    <ClCompile Include="style\RenderStyle.cpp" />
     <ClCompile Include="url\KnownPorts.cpp" />
     <ClCompile Include="url\KURL.cpp" />
     <ClCompile Include="url\url_canon_internal.cc" />
@@ -162,7 +186,12 @@
     <ClInclude Include="..\third_party\libpng\pngconf.h" />
     <ClInclude Include="..\third_party\libpng\pngusr.h" />
     <ClInclude Include="blink\FontFamilyNames.h" />
+    <ClInclude Include="blink\HTMLNames.h" />
     <ClInclude Include="blink\RuntimeEnabledFeatures.h" />
+    <ClInclude Include="blink\SVGNames.h" />
+    <ClInclude Include="blink\XLinkNames.h" />
+    <ClInclude Include="blink\XMLNames.h" />
+    <ClInclude Include="blink\XMLNSNames.h" />
     <ClInclude Include="Canvas\Canvas2DContextAttributes.h" />
     <ClInclude Include="Canvas\CanvasGradient.h" />
     <ClInclude Include="Canvas\CanvasImageSource.h" />
@@ -173,21 +202,38 @@
     <ClInclude Include="Canvas\ImageData.h" />
     <ClInclude Include="Canvas\Path2D.h" />
     <ClInclude Include="Canvas\TextMetrics.h" />
+    <ClInclude Include="css\BasicShapeFunctions.h" />
     <ClInclude Include="css\BisonCSSParser.h" />
+    <ClInclude Include="css\CSSAnimationData.h" />
+    <ClInclude Include="css\CSSAnimationDataList.h" />
     <ClInclude Include="css\CSSArrayFunctionValue.h" />
     <ClInclude Include="css\CSSBasicShapes.h" />
+    <ClInclude Include="css\CSSCalculationValue.h" />
     <ClInclude Include="css\CSSInheritedValue.h" />
     <ClInclude Include="css\CSSInitialValue.h" />
+    <ClInclude Include="css\CSSLineBoxContainValue.h" />
+    <ClInclude Include="css\CSSOMUtils.h" />
     <ClInclude Include="css\CSSParserMode.h" />
     <ClInclude Include="css\CSSParserValues.h" />
     <ClInclude Include="css\CSSPrimitiveValue.h" />
+    <ClInclude Include="css\CSSPrimitiveValueMappings.h" />
     <ClInclude Include="css\CSSPropertyNames.h" />
+    <ClInclude Include="css\CSSReflectionDirection.h" />
+    <ClInclude Include="css\CSSSelector.h" />
+    <ClInclude Include="css\CSSSelectorList.h" />
+    <ClInclude Include="css\CSSToLengthConversionData.h" />
     <ClInclude Include="css\CSSValue.h" />
     <ClInclude Include="css\CSSValueKeywords.h" />
     <ClInclude Include="css\CSSValueList.h" />
     <ClInclude Include="css\CSSValuePool.h" />
     <ClInclude Include="css\HashTools.h" />
+    <ClInclude Include="css\Pair.h" />
+    <ClInclude Include="css\resolver\CSSToStyleMap.h" />
+    <ClInclude Include="css\resolver\ElementStyleResources.h" />
+    <ClInclude Include="css\resolver\StyleResolverState.h" />
+    <ClInclude Include="css\StyleColor.h" />
     <ClInclude Include="css\StylePropertySet.h" />
+    <ClInclude Include="dom\QualifiedName.h" />
     <ClInclude Include="platform\CalculationValue.h" />
     <ClInclude Include="platform\fonts\Character.h" />
     <ClInclude Include="platform\fonts\Font.h" />
@@ -256,6 +302,7 @@
     <ClInclude Include="platform\image-encoders\skia\PNGImageEncoder.h" />
     <ClInclude Include="platform\image-encoders\skia\WEBPImageEncoder.h" />
     <ClInclude Include="platform\Length.h" />
+    <ClInclude Include="platform\LengthBox.h" />
     <ClInclude Include="platform\LengthFunctions.h" />
     <ClInclude Include="platform\LengthSize.h" />
     <ClInclude Include="platform\Logging.h" />
@@ -273,6 +320,19 @@
     <ClInclude Include="platform\ThreadTimers.h" />
     <ClInclude Include="platform\transforms\AffineTransform.h" />
     <ClInclude Include="platform\transforms\TransformationMatrix.h" />
+    <ClInclude Include="style\BasicShapes.h" />
+    <ClInclude Include="style\BorderImageLength.h" />
+    <ClInclude Include="style\BorderImageLengthBox.h" />
+    <ClInclude Include="style\BorderValue.h" />
+    <ClInclude Include="style\CounterDirectives.h" />
+    <ClInclude Include="style\DataRef.h" />
+    <ClInclude Include="style\LineClampValue.h" />
+    <ClInclude Include="style\NinePieceImage.h" />
+    <ClInclude Include="style\OutlineValue.h" />
+    <ClInclude Include="style\RenderStyle.h" />
+    <ClInclude Include="style\RenderStyleConstants.h" />
+    <ClInclude Include="style\ShapeValue.h" />
+    <ClInclude Include="style\StyleImage.h" />
     <ClInclude Include="url\KnownPorts.h" />
     <ClInclude Include="url\KURL.h" />
     <ClInclude Include="url\url_canon.h" />
@@ -347,7 +407,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../;./blink;./css;./Canvas;./;../wtf;../third_party\harfbuzz-ng\src;../third_party\skia\src\core;..\third_party\skia\include/core;../third_party\skia\include/utils;../third_party\skia\include/ports;../third_party\skia\include/effects;../third_party\skia\include/pathops;../third_party\skia\include/gpu;../third_party\skia\include/config;../third_party\libpng;../third_party\libjpeg_turbo;../third_party\zlib;../third_party\libwebp;../third_party\icu\source\common;../v8/include;../glew\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;./dom;./style;./blink;./css;./Canvas;./;../wtf;../third_party\harfbuzz-ng\src;../third_party\skia\src\core;..\third_party\skia\include/core;../third_party\skia\include/utils;../third_party\skia\include/ports;../third_party\skia\include/effects;../third_party\skia\include/pathops;../third_party\skia\include/gpu;../third_party\skia\include/config;../third_party\libpng;../third_party\libjpeg_turbo;../third_party\zlib;../third_party\libwebp;../third_party\icu\source\common;../v8/include;../glew\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ExceptionHandling>false</ExceptionHandling>
