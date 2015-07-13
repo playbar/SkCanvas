@@ -555,6 +555,15 @@
     <ClCompile Include="css\resolver\ElementStyleResources.cpp">
       <Filter>css\resolver</Filter>
     </ClCompile>
+    <ClCompile Include="css\CSSGradientValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSImageGeneratorValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="dom\TextLinkColors.cpp">
+      <Filter>dom</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -1042,6 +1051,15 @@
     </ClInclude>
     <ClInclude Include="css\resolver\ElementStyleResources.h">
       <Filter>css\resolver</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSGradientValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSImageGeneratorValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="dom\TextLinkColors.h">
+      <Filter>dom</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

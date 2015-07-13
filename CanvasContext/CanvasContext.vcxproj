@@ -55,6 +55,8 @@
     <ClCompile Include="css\CSSArrayFunctionValue.cpp" />
     <ClCompile Include="css\CSSBasicShapes.cpp" />
     <ClCompile Include="css\CSSCalculationValue.cpp" />
+    <ClCompile Include="css\CSSGradientValue.cpp" />
+    <ClCompile Include="css\CSSImageGeneratorValue.cpp" />
     <ClCompile Include="css\CSSInheritedValue.cpp" />
     <ClCompile Include="css\CSSInitialValue.cpp" />
     <ClCompile Include="css\CSSLineBoxContainValue.cpp" />
@@ -76,6 +78,7 @@
     <ClCompile Include="css\resolver\StyleResolverState.cpp" />
     <ClCompile Include="css\StylePropertySet.cpp" />
     <ClCompile Include="dom\QualifiedName.cpp" />
+    <ClCompile Include="dom\TextLinkColors.cpp" />
     <ClCompile Include="platform\CalculationValue.cpp" />
     <ClCompile Include="platform\fonts\Character.cpp" />
     <ClCompile Include="platform\fonts\Font.cpp" />
@@ -209,6 +212,8 @@
     <ClInclude Include="css\CSSArrayFunctionValue.h" />
     <ClInclude Include="css\CSSBasicShapes.h" />
     <ClInclude Include="css\CSSCalculationValue.h" />
+    <ClInclude Include="css\CSSGradientValue.h" />
+    <ClInclude Include="css\CSSImageGeneratorValue.h" />
     <ClInclude Include="css\CSSInheritedValue.h" />
     <ClInclude Include="css\CSSInitialValue.h" />
     <ClInclude Include="css\CSSLineBoxContainValue.h" />
@@ -234,6 +239,7 @@
     <ClInclude Include="css\StyleColor.h" />
     <ClInclude Include="css\StylePropertySet.h" />
     <ClInclude Include="dom\QualifiedName.h" />
+    <ClInclude Include="dom\TextLinkColors.h" />
     <ClInclude Include="platform\CalculationValue.h" />
     <ClInclude Include="platform\fonts\Character.h" />
     <ClInclude Include="platform\fonts\Font.h" />
