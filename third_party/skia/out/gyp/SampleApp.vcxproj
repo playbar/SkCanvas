@@ -135,6 +135,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\gm\gm.h" />
     <ClInclude Include="..\..\samplecode\OverView.h" />
+    <ClInclude Include="..\..\samplecode\SampleApp.h" />
+    <ClInclude Include="..\..\samplecode\SampleCode.h" />
     <ClInclude Include="..\..\src\pipe\utils\SamplePipeControllers.h" />
     <ClInclude Include="..\..\samplecode\GMSampleView.h" />
     <ClInclude Include="..\..\samplecode\TransitionView.h" />
@@ -144,8 +146,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\gm\gm.cpp" />
     <ClCompile Include="..\..\samplecode\OverView.cpp" />
+    <ClCompile Include="..\..\samplecode\Rect.cpp" />
     <ClCompile Include="..\..\src\pipe\utils\SamplePipeControllers.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleAARectModes.cpp" />
+    <ClCompile Include="..\..\samplecode\QuadraticCurveTo.cpp" />
     <ClCompile Include="..\..\samplecode\SampleApp.cpp" />
     <ClCompile Include="..\..\samplecode\TransitionView.cpp" />
     <ClCompile Include="..\..\src\views\SkBGViewArtist.cpp" />

@@ -33,9 +33,6 @@
     <ClInclude Include="..\..\samplecode\GMSampleView.h">
       <Filter>samplecode</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\samplecode\SampleAARectModes.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\samplecode\SampleApp.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
@@ -56,6 +53,12 @@
     </ClInclude>
     <ClInclude Include="..\..\src\views\SkViewPriv.h">
       <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\samplecode\SampleApp.h">
+      <Filter>samplecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\samplecode\SampleCode.h">
+      <Filter>samplecode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +115,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\views\win\SkOSWindow_win.cpp">
       <Filter>view\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\QuadraticCurveTo.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\Rect.cpp">
+      <Filter>samplecode</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
