@@ -16,11 +16,11 @@ using namespace WebCore;
 using namespace WTF;
 
 
-class BeginPathView : public SampleView
+class FillStyleView : public SampleView
 {
     SkPaint fBGPaint;
 public:
-	BeginPathView()
+	FillStyleView()
 	{
 		int i = 0;
 		i++;
@@ -32,7 +32,7 @@ protected:
 	{
         if (SampleCode::TitleQ(*evt)) 
 		{
-            SampleCode::TitleR(evt, "BeginPath");
+            SampleCode::TitleR(evt, "FillStyleView");
             return true;
         }
         return this->INHERITED::onQuery(evt);
@@ -41,20 +41,8 @@ protected:
     virtual void onDrawContent(SkCanvas* canvas)
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
-		ctx->beginPath();
-		ctx->setLineWidth(4);
-		ctx->setStrokeColor( 1.0f, 0.0f, 0.0f, 1.0f);
-		ctx->moveTo(0, 75);
-		ctx->lineTo(250, 75);
-		ctx->stroke();
-
-		ctx->beginPath();
-		ctx->setStrokeColor(0.0f, 0.0f, 1.0f, 1.0f);
-		ctx->setLineWidth(10);
-		ctx->moveTo(50, 0);
-		ctx->lineTo(150, 130);
-		ctx->stroke();
-
+		ctx->setFillColor("#0000ff");
+		ctx->fillRect(20, 20, 150, 100);
 		return;
 
     }
@@ -65,5 +53,5 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static SkView* MyFactory() { return new BeginPathView; }
+static SkView* MyFactory() { return new FillStyleView; }
 static SkViewRegister reg(MyFactory);

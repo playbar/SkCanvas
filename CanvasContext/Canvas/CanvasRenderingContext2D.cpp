@@ -271,7 +271,8 @@ void CanvasRenderingContext2D::setFillStyle(PassRefPtr<CanvasStyle> prpStyle)
     if (state().m_fillStyle && state().m_fillStyle->isEquivalentColor(*style))
         return;
 
-    if (style->isCurrentColor()) {
+    if (style->isCurrentColor()) 
+	{
         if (style->hasOverrideAlpha())
             style = CanvasStyle::createFromRGBA(colorWithOverrideAlpha(currentColor(), style->overrideAlpha()));
         else

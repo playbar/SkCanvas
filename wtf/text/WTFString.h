@@ -88,8 +88,6 @@ enum UTF8ConversionMode {
 template<bool isSpecialCharacter(UChar), typename CharacterType>
 bool isAllSpecialCharacters(const CharacterType*, size_t);
 
-// You can find documentation about this class in this doc:
-// https://docs.google.com/document/d/1kOCUlJdh2WJMJGDf-WoEQhmnjKLaOYRbiHz5TiGJl14/edit?usp=sharing
 class WTF_EXPORT String {
 public:
     // Construct a null string, distinguishable from an empty string.

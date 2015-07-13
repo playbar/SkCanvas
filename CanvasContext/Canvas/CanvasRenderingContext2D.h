@@ -31,7 +31,7 @@ class ImageBitmap;
 class ImageData;
 class TextMetrics;
 
-//typedef HashMap<String, RefPtr<MutableStylePropertySet> > MutableStylePropertyMap;
+typedef HashMap<String, RefPtr<MutableStylePropertySet> > MutableStylePropertyMap;
 
 class PLATFORM_EXPORT CanvasRenderingContext2D FINAL : public GraphicsContext, public CanvasPathMethods{
 public:
@@ -303,7 +303,7 @@ private:
     Vector<State, 1> m_stateStack;
     bool m_usesCSSCompatibilityParseMode;
     bool m_hasAlpha;
-    //MutableStylePropertyMap m_fetchedFonts;
+    MutableStylePropertyMap m_fetchedFonts;
 };
 
 } // namespace WebCore

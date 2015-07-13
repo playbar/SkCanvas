@@ -49,6 +49,15 @@
     <Filter Include="platform\font\opentype">
       <UniqueIdentifier>{c2997379-0936-4916-8018-c30c3345531d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="css">
+      <UniqueIdentifier>{6b39f0e5-ea32-45ed-acb4-8e23d3069de0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="url">
+      <UniqueIdentifier>{4b54de0c-fe74-43b3-820a-58362d32bd47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="css\parser">
+      <UniqueIdentifier>{9f763acb-7687-4178-8f71-f0e718c7866b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Canvas\CanvasPathMethods.cpp">
@@ -411,6 +420,63 @@
     <ClCompile Include="platform\graphics\GraphicsTypes.cpp">
       <Filter>platform\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="css\BisonCSSParser.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSPropertyNames.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSParserMode.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\StylePropertySet.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSPrimitiveValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="url\KnownPorts.cpp">
+      <Filter>url</Filter>
+    </ClCompile>
+    <ClCompile Include="url\KURL.cpp">
+      <Filter>url</Filter>
+    </ClCompile>
+    <ClCompile Include="url\url_parse.cc">
+      <Filter>url</Filter>
+    </ClCompile>
+    <ClCompile Include="url\url_util.cc">
+      <Filter>url</Filter>
+    </ClCompile>
+    <ClCompile Include="url\url_canon_internal.cc">
+      <Filter>url</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSValueKeywords.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSArrayFunctionValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSValueList.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSParserValues.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSBasicShapes.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSValuePool.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSInheritedValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSInitialValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -718,6 +784,78 @@
     </ClInclude>
     <ClInclude Include="platform\graphics\graphicstypes.h">
       <Filter>platform\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="css\BisonCSSParser.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSPropertyNames.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\HashTools.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSParserMode.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\StylePropertySet.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSPrimitiveValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="url\KnownPorts.h">
+      <Filter>url</Filter>
+    </ClInclude>
+    <ClInclude Include="url\KURL.h">
+      <Filter>url</Filter>
+    </ClInclude>
+    <ClInclude Include="url\url_parse.h">
+      <Filter>url</Filter>
+    </ClInclude>
+    <ClInclude Include="url\url_util_internal.h">
+      <Filter>url</Filter>
+    </ClInclude>
+    <ClInclude Include="url\url_parse_internal.h">
+      <Filter>url</Filter>
+    </ClInclude>
+    <ClInclude Include="url\url_util.h">
+      <Filter>url</Filter>
+    </ClInclude>
+    <ClInclude Include="url\url_canon.h">
+      <Filter>url</Filter>
+    </ClInclude>
+    <ClInclude Include="url\url_canon_internal.h">
+      <Filter>url</Filter>
+    </ClInclude>
+    <ClInclude Include="url\url_file.h">
+      <Filter>url</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSValueKeywords.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSArrayFunctionValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSValueList.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSParserValues.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSBasicShapes.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSValuePool.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSInheritedValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSInitialValue.h">
+      <Filter>css</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -128,5 +128,8 @@
     <ClCompile Include="..\..\samplecode\BeginPath.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\samplecode\FillStyle.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
