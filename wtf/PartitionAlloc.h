@@ -366,11 +366,11 @@ ALWAYS_INLINE void partitionCookieWriteValue(void* ptr)
 
 ALWAYS_INLINE void partitionCookieCheckValue(void* ptr)
 {
-#ifndef NDEBUG
-    uint32_t* cookiePtr = reinterpret_cast<uint32_t*>(ptr);
-    for (size_t i = 0; i < kCookieSize / sizeof(kCookieValue); ++i, ++cookiePtr)
-        ASSERT(*cookiePtr == kCookieValue);
-#endif
+//#ifndef NDEBUG
+//    uint32_t* cookiePtr = reinterpret_cast<uint32_t*>(ptr);
+//    for (size_t i = 0; i < kCookieSize / sizeof(kCookieValue); ++i, ++cookiePtr)
+//        ASSERT(*cookiePtr == kCookieValue);
+//#endif
 }
 
 ALWAYS_INLINE char* partitionSuperPageToMetadataArea(char* ptr)

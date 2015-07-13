@@ -280,7 +280,9 @@ void CanvasRenderingContext2D::setStrokeStyle(PassRefPtr<CanvasStyle> prpStyle)
     }
 
     realizeSaves();
-    modifiableState().m_strokeStyle = style.release();
+	//State &tmp = modifiableState();
+	//tmp.m_strokeStyle = style;
+    modifiableState().m_strokeStyle = style;
     state().m_strokeStyle->applyStrokeColor( this );
     modifiableState().m_unparsedStrokeColor = String();
 	return;

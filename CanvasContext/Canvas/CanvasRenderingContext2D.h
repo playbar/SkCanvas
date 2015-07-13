@@ -271,7 +271,7 @@ private:
 
     CanvasRenderingContext2D(SkCanvas*, const Canvas2DContextAttributes* attrs, bool usesCSSCompatibilityParseMode);
 
-    State& modifiableState() { ASSERT(!state().m_unrealizedSaveCount); return m_stateStack.last(); }
+    State& modifiableState() { return m_stateStack.last(); }
     const State& state() const { return m_stateStack.last(); }
 
     void applyLineDash();

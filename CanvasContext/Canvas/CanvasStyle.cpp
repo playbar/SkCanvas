@@ -44,7 +44,7 @@ enum ColorParseResult { ParsedRGBA, ParsedCurrentColor, ParsedSystemColor, Parse
 
 static ColorParseResult parseColor(RGBA32& parsedColor, const String& colorString)
 {
-    if (equalIgnoringCase(colorString, "currentcolor"))
+	if (equalIgnoringCase(colorString, "currentcolor"))
         return ParsedCurrentColor;
 	ASSERT(false);
     //if (BisonCSSParser::parseColor(parsedColor, colorString))

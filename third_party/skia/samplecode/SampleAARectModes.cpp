@@ -111,61 +111,34 @@ protected:
 
     virtual void onDrawContent(SkCanvas* canvas)
 	{
-        const SkRect bounds = SkRect::MakeWH(W, H);
-        static const SkAlpha gAlphaValue[] = { 0xFF, 0x88, 0x88 };
-
-        canvas->translate(SkIntToScalar(4), SkIntToScalar(4));
-
-        for (int alpha = 0; alpha < 4; ++alpha) {
-            canvas->save();
-            canvas->save();
-            for (size_t i = 0; i < SK_ARRAY_COUNT(gModes); ++i) {
-                if (6 == i) {
-                    canvas->restore();
-                    canvas->translate(W * 5, 0);
-                    canvas->save();
-                }
-                SkXfermode* mode = SkXfermode::Create(gModes[i].fMode);
-
-			
-                canvas->drawRect(bounds, fBGPaint);
-                canvas->saveLayer(&bounds, NULL);
-                float dy = drawCell(canvas, mode, gAlphaValue[alpha & 1], gAlphaValue[alpha & 2]);
-			
-				SkPaint paint;
-				paint.setColor(0xFFff0000);
-				SkRect rect = SkRect::MakeXYWH(W / 4, H / 4, W / 2, H / 2);
-				canvas->drawRect(rect, paint);
-                canvas->restore();
-
-                canvas->translate(0, dy * 5 / 4);
-                SkSafeUnref(mode);
-            }
-            canvas->restore();
-            canvas->restore();
-            canvas->translate(W * 5 / 4, 0);
-			
-        }
-
-		SkPaint paint;
-		paint.setColor(0xFF0000ff);
-		paint.setStyle(SkPaint::kFill_Style);
-		canvas->translate(0, 0);
-		SkPath path;
-		path.moveTo(10, 10);
-		path.lineTo(300, 300);
-		path.lineTo(100, 10);
-		canvas->drawPath(path, paint);
-		//canvas->drawLine(0, 0, 100, 200, paint);
+		//SkPaint paint;
+		//paint.setColor(0xFF0000ff);
+		//paint.setStyle(SkPaint::kFill_Style);
+		//canvas->translate(0, 0);
+		//SkPath path;
+		//path.moveTo(10, 10);
+		//path.lineTo(300, 300);
+		//path.lineTo(100, 10);
+		//canvas->drawPath(path, paint);
+		////canvas->drawLine(0, 0, 100, 200, paint);
 
 		
 	
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
-		Color color(255, 102, 234);
-		ctx->setStrokeColor(1.0f, 1.0f, 0.0, 1.0f);
+		//Color color(255, 102, 234);
+		ctx->setStrokeColor(1.0f, 0.0f, 0.0, 1.0f);
+		//ctx->setStrokeColor("#00ff0f");
+		ctx->beginPath();
+		ctx->setLineWidth(4);
+		//ctx->moveTo(10, 10);
+		//ctx->lineTo(100, 100);
+		//ctx->lineTo(200, 100);
+		//ctx->arc(70, 18, 15, 0, 3.14 * 2, true);
 		ctx->moveTo(10, 10);
-		ctx->lineTo(100, 100);
+		ctx->quadraticCurveTo(100, 10, 100, 100);
+		//ctx->closePath();
 		ctx->stroke();
+
     }
 
 private:
