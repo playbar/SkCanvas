@@ -56,7 +56,7 @@
 //#include "css/CSSShadowValue.h"
 //#include "css/CSSStyleSheet.h"
 //#include "css/CSSTimingFunctionValue.h"
-//#include "css/CSSTransformValue.h"
+#include "css/CSSTransformValue.h"
 //#include "css/CSSUnicodeRangeValue.h"
 #include "css/CSSValueList.h"
 #include "css/CSSValuePool.h"
@@ -70,7 +70,7 @@
 //#include "css/StyleRule.h"
 //#include "css/StyleRuleImport.h"
 //#include "css/StyleSheetContents.h"
-//#include "css/parser/CSSParserIdioms.h"
+#include "css/CSSParserIdioms.h"
 #include "platform/FloatConversion.h"
 #include "wtf/BitArray.h"
 #include "wtf/HexNumber.h"
@@ -108,7 +108,7 @@ BisonCSSParser::BisonCSSParser(const CSSParserContext& context)
     , m_logErrors(false)
     , m_ignoreErrors(false)
     , m_defaultNamespace(starAtom)
-    , m_observer(0)
+    //, m_observer(0)
     , m_source(0)
     , m_ruleHeaderType(CSSRuleSourceData::UNKNOWN_RULE)
     , m_allowImportRules(true)
@@ -137,37 +137,37 @@ void BisonCSSParser::setupParser(const char* prefix, unsigned prefixLength, cons
     m_tokenizer.setupTokenizer(prefix, prefixLength, string, suffix, suffixLength);
     m_ruleHasHeader = true;
 }
+//
+//void BisonCSSParser::parseSheet(StyleSheetContents* sheet, const String& string, const TextPosition& startPosition, CSSParserObserver* observer, bool logErrors)
+//{
+//    setStyleSheet(sheet);
+//    m_defaultNamespace = starAtom; // Reset the default namespace.
+//    TemporaryChange<CSSParserObserver*> scopedObsever(m_observer, observer);
+//    m_logErrors = logErrors && sheet->singleOwnerDocument() && !sheet->baseURL().isEmpty() && sheet->singleOwnerDocument()->frameHost();
+//    m_ignoreErrors = false;
+//    m_tokenizer.m_lineNumber = 0;
+//    m_startPosition = startPosition;
+//    m_source = &string;
+//    m_tokenizer.m_internal = false;
+//    setupParser("", string, "");
+//    cssyyparse(this);
+//    sheet->shrinkToFit();
+//    m_source = 0;
+//    m_rule = nullptr;
+//    m_lineEndings.clear();
+//    m_ignoreErrors = false;
+//    m_logErrors = false;
+//    m_tokenizer.m_internal = true;
+//}
 
-void BisonCSSParser::parseSheet(StyleSheetContents* sheet, const String& string, const TextPosition& startPosition, CSSParserObserver* observer, bool logErrors)
-{
-    setStyleSheet(sheet);
-    m_defaultNamespace = starAtom; // Reset the default namespace.
-    TemporaryChange<CSSParserObserver*> scopedObsever(m_observer, observer);
-    m_logErrors = logErrors && sheet->singleOwnerDocument() && !sheet->baseURL().isEmpty() && sheet->singleOwnerDocument()->frameHost();
-    m_ignoreErrors = false;
-    m_tokenizer.m_lineNumber = 0;
-    m_startPosition = startPosition;
-    m_source = &string;
-    m_tokenizer.m_internal = false;
-    setupParser("", string, "");
-    cssyyparse(this);
-    sheet->shrinkToFit();
-    m_source = 0;
-    m_rule = nullptr;
-    m_lineEndings.clear();
-    m_ignoreErrors = false;
-    m_logErrors = false;
-    m_tokenizer.m_internal = true;
-}
-
-PassRefPtrWillBeRawPtr<StyleRuleBase> BisonCSSParser::parseRule(StyleSheetContents* sheet, const String& string)
-{
-    setStyleSheet(sheet);
-    m_allowNamespaceDeclarations = false;
-    setupParser("@-internal-rule ", string, "");
-    cssyyparse(this);
-    return m_rule.release();
-}
+//PassRefPtr<StyleRuleBase> BisonCSSParser::parseRule(StyleSheetContents* sheet, const String& string)
+//{
+//    setStyleSheet(sheet);
+//    m_allowNamespaceDeclarations = false;
+//    setupParser("@-internal-rule ", string, "");
+//    cssyyparse(this);
+//    return m_rule.release();
+//}
 
 PassRefPtr<StyleKeyframe> BisonCSSParser::parseKeyframeRule(StyleSheetContents* sheet, const String& string)
 {
@@ -242,14 +242,14 @@ static bool parseColorValue(MutableStylePropertySet* declaration, CSSPropertyID 
     }
 
     if (validPrimitive) {
-        RefPtrWillBeRawPtr<CSSValue> value = cssValuePool().createIdentifierValue(valueID);
+        RefPtr<CSSValue> value = cssValuePool().createIdentifierValue(valueID);
         declaration->addParsedProperty(CSSProperty(propertyId, value.release(), important));
         return true;
     }
     RGBA32 color;
     if (!CSSPropertyParser::fastParseColor(color, string, !quirksMode && string[0] != '#'))
         return false;
-    RefPtrWillBeRawPtr<CSSValue> value = cssValuePool().createColorValue(color);
+    RefPtr<CSSValue> value = cssValuePool().createColorValue(color);
     declaration->addParsedProperty(CSSProperty(propertyId, value.release(), important));
     return true;
 }
@@ -348,7 +348,7 @@ static bool parseSimpleLengthValue(MutableStylePropertySet* declaration, CSSProp
     if (number < 0 && !acceptsNegativeNumbers)
         return false;
 
-    RefPtrWillBeRawPtr<CSSValue> value = cssValuePool().createValue(number, unit);
+    RefPtr<CSSValue> value = cssValuePool().createValue(number, unit);
     declaration->addParsedProperty(CSSProperty(propertyId, value.release(), important));
     return true;
 }
@@ -852,7 +852,7 @@ static bool parseKeywordValue(MutableStylePropertySet* declaration, CSSPropertyI
     if (!valueID)
         return false;
 
-    RefPtrWillBeRawPtr<CSSValue> value;
+    RefPtr<CSSValue> value;
     if (valueID == CSSValueInherit)
         value = cssValuePool().createInheritedValue();
     else if (valueID == CSSValueInitial)
@@ -888,7 +888,7 @@ static bool parseTransformTranslateArguments(CharType*& pos, CharType* end, unsi
 }
 
 template <typename CharType>
-static PassRefPtrWillBeRawPtr<CSSTransformValue> parseTranslateTransformValue(CharType*& pos, CharType* end)
+static PassRefPtr<CSSTransformValue> parseTranslateTransformValue(CharType*& pos, CharType* end)
 {
     static const int shortestValidTransformStringLength = 12;
 
@@ -928,20 +928,20 @@ static PassRefPtrWillBeRawPtr<CSSTransformValue> parseTranslateTransformValue(Ch
     }
     pos += argumentStart;
 
-    RefPtrWillBeRawPtr<CSSTransformValue> transformValue = CSSTransformValue::create(transformType);
+    RefPtr<CSSTransformValue> transformValue = CSSTransformValue::create(transformType);
     if (!parseTransformTranslateArguments(pos, end, expectedArgumentCount, transformValue.get()))
         return nullptr;
     return transformValue.release();
 }
 
 template <typename CharType>
-static PassRefPtrWillBeRawPtr<CSSValueList> parseTranslateTransformList(CharType*& pos, CharType* end)
+static PassRefPtr<CSSValueList> parseTranslateTransformList(CharType*& pos, CharType* end)
 {
-    RefPtrWillBeRawPtr<CSSValueList> transformList;
+    RefPtr<CSSValueList> transformList;
     while (pos < end) {
         while (pos < end && isCSSSpace(*pos))
             ++pos;
-        RefPtrWillBeRawPtr<CSSTransformValue> transformValue = parseTranslateTransformValue(pos, end);
+        RefPtr<CSSTransformValue> transformValue = parseTranslateTransformValue(pos, end);
         if (!transformValue)
             return nullptr;
         if (!transformList)
@@ -961,7 +961,7 @@ static bool parseTranslateTransform(MutableStylePropertySet* properties, CSSProp
         return false;
     if (string.isEmpty())
         return false;
-    RefPtrWillBeRawPtr<CSSValueList> transformList;
+    RefPtr<CSSValueList> transformList;
     if (string.is8Bit()) {
         const LChar* pos = string.characters8();
         const LChar* end = pos + string.length();
@@ -979,7 +979,7 @@ static bool parseTranslateTransform(MutableStylePropertySet* properties, CSSProp
     return true;
 }
 
-PassRefPtrWillBeRawPtr<CSSValueList> BisonCSSParser::parseFontFaceValue(const AtomicString& string)
+PassRefPtr<CSSValueList> BisonCSSParser::parseFontFaceValue(const AtomicString& string)
 {
     if (string.isEmpty())
         return nullptr;
@@ -987,14 +987,14 @@ PassRefPtrWillBeRawPtr<CSSValueList> BisonCSSParser::parseFontFaceValue(const At
     if (!parseValue(dummyStyle.get(), CSSPropertyFontFamily, string, false, HTMLQuirksMode, 0))
         return nullptr;
 
-    RefPtrWillBeRawPtr<CSSValue> fontFamily = dummyStyle->getPropertyCSSValue(CSSPropertyFontFamily);
+    RefPtr<CSSValue> fontFamily = dummyStyle->getPropertyCSSValue(CSSPropertyFontFamily);
     if (!fontFamily->isValueList())
         return nullptr;
 
     return toCSSValueList(dummyStyle->getPropertyCSSValue(CSSPropertyFontFamily).get());
 }
 
-PassRefPtrWillBeRawPtr<CSSValue> BisonCSSParser::parseAnimationTimingFunctionValue(const String& string)
+PassRefPtr<CSSValue> BisonCSSParser::parseAnimationTimingFunctionValue(const String& string)
 {
     if (string.isEmpty())
         return nullptr;
@@ -1007,19 +1007,22 @@ PassRefPtrWillBeRawPtr<CSSValue> BisonCSSParser::parseAnimationTimingFunctionVal
 
 bool BisonCSSParser::parseValue(MutableStylePropertySet* declaration, CSSPropertyID propertyID, const String& string, bool important, const Document& document)
 {
-    ASSERT(!string.isEmpty());
+	ASSERT(false);
+	return false;
+    //ASSERT(!string.isEmpty());
 
-    CSSParserContext context(document, UseCounter::getFrom(&document));
+    //CSSParserContext context(document, UseCounter::getFrom(&document));
 
-    if (parseSimpleLengthValue(declaration, propertyID, string, important, context.mode()))
-        return true;
-    if (parseColorValue(declaration, propertyID, string, important, context.mode()))
-        return true;
-    if (parseKeywordValue(declaration, propertyID, string, important, context))
-        return true;
+    //if (parseSimpleLengthValue(declaration, propertyID, string, important, context.mode()))
+    //    return true;
+    //if (parseColorValue(declaration, propertyID, string, important, context.mode()))
+    //    return true;
+    //if (parseKeywordValue(declaration, propertyID, string, important, context))
+    //    return true;
 
-    BisonCSSParser parser(context);
-    return parser.parseValue(declaration, propertyID, string, important, static_cast<StyleSheetContents*>(0));
+    //BisonCSSParser parser(context);
+    //return parser.parseValue(declaration, propertyID, string, important, static_cast<StyleSheetContents*>(0));
+
 }
 
 bool BisonCSSParser::parseValue(MutableStylePropertySet* declaration, CSSPropertyID propertyID, const String& string, bool important, CSSParserMode cssParserMode, StyleSheetContents* contextStyleSheet)
@@ -1031,10 +1034,11 @@ bool BisonCSSParser::parseValue(MutableStylePropertySet* declaration, CSSPropert
         return true;
 
     CSSParserContext context(cssParserMode, 0);
-    if (contextStyleSheet) {
-        context = contextStyleSheet->parserContext();
-        context.setMode(cssParserMode);
-    }
+	ASSERT(false);
+    //if (contextStyleSheet) {
+    //    context = contextStyleSheet->parserContext();
+    //    context.setMode(cssParserMode);
+    //}
 
     if (parseKeywordValue(declaration, propertyID, string, important, context))
         return true;
@@ -1049,8 +1053,9 @@ bool BisonCSSParser::parseValue(MutableStylePropertySet* declaration, CSSPropert
 {
     // FIXME: Check RuntimeCSSEnabled::isPropertyEnabled or isValueEnabledForProperty.
 
-    if (m_context.useCounter())
-        m_context.useCounter()->count(m_context, propertyID);
+	ASSERT(false);
+    //if (m_context.useCounter())
+    //    m_context.useCounter()->count(m_context, propertyID);
 
     setStyleSheet(contextStyleSheet);
 
@@ -1064,7 +1069,7 @@ bool BisonCSSParser::parseValue(MutableStylePropertySet* declaration, CSSPropert
         cssyyparse(this);
     }
 
-    m_rule = nullptr;
+    //m_rule = nullptr;
     m_id = CSSPropertyInvalid;
 
     bool ok = false;
@@ -1109,7 +1114,7 @@ bool BisonCSSParser::parseColor(const String& string)
 {
     setupParser("@-internal-decls color:", string, "");
     cssyyparse(this);
-    m_rule = nullptr;
+    //m_rule = nullptr;
 
     return !m_parsedProperties.isEmpty() && m_parsedProperties.first().id() == CSSPropertyColor;
 }
@@ -1122,8 +1127,9 @@ bool BisonCSSParser::parseSystemColor(RGBA32& color, const String& string)
     if (!CSSPropertyParser::isSystemColor(id))
         return false;
 
-    Color parsedColor = RenderTheme::theme().systemColor(id);
-    color = parsedColor.rgb();
+	ASSERT(false);
+    //Color parsedColor = RenderTheme::theme().systemColor(id);
+    //color = parsedColor.rgb();
     return true;
 }
 
@@ -1140,10 +1146,13 @@ void BisonCSSParser::parseSelector(const String& string, CSSSelectorList& select
 
 PassRefPtr<ImmutableStylePropertySet> BisonCSSParser::parseInlineStyleDeclaration(const String& string, Element* element)
 {
-    Document& document = element->document();
-    CSSParserContext context = CSSParserContext(document.elementSheet().contents()->parserContext(), UseCounter::getFrom(&document));
-    context.setMode((element->isHTMLElement() && !document.inQuirksMode()) ? HTMLStandardMode : HTMLQuirksMode);
-    return BisonCSSParser(context).parseDeclaration(string, document.elementSheet().contents());
+	ASSERT(false);
+	return nullptr;
+    //Document& document = element->document();
+    //CSSParserContext context = CSSParserContext(document.elementSheet().contents()->parserContext(), UseCounter::getFrom(&document));
+    //context.setMode((element->isHTMLElement() && !document.inQuirksMode()) ? HTMLStandardMode : HTMLQuirksMode);
+    //return BisonCSSParser(context).parseDeclaration(string, document.elementSheet().contents());
+
 }
 
 PassRefPtr<ImmutableStylePropertySet> BisonCSSParser::parseDeclaration(const String& string, StyleSheetContents* contextStyleSheet)
@@ -1152,7 +1161,7 @@ PassRefPtr<ImmutableStylePropertySet> BisonCSSParser::parseDeclaration(const Str
 
     setupParser("@-internal-decls ", string, "");
     cssyyparse(this);
-    m_rule = nullptr;
+    //m_rule = nullptr;
 
     if (m_hasFontFaceOnlyValues)
         deleteFontFaceOnlyValues();
@@ -1162,56 +1171,56 @@ PassRefPtr<ImmutableStylePropertySet> BisonCSSParser::parseDeclaration(const Str
     return style.release();
 }
 
+//
+//bool BisonCSSParser::parseDeclaration(MutableStylePropertySet* declaration, const String& string, CSSParserObserver* observer, StyleSheetContents* contextStyleSheet)
+//{
+//    setStyleSheet(contextStyleSheet);
+//
+//    TemporaryChange<CSSParserObserver*> scopedObsever(m_observer, observer);
+//
+//    setupParser("@-internal-decls ", string, "");
+//    if (m_observer) {
+//        m_observer->startRuleHeader(CSSRuleSourceData::STYLE_RULE, 0);
+//        m_observer->endRuleHeader(1);
+//        m_observer->startRuleBody(0);
+//    }
+//
+//    {
+//        StyleDeclarationScope scope(this, declaration);
+//        cssyyparse(this);
+//    }
+//
+//    m_rule = nullptr;
+//
+//    bool ok = false;
+//    if (m_hasFontFaceOnlyValues)
+//        deleteFontFaceOnlyValues();
+//    if (!m_parsedProperties.isEmpty()) {
+//        ok = true;
+//        declaration->addParsedProperties(m_parsedProperties);
+//        clearProperties();
+//    }
+//
+//    if (m_observer)
+//        m_observer->endRuleBody(string.length(), false);
+//
+//    return ok;
+//}
+//
+//PassRefPtr<MediaQuerySet> BisonCSSParser::parseMediaQueryList(const String& string)
+//{
+//    ASSERT(!m_mediaList);
+//
+//    // can't use { because tokenizer state switches from mediaquery to initial state when it sees { token.
+//    // instead insert one " " (which is caught by maybe_space in CSSGrammar.y)
+//    setupParser("@-internal-medialist ", string, "");
+//    cssyyparse(this);
+//
+//    ASSERT(m_mediaList);
+//    return m_mediaList.release();
+//}
 
-bool BisonCSSParser::parseDeclaration(MutableStylePropertySet* declaration, const String& string, CSSParserObserver* observer, StyleSheetContents* contextStyleSheet)
-{
-    setStyleSheet(contextStyleSheet);
-
-    TemporaryChange<CSSParserObserver*> scopedObsever(m_observer, observer);
-
-    setupParser("@-internal-decls ", string, "");
-    if (m_observer) {
-        m_observer->startRuleHeader(CSSRuleSourceData::STYLE_RULE, 0);
-        m_observer->endRuleHeader(1);
-        m_observer->startRuleBody(0);
-    }
-
-    {
-        StyleDeclarationScope scope(this, declaration);
-        cssyyparse(this);
-    }
-
-    m_rule = nullptr;
-
-    bool ok = false;
-    if (m_hasFontFaceOnlyValues)
-        deleteFontFaceOnlyValues();
-    if (!m_parsedProperties.isEmpty()) {
-        ok = true;
-        declaration->addParsedProperties(m_parsedProperties);
-        clearProperties();
-    }
-
-    if (m_observer)
-        m_observer->endRuleBody(string.length(), false);
-
-    return ok;
-}
-
-PassRefPtrWillBeRawPtr<MediaQuerySet> BisonCSSParser::parseMediaQueryList(const String& string)
-{
-    ASSERT(!m_mediaList);
-
-    // can't use { because tokenizer state switches from mediaquery to initial state when it sees { token.
-    // instead insert one " " (which is caught by maybe_space in CSSGrammar.y)
-    setupParser("@-internal-medialist ", string, "");
-    cssyyparse(this);
-
-    ASSERT(m_mediaList);
-    return m_mediaList.release();
-}
-
-static inline void filterProperties(bool important, const WillBeHeapVector<CSSProperty, 256>& input, WillBeHeapVector<CSSProperty, 256>& output, size_t& unusedEntries, BitArray<numCSSProperties>& seenProperties)
+static inline void filterProperties(bool important, const Vector<CSSProperty, 256>& input, Vector<CSSProperty, 256>& output, size_t& unusedEntries, BitArray<numCSSProperties>& seenProperties)
 {
     // Add properties in reverse order so that highest priority definitions are reached first. Duplicate definitions can then be ignored when found.
     for (int i = input.size() - 1; i >= 0; --i) {
@@ -1230,7 +1239,7 @@ PassRefPtr<ImmutableStylePropertySet> BisonCSSParser::createStylePropertySet()
 {
     BitArray<numCSSProperties> seenProperties;
     size_t unusedEntries = m_parsedProperties.size();
-    WillBeHeapVector<CSSProperty, 256> results(unusedEntries);
+    Vector<CSSProperty, 256> results(unusedEntries);
 
     // Important properties have higher priority, so add them first. Duplicate definitions can then be ignored when found.
     filterProperties(true, m_parsedProperties, results, unusedEntries, seenProperties);
@@ -1461,14 +1470,14 @@ private:
     CSSPropertyParser::Units m_unit;
 };
 
-PassRefPtrWillBeRawPtr<CSSValueList> CSSPropertyParser::parseTransform()
+PassRefPtr<CSSValueList> CSSPropertyParser::parseTransform()
 {
     if (!m_valueList)
         return nullptr;
 
-    RefPtrWillBeRawPtr<CSSValueList> list = CSSValueList::createSpaceSeparated();
+    RefPtr<CSSValueList> list = CSSValueList::createSpaceSeparated();
     for (CSSParserValue* value = m_valueList->current(); value; value = m_valueList->next()) {
-        RefPtrWillBeRawPtr<CSSValue> parsedTransformValue = parseTransformValue(value);
+        RefPtr<CSSValue> parsedTransformValue = parseTransformValue(value);
         if (!parsedTransformValue)
             return nullptr;
 
@@ -1478,7 +1487,7 @@ PassRefPtrWillBeRawPtr<CSSValueList> CSSPropertyParser::parseTransform()
     return list.release();
 }
 
-PassRefPtrWillBeRawPtr<CSSValue> CSSPropertyParser::parseTransformValue(CSSParserValue *value)
+PassRefPtr<CSSValue> CSSPropertyParser::parseTransformValue(CSSParserValue *value)
 {
     if (value->unit != CSSParserValue::Function || !value->function)
         return nullptr;
@@ -1500,7 +1509,7 @@ PassRefPtrWillBeRawPtr<CSSValue> CSSPropertyParser::parseTransformValue(CSSParse
     // We collect a list of CSSTransformValues, where each value specifies a single operation.
 
     // Create the new CSSTransformValue for this operation and add it to our list.
-    RefPtrWillBeRawPtr<CSSTransformValue> transformValue = CSSTransformValue::create(info.type());
+    RefPtr<CSSTransformValue> transformValue = CSSTransformValue::create(info.type());
 
     // Snag our values.
     CSSParserValue* a = args->current();
@@ -1643,51 +1652,51 @@ CSSParserValue& BisonCSSParser::sinkFloatingValue(CSSParserValue& value)
     return value;
 }
 
-MediaQueryExp* BisonCSSParser::createFloatingMediaQueryExp(const AtomicString& mediaFeature, CSSParserValueList* values)
-{
-    m_floatingMediaQueryExp = MediaQueryExp::create(mediaFeature, values);
-    return m_floatingMediaQueryExp.get();
-}
+//MediaQueryExp* BisonCSSParser::createFloatingMediaQueryExp(const AtomicString& mediaFeature, CSSParserValueList* values)
+//{
+//    m_floatingMediaQueryExp = MediaQueryExp::create(mediaFeature, values);
+//    return m_floatingMediaQueryExp.get();
+//}
 
-PassOwnPtrWillBeRawPtr<MediaQueryExp> BisonCSSParser::sinkFloatingMediaQueryExp(MediaQueryExp* expression)
-{
-    ASSERT_UNUSED(expression, expression == m_floatingMediaQueryExp);
-    return m_floatingMediaQueryExp.release();
-}
-
-WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> >* BisonCSSParser::createFloatingMediaQueryExpList()
-{
-    m_floatingMediaQueryExpList = adoptPtrWillBeNoop(new WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> >);
-    return m_floatingMediaQueryExpList.get();
-}
-
-PassOwnPtrWillBeRawPtr<WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> > > BisonCSSParser::sinkFloatingMediaQueryExpList(WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> >* list)
-{
-    ASSERT_UNUSED(list, list == m_floatingMediaQueryExpList);
-    return m_floatingMediaQueryExpList.release();
-}
-
-MediaQuery* BisonCSSParser::createFloatingMediaQuery(MediaQuery::Restrictor restrictor, const AtomicString& mediaType, PassOwnPtrWillBeRawPtr<WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> > > expressions)
-{
-    m_floatingMediaQuery = adoptPtrWillBeNoop(new MediaQuery(restrictor, mediaType, expressions));
-    return m_floatingMediaQuery.get();
-}
-
-MediaQuery* BisonCSSParser::createFloatingMediaQuery(PassOwnPtrWillBeRawPtr<WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> > > expressions)
-{
-    return createFloatingMediaQuery(MediaQuery::None, AtomicString("all", AtomicString::ConstructFromLiteral), expressions);
-}
-
-MediaQuery* BisonCSSParser::createFloatingNotAllQuery()
-{
-    return createFloatingMediaQuery(MediaQuery::Not, AtomicString("all", AtomicString::ConstructFromLiteral), sinkFloatingMediaQueryExpList(createFloatingMediaQueryExpList()));
-}
-
-PassOwnPtrWillBeRawPtr<MediaQuery> BisonCSSParser::sinkFloatingMediaQuery(MediaQuery* query)
-{
-    ASSERT_UNUSED(query, query == m_floatingMediaQuery);
-    return m_floatingMediaQuery.release();
-}
+//PassOwnPtr<MediaQueryExp> BisonCSSParser::sinkFloatingMediaQueryExp(MediaQueryExp* expression)
+//{
+//    ASSERT_UNUSED(expression, expression == m_floatingMediaQueryExp);
+//    return m_floatingMediaQueryExp.release();
+//}
+//
+//WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> >* BisonCSSParser::createFloatingMediaQueryExpList()
+//{
+//    m_floatingMediaQueryExpList = adoptPtrWillBeNoop(new WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> >);
+//    return m_floatingMediaQueryExpList.get();
+//}
+//
+//PassOwnPtr<WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> > > BisonCSSParser::sinkFloatingMediaQueryExpList(WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> >* list)
+//{
+//    ASSERT_UNUSED(list, list == m_floatingMediaQueryExpList);
+//    return m_floatingMediaQueryExpList.release();
+//}
+//
+//MediaQuery* BisonCSSParser::createFloatingMediaQuery(MediaQuery::Restrictor restrictor, const AtomicString& mediaType, PassOwnPtr<WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> > > expressions)
+//{
+//    m_floatingMediaQuery = adoptPtrWillBeNoop(new MediaQuery(restrictor, mediaType, expressions));
+//    return m_floatingMediaQuery.get();
+//}
+//
+//MediaQuery* BisonCSSParser::createFloatingMediaQuery(PassOwnPtr<WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> > > expressions)
+//{
+//    return createFloatingMediaQuery(MediaQuery::None, AtomicString("all", AtomicString::ConstructFromLiteral), expressions);
+//}
+//
+//MediaQuery* BisonCSSParser::createFloatingNotAllQuery()
+//{
+//    return createFloatingMediaQuery(MediaQuery::Not, AtomicString("all", AtomicString::ConstructFromLiteral), sinkFloatingMediaQueryExpList(createFloatingMediaQueryExpList()));
+//}
+//
+//PassOwnPtr<MediaQuery> BisonCSSParser::sinkFloatingMediaQuery(MediaQuery* query)
+//{
+//    ASSERT_UNUSED(query, query == m_floatingMediaQuery);
+//    return m_floatingMediaQuery.release();
+//}
 
 Vector<RefPtr<StyleKeyframe> >* BisonCSSParser::createFloatingKeyframeVector()
 {
@@ -1701,66 +1710,69 @@ PassOwnPtr<Vector<RefPtr<StyleKeyframe> > > BisonCSSParser::sinkFloatingKeyframe
     return m_floatingKeyframeVector.release();
 }
 
-MediaQuerySet* BisonCSSParser::createMediaQuerySet()
-{
-    RefPtrWillBeRawPtr<MediaQuerySet> queries = MediaQuerySet::create();
-    MediaQuerySet* result = queries.get();
-    m_parsedMediaQuerySets.append(queries.release());
-    return result;
-}
+//MediaQuerySet* BisonCSSParser::createMediaQuerySet()
+//{
+//    RefPtr<MediaQuerySet> queries = MediaQuerySet::create();
+//    MediaQuerySet* result = queries.get();
+//    m_parsedMediaQuerySets.append(queries.release());
+//    return result;
+//}
 
-StyleRuleBase* BisonCSSParser::createImportRule(const CSSParserString& url, MediaQuerySet* media)
-{
-    if (!media || !m_allowImportRules)
-        return 0;
-    RefPtrWillBeRawPtr<StyleRuleImport> rule = StyleRuleImport::create(url, media);
-    StyleRuleImport* result = rule.get();
-    m_parsedRules.append(rule.release());
-    return result;
-}
+//StyleRuleBase* BisonCSSParser::createImportRule(const CSSParserString& url, MediaQuerySet* media)
+//{
+//    if (!media || !m_allowImportRules)
+//        return 0;
+//    RefPtr<StyleRuleImport> rule = StyleRuleImport::create(url, media);
+//    StyleRuleImport* result = rule.get();
+//    m_parsedRules.append(rule.release());
+//    return result;
+//}
+//
+//StyleRuleBase* BisonCSSParser::createMediaRule(MediaQuerySet* media, RuleList* rules)
+//{
+//    m_allowImportRules = m_allowNamespaceDeclarations = false;
+//    RefPtr<StyleRuleMedia> rule;
+//    if (rules) {
+//        rule = StyleRuleMedia::create(media ? media : MediaQuerySet::create().get(), *rules);
+//    } else {
+//        RuleList emptyRules;
+//        rule = StyleRuleMedia::create(media ? media : MediaQuerySet::create().get(), emptyRules);
+//    }
+//    StyleRuleMedia* result = rule.get();
+//    m_parsedRules.append(rule.release());
+//    return result;
+//}
 
-StyleRuleBase* BisonCSSParser::createMediaRule(MediaQuerySet* media, RuleList* rules)
-{
-    m_allowImportRules = m_allowNamespaceDeclarations = false;
-    RefPtrWillBeRawPtr<StyleRuleMedia> rule;
-    if (rules) {
-        rule = StyleRuleMedia::create(media ? media : MediaQuerySet::create().get(), *rules);
-    } else {
-        RuleList emptyRules;
-        rule = StyleRuleMedia::create(media ? media : MediaQuerySet::create().get(), emptyRules);
-    }
-    StyleRuleMedia* result = rule.get();
-    m_parsedRules.append(rule.release());
-    return result;
-}
-
-StyleRuleBase* BisonCSSParser::createSupportsRule(bool conditionIsSupported, RuleList* rules)
-{
-    m_allowImportRules = m_allowNamespaceDeclarations = false;
-
-    RefPtr<CSSRuleSourceData> data = popSupportsRuleData();
-    RefPtrWillBeRawPtr<StyleRuleSupports> rule;
-    String conditionText;
-    unsigned conditionOffset = data->ruleHeaderRange.start + 9;
-    unsigned conditionLength = data->ruleHeaderRange.length() - 9;
-
-    if (m_tokenizer.is8BitSource())
-        conditionText = String(m_tokenizer.m_dataStart8.get() + conditionOffset, conditionLength).stripWhiteSpace();
-    else
-        conditionText = String(m_tokenizer.m_dataStart16.get() + conditionOffset, conditionLength).stripWhiteSpace();
-
-    if (rules) {
-        rule = StyleRuleSupports::create(conditionText, conditionIsSupported, *rules);
-    } else {
-        RuleList emptyRules;
-        rule = StyleRuleSupports::create(conditionText, conditionIsSupported, emptyRules);
-    }
-
-    StyleRuleSupports* result = rule.get();
-    m_parsedRules.append(rule.release());
-
-    return result;
-}
+//
+//StyleRuleBase* BisonCSSParser::createSupportsRule(bool conditionIsSupported, RuleList* rules)
+//{
+//	ASSERT(false);
+//	return NULL;
+//    //m_allowImportRules = m_allowNamespaceDeclarations = false;
+//
+//    //RefPtr<CSSRuleSourceData> data = popSupportsRuleData();
+//    //RefPtr<StyleRuleSupports> rule;
+//    //String conditionText;
+//    //unsigned conditionOffset = data->ruleHeaderRange.start + 9;
+//    //unsigned conditionLength = data->ruleHeaderRange.length() - 9;
+//
+//    //if (m_tokenizer.is8BitSource())
+//    //    conditionText = String(m_tokenizer.m_dataStart8.get() + conditionOffset, conditionLength).stripWhiteSpace();
+//    //else
+//    //    conditionText = String(m_tokenizer.m_dataStart16.get() + conditionOffset, conditionLength).stripWhiteSpace();
+//
+//    //if (rules) {
+//    //    rule = StyleRuleSupports::create(conditionText, conditionIsSupported, *rules);
+//    //} else {
+//    //    RuleList emptyRules;
+//    //    rule = StyleRuleSupports::create(conditionText, conditionIsSupported, emptyRules);
+//    //}
+//
+//    //StyleRuleSupports* result = rule.get();
+//    //m_parsedRules.append(rule.release());
+//
+//    //return result;
+//}
 
 void BisonCSSParser::markSupportsRuleHeaderStart()
 {
@@ -1790,24 +1802,25 @@ PassRefPtr<CSSRuleSourceData> BisonCSSParser::popSupportsRuleData()
     return data.release();
 }
 
-BisonCSSParser::RuleList* BisonCSSParser::createRuleList()
-{
-    OwnPtrWillBeRawPtr<RuleList> list = adoptPtrWillBeNoop(new RuleList);
-    RuleList* listPtr = list.get();
-
-    m_parsedRuleLists.append(list.release());
-    return listPtr;
-}
-
-BisonCSSParser::RuleList* BisonCSSParser::appendRule(RuleList* ruleList, StyleRuleBase* rule)
-{
-    if (rule) {
-        if (!ruleList)
-            ruleList = createRuleList();
-        ruleList->append(rule);
-    }
-    return ruleList;
-}
+//
+//BisonCSSParser::RuleList* BisonCSSParser::createRuleList()
+//{
+//    OwnPtr<RuleList> list = adoptPtr(new RuleList);
+//    RuleList* listPtr = list.get();
+//
+//    m_parsedRuleLists.append(list.release());
+//    return listPtr;
+//}
+//
+//BisonCSSParser::RuleList* BisonCSSParser::appendRule(RuleList* ruleList, StyleRuleBase* rule)
+//{
+//    if (rule) {
+//        if (!ruleList)
+//            ruleList = createRuleList();
+//        ruleList->append(rule);
+//    }
+//    return ruleList;
+//}
 
 template <typename CharacterType>
 ALWAYS_INLINE static void makeLower(const CharacterType* input, CharacterType* output, unsigned length)
@@ -1852,110 +1865,117 @@ void BisonCSSParser::endInvalidRuleHeader()
     else
         location.token.init(m_tokenizer.m_dataStart16.get() + m_ruleHeaderStartOffset, 0);
 
-    reportError(location, m_ruleHeaderType == CSSRuleSourceData::STYLE_RULE ? InvalidSelectorCSSError : InvalidRuleCSSError);
+    //reportError(location, m_ruleHeaderType == CSSRuleSourceData::STYLE_RULE ? InvalidSelectorCSSError : InvalidRuleCSSError);
 
     endRuleHeader();
 }
 
-void BisonCSSParser::reportError(const CSSParserLocation&, CSSParserError)
-{
-    // FIXME: error reporting temporatily disabled.
-}
+//void BisonCSSParser::reportError(const CSSParserLocation&, CSSParserError)
+//{
+//    // FIXME: error reporting temporatily disabled.
+//}
 
 bool BisonCSSParser::isLoggingErrors()
 {
     return m_logErrors && !m_ignoreErrors;
 }
 
-void BisonCSSParser::logError(const String& message, const CSSParserLocation& location)
-{
-    unsigned lineNumberInStyleSheet;
-    unsigned columnNumber = 0;
-    if (InspectorInstrumentation::hasFrontends()) {
-        ensureLineEndings();
-        TextPosition tokenPosition = TextPosition::fromOffsetAndLineEndings(location.offset, *m_lineEndings);
-        lineNumberInStyleSheet = tokenPosition.m_line.zeroBasedInt();
-        columnNumber = (lineNumberInStyleSheet ? 0 : m_startPosition.m_column.zeroBasedInt()) + tokenPosition.m_column.zeroBasedInt();
-    } else {
-        lineNumberInStyleSheet = location.lineNumber;
-    }
-    PageConsole& console = m_styleSheet->singleOwnerDocument()->frameHost()->console();
-    console.addMessage(CSSMessageSource, WarningMessageLevel, message, m_styleSheet->baseURL().string(), lineNumberInStyleSheet + m_startPosition.m_line.zeroBasedInt() + 1, columnNumber + 1);
-}
+//void BisonCSSParser::logError(const String& message, const CSSParserLocation& location)
+//{
+//    unsigned lineNumberInStyleSheet;
+//    unsigned columnNumber = 0;
+//    if (InspectorInstrumentation::hasFrontends()) {
+//        ensureLineEndings();
+//        TextPosition tokenPosition = TextPosition::fromOffsetAndLineEndings(location.offset, *m_lineEndings);
+//        lineNumberInStyleSheet = tokenPosition.m_line.zeroBasedInt();
+//        columnNumber = (lineNumberInStyleSheet ? 0 : m_startPosition.m_column.zeroBasedInt()) + tokenPosition.m_column.zeroBasedInt();
+//    } else {
+//        lineNumberInStyleSheet = location.lineNumber;
+//    }
+//    PageConsole& console = m_styleSheet->singleOwnerDocument()->frameHost()->console();
+//    console.addMessage(CSSMessageSource, WarningMessageLevel, message, m_styleSheet->baseURL().string(), lineNumberInStyleSheet + m_startPosition.m_line.zeroBasedInt() + 1, columnNumber + 1);
+//}
 
 StyleRuleKeyframes* BisonCSSParser::createKeyframesRule(const String& name, PassOwnPtr<Vector<RefPtr<StyleKeyframe> > > popKeyframes, bool isPrefixed)
 {
     OwnPtr<Vector<RefPtr<StyleKeyframe> > > keyframes = popKeyframes;
     m_allowImportRules = m_allowNamespaceDeclarations = false;
-    RefPtrWillBeRawPtr<StyleRuleKeyframes> rule = StyleRuleKeyframes::create();
+    RefPtr<StyleRuleKeyframes> rule = StyleRuleKeyframes::create();
     for (size_t i = 0; i < keyframes->size(); ++i)
         rule->parserAppendKeyframe(keyframes->at(i));
     rule->setName(name);
     rule->setVendorPrefixed(isPrefixed);
     StyleRuleKeyframes* rulePtr = rule.get();
-    m_parsedRules.append(rule.release());
+	ASSERT(false);
+    //m_parsedRules.append(rule.release());
     return rulePtr;
 }
-
-StyleRuleBase* BisonCSSParser::createStyleRule(Vector<OwnPtr<CSSParserSelector> >* selectors)
-{
-    StyleRule* result = 0;
-	ASSERT(false);
-    //if (selectors) {
-    //    m_allowImportRules = m_allowNamespaceDeclarations = false;
-    //    RefPtrWillBeRawPtr<StyleRule> rule = StyleRule::create();
-    //    rule->parserAdoptSelectorVector(*selectors);
-    //    if (m_hasFontFaceOnlyValues)
-    //        deleteFontFaceOnlyValues();
-    //    rule->setProperties(createStylePropertySet());
-    //    result = rule.get();
-    //    m_parsedRules.append(rule.release());
-    //}
-    //clearProperties();
-    return result;
-}
-
-StyleRuleBase* BisonCSSParser::createFontFaceRule()
-{
-    m_allowImportRules = m_allowNamespaceDeclarations = false;
-    for (unsigned i = 0; i < m_parsedProperties.size(); ++i) {
-        CSSProperty& property = m_parsedProperties[i];
-        if (property.id() == CSSPropertyFontVariant && property.value()->isPrimitiveValue())
-            property.wrapValueInCommaSeparatedList();
-        else if (property.id() == CSSPropertyFontFamily && (!property.value()->isValueList() || toCSSValueList(property.value())->length() != 1)) {
-            // Unlike font-family property, font-family descriptor in @font-face rule
-            // has to be a value list with exactly one family name. It cannot have a
-            // have 'initial' value and cannot 'inherit' from parent.
-            // See http://dev.w3.org/csswg/css3-fonts/#font-family-desc
-            clearProperties();
-            return 0;
-        }
-    }
-    RefPtrWillBeRawPtr<StyleRuleFontFace> rule = StyleRuleFontFace::create();
-    rule->setProperties(createStylePropertySet());
-    clearProperties();
-    StyleRuleFontFace* result = rule.get();
-    m_parsedRules.append(rule.release());
-    if (m_styleSheet)
-        m_styleSheet->setHasFontFaceRule(true);
-    return result;
-}
+//
+//StyleRuleBase* BisonCSSParser::createStyleRule(Vector<OwnPtr<CSSParserSelector> >* selectors)
+//{
+//    //StyleRule* result = 0;
+//	ASSERT(false);
+//	return nullptr;
+//    //if (selectors) {
+//    //    m_allowImportRules = m_allowNamespaceDeclarations = false;
+//    //    RefPtr<StyleRule> rule = StyleRule::create();
+//    //    rule->parserAdoptSelectorVector(*selectors);
+//    //    if (m_hasFontFaceOnlyValues)
+//    //        deleteFontFaceOnlyValues();
+//    //    rule->setProperties(createStylePropertySet());
+//    //    result = rule.get();
+//    //    m_parsedRules.append(rule.release());
+//    //}
+//    //clearProperties();
+//    //return result;
+//}
+//
+//StyleRuleBase* BisonCSSParser::createFontFaceRule()
+//{
+//	ASSERT(false);
+//	return nullptr;
+//    //m_allowImportRules = m_allowNamespaceDeclarations = false;
+//    //for (unsigned i = 0; i < m_parsedProperties.size(); ++i) {
+//    //    CSSProperty& property = m_parsedProperties[i];
+//    //    if (property.id() == CSSPropertyFontVariant && property.value()->isPrimitiveValue())
+//    //        property.wrapValueInCommaSeparatedList();
+//    //    else if (property.id() == CSSPropertyFontFamily && (!property.value()->isValueList() || toCSSValueList(property.value())->length() != 1)) {
+//    //        // Unlike font-family property, font-family descriptor in @font-face rule
+//    //        // has to be a value list with exactly one family name. It cannot have a
+//    //        // have 'initial' value and cannot 'inherit' from parent.
+//    //        // See http://dev.w3.org/csswg/css3-fonts/#font-family-desc
+//    //        clearProperties();
+//    //        return 0;
+//    //    }
+//    //}
+//    //RefPtr<StyleRuleFontFace> rule = StyleRuleFontFace::create();
+//    //rule->setProperties(createStylePropertySet());
+//    //clearProperties();
+//    //StyleRuleFontFace* result = rule.get();
+//    //m_parsedRules.append(rule.release());
+//    //if (m_styleSheet)
+//    //    m_styleSheet->setHasFontFaceRule(true);
+//    //return result;
+//
+//}
 
 void BisonCSSParser::addNamespace(const AtomicString& prefix, const AtomicString& uri)
 {
     if (!m_styleSheet || !m_allowNamespaceDeclarations)
         return;
-    m_allowImportRules = false;
-    m_styleSheet->parserAddNamespace(prefix, uri);
-    if (prefix.isEmpty() && !uri.isNull())
-        m_defaultNamespace = uri;
+	ASSERT(false);
+    //m_allowImportRules = false;
+    //m_styleSheet->parserAddNamespace(prefix, uri);
+    //if (prefix.isEmpty() && !uri.isNull())
+    //    m_defaultNamespace = uri;
 }
 
 QualifiedName BisonCSSParser::determineNameInNamespace(const AtomicString& prefix, const AtomicString& localName)
 {
-    if (!m_styleSheet)
+	ASSERT(false);
+    //if (!m_styleSheet)
         return QualifiedName(prefix, localName, m_defaultNamespace);
-    return QualifiedName(prefix, localName, m_styleSheet->determineNamespace(prefix));
+    //return QualifiedName(prefix, localName, m_styleSheet->determineNamespace(prefix));
 }
 
 CSSParserSelector* BisonCSSParser::rewriteSpecifiersWithNamespaceIfNeeded(CSSParserSelector* specifiers)
@@ -1971,28 +1991,31 @@ CSSParserSelector* BisonCSSParser::rewriteSpecifiersWithNamespaceIfNeeded(CSSPar
 
 CSSParserSelector* BisonCSSParser::rewriteSpecifiersWithElementName(const AtomicString& namespacePrefix, const AtomicString& elementName, CSSParserSelector* specifiers, bool tagIsForNamespaceRule)
 {
-    AtomicString determinedNamespace = namespacePrefix != nullAtom && m_styleSheet ? m_styleSheet->determineNamespace(namespacePrefix) : m_defaultNamespace;
-    QualifiedName tag(namespacePrefix, elementName, determinedNamespace);
+	ASSERT(false);
+	return nullptr;
+    //AtomicString determinedNamespace = namespacePrefix != nullAtom && m_styleSheet ? m_styleSheet->determineNamespace(namespacePrefix) : m_defaultNamespace;
+    //QualifiedName tag(namespacePrefix, elementName, determinedNamespace);
 
-    if (CSSParserSelector* distributedPseudoElementSelector = specifiers->findDistributedPseudoElementSelector()) {
-        specifiers->prependTagSelector(tag, tagIsForNamespaceRule);
-        return rewriteSpecifiersForShadowDistributed(specifiers, distributedPseudoElementSelector);
-    }
+    //if (CSSParserSelector* distributedPseudoElementSelector = specifiers->findDistributedPseudoElementSelector()) {
+    //    specifiers->prependTagSelector(tag, tagIsForNamespaceRule);
+    //    return rewriteSpecifiersForShadowDistributed(specifiers, distributedPseudoElementSelector);
+    //}
 
-    if (specifiers->needsCrossingTreeScopeBoundary())
-        return rewriteSpecifiersWithElementNameForCustomPseudoElement(tag, elementName, specifiers, tagIsForNamespaceRule);
+    //if (specifiers->needsCrossingTreeScopeBoundary())
+    //    return rewriteSpecifiersWithElementNameForCustomPseudoElement(tag, elementName, specifiers, tagIsForNamespaceRule);
 
-    if (tag == anyQName())
-        return specifiers;
-    if (!(specifiers->pseudoType() == CSSSelector::PseudoCue))
-        specifiers->prependTagSelector(tag, tagIsForNamespaceRule);
-    return specifiers;
+    //if (tag == anyQName())
+    //    return specifiers;
+    //if (!(specifiers->pseudoType() == CSSSelector::PseudoCue))
+    //    specifiers->prependTagSelector(tag, tagIsForNamespaceRule);
+    //return specifiers;
 }
 
 CSSParserSelector* BisonCSSParser::rewriteSpecifiersWithElementNameForCustomPseudoElement(const QualifiedName& tag, const AtomicString& elementName, CSSParserSelector* specifiers, bool tagIsForNamespaceRule)
 {
-    if (m_context.useCounter() && specifiers->pseudoType() == CSSSelector::PseudoUserAgentCustomElement)
-        m_context.useCounter()->count(UseCounter::CSSPseudoElementUserAgentCustomPseudo);
+	ASSERT(false);
+    //if (m_context.useCounter() && specifiers->pseudoType() == CSSSelector::PseudoUserAgentCustomElement)
+    //    m_context.useCounter()->count(UseCounter::CSSPseudoElementUserAgentCustomPseudo);
 
     CSSParserSelector* lastShadowPseudo = specifiers;
     CSSParserSelector* history = specifiers;
@@ -2042,8 +2065,9 @@ CSSParserSelector* BisonCSSParser::rewriteSpecifiersWithElementNameForContentPse
 
 CSSParserSelector* BisonCSSParser::rewriteSpecifiersForShadowDistributed(CSSParserSelector* specifiers, CSSParserSelector* distributedPseudoElementSelector)
 {
-    if (m_context.useCounter())
-        m_context.useCounter()->count(UseCounter::CSSPseudoElementPrefixedDistributed);
+	ASSERT(false);
+    //if (m_context.useCounter())
+    //    m_context.useCounter()->count(UseCounter::CSSPseudoElementPrefixedDistributed);
     CSSParserSelector* argumentSelector = distributedPseudoElementSelector->functionArgumentSelector();
     ASSERT(argumentSelector);
     ASSERT(!specifiers->isDistributedPseudoElement());
@@ -2083,35 +2107,37 @@ CSSParserSelector* BisonCSSParser::rewriteSpecifiers(CSSParserSelector* specifie
     specifiers->appendTagHistory(CSSSelector::SubSelector, sinkFloatingSelector(newSpecifier));
     return specifiers;
 }
-
-StyleRuleBase* BisonCSSParser::createPageRule(PassOwnPtr<CSSParserSelector> pageSelector)
-{
-    // FIXME: Margin at-rules are ignored.
-    m_allowImportRules = m_allowNamespaceDeclarations = false;
-    StyleRulePage* pageRule = 0;
-    if (pageSelector) {
-        RefPtrWillBeRawPtr<StyleRulePage> rule = StyleRulePage::create();
-        Vector<OwnPtr<CSSParserSelector> > selectorVector;
-        selectorVector.append(pageSelector);
-        rule->parserAdoptSelectorVector(selectorVector);
-        rule->setProperties(createStylePropertySet());
-        pageRule = rule.get();
-        m_parsedRules.append(rule.release());
-    }
-    clearProperties();
-    return pageRule;
-}
-
-StyleRuleBase* BisonCSSParser::createMarginAtRule(CSSSelector::MarginBoxType /* marginBox */)
-{
-    // FIXME: Implement margin at-rule here, using:
-    //        - marginBox: margin box
-    //        - m_parsedProperties: properties at [m_numParsedPropertiesBeforeMarginBox, m_parsedProperties.size()] are for this at-rule.
-    // Don't forget to also update the action for page symbol in CSSGrammar.y such that margin at-rule data is cleared if page_selector is invalid.
-
-    endDeclarationsForMarginBox();
-    return 0; // until this method is implemented.
-}
+//
+//StyleRuleBase* BisonCSSParser::createPageRule(PassOwnPtr<CSSParserSelector> pageSelector)
+//{
+//    // FIXME: Margin at-rules are ignored.
+//	ASSERT(false);
+//	return nullptr;
+//    //m_allowImportRules = m_allowNamespaceDeclarations = false;
+//    //StyleRulePage* pageRule = 0;
+//    //if (pageSelector) {
+//    //    RefPtr<StyleRulePage> rule = StyleRulePage::create();
+//    //    Vector<OwnPtr<CSSParserSelector> > selectorVector;
+//    //    selectorVector.append(pageSelector);
+//    //    rule->parserAdoptSelectorVector(selectorVector);
+//    //    rule->setProperties(createStylePropertySet());
+//    //    pageRule = rule.get();
+//    //    m_parsedRules.append(rule.release());
+//    //}
+//    //clearProperties();
+//    //return pageRule;
+//}
+//
+//StyleRuleBase* BisonCSSParser::createMarginAtRule(CSSSelector::MarginBoxType /* marginBox */)
+//{
+//    // FIXME: Implement margin at-rule here, using:
+//    //        - marginBox: margin box
+//    //        - m_parsedProperties: properties at [m_numParsedPropertiesBeforeMarginBox, m_parsedProperties.size()] are for this at-rule.
+//    // Don't forget to also update the action for page symbol in CSSGrammar.y such that margin at-rule data is cleared if page_selector is invalid.
+//
+//    endDeclarationsForMarginBox();
+//    return 0; // until this method is implemented.
+//}
 
 void BisonCSSParser::startDeclarationsForMarginBox()
 {
@@ -2156,27 +2182,30 @@ StyleKeyframe* BisonCSSParser::createKeyframe(CSSParserValueList* keys)
 
 void BisonCSSParser::invalidBlockHit()
 {
-    if (m_styleSheet && !m_hadSyntacticallyValidCSSRule)
-        m_styleSheet->setHasSyntacticallyValidCSSHeader(false);
+	ASSERT(false);
+    //if (m_styleSheet && !m_hadSyntacticallyValidCSSRule)
+    //    m_styleSheet->setHasSyntacticallyValidCSSHeader(false);
 }
 
 void BisonCSSParser::startRule()
 {
-    if (!m_observer)
-        return;
+	ASSERT(false);
+    //if (!m_observer)
+    //    return;
 
-    ASSERT(m_ruleHasHeader);
-    m_ruleHasHeader = false;
+    //ASSERT(m_ruleHasHeader);
+    //m_ruleHasHeader = false;
 }
 
 void BisonCSSParser::endRule(bool valid)
 {
-    if (!m_observer)
-        return;
+	ASSERT(false);
+    //if (!m_observer)
+    //    return;
 
-    if (m_ruleHasHeader)
-        m_observer->endRuleBody(m_tokenizer.safeUserStringTokenOffset(), !valid);
-    m_ruleHasHeader = true;
+    //if (m_ruleHasHeader)
+    //    m_observer->endRuleBody(m_tokenizer.safeUserStringTokenOffset(), !valid);
+    //m_ruleHasHeader = true;
 }
 
 void BisonCSSParser::startRuleHeader(CSSRuleSourceData::Type ruleType)
@@ -2185,78 +2214,87 @@ void BisonCSSParser::startRuleHeader(CSSRuleSourceData::Type ruleType)
     m_ruleHeaderType = ruleType;
     m_ruleHeaderStartOffset = m_tokenizer.safeUserStringTokenOffset();
     m_ruleHeaderStartLineNumber = m_tokenizer.m_tokenStartLineNumber;
-    if (m_observer) {
-        ASSERT(!m_ruleHasHeader);
-        m_observer->startRuleHeader(ruleType, m_ruleHeaderStartOffset);
-        m_ruleHasHeader = true;
-    }
+	ASSERT(false);
+    //if (m_observer) {
+    //    ASSERT(!m_ruleHasHeader);
+    //    m_observer->startRuleHeader(ruleType, m_ruleHeaderStartOffset);
+    //    m_ruleHasHeader = true;
+    //}
 }
 
 void BisonCSSParser::endRuleHeader()
 {
     ASSERT(m_ruleHeaderType != CSSRuleSourceData::UNKNOWN_RULE);
     m_ruleHeaderType = CSSRuleSourceData::UNKNOWN_RULE;
-    if (m_observer) {
-        ASSERT(m_ruleHasHeader);
-        m_observer->endRuleHeader(m_tokenizer.safeUserStringTokenOffset());
-    }
+	ASSERT(false);
+    //if (m_observer) {
+    //    ASSERT(m_ruleHasHeader);
+    //    m_observer->endRuleHeader(m_tokenizer.safeUserStringTokenOffset());
+    //}
 }
 
 void BisonCSSParser::startSelector()
 {
-    if (m_observer)
-        m_observer->startSelector(m_tokenizer.safeUserStringTokenOffset());
+	ASSERT(false);
+    //if (m_observer)
+    //    m_observer->startSelector(m_tokenizer.safeUserStringTokenOffset());
 }
 
 void BisonCSSParser::endSelector()
 {
-    if (m_observer)
-        m_observer->endSelector(m_tokenizer.safeUserStringTokenOffset());
+	ASSERT(false);
+    //if (m_observer)
+    //    m_observer->endSelector(m_tokenizer.safeUserStringTokenOffset());
 }
 
 void BisonCSSParser::startRuleBody()
 {
-    if (m_observer)
-        m_observer->startRuleBody(m_tokenizer.safeUserStringTokenOffset());
+	ASSERT(false);
+    //if (m_observer)
+    //    m_observer->startRuleBody(m_tokenizer.safeUserStringTokenOffset());
 }
 
 void BisonCSSParser::startProperty()
 {
     resumeErrorLogging();
-    if (m_observer)
-        m_observer->startProperty(m_tokenizer.safeUserStringTokenOffset());
+	ASSERT(false);
+    //if (m_observer)
+    //    m_observer->startProperty(m_tokenizer.safeUserStringTokenOffset());
 }
 
-void BisonCSSParser::endProperty(bool isImportantFound, bool isPropertyParsed, CSSParserError errorType)
-{
-    m_id = CSSPropertyInvalid;
-    if (m_observer)
-        m_observer->endProperty(isImportantFound, isPropertyParsed, m_tokenizer.safeUserStringTokenOffset(), errorType);
-}
+//void BisonCSSParser::endProperty(bool isImportantFound, bool isPropertyParsed, CSSParserError errorType)
+//{
+//    m_id = CSSPropertyInvalid;
+//    if (m_observer)
+//        m_observer->endProperty(isImportantFound, isPropertyParsed, m_tokenizer.safeUserStringTokenOffset(), errorType);
+//}
 
 void BisonCSSParser::startEndUnknownRule()
 {
-    if (m_observer)
-        m_observer->startEndUnknownRule();
+	ASSERT(false);
+    //if (m_observer)
+    //    m_observer->startEndUnknownRule();
 }
 
-StyleRuleBase* BisonCSSParser::createViewportRule()
-{
-    // Allow @viewport rules from UA stylesheets even if the feature is disabled.
-    if (!RuntimeEnabledFeatures::cssViewportEnabled() && !isUASheetBehavior(m_context.mode()))
-        return 0;
-
-    m_allowImportRules = m_allowNamespaceDeclarations = false;
-
-    RefPtrWillBeRawPtr<StyleRuleViewport> rule = StyleRuleViewport::create();
-
-    rule->setProperties(createStylePropertySet());
-    clearProperties();
-
-    StyleRuleViewport* result = rule.get();
-    m_parsedRules.append(rule.release());
-
-    return result;
-}
+//
+//StyleRuleBase* BisonCSSParser::createViewportRule()
+//{
+//	ASSERT(false);
+//    //// Allow @viewport rules from UA stylesheets even if the feature is disabled.
+//    //if (!RuntimeEnabledFeatures::cssViewportEnabled() && !isUASheetBehavior(m_context.mode()))
+//    //    return 0;
+//
+//    //m_allowImportRules = m_allowNamespaceDeclarations = false;
+//
+//    //RefPtr<StyleRuleViewport> rule = StyleRuleViewport::create();
+//
+//    //rule->setProperties(createStylePropertySet());
+//    //clearProperties();
+//
+//    //StyleRuleViewport* result = rule.get();
+//    //m_parsedRules.append(rule.release());
+//
+//    //return result;
+//}
 
 }

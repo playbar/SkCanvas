@@ -618,6 +618,30 @@
     <ClCompile Include="css\Counter.cpp">
       <Filter>css</Filter>
     </ClCompile>
+    <ClCompile Include="css\CSSPropertyParser.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSBorderImage.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSUnicodeRangeValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSGridLineNamesValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSFunctionValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSShadowValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSReflectValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSTransformValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -1170,6 +1194,33 @@
       <Filter>css</Filter>
     </ClInclude>
     <ClInclude Include="css\Counter.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSPropertyParser.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSBorderImage.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSParserIdioms.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSUnicodeRangeValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSGridLineNamesValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSFunctionValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSShadowValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSReflectValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSTransformValue.h">
       <Filter>css</Filter>
     </ClInclude>
   </ItemGroup>

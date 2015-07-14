@@ -36,7 +36,7 @@
 #include "css/CSSTokenizer.h"
 #include "css/StylePropertySet.h"
 //#include "css/CSSParserObserver.h"
-//#include "core/css/parser/CSSPropertyParser.h"
+#include "css/CSSPropertyParser.h"
 #include "platform/graphics/Color.h"
 #include "wtf/HashSet.h"
 #include "wtf/OwnPtr.h"
@@ -63,7 +63,7 @@ class ImmutableStylePropertySet;
 class MutableStylePropertySet;
 class StyleKeyframe;
 class StylePropertyShorthand;
-class StyleRuleBase;
+//class StyleRuleBase;
 class StyleRuleKeyframes;
 class StyleKeyframe;
 class StyleSheetContents;
@@ -87,7 +87,7 @@ public:
     void setCurrentProperty(CSSPropertyID);
 
     //void parseSheet(StyleSheetContents*, const String&, const TextPosition& startPosition = TextPosition::minimumPosition(), CSSParserObserver* = 0, bool = false);
-    PassRefPtr<StyleRuleBase> parseRule(StyleSheetContents*, const String&);
+    //PassRefPtr<StyleRuleBase> parseRule(StyleSheetContents*, const String&);
     PassRefPtr<StyleKeyframe> parseKeyframeRule(StyleSheetContents*, const String&);
     bool parseSupportsCondition(const String&);
     static bool parseValue(MutableStylePropertySet*, CSSPropertyID, const String&, bool important, CSSParserMode, StyleSheetContents*);
@@ -126,19 +126,19 @@ public:
     StyleKeyframe* createKeyframe(CSSParserValueList*);
     StyleRuleKeyframes* createKeyframesRule(const String&, PassOwnPtr<Vector<RefPtr<StyleKeyframe> > >, bool isPrefixed);
 
-    typedef Vector<RefPtr<StyleRuleBase> > RuleList;
+    //typedef Vector<RefPtr<StyleRuleBase> > RuleList;
     //StyleRuleBase* createMediaRule(MediaQuerySet*, RuleList*);
-    RuleList* createRuleList();
-    RuleList* appendRule(RuleList*, StyleRuleBase*);
-    StyleRuleBase* createStyleRule(Vector<OwnPtr<CSSParserSelector> >* selectors);
-    StyleRuleBase* createFontFaceRule();
-    StyleRuleBase* createPageRule(PassOwnPtr<CSSParserSelector> pageSelector);
-    StyleRuleBase* createMarginAtRule(CSSSelector::MarginBoxType);
-    StyleRuleBase* createSupportsRule(bool conditionIsSupported, RuleList*);
+    //RuleList* createRuleList();
+    //RuleList* appendRule(RuleList*, StyleRuleBase*);
+    //StyleRuleBase* createStyleRule(Vector<OwnPtr<CSSParserSelector> >* selectors);
+    //StyleRuleBase* createFontFaceRule();
+    //StyleRuleBase* createPageRule(PassOwnPtr<CSSParserSelector> pageSelector);
+    //StyleRuleBase* createMarginAtRule(CSSSelector::MarginBoxType);
+    //StyleRuleBase* createSupportsRule(bool conditionIsSupported, RuleList*);
     void markSupportsRuleHeaderStart();
     void markSupportsRuleHeaderEnd();
     PassRefPtr<CSSRuleSourceData> popSupportsRuleData();
-    StyleRuleBase* createHostRule(RuleList* rules);
+    //StyleRuleBase* createHostRule(RuleList* rules);
 
     void startDeclarationsForMarginBox();
     void endDeclarationsForMarginBox();
@@ -178,7 +178,7 @@ public:
     bool m_important;
     CSSPropertyID m_id;
     StyleSheetContents* m_styleSheet;
-    RefPtr<StyleRuleBase> m_rule;
+    //RefPtr<StyleRuleBase> m_rule;
     RefPtr<StyleKeyframe> m_keyframe;
     //RefPtr<MediaQuerySet> m_mediaList;
     OwnPtr<CSSParserValueList> m_valueList;
@@ -221,7 +221,7 @@ public:
 
     void markViewportRuleBodyStart() { m_inViewport = true; }
     void markViewportRuleBodyEnd() { m_inViewport = false; }
-    StyleRuleBase* createViewportRule();
+    //StyleRuleBase* createViewportRule();
 
     CSSParserLocation currentLocation() { return m_tokenizer.currentLocation(); }
 
@@ -288,10 +288,10 @@ private:
 
     CSSParserLocation m_locationLabel;
 
-    Vector<RefPtr<StyleRuleBase> > m_parsedRules;
+    //Vector<RefPtr<StyleRuleBase> > m_parsedRules;
     Vector<RefPtr<StyleKeyframe> > m_parsedKeyframes;
     //Vector<RefPtrWillBeMember<MediaQuerySet> > m_parsedMediaQuerySets;
-    Vector<OwnPtr<RuleList> > m_parsedRuleLists;
+    //Vector<OwnPtr<RuleList> > m_parsedRuleLists;
     Vector<CSSParserSelector*> m_floatingSelectors;
     Vector<Vector<OwnPtr<CSSParserSelector> >*> m_floatingSelectorVectors;
     Vector<CSSParserValueList*> m_floatingValueLists;

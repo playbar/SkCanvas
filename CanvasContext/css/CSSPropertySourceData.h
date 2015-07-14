@@ -38,7 +38,7 @@
 
 namespace WebCore {
 
-class StyleRuleBase;
+//class StyleRuleBase;
 
 struct SourceRange {
     SourceRange();
