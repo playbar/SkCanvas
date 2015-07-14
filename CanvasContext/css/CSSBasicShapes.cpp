@@ -39,7 +39,8 @@ using namespace WTF;
 
 namespace WebCore {
 
-DEFINE_EMPTY_DESTRUCTOR_WILL_BE_REMOVED(CSSBasicShape)
+
+CSSBasicShape::~CSSBasicShape() {}
 
 static String buildRectangleString(const String& x, const String& y, const String& width, const String& height, const String& radiusX, const String& radiusY, const String& layoutBox)
 {
@@ -98,16 +99,16 @@ bool CSSBasicShapeRectangle::equals(const CSSBasicShape& shape) const
         && compareCSSValuePtr(m_layoutBox, other.m_layoutBox);
 }
 
-void CSSBasicShapeRectangle::trace(Visitor* visitor)
-{
-    visitor->trace(m_y);
-    visitor->trace(m_x);
-    visitor->trace(m_width);
-    visitor->trace(m_height);
-    visitor->trace(m_radiusX);
-    visitor->trace(m_radiusY);
-    CSSBasicShape::trace(visitor);
-}
+//void CSSBasicShapeRectangle::trace(Visitor* visitor)
+//{
+//    visitor->trace(m_y);
+//    visitor->trace(m_x);
+//    visitor->trace(m_width);
+//    visitor->trace(m_height);
+//    visitor->trace(m_radiusX);
+//    visitor->trace(m_radiusY);
+//    CSSBasicShape::trace(visitor);
+//}
 
 static String buildCircleString(const String& radius, const String& centerX, const String& centerY, const String& layoutBox)
 {
@@ -143,10 +144,10 @@ static String serializePositionOffset(const Pair& offset, const Pair& other)
     return offset.cssText();
 }
 
-static PassRefPtrWillBeRawPtr<CSSPrimitiveValue> buildSerializablePositionOffset(PassRefPtrWillBeRawPtr<CSSPrimitiveValue> offset, CSSValueID defaultSide)
+static PassRefPtr<CSSPrimitiveValue> buildSerializablePositionOffset(PassRefPtr<CSSPrimitiveValue> offset, CSSValueID defaultSide)
 {
     CSSValueID side = defaultSide;
-    RefPtrWillBeRawPtr<CSSPrimitiveValue> amount;
+    RefPtr<CSSPrimitiveValue> amount;
 
     if (!offset) {
         side = CSSValueCenter;
@@ -179,8 +180,8 @@ static PassRefPtrWillBeRawPtr<CSSPrimitiveValue> buildSerializablePositionOffset
 
 String CSSBasicShapeCircle::cssText() const
 {
-    RefPtrWillBeRawPtr<CSSPrimitiveValue> normalizedCX = buildSerializablePositionOffset(m_centerX, CSSValueLeft);
-    RefPtrWillBeRawPtr<CSSPrimitiveValue> normalizedCY = buildSerializablePositionOffset(m_centerY, CSSValueTop);
+    RefPtr<CSSPrimitiveValue> normalizedCX = buildSerializablePositionOffset(m_centerX, CSSValueLeft);
+    RefPtr<CSSPrimitiveValue> normalizedCY = buildSerializablePositionOffset(m_centerY, CSSValueTop);
 
     return buildCircleString(m_radius ? m_radius->cssText() : String(),
         serializePositionOffset(*normalizedCX->getPairValue(), *normalizedCY->getPairValue()),
@@ -274,8 +275,8 @@ static String buildEllipseString(const String& radiusX, const String& radiusY, c
 
 String CSSBasicShapeEllipse::cssText() const
 {
-    RefPtrWillBeRawPtr<CSSPrimitiveValue> normalizedCX = buildSerializablePositionOffset(m_centerX, CSSValueLeft);
-    RefPtrWillBeRawPtr<CSSPrimitiveValue> normalizedCY = buildSerializablePositionOffset(m_centerY, CSSValueTop);
+    RefPtr<CSSPrimitiveValue> normalizedCX = buildSerializablePositionOffset(m_centerX, CSSValueLeft);
+    RefPtr<CSSPrimitiveValue> normalizedCY = buildSerializablePositionOffset(m_centerY, CSSValueTop);
 
     return buildEllipseString(m_radiusX ? m_radiusX->cssText() : String(),
         m_radiusY ? m_radiusY->cssText() : String(),

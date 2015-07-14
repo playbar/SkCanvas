@@ -23,6 +23,7 @@
 
 #include "CSSFunctionValue.h"
 #include "CSSSelectorList.h"
+#include "HTMLParserIdioms.h"
 
 namespace WebCore {
 
@@ -81,14 +82,14 @@ void CSSParserValueList::stealValues(CSSParserValueList& valueList)
     valueList.clear();
 }
 
-PassRefPtrWillBeRawPtr<CSSValue> CSSParserValue::createCSSValue()
+PassRefPtr<CSSValue> CSSParserValue::createCSSValue()
 {
-    RefPtrWillBeRawPtr<CSSValue> parsedValue;
+    RefPtr<CSSValue> parsedValue;
     if (id)
         return CSSPrimitiveValue::createIdentifier(id);
 
     if (unit == CSSParserValue::Operator) {
-        RefPtrWillBeRawPtr<CSSPrimitiveValue> primitiveValue = CSSPrimitiveValue::createParserOperator(iValue);
+        RefPtr<CSSPrimitiveValue> primitiveValue = CSSPrimitiveValue::createParserOperator(iValue);
         primitiveValue->setPrimitiveType(CSSPrimitiveValue::CSS_PARSER_OPERATOR);
         return primitiveValue;
     }

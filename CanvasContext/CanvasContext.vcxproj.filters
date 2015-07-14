@@ -1223,5 +1223,8 @@
     <ClInclude Include="css\CSSTransformValue.h">
       <Filter>css</Filter>
     </ClInclude>
+    <ClInclude Include="dom\HTMLParserIdioms.h">
+      <Filter>dom</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

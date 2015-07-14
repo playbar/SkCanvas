@@ -290,6 +290,7 @@
     <ClInclude Include="css\resolver\StyleResolverState.h" />
     <ClInclude Include="css\StyleColor.h" />
     <ClInclude Include="css\StylePropertySet.h" />
+    <ClInclude Include="dom\HTMLParserIdioms.h" />
     <ClInclude Include="dom\QualifiedName.h" />
     <ClInclude Include="dom\TextLinkColors.h" />
     <ClInclude Include="platform\CalculationValue.h" />

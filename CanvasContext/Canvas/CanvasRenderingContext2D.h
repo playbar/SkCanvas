@@ -10,6 +10,7 @@
 #include "platform/graphics/ImageBuffer.h"
 #include "platform/graphics/Path.h"
 #include "platform/transforms/AffineTransform.h"
+#include "css/StylePropertySet.h"
 #include "wtf/HashMap.h"
 #include "wtf/Vector.h"
 #include "wtf/text/WTFString.h"

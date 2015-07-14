@@ -32,7 +32,6 @@
 #include "CSSCalculationValue.h"
 
 #include "CSSPrimitiveValueMappings.h"
-#include "resolver/StyleResolver.h"
 #include "wtf/MathExtras.h"
 #include "wtf/OwnPtr.h"
 #include "wtf/text/StringBuilder.h"

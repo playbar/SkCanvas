@@ -27,9 +27,6 @@
 #include "config.h"
 #include "CSSParserMode.h"
 
-#include "core/dom/Document.h"
-#include "core/frame/Settings.h"
-
 namespace WebCore {
 
 CSSParserContext::CSSParserContext(CSSParserMode mode, UseCounter* useCounter)
@@ -40,15 +37,15 @@ CSSParserContext::CSSParserContext(CSSParserMode mode, UseCounter* useCounter)
 {
 }
 
-CSSParserContext::CSSParserContext(const Document& document, UseCounter* useCounter, const KURL& baseURL, const String& charset)
-    : m_baseURL(baseURL.isNull() ? document.baseURL() : baseURL)
-    , m_charset(charset)
-    , m_mode(document.inQuirksMode() ? HTMLQuirksMode : HTMLStandardMode)
-    , m_isHTMLDocument(document.isHTMLDocument())
-    , m_useLegacyBackgroundSizeShorthandBehavior(document.settings() ? document.settings()->useLegacyBackgroundSizeShorthandBehavior() : false)
-    , m_useCounter(useCounter)
-{
-}
+//CSSParserContext::CSSParserContext(const Document& document, UseCounter* useCounter, const KURL& baseURL, const String& charset)
+//    : m_baseURL(baseURL.isNull() ? document.baseURL() : baseURL)
+//    , m_charset(charset)
+//    , m_mode(document.inQuirksMode() ? HTMLQuirksMode : HTMLStandardMode)
+//    , m_isHTMLDocument(document.isHTMLDocument())
+//    , m_useLegacyBackgroundSizeShorthandBehavior(document.settings() ? document.settings()->useLegacyBackgroundSizeShorthandBehavior() : false)
+//    , m_useCounter(useCounter)
+//{
+//}
 
 CSSParserContext::CSSParserContext(const CSSParserContext& other, UseCounter* useCounter)
     : m_baseURL(other.m_baseURL)
@@ -81,7 +78,9 @@ KURL CSSParserContext::completeURL(const String& url) const
         return KURL();
     if (charset().isEmpty())
         return KURL(baseURL(), url);
-    return KURL(baseURL(), url, charset());
+	ASSERT(false);
+	return KURL(baseURL(), url);
+    //return KURL(baseURL(), url, charset());
 }
 
 } // namespace WebCore

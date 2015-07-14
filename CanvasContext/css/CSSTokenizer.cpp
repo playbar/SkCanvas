@@ -28,9 +28,8 @@
 #include "css/CSSTokenizer.h"
 
 #include "css/CSSKeyframeRule.h"
-#include "css/parser/BisonCSSParser.h"
+#include "css/BisonCSSParser.h"
 #include "css/CSSParserValues.h"
-#include "css/MediaQuery.h"
 #include "css/StyleRule.h"
 //#include "core/html/parser/HTMLParserIdioms.h"
 //#include "core/svg/SVGParserUtilities.h"

@@ -28,38 +28,37 @@
 #include "CSSValue.h"
 
 #include "CSSArrayFunctionValue.h"
-#include "core/css/CSSAspectRatioValue.h"
-#include "core/css/CSSBorderImageSliceValue.h"
-#include "core/css/CSSCalculationValue.h"
-#include "core/css/CSSCanvasValue.h"
-#include "core/css/CSSCrossfadeValue.h"
-#include "core/css/CSSCursorImageValue.h"
-#include "core/css/CSSFilterValue.h"
-#include "core/css/CSSFontFaceSrcValue.h"
-#include "core/css/CSSFontFeatureValue.h"
-#include "core/css/CSSFontValue.h"
-#include "core/css/CSSFunctionValue.h"
-#include "core/css/CSSGradientValue.h"
-#include "core/css/CSSGridLineNamesValue.h"
-#include "core/css/CSSGridTemplateAreasValue.h"
-#include "core/css/CSSImageSetValue.h"
-#include "core/css/CSSImageValue.h"
-#include "core/css/CSSInheritedValue.h"
-#include "core/css/CSSInitialValue.h"
-#include "core/css/CSSLineBoxContainValue.h"
-#include "core/css/CSSPrimitiveValue.h"
-#include "core/css/CSSReflectValue.h"
-#include "core/css/CSSSVGDocumentValue.h"
-#include "core/css/CSSShadowValue.h"
-#include "core/css/CSSTimingFunctionValue.h"
-#include "core/css/CSSTransformValue.h"
-#include "core/css/CSSUnicodeRangeValue.h"
-#include "core/css/CSSValueList.h"
-#include "core/svg/SVGPaint.h"
+#include "css/CSSAspectRatioValue.h"
+#include "css/CSSBorderImageSliceValue.h"
+#include "css/CSSCalculationValue.h"
+//#include "css/CSSCanvasValue.h"
+//#include "css/CSSCrossfadeValue.h"
+#include "css/CSSCursorImageValue.h"
+#include "css/CSSFilterValue.h"
+//#include "css/CSSFontFaceSrcValue.h"
+//#include "css/CSSFontFeatureValue.h"
+//#include "css/CSSFontValue.h"
+#include "css/CSSFunctionValue.h"
+#include "css/CSSGradientValue.h"
+#include "css/CSSGridLineNamesValue.h"
+//#include "css/CSSGridTemplateAreasValue.h"
+#include "css/CSSImageSetValue.h"
+#include "css/CSSImageValue.h"
+#include "css/CSSInheritedValue.h"
+#include "css/CSSInitialValue.h"
+#include "css/CSSLineBoxContainValue.h"
+#include "css/CSSPrimitiveValue.h"
+#include "css/CSSReflectValue.h"
+//#include "css/CSSSVGDocumentValue.h"
+#include "css/CSSShadowValue.h"
+//#include "css/CSSTimingFunctionValue.h"
+#include "css/CSSTransformValue.h"
+#include "css/CSSUnicodeRangeValue.h"
+#include "css/CSSValueList.h"
 
 namespace WebCore {
 
-struct SameSizeAsCSSValue : public RefCountedWillBeRefCountedGarbageCollected<SameSizeAsCSSValue> {
+struct SameSizeAsCSSValue : public RefCounted<SameSizeAsCSSValue> {
     uint32_t bitfields;
 };
 
@@ -67,7 +66,7 @@ COMPILE_ASSERT(sizeof(CSSValue) <= sizeof(SameSizeAsCSSValue), CSS_value_should_
 
 class TextCloneCSSValue : public CSSValue {
 public:
-    static PassRefPtrWillBeRawPtr<TextCloneCSSValue> create(ClassType classType, const String& text)
+    static PassRefPtr<TextCloneCSSValue> create(ClassType classType, const String& text)
     {
         return adoptRefWillBeRefCountedGarbageCollected(new TextCloneCSSValue(classType, text));
     }
@@ -146,15 +145,19 @@ bool CSSValue::equals(const CSSValue& other) const
         case BorderImageSliceClass:
             return compareCSSValues<CSSBorderImageSliceValue>(*this, other);
         case CanvasClass:
-            return compareCSSValues<CSSCanvasValue>(*this, other);
+			ASSERT(false);
+        //    return compareCSSValues<CSSCanvasValue>(*this, other);
         case CursorImageClass:
             return compareCSSValues<CSSCursorImageValue>(*this, other);
         case FontClass:
-            return compareCSSValues<CSSFontValue>(*this, other);
+			ASSERT(false);
+            //return compareCSSValues<CSSFontValue>(*this, other);
         case FontFaceSrcClass:
-            return compareCSSValues<CSSFontFaceSrcValue>(*this, other);
+			ASSERT(false);
+            //return compareCSSValues<CSSFontFaceSrcValue>(*this, other);
         case FontFeatureClass:
-            return compareCSSValues<CSSFontFeatureValue>(*this, other);
+			ASSERT(false);
+            //return compareCSSValues<CSSFontFeatureValue>(*this, other);
         case FunctionClass:
             return compareCSSValues<CSSFunctionValue>(*this, other);
         case LinearGradientClass:
@@ -162,7 +165,8 @@ bool CSSValue::equals(const CSSValue& other) const
         case RadialGradientClass:
             return compareCSSValues<CSSRadialGradientValue>(*this, other);
         case CrossfadeClass:
-            return compareCSSValues<CSSCrossfadeValue>(*this, other);
+			ASSERT(false);
+            //return compareCSSValues<CSSCrossfadeValue>(*this, other);
         case ImageClass:
             return compareCSSValues<CSSImageValue>(*this, other);
         case InheritedClass:
@@ -172,7 +176,8 @@ bool CSSValue::equals(const CSSValue& other) const
         case GridLineNamesClass:
             return compareCSSValues<CSSGridLineNamesValue>(*this, other);
         case GridTemplateAreasClass:
-            return compareCSSValues<CSSGridTemplateAreasValue>(*this, other);
+			ASSERT(false);
+            //return compareCSSValues<CSSGridTemplateAreasValue>(*this, other);
         case PrimitiveClass:
             return compareCSSValues<CSSPrimitiveValue>(*this, other);
         case ReflectClass:
@@ -180,9 +185,11 @@ bool CSSValue::equals(const CSSValue& other) const
         case ShadowClass:
             return compareCSSValues<CSSShadowValue>(*this, other);
         case CubicBezierTimingFunctionClass:
-            return compareCSSValues<CSSCubicBezierTimingFunctionValue>(*this, other);
+			ASSERT(false);
+            //return compareCSSValues<CSSCubicBezierTimingFunctionValue>(*this, other);
         case StepsTimingFunctionClass:
-            return compareCSSValues<CSSStepsTimingFunctionValue>(*this, other);
+			ASSERT(false);
+            //return compareCSSValues<CSSStepsTimingFunctionValue>(*this, other);
         case UnicodeRangeClass:
             return compareCSSValues<CSSUnicodeRangeValue>(*this, other);
         case ValueListClass:
@@ -200,9 +207,11 @@ bool CSSValue::equals(const CSSValue& other) const
         case CSSArrayFunctionValueClass:
             return compareCSSValues<CSSArrayFunctionValue>(*this, other);
         case SVGPaintClass:
-            return compareCSSValues<SVGPaint>(*this, other);
+			ASSERT(false);
+            //return compareCSSValues<SVGPaint>(*this, other);
         case CSSSVGDocumentClass:
-            return compareCSSValues<CSSSVGDocumentValue>(*this, other);
+			ASSERT(false);
+            //return compareCSSValues<CSSSVGDocumentValue>(*this, other);
         default:
             ASSERT_NOT_REACHED();
             return false;
@@ -228,15 +237,19 @@ String CSSValue::cssText() const
     case BorderImageSliceClass:
         return toCSSBorderImageSliceValue(this)->customCSSText();
     case CanvasClass:
-        return toCSSCanvasValue(this)->customCSSText();
+		ASSERT(false);
+        //return toCSSCanvasValue(this)->customCSSText();
     case CursorImageClass:
         return toCSSCursorImageValue(this)->customCSSText();
     case FontClass:
-        return toCSSFontValue(this)->customCSSText();
+		ASSERT(false);
+        //return toCSSFontValue(this)->customCSSText();
     case FontFaceSrcClass:
-        return toCSSFontFaceSrcValue(this)->customCSSText();
+		ASSERT(false);
+        //return toCSSFontFaceSrcValue(this)->customCSSText();
     case FontFeatureClass:
-        return toCSSFontFeatureValue(this)->customCSSText();
+		ASSERT(false);
+        //return toCSSFontFeatureValue(this)->customCSSText();
     case FunctionClass:
         return toCSSFunctionValue(this)->customCSSText();
     case LinearGradientClass:
@@ -244,7 +257,8 @@ String CSSValue::cssText() const
     case RadialGradientClass:
         return toCSSRadialGradientValue(this)->customCSSText();
     case CrossfadeClass:
-        return toCSSCrossfadeValue(this)->customCSSText();
+		ASSERT(false);
+        //return toCSSCrossfadeValue(this)->customCSSText();
     case ImageClass:
         return toCSSImageValue(this)->customCSSText();
     case InheritedClass:
@@ -254,7 +268,8 @@ String CSSValue::cssText() const
     case GridLineNamesClass:
         return toCSSGridLineNamesValue(this)->customCSSText();
     case GridTemplateAreasClass:
-        return toCSSGridTemplateAreasValue(this)->customCSSText();
+		ASSERT(false);
+        //return toCSSGridTemplateAreasValue(this)->customCSSText();
     case PrimitiveClass:
         return toCSSPrimitiveValue(this)->customCSSText();
     case ReflectClass:
@@ -262,9 +277,11 @@ String CSSValue::cssText() const
     case ShadowClass:
         return toCSSShadowValue(this)->customCSSText();
     case CubicBezierTimingFunctionClass:
-        return toCSSCubicBezierTimingFunctionValue(this)->customCSSText();
+		ASSERT(false);
+        //return toCSSCubicBezierTimingFunctionValue(this)->customCSSText();
     case StepsTimingFunctionClass:
-        return toCSSStepsTimingFunctionValue(this)->customCSSText();
+		ASSERT(false);
+        //return toCSSStepsTimingFunctionValue(this)->customCSSText();
     case UnicodeRangeClass:
         return toCSSUnicodeRangeValue(this)->customCSSText();
     case ValueListClass:
@@ -282,9 +299,11 @@ String CSSValue::cssText() const
     case CSSArrayFunctionValueClass:
         return toCSSArrayFunctionValue(this)->customCSSText();
     case SVGPaintClass:
-        return toSVGPaint(this)->customCSSText();
+		ASSERT(false);
+        //return toSVGPaint(this)->customCSSText();
     case CSSSVGDocumentClass:
-        return toCSSSVGDocumentValue(this)->customCSSText();
+		ASSERT(false);
+        //return toCSSSVGDocumentValue(this)->customCSSText();
     }
     ASSERT_NOT_REACHED();
     return String();
@@ -331,7 +350,8 @@ void CSSValue::destroy()
         delete toCSSRadialGradientValue(this);
         return;
     case CrossfadeClass:
-        delete toCSSCrossfadeValue(this);
+		ASSERT(false);
+        //delete toCSSCrossfadeValue(this);
         return;
     case ImageClass:
         delete toCSSImageValue(this);
@@ -346,7 +366,8 @@ void CSSValue::destroy()
         delete toCSSGridLineNamesValue(this);
         return;
     case GridTemplateAreasClass:
-        delete toCSSGridTemplateAreasValue(this);
+		ASSERT(false);
+        //delete toCSSGridTemplateAreasValue(this);
         return;
     case PrimitiveClass:
         delete toCSSPrimitiveValue(this);
@@ -358,10 +379,12 @@ void CSSValue::destroy()
         delete toCSSShadowValue(this);
         return;
     case CubicBezierTimingFunctionClass:
-        delete toCSSCubicBezierTimingFunctionValue(this);
+		ASSERT(false);
+        //delete toCSSCubicBezierTimingFunctionValue(this);
         return;
     case StepsTimingFunctionClass:
-        delete toCSSStepsTimingFunctionValue(this);
+		ASSERT(false);
+        //delete toCSSStepsTimingFunctionValue(this);
         return;
     case UnicodeRangeClass:
         delete toCSSUnicodeRangeValue(this);
@@ -388,10 +411,12 @@ void CSSValue::destroy()
         delete toCSSArrayFunctionValue(this);
         return;
     case SVGPaintClass:
-        delete toSVGPaint(this);
+		ASSERT(false);
+        //delete toSVGPaint(this);
         return;
     case CSSSVGDocumentClass:
-        delete toCSSSVGDocumentValue(this);
+		ASSERT(false);
+        //delete toCSSSVGDocumentValue(this);
         return;
     }
     ASSERT_NOT_REACHED();
@@ -414,19 +439,23 @@ void CSSValue::finalize()
         toCSSBorderImageSliceValue(this)->~CSSBorderImageSliceValue();
         return;
     case CanvasClass:
-        toCSSCanvasValue(this)->~CSSCanvasValue();
+		ASSERT(false);
+        //toCSSCanvasValue(this)->~CSSCanvasValue();
         return;
     case CursorImageClass:
         toCSSCursorImageValue(this)->~CSSCursorImageValue();
         return;
     case FontClass:
-        toCSSFontValue(this)->~CSSFontValue();
+		ASSERT(false);
+        //toCSSFontValue(this)->~CSSFontValue();
         return;
     case FontFaceSrcClass:
-        toCSSFontFaceSrcValue(this)->~CSSFontFaceSrcValue();
+		ASSERT(false);
+        //toCSSFontFaceSrcValue(this)->~CSSFontFaceSrcValue();
         return;
     case FontFeatureClass:
-        toCSSFontFeatureValue(this)->~CSSFontFeatureValue();
+		ASSERT(false);
+        //toCSSFontFeatureValue(this)->~CSSFontFeatureValue();
         return;
     case FunctionClass:
         toCSSFunctionValue(this)->~CSSFunctionValue();
@@ -438,7 +467,8 @@ void CSSValue::finalize()
         toCSSRadialGradientValue(this)->~CSSRadialGradientValue();
         return;
     case CrossfadeClass:
-        toCSSCrossfadeValue(this)->~CSSCrossfadeValue();
+		ASSERT(false);
+        //toCSSCrossfadeValue(this)->~CSSCrossfadeValue();
         return;
     case ImageClass:
         toCSSImageValue(this)->~CSSImageValue();
@@ -453,7 +483,8 @@ void CSSValue::finalize()
         toCSSGridLineNamesValue(this)->~CSSGridLineNamesValue();
         return;
     case GridTemplateAreasClass:
-        toCSSGridTemplateAreasValue(this)->~CSSGridTemplateAreasValue();
+		ASSERT(false);
+        //toCSSGridTemplateAreasValue(this)->~CSSGridTemplateAreasValue();
         return;
     case PrimitiveClass:
         toCSSPrimitiveValue(this)->~CSSPrimitiveValue();
@@ -465,10 +496,12 @@ void CSSValue::finalize()
         toCSSShadowValue(this)->~CSSShadowValue();
         return;
     case CubicBezierTimingFunctionClass:
-        toCSSCubicBezierTimingFunctionValue(this)->~CSSCubicBezierTimingFunctionValue();
+		ASSERT(false);
+        //toCSSCubicBezierTimingFunctionValue(this)->~CSSCubicBezierTimingFunctionValue();
         return;
     case StepsTimingFunctionClass:
-        toCSSStepsTimingFunctionValue(this)->~CSSStepsTimingFunctionValue();
+		ASSERT(false);
+        //toCSSStepsTimingFunctionValue(this)->~CSSStepsTimingFunctionValue();
         return;
     case UnicodeRangeClass:
         toCSSUnicodeRangeValue(this)->~CSSUnicodeRangeValue();
@@ -495,123 +528,125 @@ void CSSValue::finalize()
         toCSSArrayFunctionValue(this)->~CSSArrayFunctionValue();
         return;
     case SVGPaintClass:
-        toSVGPaint(this)->~SVGPaint();
+		ASSERT(false);
+        //toSVGPaint(this)->~SVGPaint();
         return;
     case CSSSVGDocumentClass:
-        toCSSSVGDocumentValue(this)->~CSSSVGDocumentValue();
+		ASSERT(false);
+        //toCSSSVGDocumentValue(this)->~CSSSVGDocumentValue();
         return;
     }
     ASSERT_NOT_REACHED();
 }
+//
+//void CSSValue::trace(Visitor* visitor)
+//{
+//    if (m_isTextClone) {
+//        ASSERT(isCSSOMSafe());
+//        static_cast<TextCloneCSSValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    }
+//    ASSERT(!isCSSOMSafe() || isSubtypeExposedToCSSOM());
+//
+//    switch (classType()) {
+//    case AspectRatioClass:
+//        static_cast<CSSAspectRatioValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case BorderImageSliceClass:
+//        static_cast<CSSBorderImageSliceValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case CanvasClass:
+//        static_cast<CSSCanvasValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case CursorImageClass:
+//        static_cast<CSSCursorImageValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case FontClass:
+//        static_cast<CSSFontValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case FontFaceSrcClass:
+//        static_cast<CSSFontFaceSrcValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case FontFeatureClass:
+//        static_cast<CSSFontFeatureValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case FunctionClass:
+//        static_cast<CSSFunctionValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case LinearGradientClass:
+//        static_cast<CSSLinearGradientValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case RadialGradientClass:
+//        static_cast<CSSRadialGradientValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case CrossfadeClass:
+//        static_cast<CSSCrossfadeValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case ImageClass:
+//        static_cast<CSSImageValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case InheritedClass:
+//        static_cast<CSSInheritedValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case InitialClass:
+//        static_cast<CSSInitialValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case GridLineNamesClass:
+//        static_cast<CSSGridLineNamesValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case GridTemplateAreasClass:
+//        static_cast<CSSGridTemplateAreasValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case PrimitiveClass:
+//        static_cast<CSSPrimitiveValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case ReflectClass:
+//        static_cast<CSSReflectValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case ShadowClass:
+//        static_cast<CSSShadowValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case CubicBezierTimingFunctionClass:
+//        static_cast<CSSCubicBezierTimingFunctionValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case StepsTimingFunctionClass:
+//        static_cast<CSSStepsTimingFunctionValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case UnicodeRangeClass:
+//        static_cast<CSSUnicodeRangeValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case ValueListClass:
+//        static_cast<CSSValueList*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case CSSTransformClass:
+//        static_cast<CSSTransformValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case LineBoxContainClass:
+//        static_cast<CSSLineBoxContainValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case CalculationClass:
+//        static_cast<CSSCalcValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case ImageSetClass:
+//        static_cast<CSSImageSetValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case CSSFilterClass:
+//        static_cast<CSSFilterValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case CSSArrayFunctionValueClass:
+//        static_cast<CSSArrayFunctionValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case SVGPaintClass:
+//        static_cast<SVGPaint*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    case CSSSVGDocumentClass:
+//        static_cast<CSSSVGDocumentValue*>(this)->traceAfterDispatch(visitor);
+//        return;
+//    }
+//    ASSERT_NOT_REACHED();
+//}
 
-void CSSValue::trace(Visitor* visitor)
-{
-    if (m_isTextClone) {
-        ASSERT(isCSSOMSafe());
-        static_cast<TextCloneCSSValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    }
-    ASSERT(!isCSSOMSafe() || isSubtypeExposedToCSSOM());
-
-    switch (classType()) {
-    case AspectRatioClass:
-        static_cast<CSSAspectRatioValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case BorderImageSliceClass:
-        static_cast<CSSBorderImageSliceValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case CanvasClass:
-        static_cast<CSSCanvasValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case CursorImageClass:
-        static_cast<CSSCursorImageValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case FontClass:
-        static_cast<CSSFontValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case FontFaceSrcClass:
-        static_cast<CSSFontFaceSrcValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case FontFeatureClass:
-        static_cast<CSSFontFeatureValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case FunctionClass:
-        static_cast<CSSFunctionValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case LinearGradientClass:
-        static_cast<CSSLinearGradientValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case RadialGradientClass:
-        static_cast<CSSRadialGradientValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case CrossfadeClass:
-        static_cast<CSSCrossfadeValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case ImageClass:
-        static_cast<CSSImageValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case InheritedClass:
-        static_cast<CSSInheritedValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case InitialClass:
-        static_cast<CSSInitialValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case GridLineNamesClass:
-        static_cast<CSSGridLineNamesValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case GridTemplateAreasClass:
-        static_cast<CSSGridTemplateAreasValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case PrimitiveClass:
-        static_cast<CSSPrimitiveValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case ReflectClass:
-        static_cast<CSSReflectValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case ShadowClass:
-        static_cast<CSSShadowValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case CubicBezierTimingFunctionClass:
-        static_cast<CSSCubicBezierTimingFunctionValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case StepsTimingFunctionClass:
-        static_cast<CSSStepsTimingFunctionValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case UnicodeRangeClass:
-        static_cast<CSSUnicodeRangeValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case ValueListClass:
-        static_cast<CSSValueList*>(this)->traceAfterDispatch(visitor);
-        return;
-    case CSSTransformClass:
-        static_cast<CSSTransformValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case LineBoxContainClass:
-        static_cast<CSSLineBoxContainValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case CalculationClass:
-        static_cast<CSSCalcValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case ImageSetClass:
-        static_cast<CSSImageSetValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case CSSFilterClass:
-        static_cast<CSSFilterValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case CSSArrayFunctionValueClass:
-        static_cast<CSSArrayFunctionValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    case SVGPaintClass:
-        static_cast<SVGPaint*>(this)->traceAfterDispatch(visitor);
-        return;
-    case CSSSVGDocumentClass:
-        static_cast<CSSSVGDocumentValue*>(this)->traceAfterDispatch(visitor);
-        return;
-    }
-    ASSERT_NOT_REACHED();
-}
-
-PassRefPtrWillBeRawPtr<CSSValue> CSSValue::cloneForCSSOM() const
+PassRefPtr<CSSValue> CSSValue::cloneForCSSOM() const
 {
     switch (classType()) {
     case PrimitiveClass:
@@ -630,7 +665,9 @@ PassRefPtrWillBeRawPtr<CSSValue> CSSValue::cloneForCSSOM() const
     case ImageSetClass:
         return toCSSImageSetValue(this)->cloneForCSSOM();
     case SVGPaintClass:
-        return toSVGPaint(this)->cloneForCSSOM();
+		ASSERT(false);
+		return nullptr;
+        //return toSVGPaint(this)->cloneForCSSOM();
     default:
         ASSERT(!isSubtypeExposedToCSSOM());
         return TextCloneCSSValue::create(classType(), cssText());

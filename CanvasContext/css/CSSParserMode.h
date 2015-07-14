@@ -35,7 +35,6 @@
 
 namespace WebCore {
 
-class Document;
 
 // Must not grow beyond 3 bits, due to packing in StylePropertySet.
 enum CSSParserMode {
@@ -96,7 +95,7 @@ public:
     CSSParserContext(CSSParserMode, UseCounter*);
     // FIXME: We shouldn't need the UseCounter argument as we could infer it from the Document
     // but some callers want to disable use counting (e.g. the WebInspector).
-    CSSParserContext(const Document&, UseCounter*, const KURL& baseURL = KURL(), const String& charset = emptyString());
+    //CSSParserContext(const Document&, UseCounter*, const KURL& baseURL = KURL(), const String& charset = emptyString());
     // FIXME: This constructor shouldn't exist if we properly piped the UseCounter through the CSS
     // subsystem. Currently the UseCounter life time is too crazy and we need a way to override it.
     CSSParserContext(const CSSParserContext&, UseCounter*);
