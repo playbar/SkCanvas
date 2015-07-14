@@ -30,9 +30,9 @@
 
 #include "config.h"
 #include "css/CSSToLengthConversionData.h"
+#include "algorithm"
 
 //#include "core/rendering/RenderView.h"
-#include "style/RenderStyle.h"
 
 namespace WebCore {
 
@@ -72,29 +72,34 @@ CSSToLengthConversionData::CSSToLengthConversionData(const RenderStyle* style, c
 
 float CSSToLengthConversionData::zoom() const
 {
-    if (m_useEffectiveZoom)
-        return m_style ? m_style->effectiveZoom() : 1;
+	ASSERT(false);
+    //if (m_useEffectiveZoom)
+    //    return m_style ? m_style->effectiveZoom() : 1;
     return m_zoom;
 }
 
 double CSSToLengthConversionData::viewportWidthPercent() const
 {
-    m_style->setHasViewportUnits();
+	ASSERT(false);
+    //m_style->setHasViewportUnits();
     return m_viewportWidth / 100;
 }
 double CSSToLengthConversionData::viewportHeightPercent() const
 {
-    m_style->setHasViewportUnits();
+	ASSERT(false);
+    //m_style->setHasViewportUnits();
     return m_viewportHeight / 100;
 }
 double CSSToLengthConversionData::viewportMinPercent() const
 {
-    m_style->setHasViewportUnits();
+	ASSERT(false);
+    //m_style->setHasViewportUnits();
     return std::min(m_viewportWidth, m_viewportHeight) / 100;
 }
 double CSSToLengthConversionData::viewportMaxPercent() const
 {
-    m_style->setHasViewportUnits();
+	ASSERT(false);
+    //m_style->setHasViewportUnits();
     return std::max(m_viewportWidth, m_viewportHeight) / 100;
 }
 

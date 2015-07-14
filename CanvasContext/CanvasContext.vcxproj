@@ -100,6 +100,8 @@
     <ClCompile Include="css\resolver\CSSToStyleMap.cpp" />
     <ClCompile Include="css\resolver\ElementStyleResources.cpp" />
     <ClCompile Include="css\RGBColor.cpp" />
+    <ClCompile Include="css\RuntimeCSSEnabled.cpp" />
+    <ClCompile Include="css\StylePropertySerializer.cpp" />
     <ClCompile Include="css\StylePropertySet.cpp" />
     <ClCompile Include="dom\QualifiedName.cpp" />
     <ClCompile Include="dom\TextLinkColors.cpp" />
@@ -285,7 +287,9 @@
     <ClInclude Include="css\resolver\CSSToStyleMap.h" />
     <ClInclude Include="css\resolver\ElementStyleResources.h" />
     <ClInclude Include="css\RGBColor.h" />
+    <ClInclude Include="css\RuntimeCSSEnabled.h" />
     <ClInclude Include="css\StyleColor.h" />
+    <ClInclude Include="css\StylePropertySerializer.h" />
     <ClInclude Include="css\StylePropertySet.h" />
     <ClInclude Include="dom\HTMLParserIdioms.h" />
     <ClInclude Include="dom\QualifiedName.h" />

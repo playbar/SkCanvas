@@ -39,7 +39,7 @@ class ImmutableStylePropertySet;
 class KURL;
 class MutableStylePropertySet;
 class StylePropertyShorthand;
-class StyleSheetContents;
+//class StyleSheetContents;
 
 class StylePropertySet : public RefCounted<StylePropertySet> {
     friend class PropertyReference;
@@ -204,7 +204,7 @@ public:
     void addParsedProperty(const CSSProperty&);
 
     // These expand shorthand properties into multiple properties.
-    bool setProperty(CSSPropertyID, const String& value, bool important = false, StyleSheetContents* contextStyleSheet = 0);
+    //bool setProperty(CSSPropertyID, const String& value, bool important = false, StyleSheetContents* contextStyleSheet = 0);
     void setProperty(CSSPropertyID, PassRefPtr<CSSValue>, bool important = false);
 
     // These do not. FIXME: This is too messy, we can do better.
@@ -224,7 +224,7 @@ public:
     void mergeAndOverrideOnConflict(const StylePropertySet*);
 
     void clear();
-    void parseDeclaration(const String& styleDeclaration, StyleSheetContents* contextStyleSheet);
+    //void parseDeclaration(const String& styleDeclaration, StyleSheetContents* contextStyleSheet);
 
     CSSStyleDeclaration* ensureCSSStyleDeclaration();
     int findPropertyIndex(CSSPropertyID) const;

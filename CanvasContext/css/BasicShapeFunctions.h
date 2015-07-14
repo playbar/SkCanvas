@@ -39,11 +39,7 @@ class BasicShape;
 class CSSBasicShape;
 class CSSValue;
 class FloatPoint;
-class StyleResolverState;
-class RenderStyle;
 
-PassRefPtr<CSSValue> valueForBasicShape(const RenderStyle&, const BasicShape*);
-PassRefPtr<BasicShape> basicShapeForValue(const StyleResolverState&, const CSSBasicShape*);
 FloatPoint floatPointForCenterCoordinate(const BasicShapeCenterCoordinate&, const BasicShapeCenterCoordinate&, FloatSize);
 
 }

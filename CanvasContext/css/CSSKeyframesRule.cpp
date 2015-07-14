@@ -28,20 +28,16 @@
 
 #include "css/CSSKeyframeRule.h"
 #include "css/BisonCSSParser.h"
-#include "css/CSSRuleList.h"
-#include "css/CSSStyleSheet.h"
 #include "wtf/text/StringBuilder.h"
 
 namespace WebCore {
 
 StyleRuleKeyframes::StyleRuleKeyframes()
-    : StyleRuleBase(Keyframes)
 {
 }
 
 StyleRuleKeyframes::StyleRuleKeyframes(const StyleRuleKeyframes& o)
-    : StyleRuleBase(o)
-    , m_keyframes(o.m_keyframes)
+    : m_keyframes(o.m_keyframes)
     , m_name(o.m_name)
     , m_isPrefixed(o.m_isPrefixed)
 {
@@ -113,37 +109,39 @@ void CSSKeyframesRule::setName(const String& name)
 
 void CSSKeyframesRule::insertRule(const String& ruleText)
 {
-    ASSERT(m_childRuleCSSOMWrappers.size() == m_keyframesRule->keyframes().size());
+	ASSERT(false);
+    //ASSERT(m_childRuleCSSOMWrappers.size() == m_keyframesRule->keyframes().size());
 
-    CSSStyleSheet* styleSheet = parentStyleSheet();
-    CSSParserContext context(parserContext(), UseCounter::getFrom(styleSheet));
-    BisonCSSParser parser(context);
-    RefPtr<StyleKeyframe> keyframe = parser.parseKeyframeRule(styleSheet ? styleSheet->contents() : 0, ruleText);
-    if (!keyframe)
-        return;
+    //CSSStyleSheet* styleSheet = parentStyleSheet();
+    //CSSParserContext context(parserContext(), UseCounter::getFrom(styleSheet));
+    //BisonCSSParser parser(context);
+    //RefPtr<StyleKeyframe> keyframe = parser.parseKeyframeRule(styleSheet ? styleSheet->contents() : 0, ruleText);
+    //if (!keyframe)
+    //    return;
 
-    CSSStyleSheet::RuleMutationScope mutationScope(this);
+    //CSSStyleSheet::RuleMutationScope mutationScope(this);
 
-    m_keyframesRule->wrapperAppendKeyframe(keyframe);
+    //m_keyframesRule->wrapperAppendKeyframe(keyframe);
 
-    m_childRuleCSSOMWrappers.grow(length());
+    //m_childRuleCSSOMWrappers.grow(length());
 }
 
 void CSSKeyframesRule::deleteRule(const String& s)
 {
-    ASSERT(m_childRuleCSSOMWrappers.size() == m_keyframesRule->keyframes().size());
+	ASSERT(false);
+    //ASSERT(m_childRuleCSSOMWrappers.size() == m_keyframesRule->keyframes().size());
 
-    int i = m_keyframesRule->findKeyframeIndex(s);
-    if (i < 0)
-        return;
+    //int i = m_keyframesRule->findKeyframeIndex(s);
+    //if (i < 0)
+    //    return;
 
-    CSSStyleSheet::RuleMutationScope mutationScope(this);
+    //CSSStyleSheet::RuleMutationScope mutationScope(this);
 
-    m_keyframesRule->wrapperRemoveKeyframe(i);
+    //m_keyframesRule->wrapperRemoveKeyframe(i);
 
-    if (m_childRuleCSSOMWrappers[i])
-        m_childRuleCSSOMWrappers[i]->setParentRule(0);
-    m_childRuleCSSOMWrappers.remove(i);
+    //if (m_childRuleCSSOMWrappers[i])
+    //    m_childRuleCSSOMWrappers[i]->setParentRule(0);
+    //m_childRuleCSSOMWrappers.remove(i);
 }
 
 CSSKeyframeRule* CSSKeyframesRule::findRule(const String& s)
@@ -183,34 +181,29 @@ CSSKeyframeRule* CSSKeyframesRule::item(unsigned index) const
         return 0;
 
     ASSERT(m_childRuleCSSOMWrappers.size() == m_keyframesRule->keyframes().size());
-    RefPtrWillBeMember<CSSKeyframeRule>& rule = m_childRuleCSSOMWrappers[index];
+    RefPtr<CSSKeyframeRule>& rule = m_childRuleCSSOMWrappers[index];
     if (!rule)
-        rule = adoptRefWillBeNoop(new CSSKeyframeRule(m_keyframesRule->keyframes()[index].get(), const_cast<CSSKeyframesRule*>(this)));
+        rule = adoptRef(new CSSKeyframeRule(m_keyframesRule->keyframes()[index].get(), const_cast<CSSKeyframesRule*>(this)));
 
     return rule.get();
 }
 
 CSSRuleList* CSSKeyframesRule::cssRules()
 {
-    if (!m_ruleListCSSOMWrapper)
-        m_ruleListCSSOMWrapper = LiveCSSRuleList<CSSKeyframesRule>::create(this);
-    return m_ruleListCSSOMWrapper.get();
+	ASSERT(false);
+	return nullptr;
+    //if (!m_ruleListCSSOMWrapper)
+    //    m_ruleListCSSOMWrapper = LiveCSSRuleList<CSSKeyframesRule>::create(this);
+    //return m_ruleListCSSOMWrapper.get();
 }
 
 void CSSKeyframesRule::reattach(StyleRuleBase* rule)
 {
     ASSERT(rule);
-    m_keyframesRule = toStyleRuleKeyframes(rule);
+	ASSERT(false);
+    //m_keyframesRule = toStyleRuleKeyframes(rule);
 }
 
-void CSSKeyframesRule::trace(Visitor* visitor)
-{
-    CSSRule::trace(visitor);
-#if ENABLE(OILPAN)
-    visitor->trace(m_childRuleCSSOMWrappers);
-#endif
-    visitor->trace(m_keyframesRule);
-    visitor->trace(m_ruleListCSSOMWrapper);
-}
+
 
 } // namespace WebCore

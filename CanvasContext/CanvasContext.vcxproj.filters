@@ -636,6 +636,12 @@
     <ClCompile Include="css\RGBColor.cpp">
       <Filter>css</Filter>
     </ClCompile>
+    <ClCompile Include="css\StylePropertySerializer.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\RuntimeCSSEnabled.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -1212,6 +1218,12 @@
       <Filter>dom</Filter>
     </ClInclude>
     <ClInclude Include="css\RGBColor.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\StylePropertySerializer.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\RuntimeCSSEnabled.h">
       <Filter>css</Filter>
     </ClInclude>
   </ItemGroup>

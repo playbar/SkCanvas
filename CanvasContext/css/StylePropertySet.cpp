@@ -27,9 +27,8 @@
 #include "StylePropertyShorthand.h"
 #include "css/BisonCSSParser.h"
 #include "css/CSSValuePool.h"
-#include "css/RuntimeCSSEnabled.h"
 #include "css/StylePropertySerializer.h"
-#include "css/StyleSheetContents.h"
+//#include "css/StyleSheetContents.h"
 //#include "core/frame/UseCounter.h"
 #include "wtf/text/StringBuilder.h"
 
@@ -83,7 +82,7 @@ ImmutableStylePropertySet::ImmutableStylePropertySet(const CSSProperty* properti
     : StylePropertySet(cssParserMode, length)
 {
     StylePropertyMetadata* metadataArray = const_cast<StylePropertyMetadata*>(this->metadataArray());
-    RawPtrWillBeMember<CSSValue>* valueArray = const_cast<RawPtrWillBeMember<CSSValue>*>(this->valueArray());
+    RawPtr<CSSValue>* valueArray = const_cast<RawPtr<CSSValue>*>(this->valueArray());
     for (unsigned i = 0; i < m_arraySize; ++i) {
         metadataArray[i] = properties[i].metadata();
         valueArray[i] = properties[i].value();
@@ -94,7 +93,7 @@ ImmutableStylePropertySet::ImmutableStylePropertySet(const CSSProperty* properti
 ImmutableStylePropertySet::~ImmutableStylePropertySet()
 {
 #if !ENABLE(OILPAN)
-    RawPtrWillBeMember<CSSValue>* valueArray = const_cast<RawPtrWillBeMember<CSSValue>*>(this->valueArray());
+    RawPtr<CSSValue>* valueArray = const_cast<RawPtr<CSSValue>*>(this->valueArray());
     for (unsigned i = 0; i < m_arraySize; ++i)
         valueArray[i]->deref();
 #endif
@@ -108,20 +107,11 @@ int ImmutableStylePropertySet::findPropertyIndex(CSSPropertyID propertyID) const
     for (int n = m_arraySize - 1 ; n >= 0; --n) {
         if (metadataArray()[n].m_propertyID == id) {
             // Only enabled or internal properties should be part of the style.
-            ASSERT(RuntimeCSSEnabled::isCSSPropertyEnabled(propertyID) || isInternalProperty(propertyID));
             return n;
         }
     }
 
     return -1;
-}
-
-void ImmutableStylePropertySet::traceAfterDispatch(Visitor* visitor)
-{
-    const RawPtrWillBeMember<CSSValue>* values = valueArray();
-    for (unsigned i = 0; i < m_arraySize; i++)
-        visitor->trace(values[i]);
-    StylePropertySet::traceAfterDispatch(visitor);
 }
 
 MutableStylePropertySet::MutableStylePropertySet(const StylePropertySet& other)
@@ -153,13 +143,6 @@ PassRefPtr<CSSValue> StylePropertySet::getPropertyCSSValue(CSSPropertyID propert
     return propertyAt(foundPropertyIndex).value();
 }
 
-void StylePropertySet::trace(Visitor* visitor)
-{
-    if (m_isMutable)
-        toMutableStylePropertySet(this)->traceAfterDispatch(visitor);
-    else
-        toImmutableStylePropertySet(this)->traceAfterDispatch(visitor);
-}
 
 #if ENABLE(OILPAN)
 void StylePropertySet::finalize()
@@ -255,18 +238,18 @@ bool StylePropertySet::isPropertyImplicit(CSSPropertyID propertyID) const
         return false;
     return propertyAt(foundPropertyIndex).isImplicit();
 }
-
-bool MutableStylePropertySet::setProperty(CSSPropertyID propertyID, const String& value, bool important, StyleSheetContents* contextStyleSheet)
-{
-    // Setting the value to an empty string just removes the property in both IE and Gecko.
-    // Setting it to null seems to produce less consistent results, but we treat it just the same.
-    if (value.isEmpty())
-        return removeProperty(propertyID);
-
-    // When replacing an existing property value, this moves the property to the end of the list.
-    // Firefox preserves the position, and MSIE moves the property to the beginning.
-    return BisonCSSParser::parseValue(this, propertyID, value, important, cssParserMode(), contextStyleSheet);
-}
+//
+//bool MutableStylePropertySet::setProperty(CSSPropertyID propertyID, const String& value, bool important, StyleSheetContents* contextStyleSheet)
+//{
+//    // Setting the value to an empty string just removes the property in both IE and Gecko.
+//    // Setting it to null seems to produce less consistent results, but we treat it just the same.
+//    if (value.isEmpty())
+//        return removeProperty(propertyID);
+//
+//    // When replacing an existing property value, this moves the property to the end of the list.
+//    // Firefox preserves the position, and MSIE moves the property to the beginning.
+//    return BisonCSSParser::parseValue(this, propertyID, value, important, cssParserMode(), contextStyleSheet);
+//}
 
 void MutableStylePropertySet::setProperty(CSSPropertyID propertyID, PassRefPtr<CSSValue> prpValue, bool important)
 {
@@ -336,24 +319,24 @@ bool MutableStylePropertySet::setProperty(CSSPropertyID propertyID, CSSPropertyI
     setProperty(CSSProperty(propertyID, cssValuePool().createIdentifierValue(identifier), important));
     return true;
 }
+//
+//void MutableStylePropertySet::parseDeclaration(const String& styleDeclaration, StyleSheetContents* contextStyleSheet)
+//{
+//    m_propertyVector.clear();
+//
+//	ASSERT(false);
+//    //CSSParserContext context(cssParserMode(), UseCounter::getFrom(contextStyleSheet));
+//    //if (contextStyleSheet) {
+//    //    context = contextStyleSheet->parserContext();
+//    //    context.setMode(cssParserMode());
+//    //}
+//
+//    //BisonCSSParser parser(context);
+//    //parser.parseDeclaration(this, styleDeclaration, 0, contextStyleSheet);
+//
+//}
 
-void MutableStylePropertySet::parseDeclaration(const String& styleDeclaration, StyleSheetContents* contextStyleSheet)
-{
-    m_propertyVector.clear();
-
-	ASSERT(false);
-    //CSSParserContext context(cssParserMode(), UseCounter::getFrom(contextStyleSheet));
-    //if (contextStyleSheet) {
-    //    context = contextStyleSheet->parserContext();
-    //    context.setMode(cssParserMode());
-    //}
-
-    //BisonCSSParser parser(context);
-    //parser.parseDeclaration(this, styleDeclaration, 0, contextStyleSheet);
-
-}
-
-void MutableStylePropertySet::addParsedProperties(const WillBeHeapVector<CSSProperty, 256>& properties)
+void MutableStylePropertySet::addParsedProperties(const Vector<CSSProperty, 256>& properties)
 {
     m_propertyVector.reserveCapacity(m_propertyVector.size() + properties.size());
     for (unsigned i = 0; i < properties.size(); ++i)
@@ -423,8 +406,9 @@ static const CSSPropertyID staticBlockProperties[] = {
 static const Vector<CSSPropertyID>& blockProperties()
 {
     DEFINE_STATIC_LOCAL(Vector<CSSPropertyID>, properties, ());
-    if (properties.isEmpty())
-        RuntimeCSSEnabled::filterEnabledCSSPropertiesIntoVector(staticBlockProperties, WTF_ARRAY_LENGTH(staticBlockProperties), properties);
+	ASSERT(false);
+    //if (properties.isEmpty())
+        //RuntimeCSSEnabled::filterEnabledCSSPropertiesIntoVector(staticBlockProperties, WTF_ARRAY_LENGTH(staticBlockProperties), properties);
     return properties;
 }
 
@@ -453,7 +437,7 @@ bool MutableStylePropertySet::removePropertiesInSet(const CSSPropertyID* set, un
     for (unsigned i = 0; i < length; ++i)
         toRemove.add(set[i]);
 
-    WillBeHeapVector<CSSProperty> newProperties;
+    Vector<CSSProperty> newProperties;
     newProperties.reserveInitialCapacity(m_propertyVector.size());
 
     unsigned size = m_propertyVector.size();
@@ -523,7 +507,7 @@ PassRefPtr<MutableStylePropertySet> StylePropertySet::mutableCopy() const
 
 PassRefPtr<MutableStylePropertySet> StylePropertySet::copyPropertiesInSet(const Vector<CSSPropertyID>& properties) const
 {
-    WillBeHeapVector<CSSProperty, 256> list;
+    Vector<CSSProperty, 256> list;
     list.reserveInitialCapacity(properties.size());
     for (unsigned i = 0; i < properties.size(); ++i) {
         RefPtr<CSSValue> value = getPropertyCSSValue(properties[i]);
@@ -554,18 +538,11 @@ int MutableStylePropertySet::findPropertyIndex(CSSPropertyID propertyID) const
     for (int n = m_propertyVector.size() - 1 ; n >= 0; --n) {
         if (m_propertyVector.at(n).metadata().m_propertyID == id) {
             // Only enabled or internal properties should be part of the style.
-            ASSERT(RuntimeCSSEnabled::isCSSPropertyEnabled(propertyID) || isInternalProperty(propertyID));
             return n;
         }
     }
 
     return -1;
-}
-
-void MutableStylePropertySet::traceAfterDispatch(Visitor* visitor)
-{
-    visitor->trace(m_propertyVector);
-    StylePropertySet::traceAfterDispatch(visitor);
 }
 
 unsigned StylePropertySet::averageSizeInBytes()
@@ -575,10 +552,9 @@ unsigned StylePropertySet::averageSizeInBytes()
 }
 
 // See the function above if you need to update this.
-struct SameSizeAsStylePropertySet : public RefCountedWillBeRefCountedGarbageCollected<SameSizeAsStylePropertySet> {
+struct SameSizeAsStylePropertySet : public RefCounted<SameSizeAsStylePropertySet> {
     unsigned bitfield;
 };
-COMPILE_ASSERT(sizeof(StylePropertySet) == sizeof(SameSizeAsStylePropertySet), style_property_set_should_stay_small);
 
 #ifndef NDEBUG
 void StylePropertySet::showStyle()
