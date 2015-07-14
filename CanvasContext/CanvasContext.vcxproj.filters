@@ -543,9 +543,6 @@
     <ClCompile Include="css\BasicShapeFunctions.cpp">
       <Filter>css</Filter>
     </ClCompile>
-    <ClCompile Include="css\resolver\StyleResolverState.cpp">
-      <Filter>css\resolver</Filter>
-    </ClCompile>
     <ClCompile Include="css\resolver\CSSToStyleMap.cpp">
       <Filter>css\resolver</Filter>
     </ClCompile>
@@ -1117,9 +1114,6 @@
     </ClInclude>
     <ClInclude Include="css\BasicShapeFunctions.h">
       <Filter>css</Filter>
-    </ClInclude>
-    <ClInclude Include="css\resolver\StyleResolverState.h">
-      <Filter>css\resolver</Filter>
     </ClInclude>
     <ClInclude Include="css\resolver\CSSToStyleMap.h">
       <Filter>css\resolver</Filter>

@@ -30,13 +30,13 @@
 #include "css/CSSKeyframeRule.h"
 #include "css/BisonCSSParser.h"
 #include "css/CSSParserValues.h"
-#include "css/StyleRule.h"
+//#include "css/StyleRule.h"
 //#include "core/html/parser/HTMLParserIdioms.h"
 //#include "core/svg/SVGParserUtilities.h"
 
 namespace WebCore {
 
-#include "CSSGrammar.h"
+//#include "CSSGrammar.h"
 
 enum CharacterType {
     // Types for the main switch.

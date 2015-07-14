@@ -100,7 +100,6 @@
     <ClCompile Include="css\Rect.cpp" />
     <ClCompile Include="css\resolver\CSSToStyleMap.cpp" />
     <ClCompile Include="css\resolver\ElementStyleResources.cpp" />
-    <ClCompile Include="css\resolver\StyleResolverState.cpp" />
     <ClCompile Include="css\RGBColor.cpp" />
     <ClCompile Include="css\StylePropertySet.cpp" />
     <ClCompile Include="dom\QualifiedName.cpp" />
@@ -287,7 +286,6 @@
     <ClInclude Include="css\Rect.h" />
     <ClInclude Include="css\resolver\CSSToStyleMap.h" />
     <ClInclude Include="css\resolver\ElementStyleResources.h" />
-    <ClInclude Include="css\resolver\StyleResolverState.h" />
     <ClInclude Include="css\RGBColor.h" />
     <ClInclude Include="css\StyleColor.h" />
     <ClInclude Include="css\StylePropertySet.h" />
