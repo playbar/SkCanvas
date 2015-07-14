@@ -87,7 +87,6 @@
     <ClCompile Include="css\CSSSelector.cpp" />
     <ClCompile Include="css\CSSSelectorList.cpp" />
     <ClCompile Include="css\CSSShadowValue.cpp" />
-    <ClCompile Include="css\CSSTokenizer.cpp" />
     <ClCompile Include="css\CSSToLengthConversionData.cpp" />
     <ClCompile Include="css\CSSTransformValue.cpp" />
     <ClCompile Include="css\CSSUnicodeRangeValue.cpp" />
@@ -272,7 +271,6 @@
     <ClInclude Include="css\CSSSelector.h" />
     <ClInclude Include="css\CSSSelectorList.h" />
     <ClInclude Include="css\CSSShadowValue.h" />
-    <ClInclude Include="css\CSSTokenizer.h" />
     <ClInclude Include="css\CSSToLengthConversionData.h" />
     <ClInclude Include="css\CSSTransformValue.h" />
     <ClInclude Include="css\CSSUnicodeRangeValue.h" />

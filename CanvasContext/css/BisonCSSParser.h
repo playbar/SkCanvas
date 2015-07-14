@@ -33,7 +33,7 @@
 #include "css/CSSProperty.h"
 #include "css/CSSPropertySourceData.h"
 #include "css/CSSSelector.h"
-#include "css/CSSTokenizer.h"
+//#include "css/CSSTokenizer.h"
 #include "css/StylePropertySet.h"
 //#include "css/CSSParserObserver.h"
 #include "css/CSSPropertyParser.h"
@@ -223,7 +223,7 @@ public:
     void markViewportRuleBodyEnd() { m_inViewport = false; }
     //StyleRuleBase* createViewportRule();
 
-    CSSParserLocation currentLocation() { return m_tokenizer.currentLocation(); }
+    //CSSParserLocation currentLocation() { return m_tokenizer.currentLocation(); }
 
 private:
     class StyleDeclarationScope {
@@ -310,16 +310,16 @@ private:
     bool isLoggingErrors();
     void logError(const String& message, const CSSParserLocation&);
 
-    CSSTokenizer m_tokenizer;
+    //CSSTokenizer m_tokenizer;
 
     friend class TransformOperationInfo;
     friend class FilterOperationInfo;
 };
 
-inline int cssyylex(void* yylval, BisonCSSParser* parser)
-{
-    return parser->m_tokenizer.lex(yylval);
-}
+//inline int cssyylex(void* yylval, BisonCSSParser* parser)
+//{
+//    return parser->m_tokenizer.lex(yylval);
+//}
 
 bool isValidNthToken(const CSSParserString&);
 

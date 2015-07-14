@@ -594,9 +594,6 @@
     <ClCompile Include="css\CSSPropertySourceData.cpp">
       <Filter>css</Filter>
     </ClCompile>
-    <ClCompile Include="css\CSSTokenizer.cpp">
-      <Filter>css</Filter>
-    </ClCompile>
     <ClCompile Include="css\CSSKeyframeRule.cpp">
       <Filter>css</Filter>
     </ClCompile>
@@ -1167,9 +1164,6 @@
       <Filter>blink</Filter>
     </ClInclude>
     <ClInclude Include="css\CSSPropertySourceData.h">
-      <Filter>css</Filter>
-    </ClInclude>
-    <ClInclude Include="css\CSSTokenizer.h">
       <Filter>css</Filter>
     </ClInclude>
     <ClInclude Include="css\CSSKeyframeRule.h">

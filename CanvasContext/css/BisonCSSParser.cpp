@@ -114,7 +114,7 @@ BisonCSSParser::BisonCSSParser(const CSSParserContext& context)
     , m_allowImportRules(true)
     , m_allowNamespaceDeclarations(true)
     , m_inViewport(false)
-    , m_tokenizer(*this)
+    //, m_tokenizer(*this)
 {
 #if YYDEBUG > 0
     cssyydebug = 1;
@@ -134,7 +134,7 @@ BisonCSSParser::~BisonCSSParser()
 
 void BisonCSSParser::setupParser(const char* prefix, unsigned prefixLength, const String& string, const char* suffix, unsigned suffixLength)
 {
-    m_tokenizer.setupTokenizer(prefix, prefixLength, string, suffix, suffixLength);
+    //m_tokenizer.setupTokenizer(prefix, prefixLength, string, suffix, suffixLength);
     m_ruleHasHeader = true;
 }
 //
@@ -1780,7 +1780,8 @@ void BisonCSSParser::markSupportsRuleHeaderStart()
         m_supportsRuleDataStack = adoptPtr(new RuleSourceDataList());
 
     RefPtr<CSSRuleSourceData> data = CSSRuleSourceData::create(CSSRuleSourceData::SUPPORTS_RULE);
-    data->ruleHeaderRange.start = m_tokenizer.tokenStartOffset();
+	ASSERT(false);
+    //data->ruleHeaderRange.start = m_tokenizer.tokenStartOffset();
     m_supportsRuleDataStack->append(data);
 }
 
@@ -1788,10 +1789,12 @@ void BisonCSSParser::markSupportsRuleHeaderEnd()
 {
     ASSERT(m_supportsRuleDataStack && !m_supportsRuleDataStack->isEmpty());
 
-    if (m_tokenizer.is8BitSource())
-        m_supportsRuleDataStack->last()->ruleHeaderRange.end = m_tokenizer.tokenStart<LChar>() - m_tokenizer.m_dataStart8.get();
-    else
-        m_supportsRuleDataStack->last()->ruleHeaderRange.end = m_tokenizer.tokenStart<UChar>() - m_tokenizer.m_dataStart16.get();
+	ASSERT(false);
+    //if (m_tokenizer.is8BitSource())
+    //    m_supportsRuleDataStack->last()->ruleHeaderRange.end = m_tokenizer.tokenStart<LChar>() - m_tokenizer.m_dataStart8.get();
+    //else
+    //    m_supportsRuleDataStack->last()->ruleHeaderRange.end = m_tokenizer.tokenStart<UChar>() - m_tokenizer.m_dataStart16.get();
+
 }
 
 PassRefPtr<CSSRuleSourceData> BisonCSSParser::popSupportsRuleData()
@@ -1842,14 +1845,15 @@ ALWAYS_INLINE static void makeLower(const CharacterType* input, CharacterType* o
 
 void BisonCSSParser::tokenToLowerCase(const CSSParserString& token)
 {
-    size_t length = token.length();
-    if (m_tokenizer.is8BitSource()) {
-        size_t offset = token.characters8() - m_tokenizer.m_dataStart8.get();
-        makeLower(token.characters8(), m_tokenizer.m_dataStart8.get() + offset, length);
-    } else {
-        size_t offset = token.characters16() - m_tokenizer.m_dataStart16.get();
-        makeLower(token.characters16(), m_tokenizer.m_dataStart16.get() + offset, length);
-    }
+	ASSERT(false);
+    //size_t length = token.length();
+    //if (m_tokenizer.is8BitSource()) {
+    //    size_t offset = token.characters8() - m_tokenizer.m_dataStart8.get();
+    //    makeLower(token.characters8(), m_tokenizer.m_dataStart8.get() + offset, length);
+    //} else {
+    //    size_t offset = token.characters16() - m_tokenizer.m_dataStart16.get();
+    //    makeLower(token.characters16(), m_tokenizer.m_dataStart16.get() + offset, length);
+    //}
 }
 
 void BisonCSSParser::endInvalidRuleHeader()
@@ -1858,12 +1862,13 @@ void BisonCSSParser::endInvalidRuleHeader()
         return;
 
     CSSParserLocation location;
-    location.lineNumber = m_tokenizer.m_lineNumber;
+	ASSERT(false);
+    //location.lineNumber = m_tokenizer.m_lineNumber;
     location.offset = m_ruleHeaderStartOffset;
-    if (m_tokenizer.is8BitSource())
-        location.token.init(m_tokenizer.m_dataStart8.get() + m_ruleHeaderStartOffset, 0);
-    else
-        location.token.init(m_tokenizer.m_dataStart16.get() + m_ruleHeaderStartOffset, 0);
+    //if (m_tokenizer.is8BitSource())
+    //    location.token.init(m_tokenizer.m_dataStart8.get() + m_ruleHeaderStartOffset, 0);
+    //else
+    //    location.token.init(m_tokenizer.m_dataStart16.get() + m_ruleHeaderStartOffset, 0);
 
     //reportError(location, m_ruleHeaderType == CSSRuleSourceData::STYLE_RULE ? InvalidSelectorCSSError : InvalidRuleCSSError);
 
@@ -2212,8 +2217,8 @@ void BisonCSSParser::startRuleHeader(CSSRuleSourceData::Type ruleType)
 {
     resumeErrorLogging();
     m_ruleHeaderType = ruleType;
-    m_ruleHeaderStartOffset = m_tokenizer.safeUserStringTokenOffset();
-    m_ruleHeaderStartLineNumber = m_tokenizer.m_tokenStartLineNumber;
+    //m_ruleHeaderStartOffset = m_tokenizer.safeUserStringTokenOffset();
+    //m_ruleHeaderStartLineNumber = m_tokenizer.m_tokenStartLineNumber;
 	ASSERT(false);
     //if (m_observer) {
     //    ASSERT(!m_ruleHasHeader);
