@@ -101,6 +101,7 @@
     <ClCompile Include="css\resolver\CSSToStyleMap.cpp" />
     <ClCompile Include="css\resolver\ElementStyleResources.cpp" />
     <ClCompile Include="css\resolver\StyleResolverState.cpp" />
+    <ClCompile Include="css\RGBColor.cpp" />
     <ClCompile Include="css\StylePropertySet.cpp" />
     <ClCompile Include="dom\QualifiedName.cpp" />
     <ClCompile Include="dom\TextLinkColors.cpp" />
@@ -200,7 +201,6 @@
     <ClCompile Include="style\BasicShapes.cpp" />
     <ClCompile Include="style\CounterDirectives.cpp" />
     <ClCompile Include="style\NinePieceImage.cpp" />
-    <ClCompile Include="style\RenderStyle.cpp" />
     <ClCompile Include="style\StyleGeneratedImage.cpp" />
     <ClCompile Include="url\KnownPorts.cpp" />
     <ClCompile Include="url\KURL.cpp" />
@@ -288,6 +288,7 @@
     <ClInclude Include="css\resolver\CSSToStyleMap.h" />
     <ClInclude Include="css\resolver\ElementStyleResources.h" />
     <ClInclude Include="css\resolver\StyleResolverState.h" />
+    <ClInclude Include="css\RGBColor.h" />
     <ClInclude Include="css\StyleColor.h" />
     <ClInclude Include="css\StylePropertySet.h" />
     <ClInclude Include="dom\HTMLParserIdioms.h" />
@@ -388,7 +389,6 @@
     <ClInclude Include="style\LineClampValue.h" />
     <ClInclude Include="style\NinePieceImage.h" />
     <ClInclude Include="style\OutlineValue.h" />
-    <ClInclude Include="style\RenderStyle.h" />
     <ClInclude Include="style\RenderStyleConstants.h" />
     <ClInclude Include="style\ShapeValue.h" />
     <ClInclude Include="style\StyleGeneratedImage.h" />

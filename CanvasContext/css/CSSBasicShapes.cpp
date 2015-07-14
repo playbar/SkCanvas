@@ -201,14 +201,6 @@ bool CSSBasicShapeCircle::equals(const CSSBasicShape& shape) const
         && compareCSSValuePtr(m_layoutBox, other.m_layoutBox);
 }
 
-void CSSBasicShapeCircle::trace(Visitor* visitor)
-{
-    visitor->trace(m_centerX);
-    visitor->trace(m_centerY);
-    visitor->trace(m_radius);
-    CSSBasicShape::trace(visitor);
-}
-
 static String buildDeprecatedCircleString(const String& x, const String& y, const String& radius)
 {
     return "circle(" + x + ", " + y + ", " + radius + ')';
@@ -228,14 +220,6 @@ bool CSSDeprecatedBasicShapeCircle::equals(const CSSBasicShape& shape) const
     return compareCSSValuePtr(m_centerX, other.m_centerX)
         && compareCSSValuePtr(m_centerY, other.m_centerY)
         && compareCSSValuePtr(m_radius, other.m_radius);
-}
-
-void CSSDeprecatedBasicShapeCircle::trace(Visitor* visitor)
-{
-    visitor->trace(m_centerX);
-    visitor->trace(m_centerY);
-    visitor->trace(m_radius);
-    CSSBasicShape::trace(visitor);
 }
 
 static String buildEllipseString(const String& radiusX, const String& radiusY, const String& centerX, const String& centerY, const String& box)
@@ -298,15 +282,6 @@ bool CSSBasicShapeEllipse::equals(const CSSBasicShape& shape) const
         && compareCSSValuePtr(m_layoutBox, other.m_layoutBox);
 }
 
-void CSSBasicShapeEllipse::trace(Visitor* visitor)
-{
-    visitor->trace(m_centerX);
-    visitor->trace(m_centerY);
-    visitor->trace(m_radiusX);
-    visitor->trace(m_radiusY);
-    CSSBasicShape::trace(visitor);
-}
-
 static String buildDeprecatedEllipseString(const String& x, const String& y, const String& radiusX, const String& radiusY)
 {
     return "ellipse(" + x + ", " + y + ", " + radiusX + ", " + radiusY + ')';
@@ -327,15 +302,6 @@ bool CSSDeprecatedBasicShapeEllipse::equals(const CSSBasicShape& shape) const
         && compareCSSValuePtr(m_centerY, other.m_centerY)
         && compareCSSValuePtr(m_radiusX, other.m_radiusX)
         && compareCSSValuePtr(m_radiusY, other.m_radiusY);
-}
-
-void CSSDeprecatedBasicShapeEllipse::trace(Visitor* visitor)
-{
-    visitor->trace(m_centerX);
-    visitor->trace(m_centerY);
-    visitor->trace(m_radiusX);
-    visitor->trace(m_radiusY);
-    CSSBasicShape::trace(visitor);
 }
 
 static String buildPolygonString(const WindRule& windRule, const Vector<String>& points, const String& layoutBox)
@@ -407,12 +373,6 @@ bool CSSBasicShapePolygon::equals(const CSSBasicShape& shape) const
     return compareCSSValueVector(m_values, rhs.m_values);
 }
 
-void CSSBasicShapePolygon::trace(Visitor* visitor)
-{
-    visitor->trace(m_values);
-    CSSBasicShape::trace(visitor);
-}
-
 static String buildInsetRectangleString(const String& top, const String& right, const String& bottom, const String& left, const String& radiusX, const String& radiusY, const String& layoutBox)
 {
     const char opening[] = "inset-rectangle(";
@@ -470,17 +430,6 @@ bool CSSBasicShapeInsetRectangle::equals(const CSSBasicShape& shape) const
         && compareCSSValuePtr(m_radiusX, other.m_radiusX)
         && compareCSSValuePtr(m_radiusY, other.m_radiusY)
         && compareCSSValuePtr(m_layoutBox, other.m_layoutBox);
-}
-
-void CSSBasicShapeInsetRectangle::trace(Visitor* visitor)
-{
-    visitor->trace(m_right);
-    visitor->trace(m_top);
-    visitor->trace(m_bottom);
-    visitor->trace(m_left);
-    visitor->trace(m_radiusX);
-    visitor->trace(m_radiusY);
-    CSSBasicShape::trace(visitor);
 }
 
 static String buildInsetString(const String& top, const String& right, const String& bottom, const String& left,
@@ -593,19 +542,6 @@ bool CSSBasicShapeInset::equals(const CSSBasicShape& shape) const
         && compareCSSValuePtr(m_topRightRadius, other.m_topRightRadius)
         && compareCSSValuePtr(m_bottomRightRadius, other.m_bottomRightRadius)
         && compareCSSValuePtr(m_bottomLeftRadius, other.m_bottomLeftRadius);
-}
-
-void CSSBasicShapeInset::trace(Visitor* visitor)
-{
-    visitor->trace(m_top);
-    visitor->trace(m_right);
-    visitor->trace(m_bottom);
-    visitor->trace(m_left);
-    visitor->trace(m_topLeftRadius);
-    visitor->trace(m_topRightRadius);
-    visitor->trace(m_bottomRightRadius);
-    visitor->trace(m_bottomLeftRadius);
-    CSSBasicShape::trace(visitor);
 }
 
 } // namespace WebCore

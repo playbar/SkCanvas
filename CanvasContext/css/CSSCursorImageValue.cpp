@@ -116,10 +116,10 @@ String CSSCursorImageValue::customCSSText() const
 //        // to change the URL of the CSSImageValue (which would then change behavior like cssText),
 //        // we create an alternate CSSImageValue to use.
 //        if (isSVGCursor() && loader && loader->document()) {
-//            RefPtrWillBeRawPtr<CSSImageValue> imageValue = toCSSImageValue(m_imageValue.get());
+//            RefPtr<CSSImageValue> imageValue = toCSSImageValue(m_imageValue.get());
 //            // FIXME: This will fail if the <cursor> element is in a shadow DOM (bug 59827)
 //            if (SVGCursorElement* cursorElement = resourceReferencedByCursorElement(imageValue->url(), *loader->document())) {
-//                RefPtrWillBeRawPtr<CSSImageValue> svgImageValue = CSSImageValue::create(loader->document()->completeURL(cursorElement->href()->currentValue()->value()));
+//                RefPtr<CSSImageValue> svgImageValue = CSSImageValue::create(loader->document()->completeURL(cursorElement->href()->currentValue()->value()));
 //                StyleFetchedImage* cachedImage = svgImageValue->cachedImage(loader);
 //                m_image = cachedImage;
 //                return cachedImage;
@@ -150,7 +150,7 @@ StyleImage* CSSCursorImageValue::cachedOrPendingImage(float deviceScaleFactor)
 //bool CSSCursorImageValue::isSVGCursor() const
 //{
 //    if (m_imageValue->isImageValue()) {
-//        RefPtrWillBeRawPtr<CSSImageValue> imageValue = toCSSImageValue(m_imageValue.get());
+//        RefPtr<CSSImageValue> imageValue = toCSSImageValue(m_imageValue.get());
 //        KURL kurl(ParsedURLString, imageValue->url());
 //        return kurl.hasFragmentIdentifier();
 //    }

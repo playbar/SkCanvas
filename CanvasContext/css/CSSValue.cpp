@@ -68,12 +68,10 @@ class TextCloneCSSValue : public CSSValue {
 public:
     static PassRefPtr<TextCloneCSSValue> create(ClassType classType, const String& text)
     {
-        return adoptRefWillBeRefCountedGarbageCollected(new TextCloneCSSValue(classType, text));
+        return adoptRef(new TextCloneCSSValue(classType, text));
     }
 
     String cssText() const { return m_cssText; }
-
-    void traceAfterDispatch(Visitor* visitor) { CSSValue::traceAfterDispatch(visitor); }
 
 private:
     TextCloneCSSValue(ClassType classType, const String& text)
@@ -113,12 +111,14 @@ bool CSSValue::hasFailedOrCanceledSubresources() const
 
     if (isValueList())
         return toCSSValueList(this)->hasFailedOrCanceledSubresources();
-    if (classType() == FontFaceSrcClass)
-        return toCSSFontFaceSrcValue(this)->hasFailedOrCanceledSubresources();
+	if (classType() == FontFaceSrcClass)
+		ASSERT(false);
+        //return toCSSFontFaceSrcValue(this)->hasFailedOrCanceledSubresources();
     if (classType() == ImageClass)
         return toCSSImageValue(this)->hasFailedOrCanceledSubresources();
-    if (classType() == CrossfadeClass)
-        return toCSSCrossfadeValue(this)->hasFailedOrCanceledSubresources();
+	if (classType() == CrossfadeClass)
+		ASSERT(false);
+        //return toCSSCrossfadeValue(this)->hasFailedOrCanceledSubresources();
     if (classType() == ImageSetClass)
         return toCSSImageSetValue(this)->hasFailedOrCanceledSubresources();
 
@@ -326,19 +326,23 @@ void CSSValue::destroy()
         delete toCSSBorderImageSliceValue(this);
         return;
     case CanvasClass:
-        delete toCSSCanvasValue(this);
+		ASSERT(false);
+        //delete toCSSCanvasValue(this);
         return;
     case CursorImageClass:
         delete toCSSCursorImageValue(this);
         return;
     case FontClass:
-        delete toCSSFontValue(this);
+		ASSERT(false);
+        //delete toCSSFontValue(this);
         return;
     case FontFaceSrcClass:
-        delete toCSSFontFaceSrcValue(this);
+		ASSERT(false);
+        //delete toCSSFontFaceSrcValue(this);
         return;
     case FontFeatureClass:
-        delete toCSSFontFeatureValue(this);
+		ASSERT(false);
+        //delete toCSSFontFeatureValue(this);
         return;
     case FunctionClass:
         delete toCSSFunctionValue(this);

@@ -73,9 +73,9 @@ bool CSSValueList::hasValue(CSSValue* val) const
     return false;
 }
 
-PassRefPtrWillBeRawPtr<CSSValueList> CSSValueList::copy()
+PassRefPtr<CSSValueList> CSSValueList::copy()
 {
-    RefPtrWillBeRawPtr<CSSValueList> newList;
+    RefPtr<CSSValueList> newList;
     switch (m_valueListSeparator) {
     case SpaceSeparator:
         newList = createSpaceSeparated();
@@ -157,15 +157,9 @@ CSSValueList::CSSValueList(const CSSValueList& cloneFrom)
         m_values[i] = cloneFrom.m_values[i]->cloneForCSSOM();
 }
 
-PassRefPtrWillBeRawPtr<CSSValueList> CSSValueList::cloneForCSSOM() const
+PassRefPtr<CSSValueList> CSSValueList::cloneForCSSOM() const
 {
-    return adoptRefWillBeRefCountedGarbageCollected(new CSSValueList(*this));
-}
-
-void CSSValueList::traceAfterDispatch(Visitor* visitor)
-{
-    visitor->trace(m_values);
-    CSSValue::traceAfterDispatch(visitor);
+    return adoptRef(new CSSValueList(*this));
 }
 
 } // namespace WebCore

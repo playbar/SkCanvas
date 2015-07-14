@@ -363,7 +363,7 @@ private:
     template<typename T> CSSPrimitiveValue(T* val)
         : CSSValue(PrimitiveClass)
     {
-        init(PassRefPtrWillBeRawPtr<T>(val));
+        init(PassRefPtr<T>(val));
     }
 
     template<typename T> CSSPrimitiveValue(PassRefPtr<T> val)

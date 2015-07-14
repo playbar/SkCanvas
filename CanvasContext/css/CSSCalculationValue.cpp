@@ -32,6 +32,7 @@
 #include "CSSCalculationValue.h"
 
 #include "CSSPrimitiveValueMappings.h"
+#include "css/CSSValue.h"
 #include "wtf/MathExtras.h"
 #include "wtf/OwnPtr.h"
 #include "wtf/text/StringBuilder.h"
@@ -263,20 +264,20 @@ public:
     }
 
 
-    virtual void trace(Visitor* visitor)
-    {
-        visitor->trace(m_value);
-        CSSCalcExpressionNode::trace(visitor);
-    }
+    //virtual void trace(Visitor* visitor)
+    //{
+    //    visitor->trace(m_value);
+    //    CSSCalcExpressionNode::trace(visitor);
+    //}
 
 private:
-    CSSCalcPrimitiveValue(PassRefPtrWillBeRawPtr<CSSPrimitiveValue> value, bool isInteger)
+    CSSCalcPrimitiveValue(PassRefPtr<CSSPrimitiveValue> value, bool isInteger)
         : CSSCalcExpressionNode(unitCategory((CSSPrimitiveValue::UnitTypes)value->primitiveType()), isInteger)
         , m_value(value)
     {
     }
 
-    RefPtrWillBeMember<CSSPrimitiveValue> m_value;
+    RefPtr<CSSPrimitiveValue> m_value;
 };
 
 static const CalculationCategory addSubtractResult[CalcOther][CalcOther] = {
@@ -324,7 +325,7 @@ static bool isIntegerResult(const CSSCalcExpressionNode* leftSide, const CSSCalc
 
 class CSSCalcBinaryOperation FINAL : public CSSCalcExpressionNode {
 public:
-    static PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> create(PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> leftSide, PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> rightSide, CalcOperator op)
+    static PassRefPtr<CSSCalcExpressionNode> create(PassRefPtr<CSSCalcExpressionNode> leftSide, PassRefPtr<CSSCalcExpressionNode> rightSide, CalcOperator op)
     {
         ASSERT(leftSide->category() != CalcOther && rightSide->category() != CalcOther);
 
@@ -332,10 +333,10 @@ public:
         if (newCategory == CalcOther)
             return nullptr;
 
-        return adoptRefWillBeNoop(new CSSCalcBinaryOperation(leftSide, rightSide, op, newCategory));
+        return adoptRef(new CSSCalcBinaryOperation(leftSide, rightSide, op, newCategory));
     }
 
-    static PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> createSimplified(PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> leftSide, PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> rightSide, CalcOperator op)
+    static PassRefPtr<CSSCalcExpressionNode> createSimplified(PassRefPtr<CSSCalcExpressionNode> leftSide, PassRefPtr<CSSCalcExpressionNode> rightSide, CalcOperator op)
     {
         CalculationCategory leftCategory = leftSide->category();
         CalculationCategory rightCategory = rightSide->category();
@@ -480,15 +481,8 @@ public:
         return CSSPrimitiveValue::CSS_UNKNOWN;
     }
 
-    virtual void trace(Visitor* visitor)
-    {
-        visitor->trace(m_leftSide);
-        visitor->trace(m_rightSide);
-        CSSCalcExpressionNode::trace(visitor);
-    }
-
 private:
-    CSSCalcBinaryOperation(PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> leftSide, PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> rightSide, CalcOperator op, CalculationCategory category)
+    CSSCalcBinaryOperation(PassRefPtr<CSSCalcExpressionNode> leftSide, PassRefPtr<CSSCalcExpressionNode> rightSide, CalcOperator op, CalculationCategory category)
         : CSSCalcExpressionNode(category, isIntegerResult(leftSide.get(), rightSide.get(), op))
         , m_leftSide(leftSide)
         , m_rightSide(rightSide)
@@ -527,8 +521,8 @@ private:
         return 0;
     }
 
-    const RefPtrWillBeMember<CSSCalcExpressionNode> m_leftSide;
-    const RefPtrWillBeMember<CSSCalcExpressionNode> m_rightSide;
+    const RefPtr<CSSCalcExpressionNode> m_leftSide;
+    const RefPtr<CSSCalcExpressionNode> m_rightSide;
     const CalcOperator m_operator;
 };
 
@@ -543,9 +537,8 @@ static ParseState checkDepthAndIndex(int* depth, unsigned index, CSSParserValueL
 }
 
 class CSSCalcExpressionNodeParser {
-    DISALLOW_ALLOCATION(); // Is only ever stack allocated.
 public:
-    PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> parseCalc(CSSParserValueList* tokens)
+    PassRefPtr<CSSCalcExpressionNode> parseCalc(CSSParserValueList* tokens)
     {
         unsigned index = 0;
         Value result;
@@ -558,9 +551,8 @@ public:
 
 private:
     struct Value {
-        DISALLOW_ALLOCATION(); // Is only ever stack allocated.
     public:
-        RefPtrWillBeRawPtr<CSSCalcExpressionNode> value;
+        RefPtr<CSSCalcExpressionNode> value;
     };
 
     char operatorValue(CSSParserValueList* tokens, unsigned index)
@@ -580,7 +572,7 @@ private:
         if (parserValue->unit == CSSParserValue::Operator)
             return false;
 
-        RefPtrWillBeRawPtr<CSSValue> value = parserValue->createCSSValue();
+        RefPtr<CSSValue> value = parserValue->createCSSValue();
         if (!value || !value->isPrimitiveValue())
             return false;
 
@@ -669,17 +661,17 @@ private:
     }
 };
 
-PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> CSSCalcValue::createExpressionNode(PassRefPtrWillBeRawPtr<CSSPrimitiveValue> value, bool isInteger)
+PassRefPtr<CSSCalcExpressionNode> CSSCalcValue::createExpressionNode(PassRefPtr<CSSPrimitiveValue> value, bool isInteger)
 {
     return CSSCalcPrimitiveValue::create(value, isInteger);
 }
 
-PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> CSSCalcValue::createExpressionNode(PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> leftSide, PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> rightSide, CalcOperator op)
+PassRefPtr<CSSCalcExpressionNode> CSSCalcValue::createExpressionNode(PassRefPtr<CSSCalcExpressionNode> leftSide, PassRefPtr<CSSCalcExpressionNode> rightSide, CalcOperator op)
 {
     return CSSCalcBinaryOperation::create(leftSide, rightSide, op);
 }
 
-PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> CSSCalcValue::createExpressionNode(const CalcExpressionNode* node, float zoom)
+PassRefPtr<CSSCalcExpressionNode> CSSCalcValue::createExpressionNode(const CalcExpressionNode* node, float zoom)
 {
     switch (node->type()) {
     case CalcExpressionNodeNumber: {
@@ -716,7 +708,7 @@ PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> CSSCalcValue::createExpressionNode
     return nullptr;
 }
 
-PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> CSSCalcValue::createExpressionNode(const Length& length, float zoom)
+PassRefPtr<CSSCalcExpressionNode> CSSCalcValue::createExpressionNode(const Length& length, float zoom)
 {
     switch (length.type()) {
     case Percent:
@@ -742,27 +734,22 @@ PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> CSSCalcValue::createExpressionNode
     return nullptr;
 }
 
-PassRefPtrWillBeRawPtr<CSSCalcValue> CSSCalcValue::create(CSSParserString name, CSSParserValueList* parserValueList, ValueRange range)
+PassRefPtr<CSSCalcValue> CSSCalcValue::create(CSSParserString name, CSSParserValueList* parserValueList, ValueRange range)
 {
     CSSCalcExpressionNodeParser parser;
-    RefPtrWillBeRawPtr<CSSCalcExpressionNode> expression;
+    RefPtr<CSSCalcExpressionNode> expression;
 
     if (equalIgnoringCase(name, "calc(") || equalIgnoringCase(name, "-webkit-calc("))
         expression = parser.parseCalc(parserValueList);
     // FIXME calc (http://webkit.org/b/16662) Add parsing for min and max here
 
-    return expression ? adoptRefWillBeRefCountedGarbageCollected(new CSSCalcValue(expression, range)) : nullptr;
+    return expression ? adoptRef(new CSSCalcValue(expression, range)) : nullptr;
 }
 
-PassRefPtrWillBeRawPtr<CSSCalcValue> CSSCalcValue::create(PassRefPtrWillBeRawPtr<CSSCalcExpressionNode> expression, ValueRange range)
+PassRefPtr<CSSCalcValue> CSSCalcValue::create(PassRefPtr<CSSCalcExpressionNode> expression, ValueRange range)
 {
-    return adoptRefWillBeRefCountedGarbageCollected(new CSSCalcValue(expression, range));
+    return adoptRef(new CSSCalcValue(expression, range));
 }
 
-void CSSCalcValue::traceAfterDispatch(Visitor* visitor)
-{
-    visitor->trace(m_expression);
-    CSSValue::traceAfterDispatch(visitor);
-}
 
 } // namespace WebCore

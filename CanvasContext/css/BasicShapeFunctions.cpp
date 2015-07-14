@@ -50,7 +50,7 @@ static PassRefPtr<CSSPrimitiveValue> valueForCenterCoordinate(CSSValuePool& pool
     return pool.createValue(Pair::create(pool.createIdentifierValue(keyword), pool.createValue(center.length(), style), Pair::DropIdenticalValues));
 }
 
-static PassRefPtrWillBeRawPtr<CSSPrimitiveValue> basicShapeRadiusToCSSValue(CSSValuePool& pool, const RenderStyle& style, const BasicShapeRadius& radius)
+static PassRefPtr<CSSPrimitiveValue> basicShapeRadiusToCSSValue(CSSValuePool& pool, const RenderStyle& style, const BasicShapeRadius& radius)
 {
     switch (radius.type()) {
     case BasicShapeRadius::Value:
@@ -65,15 +65,15 @@ static PassRefPtrWillBeRawPtr<CSSPrimitiveValue> basicShapeRadiusToCSSValue(CSSV
     return nullptr;
 }
 
-PassRefPtrWillBeRawPtr<CSSValue> valueForBasicShape(const RenderStyle& style, const BasicShape* basicShape)
+PassRefPtr<CSSValue> valueForBasicShape(const RenderStyle& style, const BasicShape* basicShape)
 {
     CSSValuePool& pool = cssValuePool();
 
-    RefPtrWillBeRawPtr<CSSBasicShape> basicShapeValue;
+    RefPtr<CSSBasicShape> basicShapeValue;
     switch (basicShape->type()) {
     case BasicShape::BasicShapeRectangleType: {
         const BasicShapeRectangle* rectangle = static_cast<const BasicShapeRectangle*>(basicShape);
-        RefPtrWillBeRawPtr<CSSBasicShapeRectangle> rectangleValue = CSSBasicShapeRectangle::create();
+        RefPtr<CSSBasicShapeRectangle> rectangleValue = CSSBasicShapeRectangle::create();
 
         rectangleValue->setX(pool.createValue(rectangle->x(), style));
         rectangleValue->setY(pool.createValue(rectangle->y(), style));
@@ -87,7 +87,7 @@ PassRefPtrWillBeRawPtr<CSSValue> valueForBasicShape(const RenderStyle& style, co
     }
     case BasicShape::DeprecatedBasicShapeCircleType: {
         const DeprecatedBasicShapeCircle* circle = static_cast<const DeprecatedBasicShapeCircle*>(basicShape);
-        RefPtrWillBeRawPtr<CSSDeprecatedBasicShapeCircle> circleValue = CSSDeprecatedBasicShapeCircle::create();
+        RefPtr<CSSDeprecatedBasicShapeCircle> circleValue = CSSDeprecatedBasicShapeCircle::create();
 
         circleValue->setCenterX(pool.createValue(circle->centerX(), style));
         circleValue->setCenterY(pool.createValue(circle->centerY(), style));
@@ -98,7 +98,7 @@ PassRefPtrWillBeRawPtr<CSSValue> valueForBasicShape(const RenderStyle& style, co
     }
     case BasicShape::BasicShapeCircleType: {
         const BasicShapeCircle* circle = static_cast<const BasicShapeCircle*>(basicShape);
-        RefPtrWillBeRawPtr<CSSBasicShapeCircle> circleValue = CSSBasicShapeCircle::create();
+        RefPtr<CSSBasicShapeCircle> circleValue = CSSBasicShapeCircle::create();
 
         circleValue->setCenterX(valueForCenterCoordinate(pool, style, circle->centerX(), HORIZONTAL));
         circleValue->setCenterY(valueForCenterCoordinate(pool, style, circle->centerY(), VERTICAL));
@@ -108,7 +108,7 @@ PassRefPtrWillBeRawPtr<CSSValue> valueForBasicShape(const RenderStyle& style, co
     }
     case BasicShape::DeprecatedBasicShapeEllipseType: {
         const DeprecatedBasicShapeEllipse* ellipse = static_cast<const DeprecatedBasicShapeEllipse*>(basicShape);
-        RefPtrWillBeRawPtr<CSSDeprecatedBasicShapeEllipse> ellipseValue = CSSDeprecatedBasicShapeEllipse::create();
+        RefPtr<CSSDeprecatedBasicShapeEllipse> ellipseValue = CSSDeprecatedBasicShapeEllipse::create();
 
         ellipseValue->setCenterX(pool.createValue(ellipse->centerX(), style));
         ellipseValue->setCenterY(pool.createValue(ellipse->centerY(), style));
@@ -120,7 +120,7 @@ PassRefPtrWillBeRawPtr<CSSValue> valueForBasicShape(const RenderStyle& style, co
     }
     case BasicShape::BasicShapeEllipseType: {
         const BasicShapeEllipse* ellipse = static_cast<const BasicShapeEllipse*>(basicShape);
-        RefPtrWillBeRawPtr<CSSBasicShapeEllipse> ellipseValue = CSSBasicShapeEllipse::create();
+        RefPtr<CSSBasicShapeEllipse> ellipseValue = CSSBasicShapeEllipse::create();
 
         ellipseValue->setCenterX(valueForCenterCoordinate(pool, style, ellipse->centerX(), HORIZONTAL));
         ellipseValue->setCenterY(valueForCenterCoordinate(pool, style, ellipse->centerY(), VERTICAL));
@@ -131,7 +131,7 @@ PassRefPtrWillBeRawPtr<CSSValue> valueForBasicShape(const RenderStyle& style, co
     }
     case BasicShape::BasicShapePolygonType: {
         const BasicShapePolygon* polygon = static_cast<const BasicShapePolygon*>(basicShape);
-        RefPtrWillBeRawPtr<CSSBasicShapePolygon> polygonValue = CSSBasicShapePolygon::create();
+        RefPtr<CSSBasicShapePolygon> polygonValue = CSSBasicShapePolygon::create();
 
         polygonValue->setWindRule(polygon->windRule());
         const Vector<Length>& values = polygon->values();
@@ -143,7 +143,7 @@ PassRefPtrWillBeRawPtr<CSSValue> valueForBasicShape(const RenderStyle& style, co
     }
     case BasicShape::BasicShapeInsetRectangleType: {
         const BasicShapeInsetRectangle* rectangle = static_cast<const BasicShapeInsetRectangle*>(basicShape);
-        RefPtrWillBeRawPtr<CSSBasicShapeInsetRectangle> rectangleValue = CSSBasicShapeInsetRectangle::create();
+        RefPtr<CSSBasicShapeInsetRectangle> rectangleValue = CSSBasicShapeInsetRectangle::create();
 
         rectangleValue->setTop(cssValuePool().createValue(rectangle->top()));
         rectangleValue->setRight(cssValuePool().createValue(rectangle->right()));
@@ -157,7 +157,7 @@ PassRefPtrWillBeRawPtr<CSSValue> valueForBasicShape(const RenderStyle& style, co
     }
     case BasicShape::BasicShapeInsetType: {
         const BasicShapeInset* inset = static_cast<const BasicShapeInset*>(basicShape);
-        RefPtrWillBeRawPtr<CSSBasicShapeInset> insetValue = CSSBasicShapeInset::create();
+        RefPtr<CSSBasicShapeInset> insetValue = CSSBasicShapeInset::create();
 
         insetValue->setTop(CSSPrimitiveValue::create(inset->top()));
         insetValue->setRight(CSSPrimitiveValue::create(inset->right()));
@@ -234,7 +234,7 @@ static BasicShapeCenterCoordinate convertToCenterCoordinate(const StyleResolverS
     return BasicShapeCenterCoordinate(direction, offset);
 }
 
-static BasicShapeRadius cssValueToBasicShapeRadius(const StyleResolverState& state, PassRefPtrWillBeRawPtr<CSSPrimitiveValue> radius)
+static BasicShapeRadius cssValueToBasicShapeRadius(const StyleResolverState& state, PassRefPtr<CSSPrimitiveValue> radius)
 {
     if (!radius)
         return BasicShapeRadius(BasicShapeRadius::ClosestSide);

@@ -24,10 +24,10 @@
  */
 
 #include "config.h"
-#include "CSSValuePool.h"
+#include "css/CSSValuePool.h"
 
-#include "BisonCSSParser.h"
-#include "CSSValueList.h"
+#include "css/BisonCSSParser.h"
+#include "css/CSSValueList.h"
 //#include "core/rendering/style/RenderStyle.h"
 
 namespace WebCore {
@@ -122,47 +122,32 @@ PassRefPtr<CSSPrimitiveValue> CSSValuePool::createValue(double value, CSSPrimiti
     }
 }
 
-PassRefPtr<CSSPrimitiveValue> CSSValuePool::createValue(const Length& value, const RenderStyle& style)
+//PassRefPtr<CSSPrimitiveValue> CSSValuePool::createValue(const Length& value, const RenderStyle& style)
+//{
+//    return CSSPrimitiveValue::create(value, style.effectiveZoom());
+//}
+
+PassRefPtr<CSSPrimitiveValue> CSSValuePool::createFontFamilyValue(const String& familyName)
 {
-    return CSSPrimitiveValue::create(value, style.effectiveZoom());
+	ASSERT(false);
+	return nullptr;
+    //RefPtr<CSSPrimitiveValue>& value = m_fontFamilyValueCache.add(familyName, nullptr).storedValue->value;
+    //if (!value)
+    //    value = CSSPrimitiveValue::create(familyName, CSSPrimitiveValue::CSS_STRING);
+    //return value;
 }
 
-PassRefPtrWillBeRawPtr<CSSPrimitiveValue> CSSValuePool::createFontFamilyValue(const String& familyName)
-{
-    RefPtrWillBeMember<CSSPrimitiveValue>& value = m_fontFamilyValueCache.add(familyName, nullptr).storedValue->value;
-    if (!value)
-        value = CSSPrimitiveValue::create(familyName, CSSPrimitiveValue::CSS_STRING);
-    return value;
-}
-
-PassRefPtrWillBeRawPtr<CSSValueList> CSSValuePool::createFontFaceValue(const AtomicString& string)
+PassRefPtr<CSSValueList> CSSValuePool::createFontFaceValue(const AtomicString& string)
 {
     // Just wipe out the cache and start rebuilding if it gets too big.
     const unsigned maximumFontFaceCacheSize = 128;
     if (m_fontFaceValueCache.size() > maximumFontFaceCacheSize)
         m_fontFaceValueCache.clear();
 
-    RefPtrWillBeMember<CSSValueList>& value = m_fontFaceValueCache.add(string, nullptr).storedValue->value;
+    RefPtr<CSSValueList>& value = m_fontFaceValueCache.add(string, nullptr).storedValue->value;
     if (!value)
         value = BisonCSSParser::parseFontFaceValue(string);
     return value;
-}
-
-void CSSValuePool::trace(Visitor* visitor)
-{
-    visitor->trace(m_inheritedValue);
-    visitor->trace(m_implicitInitialValue);
-    visitor->trace(m_explicitInitialValue);
-    visitor->trace(m_identifierValueCache);
-    visitor->trace(m_colorValueCache);
-    visitor->trace(m_colorTransparent);
-    visitor->trace(m_colorWhite);
-    visitor->trace(m_colorBlack);
-    visitor->trace(m_pixelValueCache);
-    visitor->trace(m_percentValueCache);
-    visitor->trace(m_numberValueCache);
-    visitor->trace(m_fontFaceValueCache);
-    visitor->trace(m_fontFamilyValueCache);
 }
 
 }

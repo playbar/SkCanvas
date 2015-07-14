@@ -30,11 +30,9 @@
 #include "Pair.h"
 #include "RGBColor.h"
 #include "Rect.h"
-#include "StyleSheetContents.h"
-#include "core/dom/ExceptionCode.h"
-#include "core/dom/Node.h"
-#include "core/rendering/style/RenderStyle.h"
+//#include "StyleSheetContents.h"
 #include "platform/LayoutUnit.h"
+#include "platform/LengthSize.h"
 #include "wtf/DecimalNumber.h"
 #include "wtf/StdLibExtras.h"
 #include "wtf/text/StringBuffer.h"
@@ -359,42 +357,42 @@ void CSSPrimitiveValue::init(const LengthSize& lengthSize)
     m_value.pair = Pair::create(create(lengthSize.width()), create(lengthSize.height()), Pair::KeepIdenticalValues).leakRef();
 }
 
-void CSSPrimitiveValue::init(PassRefPtrWillBeRawPtr<Counter> c)
+void CSSPrimitiveValue::init(PassRefPtr<Counter> c)
 {
     m_primitiveUnitType = CSS_COUNTER;
     m_hasCachedCSSText = false;
     m_value.counter = c.leakRef();
 }
 
-void CSSPrimitiveValue::init(PassRefPtrWillBeRawPtr<Rect> r)
+void CSSPrimitiveValue::init(PassRefPtr<Rect> r)
 {
     m_primitiveUnitType = CSS_RECT;
     m_hasCachedCSSText = false;
     m_value.rect = r.leakRef();
 }
 
-void CSSPrimitiveValue::init(PassRefPtrWillBeRawPtr<Quad> quad)
+void CSSPrimitiveValue::init(PassRefPtr<Quad> quad)
 {
     m_primitiveUnitType = CSS_QUAD;
     m_hasCachedCSSText = false;
     m_value.quad = quad.leakRef();
 }
 
-void CSSPrimitiveValue::init(PassRefPtrWillBeRawPtr<Pair> p)
+void CSSPrimitiveValue::init(PassRefPtr<Pair> p)
 {
     m_primitiveUnitType = CSS_PAIR;
     m_hasCachedCSSText = false;
     m_value.pair = p.leakRef();
 }
 
-void CSSPrimitiveValue::init(PassRefPtrWillBeRawPtr<CSSCalcValue> c)
+void CSSPrimitiveValue::init(PassRefPtr<CSSCalcValue> c)
 {
     m_primitiveUnitType = CSS_CALC;
     m_hasCachedCSSText = false;
     m_value.calc = c.leakRef();
 }
 
-void CSSPrimitiveValue::init(PassRefPtrWillBeRawPtr<CSSBasicShape> shape)
+void CSSPrimitiveValue::init(PassRefPtr<CSSBasicShape> shape)
 {
     m_primitiveUnitType = CSS_SHAPE;
     m_hasCachedCSSText = false;
@@ -561,81 +559,84 @@ double CSSPrimitiveValue::computeLengthDouble(const CSSToLengthConversionData& c
     if (m_primitiveUnitType == CSS_CALC)
         return m_value.calc->computeLengthPx(conversionData);
 
-    const RenderStyle& style = conversionData.style();
-    const RenderStyle* rootStyle = conversionData.rootStyle();
-    bool computingFontSize = conversionData.computingFontSize();
+	ASSERT(false);
+	return 0;
 
-    double factor;
+    //const RenderStyle& style = conversionData.style();
+    //const RenderStyle* rootStyle = conversionData.rootStyle();
+    //bool computingFontSize = conversionData.computingFontSize();
 
-    switch (primitiveType()) {
-        case CSS_EMS:
-            factor = computingFontSize ? style.fontDescription().specifiedSize() : style.fontDescription().computedSize();
-            break;
-        case CSS_EXS:
-            // FIXME: We have a bug right now where the zoom will be applied twice to EX units.
-            // We really need to compute EX using fontMetrics for the original specifiedSize and not use
-            // our actual constructed rendering font.
-            if (style.fontMetrics().hasXHeight())
-                factor = style.fontMetrics().xHeight();
-            else
-                factor = (computingFontSize ? style.fontDescription().specifiedSize() : style.fontDescription().computedSize()) / 2.0;
-            break;
-        case CSS_REMS:
-            if (rootStyle)
-                factor = computingFontSize ? rootStyle->fontDescription().specifiedSize() : rootStyle->fontDescription().computedSize();
-            else
-                factor = 1.0;
-            break;
-        case CSS_CHS:
-            factor = style.fontMetrics().zeroWidth();
-            break;
-        case CSS_PX:
-            factor = 1.0;
-            break;
-        case CSS_CM:
-            factor = cssPixelsPerCentimeter;
-            break;
-        case CSS_MM:
-            factor = cssPixelsPerMillimeter;
-            break;
-        case CSS_IN:
-            factor = cssPixelsPerInch;
-            break;
-        case CSS_PT:
-            factor = cssPixelsPerPoint;
-            break;
-        case CSS_PC:
-            factor = cssPixelsPerPica;
-            break;
-        case CSS_VW:
-            factor = conversionData.viewportWidthPercent();
-            break;
-        case CSS_VH:
-            factor = conversionData.viewportHeightPercent();
-            break;
-        case CSS_VMIN:
-            factor = conversionData.viewportMinPercent();
-            break;
-        case CSS_VMAX:
-            factor = conversionData.viewportMaxPercent();
-            break;
-        case CSS_CALC_PERCENTAGE_WITH_LENGTH:
-        case CSS_CALC_PERCENTAGE_WITH_NUMBER:
-            ASSERT_NOT_REACHED();
-            return -1.0;
-        default:
-            ASSERT_NOT_REACHED();
-            return -1.0;
-    }
+    //double factor;
 
-    // We do not apply the zoom factor when we are computing the value of the font-size property. The zooming
-    // for font sizes is much more complicated, since we have to worry about enforcing the minimum font size preference
-    // as well as enforcing the implicit "smart minimum."
-    double result = getDoubleValue() * factor;
-    if (computingFontSize || isFontRelativeLength())
-        return result;
+    //switch (primitiveType()) {
+    //    case CSS_EMS:
+    //        factor = computingFontSize ? style.fontDescription().specifiedSize() : style.fontDescription().computedSize();
+    //        break;
+    //    case CSS_EXS:
+    //        // FIXME: We have a bug right now where the zoom will be applied twice to EX units.
+    //        // We really need to compute EX using fontMetrics for the original specifiedSize and not use
+    //        // our actual constructed rendering font.
+    //        if (style.fontMetrics().hasXHeight())
+    //            factor = style.fontMetrics().xHeight();
+    //        else
+    //            factor = (computingFontSize ? style.fontDescription().specifiedSize() : style.fontDescription().computedSize()) / 2.0;
+    //        break;
+    //    case CSS_REMS:
+    //        if (rootStyle)
+    //            factor = computingFontSize ? rootStyle->fontDescription().specifiedSize() : rootStyle->fontDescription().computedSize();
+    //        else
+    //            factor = 1.0;
+    //        break;
+    //    case CSS_CHS:
+    //        factor = style.fontMetrics().zeroWidth();
+    //        break;
+    //    case CSS_PX:
+    //        factor = 1.0;
+    //        break;
+    //    case CSS_CM:
+    //        factor = cssPixelsPerCentimeter;
+    //        break;
+    //    case CSS_MM:
+    //        factor = cssPixelsPerMillimeter;
+    //        break;
+    //    case CSS_IN:
+    //        factor = cssPixelsPerInch;
+    //        break;
+    //    case CSS_PT:
+    //        factor = cssPixelsPerPoint;
+    //        break;
+    //    case CSS_PC:
+    //        factor = cssPixelsPerPica;
+    //        break;
+    //    case CSS_VW:
+    //        factor = conversionData.viewportWidthPercent();
+    //        break;
+    //    case CSS_VH:
+    //        factor = conversionData.viewportHeightPercent();
+    //        break;
+    //    case CSS_VMIN:
+    //        factor = conversionData.viewportMinPercent();
+    //        break;
+    //    case CSS_VMAX:
+    //        factor = conversionData.viewportMaxPercent();
+    //        break;
+    //    case CSS_CALC_PERCENTAGE_WITH_LENGTH:
+    //    case CSS_CALC_PERCENTAGE_WITH_NUMBER:
+    //        ASSERT_NOT_REACHED();
+    //        return -1.0;
+    //    default:
+    //        ASSERT_NOT_REACHED();
+    //        return -1.0;
+    //}
 
-    return result * conversionData.zoom();
+    //// We do not apply the zoom factor when we are computing the value of the font-size property. The zooming
+    //// for font sizes is much more complicated, since we have to worry about enforcing the minimum font size preference
+    //// as well as enforcing the implicit "smart minimum."
+    //double result = getDoubleValue() * factor;
+    //if (computingFontSize || isFontRelativeLength())
+    //    return result;
+
+    //return result * conversionData.zoom();
 }
 
 void CSSPrimitiveValue::setFloatValue(unsigned short, double, ExceptionState& exceptionState)
@@ -643,7 +644,7 @@ void CSSPrimitiveValue::setFloatValue(unsigned short, double, ExceptionState& ex
     // Keeping values immutable makes optimizations easier and allows sharing of the primitive value objects.
     // No other engine supports mutating style through this API. Computed style is always read-only anyway.
     // Supporting setter would require making primitive value copy-on-write and taking care of style invalidation.
-    exceptionState.throwDOMException(NoModificationAllowedError, "CSSPrimitiveValue objects are read-only.");
+	ASSERT(false);
 }
 
 double CSSPrimitiveValue::conversionToCanonicalUnitsScaleFactor(unsigned short unitType)
@@ -703,7 +704,6 @@ double CSSPrimitiveValue::getDoubleValue(unsigned short unitType, ExceptionState
     double result = 0;
     bool success = getDoubleValueInternal(static_cast<UnitTypes>(unitType), &result);
     if (!success) {
-        exceptionState.throwDOMException(InvalidAccessError, "Failed to obtain a double value.");
         return 0.0;
     }
 
@@ -801,7 +801,7 @@ void CSSPrimitiveValue::setStringValue(unsigned short, const String&, ExceptionS
     // Keeping values immutable makes optimizations easier and allows sharing of the primitive value objects.
     // No other engine supports mutating style through this API. Computed style is always read-only anyway.
     // Supporting setter would require making primitive value copy-on-write and taking care of style invalidation.
-    exceptionState.throwDOMException(NoModificationAllowedError, "CSSPrimitiveValue objects are read-only.");
+	ASSERT(false);
 }
 
 String CSSPrimitiveValue::getStringValue(ExceptionState& exceptionState) const
@@ -816,7 +816,7 @@ String CSSPrimitiveValue::getStringValue(ExceptionState& exceptionState) const
         case CSS_PROPERTY_ID:
             return propertyName(m_value.propertyID);
         default:
-            exceptionState.throwDOMException(InvalidAccessError, "This object's value cannot be represented as a string.");
+			ASSERT(false);
             break;
     }
 
@@ -844,7 +844,7 @@ String CSSPrimitiveValue::getStringValue() const
 Counter* CSSPrimitiveValue::getCounterValue(ExceptionState& exceptionState) const
 {
     if (m_primitiveUnitType != CSS_COUNTER) {
-        exceptionState.throwDOMException(InvalidAccessError, "This object is not a counter value.");
+		ASSERT(false);
         return 0;
     }
 
@@ -854,7 +854,7 @@ Counter* CSSPrimitiveValue::getCounterValue(ExceptionState& exceptionState) cons
 Rect* CSSPrimitiveValue::getRectValue(ExceptionState& exceptionState) const
 {
     if (m_primitiveUnitType != CSS_RECT) {
-        exceptionState.throwDOMException(InvalidAccessError, "This object is not a rect value.");
+		ASSERT(false);
         return 0;
     }
 
@@ -864,17 +864,17 @@ Rect* CSSPrimitiveValue::getRectValue(ExceptionState& exceptionState) const
 Quad* CSSPrimitiveValue::getQuadValue(ExceptionState& exceptionState) const
 {
     if (m_primitiveUnitType != CSS_QUAD) {
-        exceptionState.throwDOMException(InvalidAccessError, "This object is not a quad value.");
+		ASSERT(false);
         return 0;
     }
 
     return m_value.quad;
 }
 
-PassRefPtrWillBeRawPtr<RGBColor> CSSPrimitiveValue::getRGBColorValue(ExceptionState& exceptionState) const
+PassRefPtr<RGBColor> CSSPrimitiveValue::getRGBColorValue(ExceptionState& exceptionState) const
 {
     if (m_primitiveUnitType != CSS_RGBCOLOR) {
-        exceptionState.throwDOMException(InvalidAccessError, "This object is not an RGB color value.");
+		ASSERT(false);
         return nullptr;
     }
 
@@ -885,7 +885,7 @@ PassRefPtrWillBeRawPtr<RGBColor> CSSPrimitiveValue::getRGBColorValue(ExceptionSt
 Pair* CSSPrimitiveValue::getPairValue(ExceptionState& exceptionState) const
 {
     if (m_primitiveUnitType != CSS_PAIR) {
-        exceptionState.throwDOMException(InvalidAccessError, "This object is not a pair value.");
+		ASSERT(false);
         return 0;
     }
 
@@ -1104,9 +1104,9 @@ String CSSPrimitiveValue::customCSSText(CSSTextFormattingFlags formattingFlag) c
     return text;
 }
 
-PassRefPtrWillBeRawPtr<CSSPrimitiveValue> CSSPrimitiveValue::cloneForCSSOM() const
+PassRefPtr<CSSPrimitiveValue> CSSPrimitiveValue::cloneForCSSOM() const
 {
-    RefPtrWillBeRawPtr<CSSPrimitiveValue> result;
+    RefPtr<CSSPrimitiveValue> result;
 
     switch (m_primitiveUnitType) {
     case CSS_STRING:
@@ -1259,31 +1259,5 @@ bool CSSPrimitiveValue::equals(const CSSPrimitiveValue& other) const
     return false;
 }
 
-void CSSPrimitiveValue::traceAfterDispatch(Visitor* visitor)
-{
-    switch (m_primitiveUnitType) {
-    case CSS_COUNTER:
-        visitor->trace(m_value.counter);
-        break;
-    case CSS_RECT:
-        visitor->trace(m_value.rect);
-        break;
-    case CSS_QUAD:
-        visitor->trace(m_value.quad);
-        break;
-    case CSS_PAIR:
-        visitor->trace(m_value.pair);
-        break;
-    case CSS_CALC:
-        visitor->trace(m_value.calc);
-        break;
-    case CSS_SHAPE:
-        visitor->trace(m_value.shape);
-        break;
-    default:
-        break;
-    }
-    CSSValue::traceAfterDispatch(visitor);
-}
 
 } // namespace WebCore

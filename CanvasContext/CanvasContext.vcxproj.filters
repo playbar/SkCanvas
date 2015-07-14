@@ -516,9 +516,6 @@
     <ClCompile Include="css\CSSToLengthConversionData.cpp">
       <Filter>css</Filter>
     </ClCompile>
-    <ClCompile Include="style\RenderStyle.cpp">
-      <Filter>style</Filter>
-    </ClCompile>
     <ClCompile Include="css\CSSAnimationData.cpp">
       <Filter>css</Filter>
     </ClCompile>
@@ -640,6 +637,9 @@
       <Filter>css</Filter>
     </ClCompile>
     <ClCompile Include="css\CSSTransformValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\RGBColor.cpp">
       <Filter>css</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1064,9 +1064,6 @@
     <ClInclude Include="css\CSSToLengthConversionData.h">
       <Filter>css</Filter>
     </ClInclude>
-    <ClInclude Include="style\RenderStyle.h">
-      <Filter>style</Filter>
-    </ClInclude>
     <ClInclude Include="css\CSSAnimationData.h">
       <Filter>css</Filter>
     </ClInclude>
@@ -1225,6 +1222,9 @@
     </ClInclude>
     <ClInclude Include="dom\HTMLParserIdioms.h">
       <Filter>dom</Filter>
+    </ClInclude>
+    <ClInclude Include="css\RGBColor.h">
+      <Filter>css</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

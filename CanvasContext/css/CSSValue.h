@@ -221,8 +221,8 @@ inline bool compareCSSValueVector(const Vector<RefPtr<CSSValueType>, inlineCapac
         return false;
 
     for (size_t i = 0; i < size; i++) {
-        const RefPtrWillBeMember<CSSValueType>& firstPtr = firstVector[i];
-        const RefPtrWillBeMember<CSSValueType>& secondPtr = secondVector[i];
+        const RefPtr<CSSValueType>& firstPtr = firstVector[i];
+        const RefPtr<CSSValueType>& secondPtr = secondVector[i];
         if (firstPtr == secondPtr || (firstPtr && secondPtr && firstPtr->equals(*secondPtr)))
             continue;
         return false;
