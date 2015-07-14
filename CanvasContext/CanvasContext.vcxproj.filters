@@ -52,9 +52,6 @@
     <Filter Include="css">
       <UniqueIdentifier>{6b39f0e5-ea32-45ed-acb4-8e23d3069de0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="url">
-      <UniqueIdentifier>{4b54de0c-fe74-43b3-820a-58362d32bd47}</UniqueIdentifier>
-    </Filter>
     <Filter Include="style">
       <UniqueIdentifier>{fb3ba589-30c4-4a9c-ad0b-3c76e96a1adf}</UniqueIdentifier>
     </Filter>
@@ -441,21 +438,6 @@
     <ClCompile Include="css\CSSPrimitiveValue.cpp">
       <Filter>css</Filter>
     </ClCompile>
-    <ClCompile Include="url\KnownPorts.cpp">
-      <Filter>url</Filter>
-    </ClCompile>
-    <ClCompile Include="url\KURL.cpp">
-      <Filter>url</Filter>
-    </ClCompile>
-    <ClCompile Include="url\url_parse.cc">
-      <Filter>url</Filter>
-    </ClCompile>
-    <ClCompile Include="url\url_util.cc">
-      <Filter>url</Filter>
-    </ClCompile>
-    <ClCompile Include="url\url_canon_internal.cc">
-      <Filter>url</Filter>
-    </ClCompile>
     <ClCompile Include="css\CSSValueKeywords.cpp">
       <Filter>css</Filter>
     </ClCompile>
@@ -543,9 +525,6 @@
     <ClCompile Include="css\BasicShapeFunctions.cpp">
       <Filter>css</Filter>
     </ClCompile>
-    <ClCompile Include="css\resolver\CSSToStyleMap.cpp">
-      <Filter>css\resolver</Filter>
-    </ClCompile>
     <ClCompile Include="css\resolver\ElementStyleResources.cpp">
       <Filter>css\resolver</Filter>
     </ClCompile>
@@ -583,9 +562,6 @@
       <Filter>css</Filter>
     </ClCompile>
     <ClCompile Include="css\CSSProperty.cpp">
-      <Filter>css</Filter>
-    </ClCompile>
-    <ClCompile Include="css\PropertySetCSSStyleDeclaration.cpp">
       <Filter>css</Filter>
     </ClCompile>
     <ClCompile Include="blink\StylePropertyShorthand.cpp">
@@ -640,6 +616,9 @@
       <Filter>css</Filter>
     </ClCompile>
     <ClCompile Include="css\RuntimeCSSEnabled.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSRuleList.cpp">
       <Filter>css</Filter>
     </ClCompile>
   </ItemGroup>
@@ -968,33 +947,6 @@
     <ClInclude Include="css\CSSPrimitiveValue.h">
       <Filter>css</Filter>
     </ClInclude>
-    <ClInclude Include="url\KnownPorts.h">
-      <Filter>url</Filter>
-    </ClInclude>
-    <ClInclude Include="url\KURL.h">
-      <Filter>url</Filter>
-    </ClInclude>
-    <ClInclude Include="url\url_parse.h">
-      <Filter>url</Filter>
-    </ClInclude>
-    <ClInclude Include="url\url_util_internal.h">
-      <Filter>url</Filter>
-    </ClInclude>
-    <ClInclude Include="url\url_parse_internal.h">
-      <Filter>url</Filter>
-    </ClInclude>
-    <ClInclude Include="url\url_util.h">
-      <Filter>url</Filter>
-    </ClInclude>
-    <ClInclude Include="url\url_canon.h">
-      <Filter>url</Filter>
-    </ClInclude>
-    <ClInclude Include="url\url_canon_internal.h">
-      <Filter>url</Filter>
-    </ClInclude>
-    <ClInclude Include="url\url_file.h">
-      <Filter>url</Filter>
-    </ClInclude>
     <ClInclude Include="css\CSSValueKeywords.h">
       <Filter>css</Filter>
     </ClInclude>
@@ -1118,9 +1070,6 @@
     <ClInclude Include="css\BasicShapeFunctions.h">
       <Filter>css</Filter>
     </ClInclude>
-    <ClInclude Include="css\resolver\CSSToStyleMap.h">
-      <Filter>css\resolver</Filter>
-    </ClInclude>
     <ClInclude Include="css\resolver\ElementStyleResources.h">
       <Filter>css\resolver</Filter>
     </ClInclude>
@@ -1161,9 +1110,6 @@
       <Filter>css</Filter>
     </ClInclude>
     <ClInclude Include="css\CSSProperty.h">
-      <Filter>css</Filter>
-    </ClInclude>
-    <ClInclude Include="css\PropertySetCSSStyleDeclaration.h">
       <Filter>css</Filter>
     </ClInclude>
     <ClInclude Include="blink\StylePropertyShorthand.h">
@@ -1224,6 +1170,9 @@
       <Filter>css</Filter>
     </ClInclude>
     <ClInclude Include="css\RuntimeCSSEnabled.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSRuleList.h">
       <Filter>css</Filter>
     </ClInclude>
   </ItemGroup>

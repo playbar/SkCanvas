@@ -27,11 +27,11 @@
 #define CSSKeyframesRule_h
 
 #include "css/CSSRule.h"
+#include "css/CSSRuleList.h"
 #include "wtf/text/AtomicString.h"
 
 namespace WebCore {
 
-class CSSRuleList;
 class StyleKeyframe;
 class CSSKeyframeRule;
 
@@ -58,7 +58,8 @@ public:
     PassRefPtr<StyleRuleKeyframes> copy() const { return adoptRef(new StyleRuleKeyframes(*this)); }
 
     //void traceAfterDispatch(Visitor* visitor) { StyleRuleBase::traceAfterDispatch(visitor); }
-	void deref() {};
+	void ref(){}
+	void deref() {}
 private:
     StyleRuleKeyframes();
     explicit StyleRuleKeyframes(const StyleRuleKeyframes&);

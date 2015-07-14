@@ -84,7 +84,7 @@ private:
     bool parseViewportProperty(CSSPropertyID propId, bool important);
     bool parseViewportShorthand(CSSPropertyID propId, CSSPropertyID first, CSSPropertyID second, bool important);
 
-    KURL completeURL(const String& url) const;
+    //KURL completeURL(const String& url) const;
 
     void addPropertyWithPrefixingVariant(CSSPropertyID, PassRefPtr<CSSValue>, bool important, bool implicit = false);
     void addProperty(CSSPropertyID, PassRefPtr<CSSValue>, bool important, bool implicit = false);

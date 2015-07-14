@@ -25,7 +25,7 @@
 #include "CSSParserMode.h"
 #include "CSSPrimitiveValue.h"
 #include "CSSProperty.h"
-#include "PropertySetCSSStyleDeclaration.h"
+//#include "PropertySetCSSStyleDeclaration.h"
 #include "wtf/ListHashSet.h"
 #include "wtf/Vector.h"
 #include "wtf/text/WTFString.h"
@@ -148,7 +148,7 @@ protected:
     mutable unsigned m_isMutable : 1;
     unsigned m_arraySize : 28;
 
-    friend class PropertySetCSSStyleDeclaration;
+    //friend class PropertySetCSSStyleDeclaration;
 };
 
 class ImmutableStylePropertySet : public StylePropertySet {
@@ -238,7 +238,7 @@ private:
 
     bool removeShorthandProperty(CSSPropertyID);
     CSSProperty* findCSSPropertyWithID(CSSPropertyID);
-    OwnPtr<PropertySetCSSStyleDeclaration> m_cssomWrapper;
+    //OwnPtr<PropertySetCSSStyleDeclaration> m_cssomWrapper;
 
     friend class StylePropertySet;
 

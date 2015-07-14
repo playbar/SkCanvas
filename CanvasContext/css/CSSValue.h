@@ -21,11 +21,11 @@
 #ifndef CSSValue_h
 #define CSSValue_h
 
-#include "url/KURL.h"
 #include "wtf/HashMap.h"
 #include "wtf/ListHashSet.h"
 #include "wtf/RefCounted.h"
 #include "wtf/RefPtr.h"
+#include "wtf/text/WTFString.h"
 
 namespace WebCore {
 

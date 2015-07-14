@@ -28,6 +28,7 @@
 #include "css/BisonCSSParser.h"
 #include "css/CSSValuePool.h"
 #include "css/StylePropertySerializer.h"
+#include "css/CSSStyleDeclaration.h"
 //#include "css/StyleSheetContents.h"
 //#include "core/frame/UseCounter.h"
 #include "wtf/text/StringBuilder.h"
@@ -521,13 +522,15 @@ CSSStyleDeclaration* MutableStylePropertySet::ensureCSSStyleDeclaration()
 {
     // FIXME: get rid of this weirdness of a CSSStyleDeclaration inside of a
     // style property set.
-    if (m_cssomWrapper) {
-        ASSERT(!static_cast<CSSStyleDeclaration*>(m_cssomWrapper.get())->parentRule());
-        ASSERT(!m_cssomWrapper->parentElement());
-        return m_cssomWrapper.get();
-    }
-    m_cssomWrapper = adoptPtr(new PropertySetCSSStyleDeclaration(*this));
-    return m_cssomWrapper.get();
+	ASSERT(false);
+	return nullptr;
+    //if (m_cssomWrapper) {
+    //    ASSERT(!static_cast<CSSStyleDeclaration*>(m_cssomWrapper.get())->parentRule());
+    //    ASSERT(!m_cssomWrapper->parentElement());
+    //    return m_cssomWrapper.get();
+    //}
+    //m_cssomWrapper = adoptPtr(new PropertySetCSSStyleDeclaration(*this));
+    //return m_cssomWrapper.get();
 }
 
 int MutableStylePropertySet::findPropertyIndex(CSSPropertyID propertyID) const

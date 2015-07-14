@@ -31,7 +31,7 @@
 #ifndef CSSParserMode_h
 #define CSSParserMode_h
 
-#include "url/KURL.h"
+#include "wtf/text/WTFString.h"
 
 namespace WebCore {
 
@@ -90,7 +90,6 @@ inline bool isUseCounterEnabledForMode(CSSParserMode mode)
 class UseCounter;
 
 class CSSParserContext {
-    WTF_MAKE_FAST_ALLOCATED;
 public:
     CSSParserContext(CSSParserMode, UseCounter*);
     // FIXME: We shouldn't need the UseCounter argument as we could infer it from the Document
@@ -104,7 +103,7 @@ public:
     bool operator!=(const CSSParserContext& other) const { return !(*this == other); }
 
     CSSParserMode mode() const { return m_mode; }
-    const KURL& baseURL() const { return m_baseURL; }
+    //const KURL& baseURL() const { return m_baseURL; }
     const String& charset() const { return m_charset; }
     bool isHTMLDocument() const { return m_isHTMLDocument; }
 
@@ -116,15 +115,15 @@ public:
     // FIXME: These setters shouldn't exist, however the current lifetime of CSSParserContext
     // is not well understood and thus we sometimes need to override these fields.
     void setMode(CSSParserMode mode) { m_mode = mode; }
-    void setBaseURL(const KURL& baseURL) { m_baseURL = baseURL; }
+    //void setBaseURL(const KURL& baseURL) { m_baseURL = baseURL; }
     void setCharset(const String& charset) { m_charset = charset; }
 
-    KURL completeURL(const String& url) const;
+    //KURL completeURL(const String& url) const;
 
     UseCounter* useCounter() const { return m_useCounter; }
 
 private:
-    KURL m_baseURL;
+    //KURL m_baseURL;
     String m_charset;
     CSSParserMode m_mode;
     bool m_isHTMLDocument;

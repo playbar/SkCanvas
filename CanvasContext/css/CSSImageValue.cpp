@@ -26,14 +26,13 @@
 //#include "style/StyleFetchedImage.h"
 #include "style/StylePendingImage.h"
 #include "css/CSSPrimitiveValue.h"
-#include "url/KURL.h"
+//#include "url/KURL.h"
 
 namespace WebCore {
 
-CSSImageValue::CSSImageValue(const String& rawValue, const KURL& url, StyleImage* image)
+CSSImageValue::CSSImageValue(const String& rawValue, StyleImage* image)
     : CSSValue(ImageClass)
     , m_relativeURL(rawValue)
-    , m_absoluteURL(url.string())
     , m_image(image)
     , m_accessedImage(image)
 {

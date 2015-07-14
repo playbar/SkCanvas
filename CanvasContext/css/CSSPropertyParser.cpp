@@ -195,10 +195,10 @@ void CSSPropertyParser::rollbackLastProperties(int num)
     m_parsedProperties.shrink(m_parsedProperties.size() - num);
 }
 
-KURL CSSPropertyParser::completeURL(const String& url) const
-{
-    return m_context.completeURL(url);
-}
+//KURL CSSPropertyParser::completeURL(const String& url) const
+//{
+//    return m_context.completeURL(url);
+//}
 
 bool CSSPropertyParser::validCalculationUnit(CSSParserValue* value, Units unitflags, ReleaseParsedCalcValueCondition releaseCalc)
 {
@@ -602,8 +602,9 @@ bool CSSPropertyParser::parseValue(CSSPropertyID propId, bool important)
             RefPtr<CSSValue> image = nullptr;
             if (value->unit == CSSPrimitiveValue::CSS_URI) {
                 String uri = value->string;
-                if (!uri.isNull())
-                    image = CSSImageValue::create(uri, completeURL(uri));
+				ASSERT(false);
+                //if (!uri.isNull())
+                //    image = CSSImageValue::create(uri, completeURL(uri));
             } else if (value->unit == CSSParserValue::Function && equalIgnoringCase(value->function->name, "-webkit-image-set(")) {
                 image = parseImageSet(m_valueList.get());
                 if (!image)
@@ -719,8 +720,9 @@ bool CSSPropertyParser::parseValue(CSSPropertyID propId, bool important)
             parsedValue = cssValuePool().createIdentifierValue(CSSValueNone);
             m_valueList->next();
         } else if (value->unit == CSSPrimitiveValue::CSS_URI) {
-            parsedValue = CSSImageValue::create(value->string, completeURL(value->string));
-            m_valueList->next();
+			ASSERT(false);
+            //parsedValue = CSSImageValue::create(value->string, completeURL(value->string));
+            //m_valueList->next();
         } else if (isGeneratedImageValue(value)) {
             if (parseGeneratedImage(m_valueList.get(), parsedValue))
                 m_valueList->next();
@@ -2234,7 +2236,8 @@ bool CSSPropertyParser::parseContent(CSSPropertyID propId, bool important)
         RefPtr<CSSValue> parsedValue;
         if (val->unit == CSSPrimitiveValue::CSS_URI) {
             // url
-            parsedValue = CSSImageValue::create(val->string, completeURL(val->string));
+			ASSERT(false);
+            //parsedValue = CSSImageValue::create(val->string, completeURL(val->string));
         } else if (val->unit == CSSParserValue::Function) {
             // attr(X) | counter(X [,Y]) | counters(X, Y, [,Z]) | -webkit-gradient(...)
             CSSParserValueList* args = val->function->args.get();
@@ -2338,7 +2341,8 @@ bool CSSPropertyParser::parseFillImage(CSSParserValueList* valueList, RefPtr<CSS
         return true;
     }
     if (valueList->current()->unit == CSSPrimitiveValue::CSS_URI) {
-        value = CSSImageValue::create(valueList->current()->string, completeURL(valueList->current()->string));
+		ASSERT(false);
+        //value = CSSImageValue::create(valueList->current()->string, completeURL(valueList->current()->string));
         return true;
     }
 
@@ -5875,7 +5879,8 @@ bool BorderImageParseContext::buildFromParser(CSSPropertyParser& parser, CSSProp
 
         if (!context.canAdvance() && context.allowImage()) {
             if (val->unit == CSSPrimitiveValue::CSS_URI) {
-                context.commitImage(CSSImageValue::create(val->string, parser.m_context.completeURL(val->string)));
+				ASSERT(false);
+                //context.commitImage(CSSImageValue::create(val->string, parser.m_context.completeURL(val->string)));
             } else if (isGeneratedImageValue(val)) {
                 RefPtr<CSSValue> value;
                 if (parser.parseGeneratedImage(parser.m_valueList.get(), value))
@@ -7159,8 +7164,9 @@ PassRefPtr<CSSValue> CSSPropertyParser::parseImageSet(CSSParserValueList* valueL
         if (arg->unit != CSSPrimitiveValue::CSS_URI)
             return nullptr;
 
-        RefPtr<CSSImageValue> image = CSSImageValue::create(arg->string, completeURL(arg->string));
-        imageSet->append(image);
+		ASSERT(false);
+        //RefPtr<CSSImageValue> image = CSSImageValue::create(arg->string, completeURL(arg->string));
+        //imageSet->append(image);
 
         arg = functionArgs->next();
         if (!arg || arg->unit != CSSPrimitiveValue::CSS_DIMENSION)

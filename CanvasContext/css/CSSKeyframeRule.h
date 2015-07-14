@@ -35,7 +35,7 @@ class CSSParserValueList;
 class CSSStyleDeclaration;
 class MutableStylePropertySet;
 class StylePropertySet;
-class StyleRuleCSSStyleDeclaration;
+//class StyleRuleCSSStyleDeclaration;
 
 class StyleKeyframe FINAL : public RefCounted<StyleKeyframe> {
     WTF_MAKE_FAST_ALLOCATED;
@@ -91,7 +91,7 @@ private:
     CSSKeyframeRule(StyleKeyframe*, CSSKeyframesRule* parent);
 
     RefPtr<StyleKeyframe> m_keyframe;
-    mutable RefPtr<StyleRuleCSSStyleDeclaration> m_propertiesCSSOMWrapper;
+    //mutable RefPtr<StyleRuleCSSStyleDeclaration> m_propertiesCSSOMWrapper;
 
     friend class CSSKeyframesRule;
 };

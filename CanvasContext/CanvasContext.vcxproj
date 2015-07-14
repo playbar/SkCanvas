@@ -84,6 +84,7 @@
     <ClCompile Include="css\CSSPropertySourceData.cpp" />
     <ClCompile Include="css\CSSReflectValue.cpp" />
     <ClCompile Include="css\CSSRule.cpp" />
+    <ClCompile Include="css\CSSRuleList.cpp" />
     <ClCompile Include="css\CSSSelector.cpp" />
     <ClCompile Include="css\CSSSelectorList.cpp" />
     <ClCompile Include="css\CSSShadowValue.cpp" />
@@ -95,9 +96,7 @@
     <ClCompile Include="css\CSSValueList.cpp" />
     <ClCompile Include="css\CSSValuePool.cpp" />
     <ClCompile Include="css\Pair.cpp" />
-    <ClCompile Include="css\PropertySetCSSStyleDeclaration.cpp" />
     <ClCompile Include="css\Rect.cpp" />
-    <ClCompile Include="css\resolver\CSSToStyleMap.cpp" />
     <ClCompile Include="css\resolver\ElementStyleResources.cpp" />
     <ClCompile Include="css\RGBColor.cpp" />
     <ClCompile Include="css\RuntimeCSSEnabled.cpp" />
@@ -202,11 +201,6 @@
     <ClCompile Include="style\CounterDirectives.cpp" />
     <ClCompile Include="style\NinePieceImage.cpp" />
     <ClCompile Include="style\StyleGeneratedImage.cpp" />
-    <ClCompile Include="url\KnownPorts.cpp" />
-    <ClCompile Include="url\KURL.cpp" />
-    <ClCompile Include="url\url_canon_internal.cc" />
-    <ClCompile Include="url\url_parse.cc" />
-    <ClCompile Include="url\url_util.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Chrome35\src\third_party\WebKit\Source\platform\Timer.h" />
@@ -270,6 +264,7 @@
     <ClInclude Include="css\CSSReflectionDirection.h" />
     <ClInclude Include="css\CSSReflectValue.h" />
     <ClInclude Include="css\CSSRule.h" />
+    <ClInclude Include="css\CSSRuleList.h" />
     <ClInclude Include="css\CSSSelector.h" />
     <ClInclude Include="css\CSSSelectorList.h" />
     <ClInclude Include="css\CSSShadowValue.h" />
@@ -282,9 +277,7 @@
     <ClInclude Include="css\CSSValuePool.h" />
     <ClInclude Include="css\HashTools.h" />
     <ClInclude Include="css\Pair.h" />
-    <ClInclude Include="css\PropertySetCSSStyleDeclaration.h" />
     <ClInclude Include="css\Rect.h" />
-    <ClInclude Include="css\resolver\CSSToStyleMap.h" />
     <ClInclude Include="css\resolver\ElementStyleResources.h" />
     <ClInclude Include="css\RGBColor.h" />
     <ClInclude Include="css\RuntimeCSSEnabled.h" />
@@ -394,15 +387,6 @@
     <ClInclude Include="style\StyleGeneratedImage.h" />
     <ClInclude Include="style\StyleImage.h" />
     <ClInclude Include="style\StylePendingImage.h" />
-    <ClInclude Include="url\KnownPorts.h" />
-    <ClInclude Include="url\KURL.h" />
-    <ClInclude Include="url\url_canon.h" />
-    <ClInclude Include="url\url_canon_internal.h" />
-    <ClInclude Include="url\url_file.h" />
-    <ClInclude Include="url\url_parse.h" />
-    <ClInclude Include="url\url_parse_internal.h" />
-    <ClInclude Include="url\url_util.h" />
-    <ClInclude Include="url\url_util_internal.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\skia\skia.vcxproj">

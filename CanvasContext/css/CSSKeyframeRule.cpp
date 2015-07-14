@@ -28,7 +28,6 @@
 
 #include "css/CSSKeyframesRule.h"
 #include "css/BisonCSSParser.h"
-#include "css/PropertySetCSSStyleDeclaration.h"
 #include "css/StylePropertySet.h"
 #include "wtf/text/StringBuilder.h"
 
@@ -145,15 +144,18 @@ CSSKeyframeRule::CSSKeyframeRule(StyleKeyframe* keyframe, CSSKeyframesRule* pare
 
 CSSKeyframeRule::~CSSKeyframeRule()
 {
-    if (m_propertiesCSSOMWrapper)
-        m_propertiesCSSOMWrapper->clearParentRule();
+	ASSERT(false);
+    //if (m_propertiesCSSOMWrapper)
+    //    m_propertiesCSSOMWrapper->clearParentRule();
 }
 
 CSSStyleDeclaration* CSSKeyframeRule::style() const
 {
-    if (!m_propertiesCSSOMWrapper)
-        m_propertiesCSSOMWrapper = StyleRuleCSSStyleDeclaration::create(m_keyframe->mutableProperties(), const_cast<CSSKeyframeRule*>(this));
-    return m_propertiesCSSOMWrapper.get();
+	ASSERT(false);
+	return nullptr;
+    //if (!m_propertiesCSSOMWrapper)
+    //    m_propertiesCSSOMWrapper = StyleRuleCSSStyleDeclaration::create(m_keyframe->mutableProperties(), const_cast<CSSKeyframeRule*>(this));
+    //return m_propertiesCSSOMWrapper.get();
 }
 
 void CSSKeyframeRule::reattach(StyleRuleBase*)

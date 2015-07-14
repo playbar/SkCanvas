@@ -48,8 +48,7 @@ CSSParserContext::CSSParserContext(CSSParserMode mode, UseCounter* useCounter)
 //}
 
 CSSParserContext::CSSParserContext(const CSSParserContext& other, UseCounter* useCounter)
-    : m_baseURL(other.m_baseURL)
-    , m_charset(other.m_charset)
+    : m_charset(other.m_charset)
     , m_mode(other.m_mode)
     , m_isHTMLDocument(other.m_isHTMLDocument)
     , m_useLegacyBackgroundSizeShorthandBehavior(other.m_useLegacyBackgroundSizeShorthandBehavior)
@@ -59,8 +58,7 @@ CSSParserContext::CSSParserContext(const CSSParserContext& other, UseCounter* us
 
 bool CSSParserContext::operator==(const CSSParserContext& other) const
 {
-    return m_baseURL == other.m_baseURL
-        && m_charset == other.m_charset
+    return m_charset == other.m_charset
         && m_mode == other.m_mode
         && m_isHTMLDocument == other.m_isHTMLDocument
         && m_useLegacyBackgroundSizeShorthandBehavior == other.m_useLegacyBackgroundSizeShorthandBehavior;
@@ -72,15 +70,15 @@ const CSSParserContext& strictCSSParserContext()
     return strictContext;
 }
 
-KURL CSSParserContext::completeURL(const String& url) const
-{
-    if (url.isNull())
-        return KURL();
-    if (charset().isEmpty())
-        return KURL(baseURL(), url);
-	ASSERT(false);
-	return KURL(baseURL(), url);
-    //return KURL(baseURL(), url, charset());
-}
+//KURL CSSParserContext::completeURL(const String& url) const
+//{
+//    if (url.isNull())
+//        return KURL();
+//    if (charset().isEmpty())
+//        return KURL(baseURL(), url);
+//	ASSERT(false);
+//	return KURL(baseURL(), url);
+//    //return KURL(baseURL(), url, charset());
+//}
 
 } // namespace WebCore

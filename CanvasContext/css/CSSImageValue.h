@@ -28,20 +28,15 @@ namespace WebCore {
 
 class Document;
 class Element;
-class KURL;
 class StyleFetchedImage;
 class StyleImage;
 class RenderObject;
 
 class CSSImageValue : public CSSValue {
 public:
-    static PassRefPtr<CSSImageValue> create(const KURL& url, StyleImage* image = 0)
+    static PassRefPtr<CSSImageValue> create(const String& rawValue, StyleImage* image = 0)
     {
-        return adoptRef(new CSSImageValue(url, url, image));
-    }
-    static PassRefPtr<CSSImageValue> create(const String& rawValue, const KURL& url, StyleImage* image = 0)
-    {
-        return adoptRef(new CSSImageValue(rawValue, url, image));
+        return adoptRef(new CSSImageValue(rawValue, image));
     }
     ~CSSImageValue();
 
@@ -69,7 +64,7 @@ public:
     //void traceAfterDispatch(Visitor*);
 
 private:
-    CSSImageValue(const String& rawValue, const KURL&, StyleImage*);
+    CSSImageValue(const String& rawValue, StyleImage*);
 
     String m_relativeURL;
     String m_absoluteURL;
