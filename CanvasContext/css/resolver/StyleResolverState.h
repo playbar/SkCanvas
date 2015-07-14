@@ -41,7 +41,7 @@ class FontDescription;
 class StyleRule;
 
 class StyleResolverState {
-STACK_ALLOCATED();
+
 WTF_MAKE_NONCOPYABLE(StyleResolverState);
 public:
     //StyleResolverState(Document&, Element*, RenderStyle* parentStyle = 0);
@@ -57,7 +57,7 @@ public:
     EInsideLink elementLinkState() const { return m_elementContext.elementLinkState(); }
     bool distributedToInsertionPoint() const { return m_elementContext.distributedToInsertionPoint(); }
 
-    const ElementResolveContext& elementContext() const { return m_elementContext; }
+    //const ElementResolveContext& elementContext() const { return m_elementContext; }
 
     void setStyle(PassRefPtr<RenderStyle> style) { m_style = style; m_cssToLengthConversionData.setStyle(m_style.get()); }
     const RenderStyle* style() const { return m_style.get(); }
@@ -133,7 +133,7 @@ public:
 private:
     friend class StyleResolveScope;
 
-    ElementResolveContext m_elementContext;
+    //ElementResolveContext m_elementContext;
     Document& m_document;
 
     // m_style is the primary output for each element's style resolve.

@@ -37,18 +37,18 @@ namespace WebCore {
 
 class CSSArrayFunctionValue : public CSSValueList {
 public:
-    static PassRefPtrWillBeRawPtr<CSSArrayFunctionValue> create()
+    static PassRefPtr<CSSArrayFunctionValue> create()
     {
-        return adoptRefWillBeRefCountedGarbageCollected(new CSSArrayFunctionValue());
+        return adoptRef(new CSSArrayFunctionValue());
     }
 
     String customCSSText() const;
 
-    PassRefPtrWillBeRawPtr<CSSArrayFunctionValue> cloneForCSSOM() const;
+    PassRefPtr<CSSArrayFunctionValue> cloneForCSSOM() const;
 
     bool equals(const CSSArrayFunctionValue&) const;
 
-    void traceAfterDispatch(Visitor* visitor) { CSSValueList::traceAfterDispatch(visitor); }
+    //void traceAfterDispatch(Visitor* visitor) { CSSValueList::traceAfterDispatch(visitor); }
 
 private:
     CSSArrayFunctionValue();

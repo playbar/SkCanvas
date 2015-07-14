@@ -25,12 +25,12 @@
 
 #include "RuntimeEnabledFeatures.h"
 #include "StylePropertyShorthand.h"
-#include "core/css/parser/BisonCSSParser.h"
-#include "core/css/CSSValuePool.h"
-#include "core/css/RuntimeCSSEnabled.h"
-#include "core/css/StylePropertySerializer.h"
-#include "core/css/StyleSheetContents.h"
-#include "core/frame/UseCounter.h"
+#include "css/BisonCSSParser.h"
+#include "css/CSSValuePool.h"
+#include "css/RuntimeCSSEnabled.h"
+#include "css/StylePropertySerializer.h"
+#include "css/StyleSheetContents.h"
+//#include "core/frame/UseCounter.h"
 #include "wtf/text/StringBuilder.h"
 
 #ifndef NDEBUG
@@ -341,14 +341,16 @@ void MutableStylePropertySet::parseDeclaration(const String& styleDeclaration, S
 {
     m_propertyVector.clear();
 
-    CSSParserContext context(cssParserMode(), UseCounter::getFrom(contextStyleSheet));
-    if (contextStyleSheet) {
-        context = contextStyleSheet->parserContext();
-        context.setMode(cssParserMode());
-    }
+	ASSERT(false);
+    //CSSParserContext context(cssParserMode(), UseCounter::getFrom(contextStyleSheet));
+    //if (contextStyleSheet) {
+    //    context = contextStyleSheet->parserContext();
+    //    context.setMode(cssParserMode());
+    //}
 
-    BisonCSSParser parser(context);
-    parser.parseDeclaration(this, styleDeclaration, 0, contextStyleSheet);
+    //BisonCSSParser parser(context);
+    //parser.parseDeclaration(this, styleDeclaration, 0, contextStyleSheet);
+
 }
 
 void MutableStylePropertySet::addParsedProperties(const WillBeHeapVector<CSSProperty, 256>& properties)

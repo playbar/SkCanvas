@@ -41,7 +41,7 @@ class MutableStylePropertySet;
 class StylePropertyShorthand;
 class StyleSheetContents;
 
-class StylePropertySet : public RefCountedWillBeRefCountedGarbageCollected<StylePropertySet> {
+class StylePropertySet : public RefCounted<StylePropertySet> {
     friend class PropertyReference;
 public:
 
@@ -95,7 +95,7 @@ public:
     PropertyReference propertyAt(unsigned index) const { return PropertyReference(*this, index); }
     int findPropertyIndex(CSSPropertyID) const;
 
-    PassRefPtrWillBeRawPtr<CSSValue> getPropertyCSSValue(CSSPropertyID) const;
+    PassRefPtr<CSSValue> getPropertyCSSValue(CSSPropertyID) const;
     String getPropertyValue(CSSPropertyID) const;
 
     bool propertyIsImportant(CSSPropertyID) const;
@@ -125,8 +125,8 @@ public:
 
     bool propertyMatches(CSSPropertyID, const CSSValue*) const;
 
-    void trace(Visitor*);
-    void traceAfterDispatch(Visitor*) { }
+    //void trace(Visitor*);
+    //void traceAfterDispatch(Visitor*) { }
 
 protected:
 
@@ -158,11 +158,11 @@ public:
 
     unsigned propertyCount() const { return m_arraySize; }
 
-    const RawPtrWillBeMember<CSSValue>* valueArray() const;
+    const RawPtr<CSSValue>* valueArray() const;
     const StylePropertyMetadata* metadataArray() const;
     int findPropertyIndex(CSSPropertyID) const;
 
-    void traceAfterDispatch(Visitor*);
+    //void traceAfterDispatch(Visitor*);
 
     void* operator new(std::size_t, void* location)
     {
@@ -175,14 +175,14 @@ private:
     ImmutableStylePropertySet(const CSSProperty*, unsigned count, CSSParserMode);
 };
 
-inline const RawPtrWillBeMember<CSSValue>* ImmutableStylePropertySet::valueArray() const
+inline const RawPtr<CSSValue>* ImmutableStylePropertySet::valueArray() const
 {
-    return reinterpret_cast<const RawPtrWillBeMember<CSSValue>*>(const_cast<const void**>(&(this->m_storage)));
+    return reinterpret_cast<const RawPtr<CSSValue>*>(const_cast<const void**>(&(this->m_storage)));
 }
 
 inline const StylePropertyMetadata* ImmutableStylePropertySet::metadataArray() const
 {
-    return reinterpret_cast<const StylePropertyMetadata*>(&reinterpret_cast<const char*>(&(this->m_storage))[m_arraySize * sizeof(RawPtrWillBeMember<CSSValue>)]);
+    return reinterpret_cast<const StylePropertyMetadata*>(&reinterpret_cast<const char*>(&(this->m_storage))[m_arraySize * sizeof(RawPtr<CSSValue>)]);
 }
 
 DEFINE_TYPE_CASTS(ImmutableStylePropertySet, StylePropertySet, set, !set->isMutable(), !set.isMutable());
@@ -200,12 +200,12 @@ public:
 
     unsigned propertyCount() const { return m_propertyVector.size(); }
 
-    void addParsedProperties(const WillBeHeapVector<CSSProperty, 256>&);
+    void addParsedProperties(const Vector<CSSProperty, 256>&);
     void addParsedProperty(const CSSProperty&);
 
     // These expand shorthand properties into multiple properties.
     bool setProperty(CSSPropertyID, const String& value, bool important = false, StyleSheetContents* contextStyleSheet = 0);
-    void setProperty(CSSPropertyID, PassRefPtrWillBeRawPtr<CSSValue>, bool important = false);
+    void setProperty(CSSPropertyID, PassRefPtr<CSSValue>, bool important = false);
 
     // These do not. FIXME: This is too messy, we can do better.
     bool setProperty(CSSPropertyID, CSSValueID identifier, bool important = false);
@@ -229,7 +229,7 @@ public:
     CSSStyleDeclaration* ensureCSSStyleDeclaration();
     int findPropertyIndex(CSSPropertyID) const;
 
-    void traceAfterDispatch(Visitor*);
+    //void traceAfterDispatch(Visitor*);
 
 private:
     explicit MutableStylePropertySet(CSSParserMode);
@@ -242,7 +242,7 @@ private:
 
     friend class StylePropertySet;
 
-    WillBeHeapVector<CSSProperty, 4> m_propertyVector;
+    Vector<CSSProperty, 4> m_propertyVector;
 };
 
 DEFINE_TYPE_CASTS(MutableStylePropertySet, StylePropertySet, set, set->isMutable(), set.isMutable());

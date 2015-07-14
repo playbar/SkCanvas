@@ -585,6 +585,39 @@
     <ClCompile Include="css\Rect.cpp">
       <Filter>css</Filter>
     </ClCompile>
+    <ClCompile Include="css\CSSFilterValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSProperty.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\PropertySetCSSStyleDeclaration.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="blink\StylePropertyShorthand.cpp">
+      <Filter>blink</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSPropertySourceData.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSTokenizer.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSKeyframeRule.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSRule.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSKeyframesRule.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\CSSAspectRatioValue.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="css\Counter.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -1104,6 +1137,39 @@
       <Filter>css</Filter>
     </ClInclude>
     <ClInclude Include="css\Rect.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSFilterValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSProperty.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\PropertySetCSSStyleDeclaration.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="blink\StylePropertyShorthand.h">
+      <Filter>blink</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSPropertySourceData.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSTokenizer.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSKeyframeRule.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSRule.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSKeyframesRule.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSAspectRatioValue.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="css\Counter.h">
       <Filter>css</Filter>
     </ClInclude>
   </ItemGroup>

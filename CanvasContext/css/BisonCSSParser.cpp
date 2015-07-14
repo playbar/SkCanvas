@@ -30,57 +30,47 @@
 #include "CSSValueKeywords.h"
 #include "RuntimeEnabledFeatures.h"
 #include "StylePropertyShorthand.h"
-#include "core/css/CSSArrayFunctionValue.h"
-#include "core/css/CSSAspectRatioValue.h"
-#include "core/css/CSSBasicShapes.h"
-#include "core/css/CSSBorderImage.h"
-#include "core/css/CSSCanvasValue.h"
-#include "core/css/CSSCrossfadeValue.h"
-#include "core/css/CSSCursorImageValue.h"
-#include "core/css/CSSFontFaceSrcValue.h"
-#include "core/css/CSSFontFeatureValue.h"
-#include "core/css/CSSFunctionValue.h"
-#include "core/css/CSSGradientValue.h"
-#include "core/css/CSSGridLineNamesValue.h"
-#include "core/css/CSSGridTemplateAreasValue.h"
-#include "core/css/CSSImageSetValue.h"
-#include "core/css/CSSImageValue.h"
-#include "core/css/CSSInheritedValue.h"
-#include "core/css/CSSInitialValue.h"
-#include "core/css/CSSKeyframeRule.h"
-#include "core/css/CSSKeyframesRule.h"
-#include "core/css/CSSLineBoxContainValue.h"
-#include "core/css/CSSPrimitiveValue.h"
-#include "core/css/CSSPropertySourceData.h"
-#include "core/css/CSSReflectValue.h"
-#include "core/css/CSSSVGDocumentValue.h"
-#include "core/css/CSSSelector.h"
-#include "core/css/CSSShadowValue.h"
-#include "core/css/CSSStyleSheet.h"
-#include "core/css/CSSTimingFunctionValue.h"
-#include "core/css/CSSTransformValue.h"
-#include "core/css/CSSUnicodeRangeValue.h"
-#include "core/css/CSSValueList.h"
-#include "core/css/CSSValuePool.h"
-#include "core/css/Counter.h"
-#include "core/css/HashTools.h"
-#include "core/css/MediaList.h"
-#include "core/css/MediaQueryExp.h"
-#include "core/css/Pair.h"
-#include "core/css/Rect.h"
-#include "core/css/StylePropertySet.h"
-#include "core/css/StyleRule.h"
-#include "core/css/StyleRuleImport.h"
-#include "core/css/StyleSheetContents.h"
-#include "core/css/parser/CSSParserIdioms.h"
-#include "core/dom/Document.h"
-#include "core/frame/FrameHost.h"
-#include "core/frame/PageConsole.h"
-#include "core/frame/Settings.h"
-#include "core/html/parser/HTMLParserIdioms.h"
-#include "core/inspector/InspectorInstrumentation.h"
-#include "core/rendering/RenderTheme.h"
-#include "core/svg/SVGParserUtilities.h"
+#include "css/CSSArrayFunctionValue.h"
+#include "css/CSSAspectRatioValue.h"
+#include "css/CSSBasicShapes.h"
+//#include "css/CSSCanvasValue.h"
+//#include "css/CSSCrossfadeValue.h"
+#include "css/CSSCursorImageValue.h"
+//#include "css/CSSFontFaceSrcValue.h"
+//#include "css/CSSFontFeatureValue.h"
+//#include "css/CSSFunctionValue.h"
+#include "css/CSSGradientValue.h"
+//#include "css/CSSGridLineNamesValue.h"
+//#include "css/CSSGridTemplateAreasValue.h"
+#include "css/CSSImageSetValue.h"
+#include "css/CSSImageValue.h"
+#include "css/CSSInheritedValue.h"
+#include "css/CSSInitialValue.h"
+#include "css/CSSKeyframeRule.h"
+#include "css/CSSKeyframesRule.h"
+#include "css/CSSLineBoxContainValue.h"
+#include "css/CSSPrimitiveValue.h"
+#include "css/CSSPropertySourceData.h"
+//#include "css/CSSReflectValue.h"
+#include "css/CSSSelector.h"
+//#include "css/CSSShadowValue.h"
+//#include "css/CSSStyleSheet.h"
+//#include "css/CSSTimingFunctionValue.h"
+//#include "css/CSSTransformValue.h"
+//#include "css/CSSUnicodeRangeValue.h"
+#include "css/CSSValueList.h"
+#include "css/CSSValuePool.h"
+#include "css/Counter.h"
+#include "css/HashTools.h"
+//#include "css/MediaList.h"
+//#include "core/css/MediaQueryExp.h"
+#include "css/Pair.h"
+#include "css/Rect.h"
+#include "css/StylePropertySet.h"
+//#include "css/StyleRule.h"
+//#include "css/StyleRuleImport.h"
+//#include "css/StyleSheetContents.h"
+//#include "css/parser/CSSParserIdioms.h"
 #include "platform/FloatConversion.h"
 #include "wtf/BitArray.h"
 #include "wtf/HexNumber.h"
@@ -1910,17 +1900,18 @@ StyleRuleKeyframes* BisonCSSParser::createKeyframesRule(const String& name, Pass
 StyleRuleBase* BisonCSSParser::createStyleRule(Vector<OwnPtr<CSSParserSelector> >* selectors)
 {
     StyleRule* result = 0;
-    if (selectors) {
-        m_allowImportRules = m_allowNamespaceDeclarations = false;
-        RefPtrWillBeRawPtr<StyleRule> rule = StyleRule::create();
-        rule->parserAdoptSelectorVector(*selectors);
-        if (m_hasFontFaceOnlyValues)
-            deleteFontFaceOnlyValues();
-        rule->setProperties(createStylePropertySet());
-        result = rule.get();
-        m_parsedRules.append(rule.release());
-    }
-    clearProperties();
+	ASSERT(false);
+    //if (selectors) {
+    //    m_allowImportRules = m_allowNamespaceDeclarations = false;
+    //    RefPtrWillBeRawPtr<StyleRule> rule = StyleRule::create();
+    //    rule->parserAdoptSelectorVector(*selectors);
+    //    if (m_hasFontFaceOnlyValues)
+    //        deleteFontFaceOnlyValues();
+    //    rule->setProperties(createStylePropertySet());
+    //    result = rule.get();
+    //    m_parsedRules.append(rule.release());
+    //}
+    //clearProperties();
     return result;
 }
 
