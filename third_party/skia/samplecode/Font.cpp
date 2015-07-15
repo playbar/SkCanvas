@@ -16,14 +16,12 @@ using namespace WebCore;
 using namespace WTF;
 
 
-class SetTransformView : public SampleView
+class FontView : public SampleView
 {
     SkPaint fBGPaint;
 public:
-	SetTransformView() 
+	FontView() 
 	{
-		int i = 0;
-		i++;
     }
 
 protected:
@@ -32,7 +30,7 @@ protected:
 	{
         if (SampleCode::TitleQ(*evt)) 
 		{
-            SampleCode::TitleR(evt, "SetTransformView");
+            SampleCode::TitleR(evt, "FontView");
             return true;
         }
         return this->INHERITED::onQuery(evt);
@@ -41,19 +39,15 @@ protected:
     virtual void onDrawContent(SkCanvas* canvas)
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
-		ctx->setFillColor("yellow");
-		ctx->fillRect(0, 0, 250, 100);
-
-		ctx->setTransform(1, 0.5, -0.5, 1, 30, 10);
-		ctx->setFillColor("red");
-		ctx->fillRect(0, 0, 250, 100);
-
-		ctx->setTransform(1, 0.5, -0.5, 1, 30, 10);
-		ctx->setFillColor("blue");
-		ctx->fillRect(0, 0, 250, 100);
-		return;
-
-	}
+		ctx->beginPath();
+		ctx->setLineWidth(5);
+		ctx->moveTo(20, 20);
+		ctx->lineTo(20, 100);
+		ctx->lineTo(70, 100);
+		ctx->closePath();
+		ctx->setStrokeColor("green");
+		ctx->stroke();
+    }
 
 private:
     typedef SampleView INHERITED;
@@ -61,5 +55,5 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static SkView* MyFactory() { return new SetTransformView; }
+static SkView* MyFactory() { return new FontView; }
 static SkViewRegister reg(MyFactory);

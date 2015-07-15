@@ -203,5 +203,8 @@
     <ClCompile Include="..\..\samplecode\SetTransform.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\samplecode\Font.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

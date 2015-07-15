@@ -625,7 +625,6 @@ void CanvasRenderingContext2D::resetTransform()
     // resetTransform() resolves the non-invertible CTM state.
     modifiableState().m_transform.makeIdentity();
     modifiableState().m_invertibleCTM = true;
-	ASSERT(false);
 	GraphicsContext::setCTM(AffineTransform());
 
     if (invertibleCTM)
