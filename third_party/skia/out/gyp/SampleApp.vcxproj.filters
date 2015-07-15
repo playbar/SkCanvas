@@ -158,5 +158,8 @@
     <ClCompile Include="..\..\samplecode\LineCap.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\samplecode\LineJoin.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
