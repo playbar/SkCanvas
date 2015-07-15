@@ -36,7 +36,7 @@ namespace WebCore {
 
 class ExceptionState;
 
-class CanvasGradient : public RefCounted<CanvasGradient> {
+class PLATFORM_EXPORT CanvasGradient : public RefCounted<CanvasGradient> {
 public:
     static PassRefPtr<CanvasGradient> create(const FloatPoint& p0, const FloatPoint& p1)
     {
