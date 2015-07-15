@@ -162,6 +162,9 @@
     <ClCompile Include="..\..\samplecode\MiterLimit.cpp" />
     <ClCompile Include="..\..\samplecode\OverView.cpp" />
     <ClCompile Include="..\..\samplecode\Rect.cpp" />
+    <ClCompile Include="..\..\samplecode\Rotate.cpp" />
+    <ClCompile Include="..\..\samplecode\Scale.cpp" />
+    <ClCompile Include="..\..\samplecode\SetTransform.cpp" />
     <ClCompile Include="..\..\samplecode\ShadowBlur.cpp" />
     <ClCompile Include="..\..\samplecode\ShadowColor.cpp" />
     <ClCompile Include="..\..\samplecode\ShadowOffsetX.cpp" />
@@ -169,6 +172,8 @@
     <ClCompile Include="..\..\samplecode\Stroke.cpp" />
     <ClCompile Include="..\..\samplecode\StrokeRect .cpp" />
     <ClCompile Include="..\..\samplecode\StrokeStyle.cpp" />
+    <ClCompile Include="..\..\samplecode\Transform.cpp" />
+    <ClCompile Include="..\..\samplecode\Translate.cpp" />
     <ClCompile Include="..\..\src\pipe\utils\SamplePipeControllers.cpp" />
     <ClCompile Include="..\..\samplecode\QuadraticCurveTo.cpp" />
     <ClCompile Include="..\..\samplecode\SampleApp.cpp" />
