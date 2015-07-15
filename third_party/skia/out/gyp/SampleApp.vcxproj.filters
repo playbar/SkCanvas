@@ -122,9 +122,6 @@
     <ClCompile Include="..\..\samplecode\Rect.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\samplecode\RectStroke.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\samplecode\BeginPath.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
@@ -159,6 +156,24 @@
       <Filter>samplecode</Filter>
     </ClCompile>
     <ClCompile Include="..\..\samplecode\LineJoin.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\MiterLimit.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\StrokeRect .cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\ClearRect.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\Fill.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\Stroke.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\Clip.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
   </ItemGroup>
