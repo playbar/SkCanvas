@@ -150,6 +150,7 @@
     <ClCompile Include="..\..\samplecode\CreateLinearGradient.cpp" />
     <ClCompile Include="..\..\samplecode\CreateRadialGradient.cpp" />
     <ClCompile Include="..\..\samplecode\FillStyle.cpp" />
+    <ClCompile Include="..\..\samplecode\LineCap.cpp" />
     <ClCompile Include="..\..\samplecode\OverView.cpp" />
     <ClCompile Include="..\..\samplecode\Rect.cpp" />
     <ClCompile Include="..\..\samplecode\RectStroke.cpp" />
