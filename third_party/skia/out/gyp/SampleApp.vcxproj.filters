@@ -149,5 +149,11 @@
     <ClCompile Include="..\..\samplecode\CreateLinearGradient.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\samplecode\CreateRadialGradient.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\AddColorStop.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
