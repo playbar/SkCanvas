@@ -102,6 +102,7 @@
     <ClCompile Include="css\RuntimeCSSEnabled.cpp" />
     <ClCompile Include="css\StylePropertySerializer.cpp" />
     <ClCompile Include="css\StylePropertySet.cpp" />
+    <ClCompile Include="css\StylePropertyShorthandCustom.cpp" />
     <ClCompile Include="dom\QualifiedName.cpp" />
     <ClCompile Include="dom\TextLinkColors.cpp" />
     <ClCompile Include="platform\CalculationValue.cpp" />
@@ -146,7 +147,9 @@
     <ClCompile Include="platform\graphics\DisplayList.cpp" />
     <ClCompile Include="platform\graphics\DrawLooper.cpp" />
     <ClCompile Include="platform\graphics\FrameData.cpp" />
+    <ClCompile Include="platform\graphics\GeneratedImage.cpp" />
     <ClCompile Include="platform\graphics\Gradient.cpp" />
+    <ClCompile Include="platform\graphics\GradientGeneratedImage.cpp" />
     <ClCompile Include="platform\graphics\GraphicsContext.cpp" />
     <ClCompile Include="platform\graphics\GraphicsContextAnnotation.cpp" />
     <ClCompile Include="platform\graphics\GraphicsContextState.cpp" />

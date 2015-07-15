@@ -71,7 +71,7 @@ public:
 
 class CSSGradientValue : public CSSImageGeneratorValue {
 public:
-    PassRefPtr<Image> image(RenderObject*, const IntSize&);
+    //PassRefPtr<Image> image(RenderObject*, const IntSize&);
 
     void setFirstX(PassRefPtr<CSSPrimitiveValue> val) { m_firstX = val; }
     void setFirstY(PassRefPtr<CSSPrimitiveValue> val) { m_firstY = val; }
@@ -92,7 +92,7 @@ public:
     IntSize fixedSize(const RenderObject*) const { return IntSize(); }
 
     bool isPending() const { return false; }
-    bool knownToBeOpaque(const RenderObject*) const;
+    bool knownToBeOpaque() const;
 
     void loadSubimages(ResourceFetcher*) { }
     PassRefPtr<CSSGradientValue> gradientWithStylesResolved(const TextLinkColors&, Color currentColor);

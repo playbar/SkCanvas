@@ -49,7 +49,8 @@ protected:
 		ctx->stroke();
 
 		ctx->beginPath();
-		ctx->setStrokeColor(0.0f, 0.0f, 1.0f, 1.0f);
+		ctx->setStrokeColor("#00ff00");
+		//ctx->setStrokeColor(0.0f, 0.0f, 1.0f, 1.0f);
 		ctx->setLineWidth(10);
 		ctx->moveTo(50, 0);
 		ctx->lineTo(150, 130);

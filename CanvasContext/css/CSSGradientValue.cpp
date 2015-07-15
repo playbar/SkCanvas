@@ -455,14 +455,14 @@ bool CSSGradientValue::isCacheable() const
     return true;
 }
 
-//bool CSSGradientValue::knownToBeOpaque(const RenderObject*) const
-//{
-//    for (size_t i = 0; i < m_stops.size(); ++i) {
-//        if (m_stops[i].m_resolvedColor.hasAlpha())
-//            return false;
-//    }
-//    return true;
-//}
+bool CSSGradientValue::knownToBeOpaque() const
+{
+    for (size_t i = 0; i < m_stops.size(); ++i) {
+        if (m_stops[i].m_resolvedColor.hasAlpha())
+            return false;
+    }
+    return true;
+}
 
 //void CSSGradientValue::traceAfterDispatch(Visitor* visitor)
 //{

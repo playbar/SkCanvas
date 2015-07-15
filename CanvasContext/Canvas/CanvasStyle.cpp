@@ -30,7 +30,7 @@
 #include "CanvasStyle.h"
 
 //#include "CSSPropertyNames.h"
-//#include "core/css/parser/BisonCSSParser.h"
+#include "css/BisonCSSParser.h"
 //#include "core/css/StylePropertySet.h"
 //#include "core/html/HTMLCanvasElement.h"
 #include "CanvasGradient.h"
@@ -46,11 +46,11 @@ static ColorParseResult parseColor(RGBA32& parsedColor, const String& colorStrin
 {
 	if (equalIgnoringCase(colorString, "currentcolor"))
         return ParsedCurrentColor;
-	ASSERT(false);
-    //if (BisonCSSParser::parseColor(parsedColor, colorString))
-    //    return ParsedRGBA;
-    //if (BisonCSSParser::parseSystemColor(parsedColor, colorString))
-    //    return ParsedSystemColor;
+	//ASSERT(false);
+	if (BisonCSSParser::parseColor(parsedColor, colorString))
+		return ParsedRGBA;
+	if (BisonCSSParser::parseSystemColor(parsedColor, colorString))
+		return ParsedSystemColor;
 
     return ParseFailed;
 }

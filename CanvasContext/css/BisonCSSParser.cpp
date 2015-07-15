@@ -86,7 +86,7 @@
 extern int cssyydebug;
 #endif
 
-int cssyyparse(WebCore::BisonCSSParser*);
+//int cssyyparse(WebCore::BisonCSSParser*);
 
 using namespace std;
 using namespace WTF;
@@ -173,14 +173,14 @@ PassRefPtr<StyleKeyframe> BisonCSSParser::parseKeyframeRule(StyleSheetContents* 
 {
     setStyleSheet(sheet);
     setupParser("@-internal-keyframe-rule ", string, "");
-    cssyyparse(this);
+    //cssyyparse(this);
     return m_keyframe.release();
 }
 
 PassOwnPtr<Vector<double> > BisonCSSParser::parseKeyframeKeyList(const String& string)
 {
     setupParser("@-internal-keyframe-key-list ", string, "");
-    cssyyparse(this);
+    //cssyyparse(this);
     ASSERT(m_valueList);
     return StyleKeyframe::createKeyList(m_valueList.get());
 }
@@ -189,7 +189,7 @@ bool BisonCSSParser::parseSupportsCondition(const String& string)
 {
     m_supportsCondition = false;
     setupParser("@-internal-supports-condition ", string, "");
-    cssyyparse(this);
+    //cssyyparse(this);
     return m_supportsCondition;
 }
 
@@ -1066,7 +1066,7 @@ bool BisonCSSParser::parseValue(MutableStylePropertySet* declaration, CSSPropert
 
     {
         StyleDeclarationScope scope(this, declaration);
-        cssyyparse(this);
+        //cssyyparse(this);
     }
 
     //m_rule = nullptr;
@@ -1113,7 +1113,7 @@ bool BisonCSSParser::parseColor(RGBA32& color, const String& string, bool strict
 bool BisonCSSParser::parseColor(const String& string)
 {
     setupParser("@-internal-decls color:", string, "");
-    cssyyparse(this);
+    //cssyyparse(this);
     //m_rule = nullptr;
 
     return !m_parsedProperties.isEmpty() && m_parsedProperties.first().id() == CSSPropertyColor;
@@ -1139,7 +1139,7 @@ void BisonCSSParser::parseSelector(const String& string, CSSSelectorList& select
 
     setupParser("@-internal-selector ", string, "");
 
-    cssyyparse(this);
+    //cssyyparse(this);
 
     m_selectorListForParseSelector = 0;
 }
@@ -1160,7 +1160,7 @@ PassRefPtr<ImmutableStylePropertySet> BisonCSSParser::parseDeclaration(const Str
     setStyleSheet(contextStyleSheet);
 
     setupParser("@-internal-decls ", string, "");
-    cssyyparse(this);
+    //cssyyparse(this);
     //m_rule = nullptr;
 
     if (m_hasFontFaceOnlyValues)

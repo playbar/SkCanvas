@@ -184,9 +184,9 @@ bool CSSImageGeneratorValue::knownToBeOpaque(const RenderObject* renderer) const
     case CanvasClass:
         return false;
     case LinearGradientClass:
-        return toCSSLinearGradientValue(this)->knownToBeOpaque(renderer);
+        return toCSSLinearGradientValue(this)->knownToBeOpaque();
     case RadialGradientClass:
-        return toCSSRadialGradientValue(this)->knownToBeOpaque(renderer);
+        return toCSSRadialGradientValue(this)->knownToBeOpaque();
     default:
         ASSERT_NOT_REACHED();
     }

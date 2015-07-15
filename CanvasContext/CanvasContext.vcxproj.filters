@@ -621,6 +621,15 @@
     <ClCompile Include="css\CSSRuleList.cpp">
       <Filter>css</Filter>
     </ClCompile>
+    <ClCompile Include="css\StylePropertyShorthandCustom.cpp">
+      <Filter>css</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\graphics\GradientGeneratedImage.cpp">
+      <Filter>platform\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\graphics\GeneratedImage.cpp">
+      <Filter>platform\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
