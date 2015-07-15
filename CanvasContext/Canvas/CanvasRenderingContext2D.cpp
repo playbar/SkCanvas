@@ -1021,7 +1021,7 @@ void CanvasRenderingContext2D::fillRect(float x, float y, float width, float hei
     if (!state().m_invertibleCTM)
         return;
     FloatRect clipBounds;
-    if (GraphicsContext::getTransformedClipBounds(&clipBounds))
+    if (!GraphicsContext::getTransformedClipBounds(&clipBounds))
         return;
 
     // from the HTML5 Canvas spec:
@@ -1072,11 +1072,11 @@ void CanvasRenderingContext2D::strokeRect(float x, float y, float width, float h
 
     FloatRect boundingRect = rect;
     boundingRect.inflate(state().m_lineWidth / 2);
-    FloatRect dirtyRect;
-    if (computeDirtyRect(boundingRect, &dirtyRect)) {
-        GraphicsContext::strokeRect(rect, state().m_lineWidth);
-        didDraw(dirtyRect);
-    }
+    //FloatRect dirtyRect;
+    //if (computeDirtyRect(boundingRect, &dirtyRect)) {
+    GraphicsContext::strokeRect(rect, state().m_lineWidth);
+        //didDraw(dirtyRect);
+    //}
 }
 
 void CanvasRenderingContext2D::setShadow(float width, float height, float blur)
@@ -1440,7 +1440,7 @@ PassRefPtr<CanvasPattern> CanvasRenderingContext2D::createPattern(CanvasImageSou
 bool CanvasRenderingContext2D::computeDirtyRect(const FloatRect& localRect, FloatRect* dirtyRect)
 {
     FloatRect clipBounds;
-    if (GraphicsContext::getTransformedClipBounds(&clipBounds))
+    if (!GraphicsContext::getTransformedClipBounds(&clipBounds))
         return false;
     return computeDirtyRect(localRect, clipBounds, dirtyRect);
 }
@@ -1468,7 +1468,7 @@ bool CanvasRenderingContext2D::computeDirtyRect(const FloatRect& localRect, cons
 
 void CanvasRenderingContext2D::didDraw(const FloatRect& dirtyRect)
 {
-	ASSERT(false);
+	//ASSERT(false);
     //if (dirtyRect.isEmpty())
     //    return;
 

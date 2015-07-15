@@ -150,6 +150,8 @@
     <ClCompile Include="..\..\samplecode\OverView.cpp" />
     <ClCompile Include="..\..\samplecode\Rect.cpp" />
     <ClCompile Include="..\..\samplecode\RectStroke.cpp" />
+    <ClCompile Include="..\..\samplecode\ShadowColor.cpp" />
+    <ClCompile Include="..\..\samplecode\StrokeStyle.cpp" />
     <ClCompile Include="..\..\src\pipe\utils\SamplePipeControllers.cpp" />
     <ClCompile Include="..\..\samplecode\QuadraticCurveTo.cpp" />
     <ClCompile Include="..\..\samplecode\SampleApp.cpp" />

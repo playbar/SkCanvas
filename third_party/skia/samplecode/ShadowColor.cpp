@@ -16,11 +16,11 @@ using namespace WebCore;
 using namespace WTF;
 
 
-class RectView : public SampleView
+class ShadowColorView : public SampleView
 {
     SkPaint fBGPaint;
 public:
-	RectView() 
+	ShadowColorView()
 	{
     }
 
@@ -30,7 +30,7 @@ protected:
 	{
         if (SampleCode::TitleQ(*evt)) 
 		{
-            SampleCode::TitleR(evt, "Rect");
+            SampleCode::TitleR(evt, "ShadowColorView");
             return true;
         }
         return this->INHERITED::onQuery(evt);
@@ -39,23 +39,11 @@ protected:
     virtual void onDrawContent(SkCanvas* canvas)
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
-		ctx->beginPath();
-		ctx->setLineWidth(6);
-		ctx->setStrokeColor("red");
-		ctx->rect(5, 5, 290, 140);
-		ctx->stroke();
-
-		ctx->beginPath();
-		ctx->setLineWidth(4);
-		ctx->setStrokeColor("green");
-		ctx->rect(30, 30, 50, 50);
-		ctx->stroke();
-
-		ctx->beginPath();
-		ctx->setLineWidth(10);
-		ctx->setStrokeColor("blue");
-		ctx->rect(50, 50, 150, 80);
-		ctx->stroke();
+		//ctx->beginPath();
+		ctx->setShadowBlur(20);
+		ctx->setShadowColor("black");
+		ctx->setFillColor("blue");
+		ctx->fillRect(20, 20, 150, 100);
 
     }
 
@@ -65,5 +53,5 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static SkView* MyFactory() { return new RectView; }
+static SkView* MyFactory() { return new ShadowColorView; }
 static SkViewRegister reg(MyFactory);

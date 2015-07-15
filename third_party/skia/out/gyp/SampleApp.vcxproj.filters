@@ -131,5 +131,11 @@
     <ClCompile Include="..\..\samplecode\FillStyle.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\samplecode\StrokeStyle.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\ShadowColor.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

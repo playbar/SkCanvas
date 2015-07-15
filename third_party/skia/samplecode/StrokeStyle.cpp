@@ -16,12 +16,14 @@ using namespace WebCore;
 using namespace WTF;
 
 
-class RectView : public SampleView
+class StrokeStyleView : public SampleView
 {
     SkPaint fBGPaint;
 public:
-	RectView() 
+	StrokeStyleView()
 	{
+		int i = 0;
+		i++;
     }
 
 protected:
@@ -30,7 +32,7 @@ protected:
 	{
         if (SampleCode::TitleQ(*evt)) 
 		{
-            SampleCode::TitleR(evt, "Rect");
+            SampleCode::TitleR(evt, "StrokeStyleView");
             return true;
         }
         return this->INHERITED::onQuery(evt);
@@ -39,23 +41,9 @@ protected:
     virtual void onDrawContent(SkCanvas* canvas)
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
-		ctx->beginPath();
-		ctx->setLineWidth(6);
-		ctx->setStrokeColor("red");
-		ctx->rect(5, 5, 290, 140);
-		ctx->stroke();
-
-		ctx->beginPath();
-		ctx->setLineWidth(4);
-		ctx->setStrokeColor("green");
-		ctx->rect(30, 30, 50, 50);
-		ctx->stroke();
-
-		ctx->beginPath();
-		ctx->setLineWidth(10);
-		ctx->setStrokeColor("blue");
-		ctx->rect(50, 50, 150, 80);
-		ctx->stroke();
+		ctx->setStrokeColor("#0000ff");
+		ctx->strokeRect(20, 20, 150, 100);
+		return;
 
     }
 
@@ -65,5 +53,5 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static SkView* MyFactory() { return new RectView; }
+static SkView* MyFactory() { return new StrokeStyleView; }
 static SkViewRegister reg(MyFactory);
