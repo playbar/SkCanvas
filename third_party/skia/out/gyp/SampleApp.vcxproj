@@ -146,7 +146,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\gm\gm.cpp" />
     <ClCompile Include="..\..\samplecode\AddColorStop.cpp" />
+    <ClCompile Include="..\..\samplecode\Arc.cpp" />
     <ClCompile Include="..\..\samplecode\BeginPath.cpp" />
+    <ClCompile Include="..\..\samplecode\BezierCurveTo.cpp" />
     <ClCompile Include="..\..\samplecode\ClearRect.cpp" />
     <ClCompile Include="..\..\samplecode\Clip.cpp" />
     <ClCompile Include="..\..\samplecode\CreateLinearGradient.cpp" />

@@ -16,11 +16,11 @@ using namespace WebCore;
 using namespace WTF;
 
 
-class QuadraticCurveToView : public SampleView
+class BezierCurveToView : public SampleView
 {
     SkPaint fBGPaint;
 public:
-    QuadraticCurveToView () {
+    BezierCurveToView () {
     }
 
 protected:
@@ -29,7 +29,7 @@ protected:
 	{
         if (SampleCode::TitleQ(*evt)) 
 		{
-            SampleCode::TitleR(evt, "QuadraticCurveToView");
+            SampleCode::TitleR(evt, "BezierCurveToView ");
             return true;
         }
         return this->INHERITED::onQuery(evt);
@@ -41,7 +41,7 @@ protected:
 		ctx->beginPath();
 		ctx->setLineWidth(4);
 		ctx->moveTo( 20, 20);
-		ctx->quadraticCurveTo( 20, 100, 200, 20);
+		ctx->bezierCurveTo( 20, 100, 200, 100, 200, 20 );
 		ctx->stroke();
 
     }
@@ -52,5 +52,5 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static SkView* MyFactory() { return new QuadraticCurveToView; }
+static SkView* MyFactory() { return new BezierCurveToView; }
 static SkViewRegister reg(MyFactory);

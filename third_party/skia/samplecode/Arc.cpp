@@ -16,11 +16,12 @@ using namespace WebCore;
 using namespace WTF;
 
 
-class QuadraticCurveToView : public SampleView
+class ArcView : public SampleView
 {
     SkPaint fBGPaint;
 public:
-    QuadraticCurveToView () {
+	ArcView() 
+	{
     }
 
 protected:
@@ -29,7 +30,7 @@ protected:
 	{
         if (SampleCode::TitleQ(*evt)) 
 		{
-            SampleCode::TitleR(evt, "QuadraticCurveToView");
+            SampleCode::TitleR(evt, "ArcView");
             return true;
         }
         return this->INHERITED::onQuery(evt);
@@ -39,12 +40,9 @@ protected:
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
 		ctx->beginPath();
-		ctx->setLineWidth(4);
-		ctx->moveTo( 20, 20);
-		ctx->quadraticCurveTo( 20, 100, 200, 20);
+		ctx->arc(100, 75, 50, 0, 2 * 3.1415);
 		ctx->stroke();
-
-    }
+	}
 
 private:
     typedef SampleView INHERITED;
@@ -52,5 +50,5 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static SkView* MyFactory() { return new QuadraticCurveToView; }
+static SkView* MyFactory() { return new ArcView; }
 static SkViewRegister reg(MyFactory);
