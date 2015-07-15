@@ -16,11 +16,11 @@ using namespace WebCore;
 using namespace WTF;
 
 
-class ArcView : public SampleView
+class IsPointInPathView : public SampleView
 {
     SkPaint fBGPaint;
 public:
-	ArcView() 
+	IsPointInPathView() 
 	{
     }
 
@@ -30,7 +30,7 @@ protected:
 	{
         if (SampleCode::TitleQ(*evt)) 
 		{
-            SampleCode::TitleR(evt, "ArcView");
+            SampleCode::TitleR(evt, "IsPointInPathView");
             return true;
         }
         return this->INHERITED::onQuery(evt);
@@ -39,10 +39,12 @@ protected:
     virtual void onDrawContent(SkCanvas* canvas)
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
-		ctx->beginPath();
-		ctx->setLineWidth(5);
-		ctx->arc(100, 75, 50, 0, 2 * M_PI, false);
-		ctx->stroke();
+		ctx->rect(20, 20, 150, 100);
+		if ( ctx->isPointInPath(20, 50))
+		{
+			ctx->stroke();
+		}
+		
 	}
 
 private:
@@ -51,5 +53,5 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static SkView* MyFactory() { return new ArcView; }
+static SkView* MyFactory() { return new IsPointInPathView; }
 static SkViewRegister reg(MyFactory);

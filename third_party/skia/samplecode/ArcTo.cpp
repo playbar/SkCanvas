@@ -16,11 +16,11 @@ using namespace WebCore;
 using namespace WTF;
 
 
-class ArcView : public SampleView
+class ArcToView : public SampleView
 {
     SkPaint fBGPaint;
 public:
-	ArcView() 
+	ArcToView() 
 	{
     }
 
@@ -30,7 +30,7 @@ protected:
 	{
         if (SampleCode::TitleQ(*evt)) 
 		{
-            SampleCode::TitleR(evt, "ArcView");
+            SampleCode::TitleR(evt, "ArcToView");
             return true;
         }
         return this->INHERITED::onQuery(evt);
@@ -40,8 +40,11 @@ protected:
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
 		ctx->beginPath();
-		ctx->setLineWidth(5);
-		ctx->arc(100, 75, 50, 0, 2 * M_PI, false);
+		ctx->setLineWidth(2);
+		ctx->moveTo(20, 20);
+		ctx->lineTo(100, 20);
+		ctx->arcTo(150, 20, 150, 70, 50);
+		ctx->lineTo(150, 120);
 		ctx->stroke();
 	}
 
@@ -51,5 +54,5 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static SkView* MyFactory() { return new ArcView; }
+static SkView* MyFactory() { return new ArcToView; }
 static SkViewRegister reg(MyFactory);
