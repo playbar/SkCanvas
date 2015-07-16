@@ -209,5 +209,8 @@
     <ClCompile Include="..\..\samplecode\TextAlign.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\samplecode\TextBaseline .cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
