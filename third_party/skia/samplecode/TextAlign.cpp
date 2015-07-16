@@ -18,11 +18,11 @@
 using namespace WebCore;
 using namespace WTF;
 
-class FontView : public SampleView
+class TextAlignView : public SampleView
 {
     SkPaint fBGPaint;
 public:
-	FontView() 
+	TextAlignView() 
 	{
 		int i = 0;
 		i++;
@@ -34,7 +34,7 @@ protected:
 	{
         if (SampleCode::TitleQ(*evt)) 
 		{
-            SampleCode::TitleR(evt, "FontView");
+            SampleCode::TitleR(evt, "TextAlignView ");
             return true;
         }
         return this->INHERITED::onQuery(evt);
@@ -43,30 +43,23 @@ protected:
     virtual void onDrawContent(SkCanvas* canvas)
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
+		ctx->setStrokeColor("blue");
+		ctx->moveTo(150, 20);
+		ctx->lineTo(150, 170);
+		ctx->stroke();
+		
 		ctx->setFont("40px Arial");
-		ctx->strokeText("Hello world", 10, 50);
-		return;
-		//ctx->strokeText("Hello world", 10, 50);
-		SkPaint paint;
-		////paint.setAntiAlias(true);
-		paint.setColor(0xffff0000);
-		paint.setTextSize(40);
-		paint.setStyle(SkPaint::kFill_Style);
-		//SkPoint p = SkPoint::Make(50, 50);
-		//SkPoint q = SkPoint::Make(100, 50);
-		//SkPoint pts[] = { p, q };
-		//SkScalar t, temp, x, y;
-		//SkColor colors[] = {
-		//	SK_ColorRED, SK_ColorGREEN, SK_ColorBLUE, SK_ColorWHITE, SK_ColorBLACK
-		//};
-		////红、绿、蓝、白、黑，这些宏的alpha值都是FF，即不透明
-		//SkShader *shader;
-		//shader = SkGradientShader::CreateLinear(
-		//	pts, colors, NULL, SK_ARRAY_COUNT(colors), SkShader::kMirror_TileMode);		canvas->drawText("test", 4, 100, 100, paint);
-		//paint.setShader(shader);
-		//shader->unref();
-		//paint.setTextAlign(SkPaint::kCenter_Align);
-		canvas->drawText("test", 4, 100, 100, paint);
+		ctx->setTextAlign("start");
+		ctx->fillText("textAlign=start", 150, 60);
+
+		ctx->setTextAlign("end");
+		ctx->fillText("textAlign=end", 150, 80);
+		ctx->setTextAlign("left");
+		ctx->fillText("textAlign=left", 150, 100);
+		ctx->setTextAlign("center");
+		ctx->fillText("textAlign=center", 150, 120);
+		ctx->setTextAlign("right");
+		ctx->fillText("textAlign=right", 150, 140);
 		return;
 	}
 
@@ -76,5 +69,5 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static SkView* MyFactory() { return new FontView; }
+static SkView* MyFactory() { return new TextAlignView; }
 static SkViewRegister reg(MyFactory);

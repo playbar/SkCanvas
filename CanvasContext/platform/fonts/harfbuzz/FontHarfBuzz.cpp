@@ -74,9 +74,7 @@ static void paintGlyphs(GraphicsContext* gc, const SimpleFontData* font,
         gc->drawPosText(glyphs, numGlyphs << 1, pos, textRect, paint);
     }
 
-    if ((textMode & TextModeStroke)
-        && gc->strokeStyle() != NoStroke
-        && gc->strokeThickness() > 0) {
+    if (textMode & TextModeStroke) {
 
         SkPaint paint;
         gc->setupPaintForStroking(&paint);

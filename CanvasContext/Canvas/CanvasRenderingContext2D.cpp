@@ -40,7 +40,7 @@ using namespace std;
 
 namespace WebCore {
 
-static const int defaultFontSize = 10;
+static const int defaultFontSize = 15;
 static const char defaultFontFamily[] = "sans-serif";
 static const char defaultFont[] = "10px sans-serif";
 
@@ -1853,12 +1853,14 @@ void CanvasRenderingContext2D::drawTextInternal(const String& text, float x, flo
                                         location.y() - fontMetrics.ascent() - fontMetrics.lineGap(),
                                         width + fontMetrics.height(),
                                         fontMetrics.lineSpacing());
-    if (!fill)
+	if (!fill)
         inflateStrokeRect(textRunPaintInfo.bounds);
 
     FloatRect dirtyRect;
     if (!computeDirtyRect(textRunPaintInfo.bounds, &dirtyRect))
         return;
+
+	//fill = true;
 
     setTextDrawingMode(fill ? TextModeFill : TextModeStroke);
     if (useMaxWidth) {

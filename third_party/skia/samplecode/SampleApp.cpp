@@ -679,7 +679,7 @@ SampleWindow::SampleWindow(void* hwnd, int argc, char** argv, DeviceManager* dev
     }
 
 	fCurrIndex = fSamples.count() - 1;
-	fCurrIndex = 18;
+	fCurrIndex = 3;
     gSampleWindow = this;
 
 #ifdef  PIPE_FILE

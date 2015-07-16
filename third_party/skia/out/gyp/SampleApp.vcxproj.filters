@@ -206,5 +206,8 @@
     <ClCompile Include="..\..\samplecode\Font.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\samplecode\TextAlign.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
