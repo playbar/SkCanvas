@@ -105,7 +105,6 @@ void removeStringForStats(StringImpl*);
 #endif
 
 // You can find documentation about this class in this doc:
-// https://docs.google.com/document/d/1kOCUlJdh2WJMJGDf-WoEQhmnjKLaOYRbiHz5TiGJl14/edit?usp=sharing
 class WTF_EXPORT StringImpl {
     WTF_MAKE_NONCOPYABLE(StringImpl);
     friend struct WTF::CStringTranslator;

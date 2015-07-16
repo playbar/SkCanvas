@@ -45,10 +45,10 @@ static const unsigned s_fontSizePrecisionMultiplier = 100;
 struct FontCacheKey {
     WTF_MAKE_FAST_ALLOCATED;
 public:
-    FontCacheKey()
-        : m_familyName()
-        , m_fontSize(0)
-        , m_options(0) { }
+	FontCacheKey()
+		: m_familyName()
+		, m_fontSize(0)
+		, m_options(0) { }
     FontCacheKey(AtomicString familyName, float fontSize, unsigned options)
         : m_familyName(familyName)
         , m_fontSize(fontSize * s_fontSizePrecisionMultiplier)
@@ -58,6 +58,11 @@ public:
 
     unsigned hash() const
     {
+		if ( m_familyName.isEmpty() )
+		{
+			return 0;
+		}
+		
         unsigned hashCodes[3] = {
             CaseFoldingHash::hash(m_familyName),
             m_fontSize,

@@ -1710,8 +1710,8 @@ void CanvasRenderingContext2D::setTextBaseline(const String& s)
 {
     TextBaseline baseline;
 	ASSERT(false);
-    //if (!parseTextBaseline(s, baseline))
-    //    return;
+    if (!parseTextBaseline(s, baseline))
+        return;
     if (state().m_textBaseline == baseline)
         return;
     realizeSaves();

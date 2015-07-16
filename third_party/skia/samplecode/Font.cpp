@@ -12,9 +12,11 @@
 #include "SkColorPriv.h"
 #include "SkShader.h"
 #include "CanvasRenderingContext2D.h"
+#include "SkBlurMaskFilter.h"
+#include "SkGradientShader.h"
+
 using namespace WebCore;
 using namespace WTF;
-
 
 class FontView : public SampleView
 {
@@ -43,6 +45,28 @@ protected:
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
 		ctx->setFont("40px Arial");
 		ctx->fillText("Hello world", 10, 50);
+		return;
+		//ctx->strokeText("Hello world", 10, 50);
+		SkPaint paint;
+		////paint.setAntiAlias(true);
+		paint.setColor(0xffff0000);
+		paint.setTextSize(40);
+		paint.setStyle(SkPaint::kFill_Style);
+		//SkPoint p = SkPoint::Make(50, 50);
+		//SkPoint q = SkPoint::Make(100, 50);
+		//SkPoint pts[] = { p, q };
+		//SkScalar t, temp, x, y;
+		//SkColor colors[] = {
+		//	SK_ColorRED, SK_ColorGREEN, SK_ColorBLUE, SK_ColorWHITE, SK_ColorBLACK
+		//};
+		////红、绿、蓝、白、黑，这些宏的alpha值都是FF，即不透明
+		//SkShader *shader;
+		//shader = SkGradientShader::CreateLinear(
+		//	pts, colors, NULL, SK_ARRAY_COUNT(colors), SkShader::kMirror_TileMode);		canvas->drawText("test", 4, 100, 100, paint);
+		//paint.setShader(shader);
+		//shader->unref();
+		//paint.setTextAlign(SkPaint::kCenter_Align);
+		canvas->drawText("test", 4, 100, 100, paint);
 		return;
 	}
 

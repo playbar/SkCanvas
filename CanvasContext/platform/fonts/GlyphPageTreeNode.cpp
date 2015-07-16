@@ -126,9 +126,9 @@ static bool fill(GlyphPage* pageToFill, unsigned offset, unsigned length, UChar*
 #endif
     bool hasGlyphs = pageToFill->fill(offset, length, buffer, bufferLength, fontData);
 #if ENABLE(OPENTYPE_VERTICAL)
-	ASSERT(false);
-    //if (hasGlyphs && fontData->verticalData())
-    //    fontData->verticalData()->substituteWithVerticalGlyphs(fontData, pageToFill, offset, length);
+	//ASSERT(false);
+    if (hasGlyphs && fontData->verticalData())
+        fontData->verticalData()->substituteWithVerticalGlyphs(fontData, pageToFill, offset, length);
 #endif
     return hasGlyphs;
 }

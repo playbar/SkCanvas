@@ -365,9 +365,7 @@ static inline std::pair<GlyphData, GlyphPage*> glyphDataAndPageForNonCJKCharacte
 
 std::pair<GlyphData, GlyphPage*> Font::glyphDataAndPageForCharacter(UChar32 c, bool mirror, FontDataVariant variant) const
 {
-    ASSERT(isMainThread());
-
-    if (variant == AutoVariant) {
+	if (variant == AutoVariant) {
         if (m_fontDescription.variant() && !primaryFont()->isSVGFont()) {
             UChar32 upperC = toUpper(c);
             if (upperC != c) {
