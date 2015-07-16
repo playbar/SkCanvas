@@ -81,6 +81,9 @@ public:
     Font(const FontDescription&);
     ~Font();
 
+	void ref(){}
+	void deref(){}
+
     Font(const Font&);
     Font& operator=(const Font&);
 

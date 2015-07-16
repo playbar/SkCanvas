@@ -34,6 +34,8 @@
     <ClCompile Include="..\third_party\libpng\pngwtran.c" />
     <ClCompile Include="..\third_party\libpng\pngwutil.c" />
     <ClCompile Include="blink\ColorData.cpp" />
+    <ClCompile Include="blink\CSSGrammar.cpp" />
+    <ClCompile Include="blink\CSSTokenizer.cpp" />
     <ClCompile Include="blink\FontFamilyNames.cpp" />
     <ClCompile Include="blink\HTMLNames.cpp" />
     <ClCompile Include="blink\RuntimeEnabledFeatures.cpp" />
@@ -211,6 +213,7 @@
     <ClInclude Include="..\third_party\libpng\png.h" />
     <ClInclude Include="..\third_party\libpng\pngconf.h" />
     <ClInclude Include="..\third_party\libpng\pngusr.h" />
+    <ClInclude Include="blink\CSSGrammar.h" />
     <ClInclude Include="blink\FontFamilyNames.h" />
     <ClInclude Include="blink\HTMLNames.h" />
     <ClInclude Include="blink\RuntimeEnabledFeatures.h" />
@@ -271,6 +274,7 @@
     <ClInclude Include="css\CSSSelector.h" />
     <ClInclude Include="css\CSSSelectorList.h" />
     <ClInclude Include="css\CSSShadowValue.h" />
+    <ClInclude Include="css\CSSTokenizer.h" />
     <ClInclude Include="css\CSSToLengthConversionData.h" />
     <ClInclude Include="css\CSSTransformValue.h" />
     <ClInclude Include="css\CSSUnicodeRangeValue.h" />

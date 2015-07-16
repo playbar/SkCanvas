@@ -152,41 +152,36 @@
 typedef union YYSTYPE
 {
 
-/* Line 1676 of yacc.c  */
-#line 68 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
+	bool boolean;
+	char character;
+	int integer;
+	double number;
+	CSSParserString string;
 
-    bool boolean;
-    char character;
-    int integer;
-    double number;
-    CSSParserString string;
+	//StyleRuleBase* rule;
+	// The content of the two below HeapVectors are guaranteed to be kept alive by
+	// the corresponding m_parsedRules and m_floatingMediaQueryExpList lists in BisonCSSParser.h.
+	//WillBeHeapVector<RefPtrWillBeMember<StyleRuleBase> >* ruleList;
+	//WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> >* mediaQueryExpList;
+	CSSParserSelector* selector;
+	Vector<OwnPtr<CSSParserSelector> >* selectorList;
+	CSSSelector::MarginBoxType marginBox;
+	CSSSelector::Relation relation;
+	//MediaQuerySet* mediaList;
+	//MediaQuery* mediaQuery;
+	//MediaQuery::Restrictor mediaQueryRestrictor;
+	//MediaQueryExp* mediaQueryExp;
+	CSSParserValue value;
+	CSSParserValueList* valueList;
+	StyleKeyframe* keyframe;
+	Vector<RefPtr<StyleKeyframe> >* keyframeRuleList;
+	float val;
+	CSSPropertyID id;
+	CSSParserLocation location;
 
-    StyleRuleBase* rule;
-    // The content of the two below HeapVectors are guaranteed to be kept alive by
-    // the corresponding m_parsedRules and m_floatingMediaQueryExpList lists in BisonCSSParser.h.
-    WillBeHeapVector<RefPtrWillBeMember<StyleRuleBase> >* ruleList;
-    WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> >* mediaQueryExpList;
-    CSSParserSelector* selector;
-    Vector<OwnPtr<CSSParserSelector> >* selectorList;
-    CSSSelector::MarginBoxType marginBox;
-    CSSSelector::Relation relation;
-    MediaQuerySet* mediaList;
-    MediaQuery* mediaQuery;
-    MediaQuery::Restrictor mediaQueryRestrictor;
-    MediaQueryExp* mediaQueryExp;
-    CSSParserValue value;
-    CSSParserValueList* valueList;
-    StyleKeyframe* keyframe;
-    Vector<RefPtr<StyleKeyframe> >* keyframeRuleList;
-    float val;
-    CSSPropertyID id;
-    CSSParserLocation location;
-
-
-
-/* Line 1676 of yacc.c  */
-#line 187 "C:/MyWork/Chrome35/src/build/Debug/obj/global_intermediate/blink\\CSSGrammar.hpp"
 } YYSTYPE;
+
+
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

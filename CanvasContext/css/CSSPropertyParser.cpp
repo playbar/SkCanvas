@@ -409,7 +409,7 @@ bool CSSPropertyParser::parseValue(CSSPropertyID propId, bool important)
     if (!isInternalPropertyAndValueParsingEnabledForMode(m_context.mode()) && isInternalProperty(propId))
         return false;
 
-	ASSERT(false);
+	//ASSERT(false);
     //// We don't count the UA style sheet in our statistics.
     //if (m_context.useCounter())
     //    m_context.useCounter()->count(m_context, propId);

@@ -92,7 +92,7 @@ private:
 
     const SimpleFontData* primarySimpleFontData(const FontDescription& fontDescription)
     {
-        ASSERT(isMainThread());
+        //ASSERT(isMainThread());
         if (!m_cachedPrimarySimpleFontData)
             m_cachedPrimarySimpleFontData = primaryFontData(fontDescription)->fontDataForCharacter(' ');
         return m_cachedPrimarySimpleFontData;

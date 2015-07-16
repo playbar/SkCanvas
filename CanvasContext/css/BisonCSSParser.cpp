@@ -86,7 +86,7 @@
 extern int cssyydebug;
 #endif
 
-//int cssyyparse(WebCore::BisonCSSParser*);
+int cssyyparse(WebCore::BisonCSSParser*);
 
 using namespace std;
 using namespace WTF;
@@ -114,7 +114,7 @@ BisonCSSParser::BisonCSSParser(const CSSParserContext& context)
     , m_allowImportRules(true)
     , m_allowNamespaceDeclarations(true)
     , m_inViewport(false)
-    //, m_tokenizer(*this)
+    , m_tokenizer(*this)
 {
 #if YYDEBUG > 0
     cssyydebug = 1;
@@ -134,7 +134,7 @@ BisonCSSParser::~BisonCSSParser()
 
 void BisonCSSParser::setupParser(const char* prefix, unsigned prefixLength, const String& string, const char* suffix, unsigned suffixLength)
 {
-    //m_tokenizer.setupTokenizer(prefix, prefixLength, string, suffix, suffixLength);
+    m_tokenizer.setupTokenizer(prefix, prefixLength, string, suffix, suffixLength);
     m_ruleHasHeader = true;
 }
 //
@@ -173,14 +173,14 @@ PassRefPtr<StyleKeyframe> BisonCSSParser::parseKeyframeRule(StyleSheetContents* 
 {
     setStyleSheet(sheet);
     setupParser("@-internal-keyframe-rule ", string, "");
-    //cssyyparse(this);
+    cssyyparse(this);
     return m_keyframe.release();
 }
 
 PassOwnPtr<Vector<double> > BisonCSSParser::parseKeyframeKeyList(const String& string)
 {
     setupParser("@-internal-keyframe-key-list ", string, "");
-    //cssyyparse(this);
+    cssyyparse(this);
     ASSERT(m_valueList);
     return StyleKeyframe::createKeyList(m_valueList.get());
 }
@@ -189,7 +189,7 @@ bool BisonCSSParser::parseSupportsCondition(const String& string)
 {
     m_supportsCondition = false;
     setupParser("@-internal-supports-condition ", string, "");
-    //cssyyparse(this);
+    cssyyparse(this);
     return m_supportsCondition;
 }
 
@@ -1034,7 +1034,7 @@ bool BisonCSSParser::parseValue(MutableStylePropertySet* declaration, CSSPropert
         return true;
 
     CSSParserContext context(cssParserMode, 0);
-	ASSERT(false);
+	//ASSERT(false);
     //if (contextStyleSheet) {
     //    context = contextStyleSheet->parserContext();
     //    context.setMode(cssParserMode);
@@ -1053,7 +1053,7 @@ bool BisonCSSParser::parseValue(MutableStylePropertySet* declaration, CSSPropert
 {
     // FIXME: Check RuntimeCSSEnabled::isPropertyEnabled or isValueEnabledForProperty.
 
-	ASSERT(false);
+	//ASSERT(false);
     //if (m_context.useCounter())
     //    m_context.useCounter()->count(m_context, propertyID);
 
@@ -1066,7 +1066,7 @@ bool BisonCSSParser::parseValue(MutableStylePropertySet* declaration, CSSPropert
 
     {
         StyleDeclarationScope scope(this, declaration);
-        //cssyyparse(this);
+        cssyyparse(this);
     }
 
     //m_rule = nullptr;
@@ -1113,7 +1113,7 @@ bool BisonCSSParser::parseColor(RGBA32& color, const String& string, bool strict
 bool BisonCSSParser::parseColor(const String& string)
 {
     setupParser("@-internal-decls color:", string, "");
-    //cssyyparse(this);
+    cssyyparse(this);
     //m_rule = nullptr;
 
     return !m_parsedProperties.isEmpty() && m_parsedProperties.first().id() == CSSPropertyColor;
@@ -1139,7 +1139,7 @@ void BisonCSSParser::parseSelector(const String& string, CSSSelectorList& select
 
     setupParser("@-internal-selector ", string, "");
 
-    //cssyyparse(this);
+    cssyyparse(this);
 
     m_selectorListForParseSelector = 0;
 }
@@ -1160,7 +1160,7 @@ PassRefPtr<ImmutableStylePropertySet> BisonCSSParser::parseDeclaration(const Str
     setStyleSheet(contextStyleSheet);
 
     setupParser("@-internal-decls ", string, "");
-    //cssyyparse(this);
+    cssyyparse(this);
     //m_rule = nullptr;
 
     if (m_hasFontFaceOnlyValues)
@@ -1781,7 +1781,7 @@ void BisonCSSParser::markSupportsRuleHeaderStart()
 
     RefPtr<CSSRuleSourceData> data = CSSRuleSourceData::create(CSSRuleSourceData::SUPPORTS_RULE);
 	ASSERT(false);
-    //data->ruleHeaderRange.start = m_tokenizer.tokenStartOffset();
+    data->ruleHeaderRange.start = m_tokenizer.tokenStartOffset();
     m_supportsRuleDataStack->append(data);
 }
 
@@ -1790,10 +1790,10 @@ void BisonCSSParser::markSupportsRuleHeaderEnd()
     ASSERT(m_supportsRuleDataStack && !m_supportsRuleDataStack->isEmpty());
 
 	ASSERT(false);
-    //if (m_tokenizer.is8BitSource())
-    //    m_supportsRuleDataStack->last()->ruleHeaderRange.end = m_tokenizer.tokenStart<LChar>() - m_tokenizer.m_dataStart8.get();
-    //else
-    //    m_supportsRuleDataStack->last()->ruleHeaderRange.end = m_tokenizer.tokenStart<UChar>() - m_tokenizer.m_dataStart16.get();
+    if (m_tokenizer.is8BitSource())
+        m_supportsRuleDataStack->last()->ruleHeaderRange.end = m_tokenizer.tokenStart<LChar>() - m_tokenizer.m_dataStart8.get();
+    else
+        m_supportsRuleDataStack->last()->ruleHeaderRange.end = m_tokenizer.tokenStart<UChar>() - m_tokenizer.m_dataStart16.get();
 
 }
 
@@ -1845,15 +1845,16 @@ ALWAYS_INLINE static void makeLower(const CharacterType* input, CharacterType* o
 
 void BisonCSSParser::tokenToLowerCase(const CSSParserString& token)
 {
-	ASSERT(false);
-    //size_t length = token.length();
-    //if (m_tokenizer.is8BitSource()) {
-    //    size_t offset = token.characters8() - m_tokenizer.m_dataStart8.get();
-    //    makeLower(token.characters8(), m_tokenizer.m_dataStart8.get() + offset, length);
-    //} else {
-    //    size_t offset = token.characters16() - m_tokenizer.m_dataStart16.get();
-    //    makeLower(token.characters16(), m_tokenizer.m_dataStart16.get() + offset, length);
-    //}
+	//ASSERT(false);
+	size_t length = token.length();
+	if (m_tokenizer.is8BitSource()) {
+		size_t offset = token.characters8() - m_tokenizer.m_dataStart8.get();
+		makeLower(token.characters8(), m_tokenizer.m_dataStart8.get() + offset, length);
+	}
+	else {
+		size_t offset = token.characters16() - m_tokenizer.m_dataStart16.get();
+		makeLower(token.characters16(), m_tokenizer.m_dataStart16.get() + offset, length);
+	}
 }
 
 void BisonCSSParser::endInvalidRuleHeader()
@@ -1863,12 +1864,12 @@ void BisonCSSParser::endInvalidRuleHeader()
 
     CSSParserLocation location;
 	ASSERT(false);
-    //location.lineNumber = m_tokenizer.m_lineNumber;
+    location.lineNumber = m_tokenizer.m_lineNumber;
     location.offset = m_ruleHeaderStartOffset;
-    //if (m_tokenizer.is8BitSource())
-    //    location.token.init(m_tokenizer.m_dataStart8.get() + m_ruleHeaderStartOffset, 0);
-    //else
-    //    location.token.init(m_tokenizer.m_dataStart16.get() + m_ruleHeaderStartOffset, 0);
+	if (m_tokenizer.is8BitSource())
+		location.token.init(m_tokenizer.m_dataStart8.get() + m_ruleHeaderStartOffset, 0);
+	else
+		location.token.init(m_tokenizer.m_dataStart16.get() + m_ruleHeaderStartOffset, 0);
 
     //reportError(location, m_ruleHeaderType == CSSRuleSourceData::STYLE_RULE ? InvalidSelectorCSSError : InvalidRuleCSSError);
 
@@ -2208,9 +2209,9 @@ void BisonCSSParser::endRule(bool valid)
     //if (!m_observer)
     //    return;
 
-    //if (m_ruleHasHeader)
-    //    m_observer->endRuleBody(m_tokenizer.safeUserStringTokenOffset(), !valid);
-    //m_ruleHasHeader = true;
+	//if (m_ruleHasHeader)
+	//	m_observer->endRuleBody(m_tokenizer.safeUserStringTokenOffset(), !valid);
+	m_ruleHasHeader = true;
 }
 
 void BisonCSSParser::startRuleHeader(CSSRuleSourceData::Type ruleType)

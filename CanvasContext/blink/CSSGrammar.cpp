@@ -1,47 +1,3 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
-
-/* Skeleton implementation for Bison's Yacc-like parsers in C
-   
-      Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
-   Free Software Foundation, Inc.
-   
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-   
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
-
-/* As a special exception, you may create a larger work that contains
-   part or all of the Bison parser skeleton and distribute that work
-   under terms of your choice, so long as that work isn't itself a
-   parser generator using the skeleton or a modified version thereof
-   as a parser skeleton.  Alternatively, if you modify or redistribute
-   the parser skeleton itself, you may (at your option) remove this
-   special exception, which will cause the skeleton and the resulting
-   Bison output files to be licensed under the GNU General Public
-   License without this special exception.
-   
-   This special exception was added by the Free Software Foundation in
-   version 2.2 of Bison.  */
-
-/* C LALR(1) parser skeleton written by Richard Stallman, by
-   simplifying the original so-called "semantic" parser.  */
-
-/* All symbols defined below should begin with yy or YY, to avoid
-   infringing on user name space.  This should be done even for local
-   variables, as they might otherwise be expanded by user macros.
-   There are some unavoidable exceptions within include files to
-   define necessary library symbols; they are noted "INFRINGES ON
-   USER NAME SPACE" below.  */
-
 /* Identify Bison output.  */
 #define YYBISON 1
 
@@ -76,7 +32,6 @@
 /* Copy the first part of user declarations.  */
 
 /* Line 189 of yacc.c  */
-#line 1 "./blink/CSSGrammar.y"
 
 
 /*
@@ -106,18 +61,16 @@
 
 #include "CSSPropertyNames.h"
 #include "HTMLNames.h"
-#include "core/css/CSSKeyframeRule.h"
-#include "core/css/CSSKeyframesRule.h"
-#include "core/css/parser/BisonCSSParser.h"
-#include "core/css/CSSParserMode.h"
-#include "core/css/CSSPrimitiveValue.h"
-#include "core/css/CSSSelector.h"
-#include "core/css/CSSSelectorList.h"
-#include "core/css/MediaList.h"
-#include "core/css/MediaQueryExp.h"
-#include "core/css/StyleRule.h"
-#include "core/css/StyleSheetContents.h"
-#include "core/dom/Document.h"
+#include "css/CSSKeyframeRule.h"
+#include "css/CSSKeyframesRule.h"
+#include "css/BisonCSSParser.h"
+#include "css/CSSParserMode.h"
+#include "css/CSSPrimitiveValue.h"
+#include "css/CSSSelector.h"
+#include "css/CSSSelectorList.h"
+//#include "css/MediaQueryExp.h"
+//#include "css/StyleRule.h"
+//#include "css/StyleSheetContents.h"
 #include "wtf/FastMalloc.h"
 #include <stdlib.h>
 #include <string.h>
@@ -137,10 +90,6 @@ using namespace HTMLNames;
 #define YYPRINT(File,Type,Value) if (isCSSTokenAString(Type)) YYFPRINTF(File, "%s", String((Value).string).utf8().data())
 #endif
 
-
-
-/* Line 189 of yacc.c  */
-#line 144 "C:/MyWork/Chrome35/src/build/Debug/obj/global_intermediate/blink\\CSSGrammar.cpp"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -279,7 +228,6 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 68 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
 
     bool boolean;
     char character;
@@ -287,19 +235,19 @@ typedef union YYSTYPE
     double number;
     CSSParserString string;
 
-    StyleRuleBase* rule;
+    //StyleRuleBase* rule;
     // The content of the two below HeapVectors are guaranteed to be kept alive by
     // the corresponding m_parsedRules and m_floatingMediaQueryExpList lists in BisonCSSParser.h.
-    WillBeHeapVector<RefPtrWillBeMember<StyleRuleBase> >* ruleList;
-    WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> >* mediaQueryExpList;
+    //WillBeHeapVector<RefPtrWillBeMember<StyleRuleBase> >* ruleList;
+    //WillBeHeapVector<OwnPtrWillBeMember<MediaQueryExp> >* mediaQueryExpList;
     CSSParserSelector* selector;
     Vector<OwnPtr<CSSParserSelector> >* selectorList;
     CSSSelector::MarginBoxType marginBox;
     CSSSelector::Relation relation;
-    MediaQuerySet* mediaList;
-    MediaQuery* mediaQuery;
-    MediaQuery::Restrictor mediaQueryRestrictor;
-    MediaQueryExp* mediaQueryExp;
+    //MediaQuerySet* mediaList;
+    //MediaQuery* mediaQuery;
+    //MediaQuery::Restrictor mediaQueryRestrictor;
+    //MediaQueryExp* mediaQueryExp;
     CSSParserValue value;
     CSSParserValueList* valueList;
     StyleKeyframe* keyframe;
@@ -311,8 +259,8 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 315 "C:/MyWork/Chrome35/src/build/Debug/obj/global_intermediate/blink\\CSSGrammar.cpp"
 } YYSTYPE;
+
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -322,8 +270,6 @@ typedef union YYSTYPE
 /* Copy the second part of user declarations.  */
 
 /* Line 264 of yacc.c  */
-#line 97 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
-
 
 static inline int cssyyerror(void*, const char*)
 {
@@ -379,7 +325,6 @@ inline static CSSParserValue makeIdentValue(CSSParserString string)
 
 
 /* Line 264 of yacc.c  */
-#line 383 "C:/MyWork/Chrome35/src/build/Debug/obj/global_intermediate/blink\\CSSGrammar.cpp"
 
 #ifdef short
 # undef short
@@ -2639,36 +2584,24 @@ yyreduce:
   switch (yyn)
     {
         case 11:
-
-/* Line 1455 of yacc.c  */
-#line 391 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->m_rule = (yyvsp[(3) - (5)].rule);
+        //parser->m_rule = (yyvsp[(3) - (5)].rule);
     ;}
     break;
 
   case 12:
-
-/* Line 1455 of yacc.c  */
-#line 397 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->m_keyframe = (yyvsp[(3) - (5)].keyframe);
     ;}
     break;
 
   case 13:
-
-/* Line 1455 of yacc.c  */
-#line 403 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->m_valueList = parser->sinkFloatingValueList((yyvsp[(3) - (4)].valueList));
     ;}
     break;
 
   case 14:
-
-/* Line 1455 of yacc.c  */
-#line 409 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         /* can be empty */
     ;}
@@ -2677,7 +2610,6 @@ yyreduce:
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 415 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->m_valueList = parser->sinkFloatingValueList((yyvsp[(3) - (4)].valueList));
         int oldParsedProperties = parser->m_parsedProperties.size();
@@ -2690,16 +2622,13 @@ yyreduce:
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 425 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->m_mediaList = (yyvsp[(4) - (5)].mediaList);
     ;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 431 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         if (parser->m_selectorListForParseSelector)
             parser->m_selectorListForParseSelector->adoptSelectorVector(*(yyvsp[(3) - (4)].selectorList));
@@ -2709,7 +2638,6 @@ yyreduce:
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 438 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->m_supportsCondition = (yyvsp[(3) - (4)].boolean);
     ;}
@@ -2718,10 +2646,9 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 481 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-       if (parser->m_styleSheet)
-           parser->m_styleSheet->parserSetEncodingFromCharsetRule((yyvsp[(3) - (5)].string));
+       //if (parser->m_styleSheet)
+       //    parser->m_styleSheet->parserSetEncodingFromCharsetRule((yyvsp[(3) - (5)].string));
        parser->startEndUnknownRule();
     ;}
     break;
@@ -2729,17 +2656,15 @@ yyreduce:
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 491 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-     if ((yyvsp[(2) - (3)].rule) && parser->m_styleSheet)
-         parser->m_styleSheet->parserAppendRule((yyvsp[(2) - (3)].rule));
+     //if ((yyvsp[(2) - (3)].rule) && parser->m_styleSheet)
+     //    parser->m_styleSheet->parserAppendRule((yyvsp[(2) - (3)].rule));
  ;}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 510 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startRule();
     ;}
@@ -2748,20 +2673,18 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 516 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.rule) = (yyvsp[(2) - (2)].rule);
+        //(yyval.rule) = (yyvsp[(2) - (2)].rule);
         parser->m_hadSyntacticallyValidCSSRule = true;
-        parser->endRule(!!(yyval.rule));
+        //parser->endRule(!!(yyval.rule));
     ;}
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 521 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.rule) = 0;
+        //(yyval.rule) = 0;
         parser->endRule(false);
     ;}
     break;
@@ -2769,23 +2692,20 @@ yyreduce:
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 533 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
-    { (yyval.ruleList) = 0; ;}
+    //{ (yyval.ruleList) = 0; ;}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 534 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-      (yyval.ruleList) = parser->appendRule((yyvsp[(1) - (3)].ruleList), (yyvsp[(2) - (3)].rule));
+      //(yyval.ruleList) = parser->appendRule((yyvsp[(1) - (3)].ruleList), (yyvsp[(2) - (3)].rule));
     ;}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 540 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->endRule(false);
     ;}
@@ -2794,19 +2714,17 @@ yyreduce:
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 557 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.rule) = (yyvsp[(2) - (2)].rule);
-        parser->endRule(!!(yyval.rule));
+        //(yyval.rule) = (yyvsp[(2) - (2)].rule);
+        //parser->endRule(!!(yyval.rule));
     ;}
     break;
 
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 561 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.rule) = 0;
+        //(yyval.rule) = 0;
         parser->endRule(false);
     ;}
     break;
@@ -2814,7 +2732,6 @@ yyreduce:
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 568 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startRuleHeader(CSSRuleSourceData::IMPORT_RULE);
     ;}
@@ -2823,7 +2740,6 @@ yyreduce:
   case 67:
 
 /* Line 1455 of yacc.c  */
-#line 574 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->endRuleHeader();
         parser->startRuleBody();
@@ -2833,42 +2749,37 @@ yyreduce:
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 581 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.rule) = parser->createImportRule((yyvsp[(2) - (6)].string), (yyvsp[(5) - (6)].mediaList));
+        //(yyval.rule) = parser->createImportRule((yyvsp[(2) - (6)].string), (yyvsp[(5) - (6)].mediaList));
     ;}
     break;
 
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 584 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.rule) = 0;
+        //(yyval.rule) = 0;
     ;}
     break;
 
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 590 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->addNamespace((yyvsp[(3) - (6)].string), (yyvsp[(4) - (6)].string));
-        (yyval.rule) = 0;
+        //(yyval.rule) = 0;
     ;}
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 597 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.string).clear(); ;}
     break;
 
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 607 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = 0;
     ;}
@@ -2877,7 +2788,6 @@ yyreduce:
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 610 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = (yyvsp[(3) - (3)].valueList);
     ;}
@@ -2886,19 +2796,17 @@ yyreduce:
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 616 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->tokenToLowerCase((yyvsp[(3) - (6)].string));
-        (yyval.mediaQueryExp) = parser->createFloatingMediaQueryExp((yyvsp[(3) - (6)].string), (yyvsp[(5) - (6)].valueList));
-        if (!(yyval.mediaQueryExp))
-            YYERROR;
+        //(yyval.mediaQueryExp) = parser->createFloatingMediaQueryExp((yyvsp[(3) - (6)].string), (yyvsp[(5) - (6)].valueList));
+        //if (!(yyval.mediaQueryExp))
+        //    YYERROR;
     ;}
     break;
 
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 622 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -2907,170 +2815,152 @@ yyreduce:
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 628 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaQueryExpList) = parser->createFloatingMediaQueryExpList();
-        (yyval.mediaQueryExpList)->append(parser->sinkFloatingMediaQueryExp((yyvsp[(1) - (1)].mediaQueryExp)));
+        //(yyval.mediaQueryExpList) = parser->createFloatingMediaQueryExpList();
+        //(yyval.mediaQueryExpList)->append(parser->sinkFloatingMediaQueryExp((yyvsp[(1) - (1)].mediaQueryExp)));
     ;}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 632 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaQueryExpList) = (yyvsp[(1) - (5)].mediaQueryExpList);
-        (yyval.mediaQueryExpList)->append(parser->sinkFloatingMediaQueryExp((yyvsp[(5) - (5)].mediaQueryExp)));
+        //(yyval.mediaQueryExpList) = (yyvsp[(1) - (5)].mediaQueryExpList);
+        //(yyval.mediaQueryExpList)->append(parser->sinkFloatingMediaQueryExp((yyvsp[(5) - (5)].mediaQueryExp)));
     ;}
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 639 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaQueryExpList) = parser->createFloatingMediaQueryExpList();
+        //(yyval.mediaQueryExpList) = parser->createFloatingMediaQueryExpList();
     ;}
     break;
 
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 642 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaQueryExpList) = (yyvsp[(4) - (5)].mediaQueryExpList);
+        //(yyval.mediaQueryExpList) = (yyvsp[(4) - (5)].mediaQueryExpList);
     ;}
     break;
 
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 648 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaQueryRestrictor) = MediaQuery::None;
+        //(yyval.mediaQueryRestrictor) = MediaQuery::None;
     ;}
     break;
 
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 651 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaQueryRestrictor) = MediaQuery::Only;
+        //(yyval.mediaQueryRestrictor) = MediaQuery::Only;
     ;}
     break;
 
   case 85:
 
 /* Line 1455 of yacc.c  */
-#line 654 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaQueryRestrictor) = MediaQuery::Not;
+        //(yyval.mediaQueryRestrictor) = MediaQuery::Not;
     ;}
     break;
 
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 660 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaQuery) = parser->createFloatingMediaQuery(parser->sinkFloatingMediaQueryExpList((yyvsp[(1) - (2)].mediaQueryExpList)));
+        //(yyval.mediaQuery) = parser->createFloatingMediaQuery(parser->sinkFloatingMediaQueryExpList((yyvsp[(1) - (2)].mediaQueryExpList)));
     ;}
     break;
 
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 663 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->tokenToLowerCase((yyvsp[(2) - (3)].string));
-        (yyval.mediaQuery) = parser->createFloatingMediaQuery((yyvsp[(1) - (3)].mediaQueryRestrictor), (yyvsp[(2) - (3)].string), parser->sinkFloatingMediaQueryExpList((yyvsp[(3) - (3)].mediaQueryExpList)));
+        //(yyval.mediaQuery) = parser->createFloatingMediaQuery((yyvsp[(1) - (3)].mediaQueryRestrictor), (yyvsp[(2) - (3)].string), parser->sinkFloatingMediaQueryExpList((yyvsp[(3) - (3)].mediaQueryExpList)));
     ;}
     break;
 
   case 89:
 
 /* Line 1455 of yacc.c  */
-#line 671 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->reportError(parser->lastLocationLabel(), InvalidMediaQueryCSSError);
-        (yyval.mediaQuery) = parser->createFloatingNotAllQuery();
+        //parser->reportError(parser->lastLocationLabel(), InvalidMediaQueryCSSError);
+        //(yyval.mediaQuery) = parser->createFloatingNotAllQuery();
     ;}
     break;
 
   case 90:
 
 /* Line 1455 of yacc.c  */
-#line 675 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->reportError(parser->lastLocationLabel(), InvalidMediaQueryCSSError);
-        (yyval.mediaQuery) = parser->createFloatingNotAllQuery();
+        //parser->reportError(parser->lastLocationLabel(), InvalidMediaQueryCSSError);
+        //(yyval.mediaQuery) = parser->createFloatingNotAllQuery();
     ;}
     break;
 
   case 91:
 
 /* Line 1455 of yacc.c  */
-#line 682 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaList) = parser->createMediaQuerySet();
+        //(yyval.mediaList) = parser->createMediaQuerySet();
     ;}
     break;
 
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 689 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaList) = parser->createMediaQuerySet();
-        (yyval.mediaList)->addMediaQuery(parser->sinkFloatingMediaQuery((yyvsp[(1) - (1)].mediaQuery)));
+        //(yyval.mediaList) = parser->createMediaQuerySet();
+        //(yyval.mediaList)->addMediaQuery(parser->sinkFloatingMediaQuery((yyvsp[(1) - (1)].mediaQuery)));
     ;}
     break;
 
   case 94:
 
 /* Line 1455 of yacc.c  */
-#line 693 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaList) = (yyvsp[(1) - (2)].mediaList);
-        (yyval.mediaList)->addMediaQuery(parser->sinkFloatingMediaQuery((yyvsp[(2) - (2)].mediaQuery)));
+        //(yyval.mediaList) = (yyvsp[(1) - (2)].mediaList);
+        //(yyval.mediaList)->addMediaQuery(parser->sinkFloatingMediaQuery((yyvsp[(2) - (2)].mediaQuery)));
     ;}
     break;
 
   case 95:
 
 /* Line 1455 of yacc.c  */
-#line 697 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaList) = (yyvsp[(1) - (1)].mediaList);
-        (yyval.mediaList)->addMediaQuery(parser->sinkFloatingMediaQuery(parser->createFloatingNotAllQuery()));
+        //(yyval.mediaList) = (yyvsp[(1) - (1)].mediaList);
+        //(yyval.mediaList)->addMediaQuery(parser->sinkFloatingMediaQuery(parser->createFloatingNotAllQuery()));
     ;}
     break;
 
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 704 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaList) = parser->createMediaQuerySet();
-        (yyval.mediaList)->addMediaQuery(parser->sinkFloatingMediaQuery((yyvsp[(1) - (4)].mediaQuery)));
+        //(yyval.mediaList) = parser->createMediaQuerySet();
+        //(yyval.mediaList)->addMediaQuery(parser->sinkFloatingMediaQuery((yyvsp[(1) - (4)].mediaQuery)));
     ;}
     break;
 
   case 97:
 
 /* Line 1455 of yacc.c  */
-#line 708 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.mediaList) = (yyvsp[(1) - (5)].mediaList);
-        (yyval.mediaList)->addMediaQuery(parser->sinkFloatingMediaQuery((yyvsp[(2) - (5)].mediaQuery)));
+        //(yyval.mediaList) = (yyvsp[(1) - (5)].mediaList);
+        //(yyval.mediaList)->addMediaQuery(parser->sinkFloatingMediaQuery((yyvsp[(2) - (5)].mediaQuery)));
     ;}
     break;
 
   case 98:
 
 /* Line 1455 of yacc.c  */
-#line 715 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startRuleBody();
     ;}
@@ -3079,7 +2969,6 @@ yyreduce:
   case 99:
 
 /* Line 1455 of yacc.c  */
-#line 721 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startRuleHeader(CSSRuleSourceData::MEDIA_RULE);
     ;}
@@ -3088,7 +2977,6 @@ yyreduce:
   case 100:
 
 /* Line 1455 of yacc.c  */
-#line 727 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->endRuleHeader();
     ;}
@@ -3097,25 +2985,22 @@ yyreduce:
   case 102:
 
 /* Line 1455 of yacc.c  */
-#line 736 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.rule) = parser->createMediaRule((yyvsp[(2) - (8)].mediaList), (yyvsp[(7) - (8)].ruleList));
+        //(yyval.rule) = parser->createMediaRule((yyvsp[(2) - (8)].mediaList), (yyvsp[(7) - (8)].ruleList));
     ;}
     break;
 
   case 104:
 
 /* Line 1455 of yacc.c  */
-#line 746 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.rule) = parser->createSupportsRule((yyvsp[(4) - (10)].boolean), (yyvsp[(9) - (10)].ruleList));
+        //(yyval.rule) = parser->createSupportsRule((yyvsp[(4) - (10)].boolean), (yyvsp[(9) - (10)].ruleList));
     ;}
     break;
 
   case 105:
 
 /* Line 1455 of yacc.c  */
-#line 752 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startRuleHeader(CSSRuleSourceData::SUPPORTS_RULE);
         parser->markSupportsRuleHeaderStart();
@@ -3125,7 +3010,6 @@ yyreduce:
   case 106:
 
 /* Line 1455 of yacc.c  */
-#line 759 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->endRuleHeader();
         parser->markSupportsRuleHeaderEnd();
@@ -3135,7 +3019,6 @@ yyreduce:
   case 111:
 
 /* Line 1455 of yacc.c  */
-#line 773 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.boolean) = !(yyvsp[(3) - (3)].boolean);
     ;}
@@ -3144,7 +3027,6 @@ yyreduce:
   case 112:
 
 /* Line 1455 of yacc.c  */
-#line 779 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.boolean) = (yyvsp[(1) - (4)].boolean) && (yyvsp[(4) - (4)].boolean);
     ;}
@@ -3153,7 +3035,6 @@ yyreduce:
   case 113:
 
 /* Line 1455 of yacc.c  */
-#line 782 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.boolean) = (yyvsp[(1) - (4)].boolean) && (yyvsp[(4) - (4)].boolean);
     ;}
@@ -3162,7 +3043,6 @@ yyreduce:
   case 114:
 
 /* Line 1455 of yacc.c  */
-#line 788 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.boolean) = (yyvsp[(1) - (4)].boolean) || (yyvsp[(4) - (4)].boolean);
     ;}
@@ -3171,7 +3051,6 @@ yyreduce:
   case 115:
 
 /* Line 1455 of yacc.c  */
-#line 791 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.boolean) = (yyvsp[(1) - (4)].boolean) || (yyvsp[(4) - (4)].boolean);
     ;}
@@ -3180,7 +3059,6 @@ yyreduce:
   case 116:
 
 /* Line 1455 of yacc.c  */
-#line 797 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.boolean) = (yyvsp[(3) - (5)].boolean);
     ;}
@@ -3189,9 +3067,8 @@ yyreduce:
   case 118:
 
 /* Line 1455 of yacc.c  */
-#line 801 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->reportError((yyvsp[(3) - (6)].location), InvalidSupportsConditionCSSError);
+        //parser->reportError((yyvsp[(3) - (6)].location), InvalidSupportsConditionCSSError);
         (yyval.boolean) = false;
     ;}
     break;
@@ -3199,7 +3076,6 @@ yyreduce:
   case 119:
 
 /* Line 1455 of yacc.c  */
-#line 808 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.boolean) = false;
         CSSPropertyID id = cssPropertyID((yyvsp[(3) - (10)].string));
@@ -3212,24 +3088,22 @@ yyreduce:
                 parser->rollbackLastProperties(parser->m_parsedProperties.size() - oldParsedProperties);
         }
         parser->m_valueList = nullptr;
-        parser->endProperty((yyvsp[(8) - (10)].boolean), false);
+        //parser->endProperty((yyvsp[(8) - (10)].boolean), false);
     ;}
     break;
 
   case 120:
 
 /* Line 1455 of yacc.c  */
-#line 822 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.boolean) = false;
-        parser->endProperty(false, false, GeneralCSSError);
+        //parser->endProperty(false, false, GeneralCSSError);
     ;}
     break;
 
   case 121:
 
 /* Line 1455 of yacc.c  */
-#line 829 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startRuleHeader(CSSRuleSourceData::KEYFRAMES_RULE);
     ;}
@@ -3238,7 +3112,6 @@ yyreduce:
   case 122:
 
 /* Line 1455 of yacc.c  */
-#line 835 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.boolean) = false;
     ;}
@@ -3247,7 +3120,6 @@ yyreduce:
   case 123:
 
 /* Line 1455 of yacc.c  */
-#line 838 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.boolean) = true;
     ;}
@@ -3256,16 +3128,14 @@ yyreduce:
   case 124:
 
 /* Line 1455 of yacc.c  */
-#line 844 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.rule) = parser->createKeyframesRule((yyvsp[(2) - (9)].string), parser->sinkFloatingKeyframeVector((yyvsp[(8) - (9)].keyframeRuleList)), (yyvsp[(1) - (9)].boolean) /* isPrefixed */);
+        //(yyval.rule) = parser->createKeyframesRule((yyvsp[(2) - (9)].string), parser->sinkFloatingKeyframeVector((yyvsp[(8) - (9)].keyframeRuleList)), (yyvsp[(1) - (9)].boolean) /* isPrefixed */);
     ;}
     break;
 
   case 128:
 
 /* Line 1455 of yacc.c  */
-#line 856 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->clearProperties();
     ;}
@@ -3274,7 +3144,6 @@ yyreduce:
   case 129:
 
 /* Line 1455 of yacc.c  */
-#line 861 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.keyframeRuleList) = parser->createFloatingKeyframeVector();
         parser->resumeErrorLogging();
@@ -3284,7 +3153,6 @@ yyreduce:
   case 130:
 
 /* Line 1455 of yacc.c  */
-#line 865 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.keyframeRuleList) = (yyvsp[(1) - (4)].keyframeRuleList);
         (yyval.keyframeRuleList)->append((yyvsp[(2) - (4)].keyframe));
@@ -3294,7 +3162,6 @@ yyreduce:
   case 131:
 
 /* Line 1455 of yacc.c  */
-#line 869 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->clearProperties();
         parser->resumeErrorLogging();
@@ -3304,7 +3171,6 @@ yyreduce:
   case 132:
 
 /* Line 1455 of yacc.c  */
-#line 876 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.keyframe) = parser->createKeyframe((yyvsp[(1) - (5)].valueList));
     ;}
@@ -3313,7 +3179,6 @@ yyreduce:
   case 133:
 
 /* Line 1455 of yacc.c  */
-#line 882 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = parser->createFloatingValueList();
         (yyval.valueList)->addValue(parser->sinkFloatingValue((yyvsp[(1) - (2)].value)));
@@ -3323,7 +3188,6 @@ yyreduce:
   case 134:
 
 /* Line 1455 of yacc.c  */
-#line 886 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = (yyvsp[(1) - (5)].valueList);
         (yyval.valueList)->addValue(parser->sinkFloatingValue((yyvsp[(4) - (5)].value)));
@@ -3333,7 +3197,6 @@ yyreduce:
   case 135:
 
 /* Line 1455 of yacc.c  */
-#line 893 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.value).setFromNumber((yyvsp[(1) - (2)].integer) * (yyvsp[(2) - (2)].number));
     ;}
@@ -3342,7 +3205,6 @@ yyreduce:
   case 136:
 
 /* Line 1455 of yacc.c  */
-#line 896 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         if ((yyvsp[(1) - (1)].string).equalIgnoringCase("from"))
             (yyval.value).setFromNumber(0);
@@ -3357,16 +3219,14 @@ yyreduce:
   case 137:
 
 /* Line 1455 of yacc.c  */
-#line 908 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->reportError(parser->lastLocationLabel(), InvalidKeyframeSelectorCSSError);
+        //parser->reportError(parser->lastLocationLabel(), InvalidKeyframeSelectorCSSError);
     ;}
     break;
 
   case 138:
 
 /* Line 1455 of yacc.c  */
-#line 914 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startRuleHeader(CSSRuleSourceData::PAGE_RULE);
     ;}
@@ -3375,23 +3235,21 @@ yyreduce:
   case 139:
 
 /* Line 1455 of yacc.c  */
-#line 921 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        if ((yyvsp[(4) - (10)].selector))
-            (yyval.rule) = parser->createPageRule(parser->sinkFloatingSelector((yyvsp[(4) - (10)].selector)));
-        else {
-            // Clear properties in the invalid @page rule.
-            parser->clearProperties();
-            // Also clear margin at-rules here once we fully implement margin at-rules parsing.
-            (yyval.rule) = 0;
-        }
+        //if ((yyvsp[(4) - (10)].selector))
+        //    (yyval.rule) = parser->createPageRule(parser->sinkFloatingSelector((yyvsp[(4) - (10)].selector)));
+        //else {
+        //    // Clear properties in the invalid @page rule.
+        //    parser->clearProperties();
+        //    // Also clear margin at-rules here once we fully implement margin at-rules parsing.
+        //    (yyval.rule) = 0;
+        //}
     ;}
     break;
 
   case 140:
 
 /* Line 1455 of yacc.c  */
-#line 934 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelectorWithTagName(QualifiedName(nullAtom, (yyvsp[(1) - (2)].string), parser->m_defaultNamespace));
         (yyval.selector)->setForPage();
@@ -3401,7 +3259,6 @@ yyreduce:
   case 141:
 
 /* Line 1455 of yacc.c  */
-#line 938 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = (yyvsp[(2) - (3)].selector);
         (yyval.selector)->prependTagSelector(QualifiedName(nullAtom, (yyvsp[(1) - (3)].string), parser->m_defaultNamespace));
@@ -3412,7 +3269,6 @@ yyreduce:
   case 142:
 
 /* Line 1455 of yacc.c  */
-#line 943 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = (yyvsp[(1) - (2)].selector);
         (yyval.selector)->setForPage();
@@ -3422,7 +3278,6 @@ yyreduce:
   case 143:
 
 /* Line 1455 of yacc.c  */
-#line 947 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setForPage();
@@ -3432,7 +3287,6 @@ yyreduce:
   case 146:
 
 /* Line 1455 of yacc.c  */
-#line 959 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startDeclarationsForMarginBox();
     ;}
@@ -3441,16 +3295,14 @@ yyreduce:
   case 147:
 
 /* Line 1455 of yacc.c  */
-#line 961 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.rule) = parser->createMarginAtRule((yyvsp[(1) - (7)].marginBox));
+        //(yyval.rule) = parser->createMarginAtRule((yyvsp[(1) - (7)].marginBox));
     ;}
     break;
 
   case 148:
 
 /* Line 1455 of yacc.c  */
-#line 967 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::TopLeftCornerMarginBox;
     ;}
@@ -3459,7 +3311,6 @@ yyreduce:
   case 149:
 
 /* Line 1455 of yacc.c  */
-#line 970 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::TopLeftMarginBox;
     ;}
@@ -3468,7 +3319,6 @@ yyreduce:
   case 150:
 
 /* Line 1455 of yacc.c  */
-#line 973 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::TopCenterMarginBox;
     ;}
@@ -3477,7 +3327,6 @@ yyreduce:
   case 151:
 
 /* Line 1455 of yacc.c  */
-#line 976 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::TopRightMarginBox;
     ;}
@@ -3486,7 +3335,6 @@ yyreduce:
   case 152:
 
 /* Line 1455 of yacc.c  */
-#line 979 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::TopRightCornerMarginBox;
     ;}
@@ -3495,7 +3343,6 @@ yyreduce:
   case 153:
 
 /* Line 1455 of yacc.c  */
-#line 982 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::BottomLeftCornerMarginBox;
     ;}
@@ -3504,7 +3351,6 @@ yyreduce:
   case 154:
 
 /* Line 1455 of yacc.c  */
-#line 985 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::BottomLeftMarginBox;
     ;}
@@ -3513,7 +3359,6 @@ yyreduce:
   case 155:
 
 /* Line 1455 of yacc.c  */
-#line 988 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::BottomCenterMarginBox;
     ;}
@@ -3522,7 +3367,6 @@ yyreduce:
   case 156:
 
 /* Line 1455 of yacc.c  */
-#line 991 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::BottomRightMarginBox;
     ;}
@@ -3531,7 +3375,6 @@ yyreduce:
   case 157:
 
 /* Line 1455 of yacc.c  */
-#line 994 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::BottomRightCornerMarginBox;
     ;}
@@ -3540,7 +3383,6 @@ yyreduce:
   case 158:
 
 /* Line 1455 of yacc.c  */
-#line 997 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::LeftTopMarginBox;
     ;}
@@ -3549,7 +3391,6 @@ yyreduce:
   case 159:
 
 /* Line 1455 of yacc.c  */
-#line 1000 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::LeftMiddleMarginBox;
     ;}
@@ -3558,7 +3399,6 @@ yyreduce:
   case 160:
 
 /* Line 1455 of yacc.c  */
-#line 1003 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::LeftBottomMarginBox;
     ;}
@@ -3567,7 +3407,6 @@ yyreduce:
   case 161:
 
 /* Line 1455 of yacc.c  */
-#line 1006 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::RightTopMarginBox;
     ;}
@@ -3576,7 +3415,6 @@ yyreduce:
   case 162:
 
 /* Line 1455 of yacc.c  */
-#line 1009 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::RightMiddleMarginBox;
     ;}
@@ -3585,7 +3423,6 @@ yyreduce:
   case 163:
 
 /* Line 1455 of yacc.c  */
-#line 1012 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.marginBox) = CSSSelector::RightBottomMarginBox;
     ;}
@@ -3594,7 +3431,6 @@ yyreduce:
   case 164:
 
 /* Line 1455 of yacc.c  */
-#line 1018 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startRuleHeader(CSSRuleSourceData::FONT_FACE_RULE);
     ;}
@@ -3603,16 +3439,14 @@ yyreduce:
   case 165:
 
 /* Line 1455 of yacc.c  */
-#line 1025 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.rule) = parser->createFontFaceRule();
+        //(yyval.rule) = parser->createFontFaceRule();
     ;}
     break;
 
   case 166:
 
 /* Line 1455 of yacc.c  */
-#line 1031 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->markViewportRuleBodyStart();
         parser->startRuleHeader(CSSRuleSourceData::VIEWPORT_RULE);
@@ -3622,9 +3456,8 @@ yyreduce:
   case 167:
 
 /* Line 1455 of yacc.c  */
-#line 1039 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.rule) = parser->createViewportRule();
+        //(yyval.rule) = parser->createViewportRule();
         parser->markViewportRuleBodyEnd();
     ;}
     break;
@@ -3632,28 +3465,24 @@ yyreduce:
   case 168:
 
 /* Line 1455 of yacc.c  */
-#line 1046 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.relation) = CSSSelector::DirectAdjacent; ;}
     break;
 
   case 169:
 
 /* Line 1455 of yacc.c  */
-#line 1047 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.relation) = CSSSelector::IndirectAdjacent; ;}
     break;
 
   case 170:
 
 /* Line 1455 of yacc.c  */
-#line 1048 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.relation) = CSSSelector::Child; ;}
     break;
 
   case 171:
 
 /* Line 1455 of yacc.c  */
-#line 1051 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         if (!RuntimeEnabledFeatures::shadowDOMEnabled())
             YYERROR;
@@ -3671,28 +3500,24 @@ yyreduce:
   case 173:
 
 /* Line 1455 of yacc.c  */
-#line 1067 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.integer) = 1; ;}
     break;
 
   case 174:
 
 /* Line 1455 of yacc.c  */
-#line 1071 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.integer) = -1; ;}
     break;
 
   case 175:
 
 /* Line 1455 of yacc.c  */
-#line 1072 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.integer) = 1; ;}
     break;
 
   case 176:
 
 /* Line 1455 of yacc.c  */
-#line 1076 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startProperty();
     ;}
@@ -3701,7 +3526,6 @@ yyreduce:
   case 177:
 
 /* Line 1455 of yacc.c  */
-#line 1082 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startRuleHeader(CSSRuleSourceData::STYLE_RULE);
         parser->startSelector();
@@ -3711,7 +3535,6 @@ yyreduce:
   case 178:
 
 /* Line 1455 of yacc.c  */
-#line 1089 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->endRuleHeader();
     ;}
@@ -3720,7 +3543,6 @@ yyreduce:
   case 179:
 
 /* Line 1455 of yacc.c  */
-#line 1095 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->endSelector();
     ;}
@@ -3729,16 +3551,14 @@ yyreduce:
   case 180:
 
 /* Line 1455 of yacc.c  */
-#line 1101 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.rule) = parser->createStyleRule((yyvsp[(2) - (9)].selectorList));
+        //(yyval.rule) = parser->createStyleRule((yyvsp[(2) - (9)].selectorList));
     ;}
     break;
 
   case 181:
 
 /* Line 1455 of yacc.c  */
-#line 1107 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startSelector();
     ;}
@@ -3747,7 +3567,6 @@ yyreduce:
   case 182:
 
 /* Line 1455 of yacc.c  */
-#line 1112 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selectorList) = parser->reusableSelectorVector();
         (yyval.selectorList)->shrink(0);
@@ -3758,7 +3577,6 @@ yyreduce:
   case 183:
 
 /* Line 1455 of yacc.c  */
-#line 1117 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selectorList) = (yyvsp[(1) - (6)].selectorList);
         (yyval.selectorList)->append(parser->sinkFloatingSelector((yyvsp[(6) - (6)].selector)));
@@ -3768,7 +3586,6 @@ yyreduce:
   case 184:
 
 /* Line 1455 of yacc.c  */
-#line 1124 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = (yyvsp[(2) - (2)].selector);
         CSSParserSelector* end = (yyval.selector);
@@ -3781,7 +3598,6 @@ yyreduce:
   case 188:
 
 /* Line 1455 of yacc.c  */
-#line 1138 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = (yyvsp[(3) - (3)].selector);
         CSSParserSelector* end = (yyval.selector);
@@ -3795,7 +3611,6 @@ yyreduce:
   case 189:
 
 /* Line 1455 of yacc.c  */
-#line 1146 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = (yyvsp[(3) - (3)].selector);
         CSSParserSelector* end = (yyval.selector);
@@ -3809,21 +3624,18 @@ yyreduce:
   case 190:
 
 /* Line 1455 of yacc.c  */
-#line 1157 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.string).clear(); ;}
     break;
 
   case 191:
 
 /* Line 1455 of yacc.c  */
-#line 1158 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { static const LChar star = '*'; (yyval.string).init(&star, 1); ;}
     break;
 
   case 193:
 
 /* Line 1455 of yacc.c  */
-#line 1163 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelectorWithTagName(QualifiedName(nullAtom, (yyvsp[(1) - (1)].string), parser->m_defaultNamespace));
     ;}
@@ -3832,7 +3644,6 @@ yyreduce:
   case 194:
 
 /* Line 1455 of yacc.c  */
-#line 1166 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->rewriteSpecifiersWithElementName(nullAtom, (yyvsp[(1) - (2)].string), (yyvsp[(2) - (2)].selector));
         if (!(yyval.selector))
@@ -3843,7 +3654,6 @@ yyreduce:
   case 195:
 
 /* Line 1455 of yacc.c  */
-#line 1171 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->rewriteSpecifiersWithNamespaceIfNeeded((yyvsp[(1) - (1)].selector));
         if (!(yyval.selector))
@@ -3854,7 +3664,6 @@ yyreduce:
   case 196:
 
 /* Line 1455 of yacc.c  */
-#line 1176 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelectorWithTagName(parser->determineNameInNamespace((yyvsp[(1) - (2)].string), (yyvsp[(2) - (2)].string)));
         if (!(yyval.selector))
@@ -3865,7 +3674,6 @@ yyreduce:
   case 197:
 
 /* Line 1455 of yacc.c  */
-#line 1181 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->rewriteSpecifiersWithElementName((yyvsp[(1) - (3)].string), (yyvsp[(2) - (3)].string), (yyvsp[(3) - (3)].selector));
         if (!(yyval.selector))
@@ -3876,7 +3684,6 @@ yyreduce:
   case 198:
 
 /* Line 1455 of yacc.c  */
-#line 1186 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->rewriteSpecifiersWithElementName((yyvsp[(1) - (2)].string), starAtom, (yyvsp[(2) - (2)].selector));
         if (!(yyval.selector))
@@ -3887,7 +3694,6 @@ yyreduce:
   case 199:
 
 /* Line 1455 of yacc.c  */
-#line 1194 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selectorList) = parser->createFloatingSelectorVector();
         (yyval.selectorList)->append(parser->sinkFloatingSelector((yyvsp[(1) - (1)].selector)));
@@ -3897,7 +3703,6 @@ yyreduce:
   case 200:
 
 /* Line 1455 of yacc.c  */
-#line 1198 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selectorList) = (yyvsp[(1) - (5)].selectorList);
         (yyval.selectorList)->append(parser->sinkFloatingSelector((yyvsp[(5) - (5)].selector)));
@@ -3907,7 +3712,6 @@ yyreduce:
   case 201:
 
 /* Line 1455 of yacc.c  */
-#line 1205 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         if (parser->m_context.isHTMLDocument())
             parser->tokenToLowerCase((yyvsp[(1) - (1)].string));
@@ -3918,7 +3722,6 @@ yyreduce:
   case 202:
 
 /* Line 1455 of yacc.c  */
-#line 1210 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         static const LChar star = '*';
         (yyval.string).init(&star, 1);
@@ -3928,7 +3731,6 @@ yyreduce:
   case 204:
 
 /* Line 1455 of yacc.c  */
-#line 1218 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->rewriteSpecifiers((yyvsp[(1) - (2)].selector), (yyvsp[(2) - (2)].selector));
     ;}
@@ -3937,7 +3739,6 @@ yyreduce:
   case 205:
 
 /* Line 1455 of yacc.c  */
-#line 1224 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setMatch(CSSSelector::Id);
@@ -3950,7 +3751,6 @@ yyreduce:
   case 206:
 
 /* Line 1455 of yacc.c  */
-#line 1231 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         if ((yyvsp[(1) - (1)].string)[0] >= '0' && (yyvsp[(1) - (1)].string)[0] <= '9') {
             YYERROR;
@@ -3967,7 +3767,6 @@ yyreduce:
   case 210:
 
 /* Line 1455 of yacc.c  */
-#line 1248 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setMatch(CSSSelector::Class);
@@ -3980,7 +3779,6 @@ yyreduce:
   case 211:
 
 /* Line 1455 of yacc.c  */
-#line 1258 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         if (parser->m_context.isHTMLDocument())
             parser->tokenToLowerCase((yyvsp[(1) - (2)].string));
@@ -3991,7 +3789,6 @@ yyreduce:
   case 212:
 
 /* Line 1455 of yacc.c  */
-#line 1266 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setAttribute(QualifiedName(nullAtom, (yyvsp[(3) - (4)].string), nullAtom));
@@ -4002,7 +3799,6 @@ yyreduce:
   case 213:
 
 /* Line 1455 of yacc.c  */
-#line 1271 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setAttribute(QualifiedName(nullAtom, (yyvsp[(3) - (8)].string), nullAtom));
@@ -4014,7 +3810,6 @@ yyreduce:
   case 214:
 
 /* Line 1455 of yacc.c  */
-#line 1277 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setAttribute(parser->determineNameInNamespace((yyvsp[(3) - (5)].string), (yyvsp[(4) - (5)].string)));
@@ -4025,7 +3820,6 @@ yyreduce:
   case 215:
 
 /* Line 1455 of yacc.c  */
-#line 1282 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setAttribute(parser->determineNameInNamespace((yyvsp[(3) - (9)].string), (yyvsp[(4) - (9)].string)));
@@ -4037,7 +3831,6 @@ yyreduce:
   case 216:
 
 /* Line 1455 of yacc.c  */
-#line 1288 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -4046,7 +3839,6 @@ yyreduce:
   case 217:
 
 /* Line 1455 of yacc.c  */
-#line 1294 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.integer) = CSSSelector::Exact;
     ;}
@@ -4055,7 +3847,6 @@ yyreduce:
   case 218:
 
 /* Line 1455 of yacc.c  */
-#line 1297 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.integer) = CSSSelector::List;
     ;}
@@ -4064,7 +3855,6 @@ yyreduce:
   case 219:
 
 /* Line 1455 of yacc.c  */
-#line 1300 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.integer) = CSSSelector::Hyphen;
     ;}
@@ -4073,7 +3863,6 @@ yyreduce:
   case 220:
 
 /* Line 1455 of yacc.c  */
-#line 1303 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.integer) = CSSSelector::Begin;
     ;}
@@ -4082,7 +3871,6 @@ yyreduce:
   case 221:
 
 /* Line 1455 of yacc.c  */
-#line 1306 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.integer) = CSSSelector::End;
     ;}
@@ -4091,7 +3879,6 @@ yyreduce:
   case 222:
 
 /* Line 1455 of yacc.c  */
-#line 1309 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.integer) = CSSSelector::Contain;
     ;}
@@ -4100,7 +3887,6 @@ yyreduce:
   case 225:
 
 /* Line 1455 of yacc.c  */
-#line 1320 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         if ((yyvsp[(2) - (2)].string).isFunction())
             YYERROR;
@@ -4117,7 +3903,6 @@ yyreduce:
   case 226:
 
 /* Line 1455 of yacc.c  */
-#line 1333 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         if ((yyvsp[(3) - (3)].string).isFunction())
             YYERROR;
@@ -4127,7 +3912,7 @@ yyreduce:
         (yyval.selector)->setValue((yyvsp[(3) - (3)].string));
         CSSSelector::PseudoType type = (yyval.selector)->pseudoType();
         if (type == CSSSelector::PseudoUnknown) {
-            parser->reportError((yyvsp[(2) - (3)].location), InvalidSelectorPseudoCSSError);
+            //parser->reportError((yyvsp[(2) - (3)].location), InvalidSelectorPseudoCSSError);
             YYERROR;
         }
     ;}
@@ -4136,7 +3921,6 @@ yyreduce:
   case 227:
 
 /* Line 1455 of yacc.c  */
-#line 1346 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         if ((yyvsp[(4) - (4)].string).isFunction())
             YYERROR;
@@ -4147,7 +3931,7 @@ yyreduce:
         // FIXME: This call is needed to force selector to compute the pseudoType early enough.
         CSSSelector::PseudoType type = (yyval.selector)->pseudoType();
         if (type == CSSSelector::PseudoUnknown) {
-            parser->reportError((yyvsp[(3) - (4)].location), InvalidSelectorPseudoCSSError);
+            //parser->reportError((yyvsp[(3) - (4)].location), InvalidSelectorPseudoCSSError);
             YYERROR;
         }
     ;}
@@ -4156,7 +3940,6 @@ yyreduce:
   case 228:
 
 /* Line 1455 of yacc.c  */
-#line 1361 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setMatch(CSSSelector::PseudoElement);
@@ -4171,7 +3954,6 @@ yyreduce:
   case 229:
 
 /* Line 1455 of yacc.c  */
-#line 1370 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -4180,7 +3962,6 @@ yyreduce:
   case 230:
 
 /* Line 1455 of yacc.c  */
-#line 1373 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setMatch(CSSSelector::PseudoElement);
@@ -4193,7 +3974,6 @@ yyreduce:
   case 231:
 
 /* Line 1455 of yacc.c  */
-#line 1380 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -4202,7 +3982,6 @@ yyreduce:
   case 232:
 
 /* Line 1455 of yacc.c  */
-#line 1388 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setMatch(CSSSelector::PseudoClass);
@@ -4218,7 +3997,6 @@ yyreduce:
   case 233:
 
 /* Line 1455 of yacc.c  */
-#line 1398 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -4227,7 +4005,6 @@ yyreduce:
   case 234:
 
 /* Line 1455 of yacc.c  */
-#line 1402 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setMatch(CSSSelector::PseudoClass);
@@ -4242,7 +4019,6 @@ yyreduce:
   case 235:
 
 /* Line 1455 of yacc.c  */
-#line 1412 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setMatch(CSSSelector::PseudoClass);
@@ -4257,7 +4033,6 @@ yyreduce:
   case 236:
 
 /* Line 1455 of yacc.c  */
-#line 1422 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setMatch(CSSSelector::PseudoClass);
@@ -4280,7 +4055,6 @@ yyreduce:
   case 237:
 
 /* Line 1455 of yacc.c  */
-#line 1439 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -4289,7 +4063,6 @@ yyreduce:
   case 238:
 
 /* Line 1455 of yacc.c  */
-#line 1443 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         if (!(yyvsp[(4) - (6)].selector)->isSimple())
             YYERROR;
@@ -4310,7 +4083,6 @@ yyreduce:
   case 239:
 
 /* Line 1455 of yacc.c  */
-#line 1458 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -4319,7 +4091,6 @@ yyreduce:
   case 240:
 
 /* Line 1455 of yacc.c  */
-#line 1461 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setMatch(CSSSelector::PseudoClass);
@@ -4335,7 +4106,6 @@ yyreduce:
   case 241:
 
 /* Line 1455 of yacc.c  */
-#line 1472 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setMatch(CSSSelector::PseudoClass);
@@ -4350,7 +4120,6 @@ yyreduce:
   case 242:
 
 /* Line 1455 of yacc.c  */
-#line 1481 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -4359,7 +4128,6 @@ yyreduce:
   case 243:
 
 /* Line 1455 of yacc.c  */
-#line 1484 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setMatch(CSSSelector::PseudoClass);
@@ -4375,7 +4143,6 @@ yyreduce:
   case 244:
 
 /* Line 1455 of yacc.c  */
-#line 1495 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.selector) = parser->createFloatingSelector();
         (yyval.selector)->setMatch(CSSSelector::PseudoClass);
@@ -4390,7 +4157,6 @@ yyreduce:
   case 245:
 
 /* Line 1455 of yacc.c  */
-#line 1504 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -4399,14 +4165,12 @@ yyreduce:
   case 247:
 
 /* Line 1455 of yacc.c  */
-#line 1513 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.boolean) = false; ;}
     break;
 
   case 249:
 
 /* Line 1455 of yacc.c  */
-#line 1515 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.boolean) = (yyvsp[(1) - (2)].boolean) || (yyvsp[(2) - (2)].boolean);
     ;}
@@ -4415,7 +4179,6 @@ yyreduce:
   case 251:
 
 /* Line 1455 of yacc.c  */
-#line 1522 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startProperty();
         (yyval.boolean) = (yyvsp[(1) - (3)].boolean);
@@ -4425,7 +4188,6 @@ yyreduce:
   case 252:
 
 /* Line 1455 of yacc.c  */
-#line 1526 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->startProperty();
         (yyval.boolean) = (yyvsp[(1) - (4)].boolean) || (yyvsp[(2) - (4)].boolean);
@@ -4435,7 +4197,6 @@ yyreduce:
   case 253:
 
 /* Line 1455 of yacc.c  */
-#line 1533 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.boolean) = false;
         bool isPropertyParsed = false;
@@ -4445,23 +4206,22 @@ yyreduce:
             (yyval.boolean) = parser->parseValue((yyvsp[(1) - (6)].id), (yyvsp[(6) - (6)].boolean));
             if (!(yyval.boolean)) {
                 parser->rollbackLastProperties(parser->m_parsedProperties.size() - oldParsedProperties);
-                parser->reportError((yyvsp[(4) - (6)].location), InvalidPropertyValueCSSError);
+                //parser->reportError((yyvsp[(4) - (6)].location), InvalidPropertyValueCSSError);
             } else
                 isPropertyParsed = true;
             parser->m_valueList = nullptr;
         }
-        parser->endProperty((yyvsp[(6) - (6)].boolean), isPropertyParsed);
+        //parser->endProperty((yyvsp[(6) - (6)].boolean), isPropertyParsed);
     ;}
     break;
 
   case 254:
 
 /* Line 1455 of yacc.c  */
-#line 1550 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         /* When we encounter something like p {color: red !important fail;} we should drop the declaration */
-        parser->reportError((yyvsp[(4) - (8)].location), InvalidPropertyValueCSSError);
-        parser->endProperty(false, false);
+        //parser->reportError((yyvsp[(4) - (8)].location), InvalidPropertyValueCSSError);
+        //parser->endProperty(false, false);
         (yyval.boolean) = false;
     ;}
     break;
@@ -4469,10 +4229,9 @@ yyreduce:
   case 255:
 
 /* Line 1455 of yacc.c  */
-#line 1557 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->reportError((yyvsp[(4) - (6)].location), InvalidPropertyValueCSSError);
-        parser->endProperty(false, false);
+        //parser->reportError((yyvsp[(4) - (6)].location), InvalidPropertyValueCSSError);
+        //parser->endProperty(false, false);
         (yyval.boolean) = false;
     ;}
     break;
@@ -4480,10 +4239,9 @@ yyreduce:
   case 256:
 
 /* Line 1455 of yacc.c  */
-#line 1563 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->reportError((yyvsp[(3) - (4)].location), PropertyDeclarationCSSError);
-        parser->endProperty(false, false, GeneralCSSError);
+        //parser->reportError((yyvsp[(3) - (4)].location), PropertyDeclarationCSSError);
+        //parser->endProperty(false, false, GeneralCSSError);
         (yyval.boolean) = false;
     ;}
     break;
@@ -4491,9 +4249,8 @@ yyreduce:
   case 257:
 
 /* Line 1455 of yacc.c  */
-#line 1569 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->reportError((yyvsp[(2) - (3)].location), PropertyDeclarationCSSError);
+        //parser->reportError((yyvsp[(2) - (3)].location), PropertyDeclarationCSSError);
         (yyval.boolean) = false;
     ;}
     break;
@@ -4501,33 +4258,29 @@ yyreduce:
   case 258:
 
 /* Line 1455 of yacc.c  */
-#line 1576 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.id) = cssPropertyID((yyvsp[(2) - (3)].string));
         parser->setCurrentProperty((yyval.id));
-        if ((yyval.id) == CSSPropertyInvalid)
-            parser->reportError((yyvsp[(1) - (3)].location), InvalidPropertyCSSError);
+        //if ((yyval.id) == CSSPropertyInvalid)
+            //parser->reportError((yyvsp[(1) - (3)].location), InvalidPropertyCSSError);
     ;}
     break;
 
   case 259:
 
 /* Line 1455 of yacc.c  */
-#line 1585 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.boolean) = true; ;}
     break;
 
   case 260:
 
 /* Line 1455 of yacc.c  */
-#line 1586 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.boolean) = false; ;}
     break;
 
   case 261:
 
 /* Line 1455 of yacc.c  */
-#line 1590 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = parser->createFloatingValueList();
         (yyval.valueList)->addValue(makeIdentValue((yyvsp[(1) - (2)].string)));
@@ -4537,7 +4290,6 @@ yyreduce:
   case 262:
 
 /* Line 1455 of yacc.c  */
-#line 1594 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = (yyvsp[(1) - (3)].valueList);
         (yyval.valueList)->addValue(makeIdentValue((yyvsp[(2) - (3)].string)));
@@ -4547,7 +4299,6 @@ yyreduce:
   case 263:
 
 /* Line 1455 of yacc.c  */
-#line 1601 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.value).setFromValueList(parser->sinkFloatingValueList(parser->createFloatingValueList()));
     ;}
@@ -4556,7 +4307,6 @@ yyreduce:
   case 264:
 
 /* Line 1455 of yacc.c  */
-#line 1604 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.value).setFromValueList(parser->sinkFloatingValueList((yyvsp[(3) - (4)].valueList)));
     ;}
@@ -4565,7 +4315,6 @@ yyreduce:
   case 265:
 
 /* Line 1455 of yacc.c  */
-#line 1607 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -4574,7 +4323,6 @@ yyreduce:
   case 266:
 
 /* Line 1455 of yacc.c  */
-#line 1613 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = parser->createFloatingValueList();
         (yyval.valueList)->addValue(parser->sinkFloatingValue((yyvsp[(1) - (1)].value)));
@@ -4584,7 +4332,6 @@ yyreduce:
   case 267:
 
 /* Line 1455 of yacc.c  */
-#line 1617 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = (yyvsp[(1) - (3)].valueList);
         (yyval.valueList)->addValue(makeOperatorValue((yyvsp[(2) - (3)].character)));
@@ -4595,7 +4342,6 @@ yyreduce:
   case 268:
 
 /* Line 1455 of yacc.c  */
-#line 1622 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = (yyvsp[(1) - (2)].valueList);
         (yyval.valueList)->addValue(parser->sinkFloatingValue((yyvsp[(2) - (2)].value)));
@@ -4605,16 +4351,14 @@ yyreduce:
   case 269:
 
 /* Line 1455 of yacc.c  */
-#line 1629 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->reportError((yyvsp[(2) - (3)].location), PropertyDeclarationCSSError);
+        //parser->reportError((yyvsp[(2) - (3)].location), PropertyDeclarationCSSError);
     ;}
     break;
 
   case 270:
 
 /* Line 1455 of yacc.c  */
-#line 1635 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.character) = '/';
     ;}
@@ -4623,7 +4367,6 @@ yyreduce:
   case 271:
 
 /* Line 1455 of yacc.c  */
-#line 1638 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.character) = ',';
     ;}
@@ -4632,70 +4375,60 @@ yyreduce:
   case 273:
 
 /* Line 1455 of yacc.c  */
-#line 1645 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value) = (yyvsp[(2) - (3)].value); (yyval.value).fValue *= (yyvsp[(1) - (3)].integer); ;}
     break;
 
   case 274:
 
 /* Line 1455 of yacc.c  */
-#line 1646 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).id = CSSValueInvalid; (yyval.value).string = (yyvsp[(1) - (2)].string); (yyval.value).unit = CSSPrimitiveValue::CSS_STRING; ;}
     break;
 
   case 275:
 
 /* Line 1455 of yacc.c  */
-#line 1647 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value) = makeIdentValue((yyvsp[(1) - (2)].string)); ;}
     break;
 
   case 276:
 
 /* Line 1455 of yacc.c  */
-#line 1649 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).id = CSSValueInvalid; (yyval.value).string = (yyvsp[(1) - (2)].string); (yyval.value).unit = CSSPrimitiveValue::CSS_DIMENSION; ;}
     break;
 
   case 277:
 
 /* Line 1455 of yacc.c  */
-#line 1650 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).id = CSSValueInvalid; (yyval.value).string = (yyvsp[(2) - (3)].string); (yyval.value).unit = CSSPrimitiveValue::CSS_DIMENSION; ;}
     break;
 
   case 278:
 
 /* Line 1455 of yacc.c  */
-#line 1651 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).id = CSSValueInvalid; (yyval.value).string = (yyvsp[(1) - (2)].string); (yyval.value).unit = CSSPrimitiveValue::CSS_URI; ;}
     break;
 
   case 279:
 
 /* Line 1455 of yacc.c  */
-#line 1652 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).id = CSSValueInvalid; (yyval.value).string = (yyvsp[(1) - (2)].string); (yyval.value).unit = CSSPrimitiveValue::CSS_UNICODE_RANGE; ;}
     break;
 
   case 280:
 
 /* Line 1455 of yacc.c  */
-#line 1653 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).id = CSSValueInvalid; (yyval.value).string = (yyvsp[(1) - (2)].string); (yyval.value).unit = CSSPrimitiveValue::CSS_PARSER_HEXCOLOR; ;}
     break;
 
   case 281:
 
 /* Line 1455 of yacc.c  */
-#line 1654 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).id = CSSValueInvalid; (yyval.value).string = CSSParserString(); (yyval.value).unit = CSSPrimitiveValue::CSS_PARSER_HEXCOLOR; ;}
     break;
 
   case 285:
 
 /* Line 1455 of yacc.c  */
-#line 1659 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { /* Handle width: %; */
       (yyval.value).id = CSSValueInvalid; (yyval.value).unit = 0;
   ;}
@@ -4704,221 +4437,190 @@ yyreduce:
   case 287:
 
 /* Line 1455 of yacc.c  */
-#line 1666 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number)); (yyval.value).isInt = true; ;}
     break;
 
   case 288:
 
 /* Line 1455 of yacc.c  */
-#line 1667 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number)); ;}
     break;
 
   case 289:
 
 /* Line 1455 of yacc.c  */
-#line 1668 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_PERCENTAGE); ;}
     break;
 
   case 290:
 
 /* Line 1455 of yacc.c  */
-#line 1669 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_PX); ;}
     break;
 
   case 291:
 
 /* Line 1455 of yacc.c  */
-#line 1670 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_CM); ;}
     break;
 
   case 292:
 
 /* Line 1455 of yacc.c  */
-#line 1671 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_MM); ;}
     break;
 
   case 293:
 
 /* Line 1455 of yacc.c  */
-#line 1672 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_IN); ;}
     break;
 
   case 294:
 
 /* Line 1455 of yacc.c  */
-#line 1673 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_PT); ;}
     break;
 
   case 295:
 
 /* Line 1455 of yacc.c  */
-#line 1674 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_PC); ;}
     break;
 
   case 296:
 
 /* Line 1455 of yacc.c  */
-#line 1675 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_DEG); ;}
     break;
 
   case 297:
 
 /* Line 1455 of yacc.c  */
-#line 1676 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_RAD); ;}
     break;
 
   case 298:
 
 /* Line 1455 of yacc.c  */
-#line 1677 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_GRAD); ;}
     break;
 
   case 299:
 
 /* Line 1455 of yacc.c  */
-#line 1678 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_TURN); ;}
     break;
 
   case 300:
 
 /* Line 1455 of yacc.c  */
-#line 1679 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_MS); ;}
     break;
 
   case 301:
 
 /* Line 1455 of yacc.c  */
-#line 1680 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_S); ;}
     break;
 
   case 302:
 
 /* Line 1455 of yacc.c  */
-#line 1681 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_HZ); ;}
     break;
 
   case 303:
 
 /* Line 1455 of yacc.c  */
-#line 1682 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_KHZ); ;}
     break;
 
   case 304:
 
 /* Line 1455 of yacc.c  */
-#line 1683 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_EMS); ;}
     break;
 
   case 305:
 
 /* Line 1455 of yacc.c  */
-#line 1684 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSParserValue::Q_EMS); ;}
     break;
 
   case 306:
 
 /* Line 1455 of yacc.c  */
-#line 1685 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_EXS); ;}
     break;
 
   case 307:
 
 /* Line 1455 of yacc.c  */
-#line 1686 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
       (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_REMS);
-      if (parser->m_styleSheet)
-          parser->m_styleSheet->parserSetUsesRemUnits(true);
+      //if (parser->m_styleSheet)
+          //parser->m_styleSheet->parserSetUsesRemUnits(true);
   ;}
     break;
 
   case 308:
 
 /* Line 1455 of yacc.c  */
-#line 1691 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_CHS); ;}
     break;
 
   case 309:
 
 /* Line 1455 of yacc.c  */
-#line 1692 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_VW); ;}
     break;
 
   case 310:
 
 /* Line 1455 of yacc.c  */
-#line 1693 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_VH); ;}
     break;
 
   case 311:
 
 /* Line 1455 of yacc.c  */
-#line 1694 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_VMIN); ;}
     break;
 
   case 312:
 
 /* Line 1455 of yacc.c  */
-#line 1695 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_VMAX); ;}
     break;
 
   case 313:
 
 /* Line 1455 of yacc.c  */
-#line 1696 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_DPPX); ;}
     break;
 
   case 314:
 
 /* Line 1455 of yacc.c  */
-#line 1697 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_DPI); ;}
     break;
 
   case 315:
 
 /* Line 1455 of yacc.c  */
-#line 1698 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_DPCM); ;}
     break;
 
   case 316:
 
 /* Line 1455 of yacc.c  */
-#line 1699 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value).setFromNumber((yyvsp[(1) - (1)].number), CSSPrimitiveValue::CSS_FR); ;}
     break;
 
   case 317:
 
 /* Line 1455 of yacc.c  */
-#line 1703 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.value).setFromFunction(parser->createFloatingFunction((yyvsp[(1) - (4)].string), parser->sinkFloatingValueList((yyvsp[(3) - (4)].valueList))));
     ;}
@@ -4927,7 +4629,6 @@ yyreduce:
   case 318:
 
 /* Line 1455 of yacc.c  */
-#line 1706 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.value).setFromFunction(parser->createFloatingFunction((yyvsp[(1) - (3)].string), parser->sinkFloatingValueList(parser->createFloatingValueList())));
     ;}
@@ -4936,7 +4637,6 @@ yyreduce:
   case 319:
 
 /* Line 1455 of yacc.c  */
-#line 1709 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -4945,14 +4645,12 @@ yyreduce:
   case 321:
 
 /* Line 1455 of yacc.c  */
-#line 1716 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     { (yyval.value) = (yyvsp[(2) - (2)].value); (yyval.value).fValue *= (yyvsp[(1) - (2)].integer); ;}
     break;
 
   case 322:
 
 /* Line 1455 of yacc.c  */
-#line 1720 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.character) = '+';
     ;}
@@ -4961,7 +4659,6 @@ yyreduce:
   case 323:
 
 /* Line 1455 of yacc.c  */
-#line 1723 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.character) = '-';
     ;}
@@ -4970,7 +4667,6 @@ yyreduce:
   case 324:
 
 /* Line 1455 of yacc.c  */
-#line 1726 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.character) = '*';
     ;}
@@ -4979,7 +4675,6 @@ yyreduce:
   case 325:
 
 /* Line 1455 of yacc.c  */
-#line 1729 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.character) = '/';
     ;}
@@ -4988,7 +4683,6 @@ yyreduce:
   case 328:
 
 /* Line 1455 of yacc.c  */
-#line 1740 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = (yyvsp[(3) - (5)].valueList);
         (yyval.valueList)->insertValueAt(0, makeOperatorValue('('));
@@ -4999,7 +4693,6 @@ yyreduce:
   case 329:
 
 /* Line 1455 of yacc.c  */
-#line 1745 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -5008,7 +4701,6 @@ yyreduce:
   case 330:
 
 /* Line 1455 of yacc.c  */
-#line 1751 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = parser->createFloatingValueList();
         (yyval.valueList)->addValue(parser->sinkFloatingValue((yyvsp[(1) - (1)].value)));
@@ -5018,7 +4710,6 @@ yyreduce:
   case 331:
 
 /* Line 1455 of yacc.c  */
-#line 1755 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = (yyvsp[(1) - (3)].valueList);
         (yyval.valueList)->addValue(makeOperatorValue((yyvsp[(2) - (3)].character)));
@@ -5029,7 +4720,6 @@ yyreduce:
   case 332:
 
 /* Line 1455 of yacc.c  */
-#line 1760 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = (yyvsp[(1) - (3)].valueList);
         (yyval.valueList)->addValue(makeOperatorValue((yyvsp[(2) - (3)].character)));
@@ -5040,7 +4730,6 @@ yyreduce:
   case 335:
 
 /* Line 1455 of yacc.c  */
-#line 1770 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.valueList) = (yyvsp[(1) - (5)].valueList);
         (yyval.valueList)->addValue(makeOperatorValue(','));
@@ -5051,7 +4740,6 @@ yyreduce:
   case 336:
 
 /* Line 1455 of yacc.c  */
-#line 1778 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.value).setFromFunction(parser->createFloatingFunction((yyvsp[(1) - (5)].string), parser->sinkFloatingValueList((yyvsp[(3) - (5)].valueList))));
     ;}
@@ -5060,7 +4748,6 @@ yyreduce:
   case 337:
 
 /* Line 1455 of yacc.c  */
-#line 1781 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -5069,7 +4756,6 @@ yyreduce:
   case 340:
 
 /* Line 1455 of yacc.c  */
-#line 1793 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         (yyval.value).setFromFunction(parser->createFloatingFunction((yyvsp[(1) - (4)].string), parser->sinkFloatingValueList((yyvsp[(3) - (4)].valueList))));
     ;}
@@ -5078,7 +4764,6 @@ yyreduce:
   case 341:
 
 /* Line 1455 of yacc.c  */
-#line 1796 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         YYERROR;
     ;}
@@ -5087,18 +4772,16 @@ yyreduce:
   case 345:
 
 /* Line 1455 of yacc.c  */
-#line 1811 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->reportError((yyvsp[(2) - (3)].location), InvalidRuleCSSError);
+        //parser->reportError((yyvsp[(2) - (3)].location), InvalidRuleCSSError);
     ;}
     break;
 
   case 351:
 
 /* Line 1455 of yacc.c  */
-#line 1825 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->reportError((yyvsp[(4) - (5)].location), InvalidSupportsConditionCSSError);
+        //parser->reportError((yyvsp[(4) - (5)].location), InvalidSupportsConditionCSSError);
         parser->popSupportsRuleData();
     ;}
     break;
@@ -5106,7 +4789,6 @@ yyreduce:
   case 352:
 
 /* Line 1455 of yacc.c  */
-#line 1829 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->markViewportRuleBodyEnd();
     ;}
@@ -5115,35 +4797,31 @@ yyreduce:
   case 355:
 
 /* Line 1455 of yacc.c  */
-#line 1834 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->resumeErrorLogging();
-        parser->reportError((yyvsp[(1) - (3)].location), InvalidRuleCSSError);
+        //parser->reportError((yyvsp[(1) - (3)].location), InvalidRuleCSSError);
     ;}
     break;
 
   case 356:
 
 /* Line 1455 of yacc.c  */
-#line 1841 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->reportError((yyvsp[(2) - (5)].location), InvalidRuleCSSError);
+        //parser->reportError((yyvsp[(2) - (5)].location), InvalidRuleCSSError);
     ;}
     break;
 
   case 360:
 
 /* Line 1455 of yacc.c  */
-#line 1850 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->reportError((yyvsp[(2) - (4)].location), InvalidRuleCSSError);
+        //parser->reportError((yyvsp[(2) - (4)].location), InvalidRuleCSSError);
     ;}
     break;
 
   case 363:
 
 /* Line 1455 of yacc.c  */
-#line 1858 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
        parser->endInvalidRuleHeader();
    ;}
@@ -5152,7 +4830,6 @@ yyreduce:
   case 364:
 
 /* Line 1455 of yacc.c  */
-#line 1864 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
         parser->invalidBlockHit();
     ;}
@@ -5161,25 +4838,22 @@ yyreduce:
   case 377:
 
 /* Line 1455 of yacc.c  */
-#line 1880 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        (yyval.location) = parser->currentLocation();
+        //(yyval.location) = parser->currentLocation();
     ;}
     break;
 
   case 378:
 
 /* Line 1455 of yacc.c  */
-#line 1885 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
     {
-        parser->setLocationLabel(parser->currentLocation());
+        //parser->setLocationLabel(parser->currentLocation());
     ;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 5183 "C:/MyWork/Chrome35/src/build/Debug/obj/global_intermediate/blink\\CSSGrammar.cpp"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -5391,7 +5065,6 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 1905 "C:/MyWork/Chrome35/src/third_party/WebKit/Source/core/css/CSSGrammar.y"
 
 
 

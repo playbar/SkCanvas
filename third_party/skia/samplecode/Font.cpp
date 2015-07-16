@@ -22,6 +22,8 @@ class FontView : public SampleView
 public:
 	FontView() 
 	{
+		int i = 0;
+		i++;
     }
 
 protected:
@@ -39,15 +41,10 @@ protected:
     virtual void onDrawContent(SkCanvas* canvas)
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
-		ctx->beginPath();
-		ctx->setLineWidth(5);
-		ctx->moveTo(20, 20);
-		ctx->lineTo(20, 100);
-		ctx->lineTo(70, 100);
-		ctx->closePath();
-		ctx->setStrokeColor("green");
-		ctx->stroke();
-    }
+		ctx->setFont("40px Arial");
+		ctx->fillText("Hello world", 10, 50);
+		return;
+	}
 
 private:
     typedef SampleView INHERITED;

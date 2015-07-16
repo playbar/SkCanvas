@@ -124,17 +124,22 @@ PassRefPtr<CSSPrimitiveValue> CSSValuePool::createValue(double value, CSSPrimiti
 
 //PassRefPtr<CSSPrimitiveValue> CSSValuePool::createValue(const Length& value, const RenderStyle& style)
 //{
-//    return CSSPrimitiveValue::create(value, style.effectiveZoom());
+//	return CSSPrimitiveValue::create(value, style.effectiveZoom());
 //}
 
 PassRefPtr<CSSPrimitiveValue> CSSValuePool::createFontFamilyValue(const String& familyName)
 {
-	ASSERT(false);
-	return nullptr;
-    //RefPtr<CSSPrimitiveValue>& value = m_fontFamilyValueCache.add(familyName, nullptr).storedValue->value;
-    //if (!value)
-    //    value = CSSPrimitiveValue::create(familyName, CSSPrimitiveValue::CSS_STRING);
-    //return value;
+	//ASSERT(false);
+	
+	AtomicString str( familyName);
+	//m_fontFaceValueCache.add(str, nullptr);
+	//m_fontFamilyValueCache.add(str, nullptr);
+    RefPtr<CSSPrimitiveValue>& value = m_fontFamilyValueCache.add(str, nullptr).storedValue->value;
+    if (!value)
+        value = CSSPrimitiveValue::create(familyName, CSSPrimitiveValue::CSS_STRING);
+    return value;
+	//return nullptr;
+
 }
 
 PassRefPtr<CSSValueList> CSSValuePool::createFontFaceValue(const AtomicString& string)

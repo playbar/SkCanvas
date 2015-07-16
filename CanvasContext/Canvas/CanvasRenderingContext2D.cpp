@@ -3,7 +3,7 @@
 
 //#include "core/accessibility/AXObjectCache.h"
 //#include "core/css/CSSFontSelector.h"
-//#include "core/css/parser/BisonCSSParser.h"
+#include "css/BisonCSSParser.h"
 //#include "core/css/StylePropertySet.h"
 //#include "core/css/resolver/StyleResolver.h"
 //#include "core/dom/ExceptionCode.h"
@@ -1642,71 +1642,46 @@ void CanvasRenderingContext2D::setFont(const String& newFont)
 {
     // The style resolution required for rendering text is not available in frame-less documents.
 
-    //if (!canvas()->document().frame())
-    //    return;
+    MutableStylePropertyMap::iterator i = m_fetchedFonts.find(newFont);
+    RefPtr<MutableStylePropertySet> parsedStyle = i != m_fetchedFonts.end() ? i->value : nullptr;
 
-    //MutableStylePropertyMap::iterator i = m_fetchedFonts.find(newFont);
-    //RefPtr<MutableStylePropertySet> parsedStyle = i != m_fetchedFonts.end() ? i->value : nullptr;
+    if (!parsedStyle)
+	{
+        parsedStyle = MutableStylePropertySet::create();
+        CSSParserMode mode = m_usesCSSCompatibilityParseMode ? HTMLQuirksMode : HTMLStandardMode;
+        BisonCSSParser::parseValue(parsedStyle.get(), CSSPropertyFont, newFont, true, mode, 0);
+        m_fetchedFonts.add(newFont, parsedStyle);
+    }
+    if (parsedStyle->isEmpty())
+        return;
 
-    //if (!parsedStyle) {
-    //    parsedStyle = MutableStylePropertySet::create();
-    //    CSSParserMode mode = m_usesCSSCompatibilityParseMode ? HTMLQuirksMode : HTMLStandardMode;
-    //    BisonCSSParser::parseValue(parsedStyle.get(), CSSPropertyFont, newFont, true, mode, 0);
-    //    m_fetchedFonts.add(newFont, parsedStyle);
-    //}
-    //if (parsedStyle->isEmpty())
-    //    return;
+    String fontValue = parsedStyle->getPropertyValue(CSSPropertyFont);
 
-    //String fontValue = parsedStyle->getPropertyValue(CSSPropertyFont);
+    if (fontValue == "inherit" || fontValue == "initial")
+        return;
 
-    //// According to http://lists.w3.org/Archives/Public/public-html/2009Jul/0947.html,
-    //// the "inherit" and "initial" values must be ignored.
-    //if (fontValue == "inherit" || fontValue == "initial")
-    //    return;
+    // The parse succeeded.
+    String newFontSafeCopy(newFont); // Create a string copy since newFont can be deleted inside realizeSaves.
+    realizeSaves();
+    modifiableState().m_unparsedFont = newFontSafeCopy;
 
-    //// The parse succeeded.
-    //String newFontSafeCopy(newFont); // Create a string copy since newFont can be deleted inside realizeSaves.
-    //realizeSaves();
-    //modifiableState().m_unparsedFont = newFontSafeCopy;
+    // Map the <canvas> font into the text style. If the font uses keywords like larger/smaller, these will work
+    // relative to the canvas.
+	
+	FontFamily fontFamily;
+	fontFamily.setFamily(defaultFontFamily);
 
-    //// Map the <canvas> font into the text style. If the font uses keywords like larger/smaller, these will work
-    //// relative to the canvas.
-    //RefPtr<RenderStyle> newStyle = RenderStyle::create();
-    //if (RenderStyle* computedStyle = canvas()->computedStyle())
-    //    newStyle->setFontDescription(computedStyle->fontDescription());
-    //else {
-    //    FontFamily fontFamily;
-    //    fontFamily.setFamily(defaultFontFamily);
+	FontDescription defaultFontDescription;
+	defaultFontDescription.setFamily(fontFamily);
+	defaultFontDescription.setSpecifiedSize(defaultFontSize);
+	defaultFontDescription.setComputedSize(defaultFontSize);
+	RefPtr<Font> newStyle = new Font(defaultFontDescription);
 
-    //    FontDescription defaultFontDescription;
-    //    defaultFontDescription.setFamily(fontFamily);
-    //    defaultFontDescription.setSpecifiedSize(defaultFontSize);
-    //    defaultFontDescription.setComputedSize(defaultFontSize);
+    newStyle->update(newStyle->fontSelector());
 
-    //    newStyle->setFontDescription(defaultFontDescription);
-    //}
-
-    //newStyle->font().update(newStyle->font().fontSelector());
-
-    //// Now map the font property longhands into the style.
-    //CSSPropertyValue properties[] = {
-    //    CSSPropertyValue(CSSPropertyFontFamily, *parsedStyle),
-    //    CSSPropertyValue(CSSPropertyFontStyle, *parsedStyle),
-    //    CSSPropertyValue(CSSPropertyFontVariant, *parsedStyle),
-    //    CSSPropertyValue(CSSPropertyFontWeight, *parsedStyle),
-    //    CSSPropertyValue(CSSPropertyFontSize, *parsedStyle),
-    //    CSSPropertyValue(CSSPropertyLineHeight, *parsedStyle),
-    //};
-
-    //StyleResolver& styleResolver = canvas()->document().ensureStyleResolver();
-    //styleResolver.applyPropertiesToStyle(properties, WTF_ARRAY_LENGTH(properties), newStyle.get());
-
-    //if (state().m_realizedFont)
-    //    static_cast<CSSFontSelector*>(state().m_font.fontSelector())->unregisterForInvalidationCallbacks(&modifiableState());
-    //modifiableState().m_font = newStyle->font();
-    //modifiableState().m_font.update(canvas()->document().styleEngine()->fontSelector());
-    //modifiableState().m_realizedFont = true;
-    //canvas()->document().styleEngine()->fontSelector()->registerForInvalidationCallbacks(&modifiableState());
+    modifiableState().m_font = *newStyle;
+    modifiableState().m_font.update(newStyle->fontSelector());
+    modifiableState().m_realizedFont = true;
 
 }
 
@@ -1815,12 +1790,6 @@ static void replaceCharacterInString(String& text, WTF::CharacterMatchFunctionPt
 
 void CanvasRenderingContext2D::drawTextInternal(const String& text, float x, float y, bool fill, float maxWidth, bool useMaxWidth)
 {
-    // The style resolution required for rendering text is not available in frame-less documents.
-
-
-    // accessFont needs the style to be up to date, but updating style can cause script to run,
-    // (e.g. due to autofocus) which can free the GraphicsContext, so update style before grabbing
-    // the GraphicsContext.
 
     if (!state().m_invertibleCTM)
         return;
@@ -1840,69 +1809,68 @@ void CanvasRenderingContext2D::drawTextInternal(const String& text, float x, flo
 
     FontCachePurgePreventer fontCachePurgePreventer;
 
-    //const Font& font = accessFont();
-    //const FontMetrics& fontMetrics = font.fontMetrics();
+    const Font& font = accessFont();
+    const FontMetrics& fontMetrics = font.fontMetrics();
     // According to spec, all the space characters must be replaced with U+0020 SPACE characters.
     String normalizedText = text;
     replaceCharacterInString(normalizedText, isSpaceOrNewline, " ");
 
     // FIXME: Need to turn off font smoothing.
-	ASSERT(false);
-    //RenderStyle* computedStyle = canvas()->computedStyle();
-    //TextDirection direction = computedStyle ? computedStyle->direction() : LTR;
-    //bool isRTL = direction == RTL;
-    //bool override = computedStyle ? isOverride(computedStyle->unicodeBidi()) : false;
+	//ASSERT(false);
+    TextDirection direction = LTR;
+    bool isRTL = direction == RTL;
+    bool override = false;
 
-    //TextRun textRun(normalizedText, 0, 0, TextRun::AllowTrailingExpansion, direction, override, true, TextRun::NoRounding);
-    //// Draw the item text at the correct point.
-    //FloatPoint location(x, y + getFontBaseline(fontMetrics));
+    TextRun textRun(normalizedText, 0, 0, TextRun::AllowTrailingExpansion, direction, override, true, TextRun::NoRounding);
+    // Draw the item text at the correct point.
+    FloatPoint location(x, y + getFontBaseline(fontMetrics));
 
-    //float fontWidth = font.width(TextRun(normalizedText, 0, 0, TextRun::AllowTrailingExpansion, direction, override));
+    float fontWidth = font.width(TextRun(normalizedText, 0, 0, TextRun::AllowTrailingExpansion, direction, override));
 
-    //useMaxWidth = (useMaxWidth && maxWidth < fontWidth);
-    //float width = useMaxWidth ? maxWidth : fontWidth;
+    useMaxWidth = (useMaxWidth && maxWidth < fontWidth);
+    float width = useMaxWidth ? maxWidth : fontWidth;
 
-    //TextAlign align = state().m_textAlign;
-    //if (align == StartTextAlign)
-    //    align = isRTL ? RightTextAlign : LeftTextAlign;
-    //else if (align == EndTextAlign)
-    //    align = isRTL ? LeftTextAlign : RightTextAlign;
+    TextAlign align = state().m_textAlign;
+    if (align == StartTextAlign)
+        align = isRTL ? RightTextAlign : LeftTextAlign;
+    else if (align == EndTextAlign)
+        align = isRTL ? LeftTextAlign : RightTextAlign;
 
-    //switch (align) {
-    //case CenterTextAlign:
-    //    location.setX(location.x() - width / 2);
-    //    break;
-    //case RightTextAlign:
-    //    location.setX(location.x() - width);
-    //    break;
-    //default:
-    //    break;
-    //}
+    switch (align) {
+    case CenterTextAlign:
+        location.setX(location.x() - width / 2);
+        break;
+    case RightTextAlign:
+        location.setX(location.x() - width);
+        break;
+    default:
+        break;
+    }
 
-    //// The slop built in to this mask rect matches the heuristic used in FontCGWin.cpp for GDI text.
-    //TextRunPaintInfo textRunPaintInfo(textRun);
-    //textRunPaintInfo.bounds = FloatRect(location.x() - fontMetrics.height() / 2,
-    //                                    location.y() - fontMetrics.ascent() - fontMetrics.lineGap(),
-    //                                    width + fontMetrics.height(),
-    //                                    fontMetrics.lineSpacing());
-    //if (!fill)
-    //    inflateStrokeRect(textRunPaintInfo.bounds);
+    // The slop built in to this mask rect matches the heuristic used in FontCGWin.cpp for GDI text.
+    TextRunPaintInfo textRunPaintInfo(textRun);
+    textRunPaintInfo.bounds = FloatRect(location.x() - fontMetrics.height() / 2,
+                                        location.y() - fontMetrics.ascent() - fontMetrics.lineGap(),
+                                        width + fontMetrics.height(),
+                                        fontMetrics.lineSpacing());
+    if (!fill)
+        inflateStrokeRect(textRunPaintInfo.bounds);
 
-    //FloatRect dirtyRect;
-    //if (!computeDirtyRect(textRunPaintInfo.bounds, &dirtyRect))
-    //    return;
+    FloatRect dirtyRect;
+    if (!computeDirtyRect(textRunPaintInfo.bounds, &dirtyRect))
+        return;
 
-    //c->setTextDrawingMode(fill ? TextModeFill : TextModeStroke);
-    //if (useMaxWidth) {
-    //    GraphicsContextStateSaver stateSaver(*c);
-    //    c->translate(location.x(), location.y());
-    //    // We draw when fontWidth is 0 so compositing operations (eg, a "copy" op) still work.
-    //    c->scale(FloatSize((fontWidth > 0 ? (width / fontWidth) : 0), 1));
-    //    c->drawBidiText(font, textRunPaintInfo, FloatPoint(0, 0), Font::UseFallbackIfFontNotReady);
-    //} else
-    //    c->drawBidiText(font, textRunPaintInfo, location, Font::UseFallbackIfFontNotReady);
+    setTextDrawingMode(fill ? TextModeFill : TextModeStroke);
+    if (useMaxWidth) {
+        GraphicsContextStateSaver stateSaver(*this);
+        translate(location.x(), location.y());
+        // We draw when fontWidth is 0 so compositing operations (eg, a "copy" op) still work.
+        GraphicsContext::scale(FloatSize((fontWidth > 0 ? (width / fontWidth) : 0), 1));
+        drawBidiText(font, textRunPaintInfo, FloatPoint(0, 0), Font::UseFallbackIfFontNotReady);
+    } else
+        drawBidiText(font, textRunPaintInfo, location, Font::UseFallbackIfFontNotReady);
 
-    //didDraw(dirtyRect);
+    didDraw(dirtyRect);
 
 }
 
@@ -1925,8 +1893,8 @@ const Font& CanvasRenderingContext2D::accessFont()
 {
     // This needs style to be up to date, but can't assert so because drawTextInternal
     // can invalidate style before this is called (e.g. drawingContext invalidates style).
-    if (!state().m_realizedFont)
-        setFont(state().m_unparsedFont);
+    //if (!state().m_realizedFont)
+    //    setFont(state().m_unparsedFont);
     return state().m_font;
 }
 

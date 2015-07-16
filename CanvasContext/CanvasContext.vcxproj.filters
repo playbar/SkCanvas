@@ -630,6 +630,12 @@
     <ClCompile Include="platform\graphics\GeneratedImage.cpp">
       <Filter>platform\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="blink\CSSGrammar.cpp">
+      <Filter>blink</Filter>
+    </ClCompile>
+    <ClCompile Include="blink\CSSTokenizer.cpp">
+      <Filter>blink</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -1182,6 +1188,12 @@
       <Filter>css</Filter>
     </ClInclude>
     <ClInclude Include="css\CSSRuleList.h">
+      <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="blink\CSSGrammar.h">
+      <Filter>blink</Filter>
+    </ClInclude>
+    <ClInclude Include="css\CSSTokenizer.h">
       <Filter>css</Filter>
     </ClInclude>
   </ItemGroup>
