@@ -45,7 +45,7 @@ protected:
     virtual void onDrawContent(SkCanvas* canvas)
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
-		ctx->setFont("40px Arial");
+		ctx->setFont("italic small-caps bold 40px sans-serif");
 		ctx->fillText("Hello world", 10, 50);
 
 		PassRefPtr<CanvasGradient> grd1 = ctx->createLinearGradient(0, 0, 300, 0);

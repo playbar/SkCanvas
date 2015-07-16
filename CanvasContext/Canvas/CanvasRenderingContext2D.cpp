@@ -1641,7 +1641,6 @@ String CanvasRenderingContext2D::font() const
 void CanvasRenderingContext2D::setFont(const String& newFont)
 {
     // The style resolution required for rendering text is not available in frame-less documents.
-
     MutableStylePropertyMap::iterator i = m_fetchedFonts.find(newFont);
     RefPtr<MutableStylePropertySet> parsedStyle = i != m_fetchedFonts.end() ? i->value : nullptr;
 
@@ -1655,29 +1654,41 @@ void CanvasRenderingContext2D::setFont(const String& newFont)
     if (parsedStyle->isEmpty())
         return;
 
-    String fontValue = parsedStyle->getPropertyValue(CSSPropertyFont);
-
-    if (fontValue == "inherit" || fontValue == "initial")
-        return;
-
     // The parse succeeded.
     String newFontSafeCopy(newFont); // Create a string copy since newFont can be deleted inside realizeSaves.
     realizeSaves();
     modifiableState().m_unparsedFont = newFontSafeCopy;
 
-    // Map the <canvas> font into the text style. If the font uses keywords like larger/smaller, these will work
-    // relative to the canvas.
-	
-	FontFamily fontFamily;
-	fontFamily.setFamily(defaultFontFamily);
-
 	FontDescription defaultFontDescription;
-	defaultFontDescription.setFamily(fontFamily);
-	defaultFontDescription.setSpecifiedSize(defaultFontSize);
-	defaultFontDescription.setComputedSize(defaultFontSize);
+	if (parsedStyle->isEmpty())
+	{
+		FontFamily fontFamily;
+		fontFamily.setFamily(defaultFontFamily);
+		defaultFontDescription.setFamily(fontFamily);
+		defaultFontDescription.setSpecifiedSize(defaultFontSize);
+		defaultFontDescription.setComputedSize(defaultFontSize);
+	}
+	else
+	{
+		String fontFamilyval = parsedStyle->getPropertyValue(CSSPropertyFontFamily);
+		String  fontStyleval = parsedStyle->getPropertyValue(CSSPropertyFontStyle);
+		String  fontVariantval = parsedStyle->getPropertyValue(CSSPropertyFontVariant);
+		String  fontWeightVal = parsedStyle->getPropertyValue(CSSPropertyFontWeight);
+		String  fontSizeVal = parsedStyle->getPropertyValue(CSSPropertyFontSize);
+		String  LineHeightVal = parsedStyle->getPropertyValue(CSSPropertyLineHeight);
+		FontFamily fontFamily;
+		fontFamily.setFamily(AtomicString(fontFamilyval));
+		defaultFontDescription.setFamily(fontFamily);
+		defaultFontDescription.setSpecifiedSize(fontSizeVal.toFloat());
+		defaultFontDescription.setComputedSize(defaultFontSize);
+		defaultFontDescription.setStyle(fontStyleval=="normal" ?FontStyleNormal: FontStyleItalic);
+		defaultFontDescription.setVariant("normal" == fontVariantval ? FontVariantNormal : FontVariantSmallCaps);
+		defaultFontDescription.setSyntheticBold( false );
+
+	}
 	RefPtr<Font> newStyle = new Font(defaultFontDescription);
 
-    newStyle->update(newStyle->fontSelector());
+    //newStyle->update(newStyle->fontSelector());
 
     modifiableState().m_font = *newStyle;
     modifiableState().m_font.update(newStyle->fontSelector());
