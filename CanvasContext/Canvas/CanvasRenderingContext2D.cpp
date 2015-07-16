@@ -1853,6 +1853,7 @@ void CanvasRenderingContext2D::drawTextInternal(const String& text, float x, flo
                                         location.y() - fontMetrics.ascent() - fontMetrics.lineGap(),
                                         width + fontMetrics.height(),
                                         fontMetrics.lineSpacing());
+	
 	if (!fill)
         inflateStrokeRect(textRunPaintInfo.bounds);
 

@@ -14,16 +14,17 @@
 #include "CanvasRenderingContext2D.h"
 #include "SkBlurMaskFilter.h"
 #include "SkGradientShader.h"
-#include "TextMetrics.h"
+#include "CanvasGradient.h"
+#include "CanvasStyle.h"
 
 using namespace WebCore;
 using namespace WTF;
 
-class TextBaselineView : public SampleView
+class StrokeTextView : public SampleView
 {
     SkPaint fBGPaint;
 public:
-	TextBaselineView()
+	StrokeTextView() 
 	{
 		int i = 0;
 		i++;
@@ -35,7 +36,7 @@ protected:
 	{
         if (SampleCode::TitleQ(*evt)) 
 		{
-            SampleCode::TitleR(evt, "TextBaselineView");
+            SampleCode::TitleR(evt, "StrokeTextView");
             return true;
         }
         return this->INHERITED::onQuery(evt);
@@ -44,24 +45,17 @@ protected:
     virtual void onDrawContent(SkCanvas* canvas)
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
-		ctx->setStrokeColor("blue");
-		ctx->moveTo(5, 100);
-		ctx->lineTo(395, 100);
-		ctx->stroke();
-		
 		ctx->setFont("40px Arial");
-		ctx->setTextBaseline("top");
-		ctx->fillText("Top", 5, 100);
-		ctx->setTextBaseline("bottom");
-		ctx->fillText("Bottom", 50, 100);
-		ctx->setTextBaseline("middle");
-		ctx->fillText("Middle", 120, 100);
-		ctx->setTextBaseline("alphabetic");
-		ctx->fillText("Alphabetic", 190, 100);
-		ctx->setTextBaseline("hanging");
-		ctx->fillText("Hanging", 290, 100);
-		int width = ctx->measureText("Hanging")->width();
-		width = 0;
+		ctx->strokeText("Hello world", 10, 50);
+
+		PassRefPtr<CanvasGradient> grd1 = ctx->createLinearGradient(0, 0, 300, 0);
+		grd1->addColorStop(0, "magenta");
+		grd1->addColorStop(0.5, "blue");
+		grd1->addColorStop(1, "red");
+		RefPtr<CanvasStyle> style1 = CanvasStyle::createFromGradient(grd1);
+		ctx->setStrokeStyle(style1);
+
+		ctx->strokeText("w3school.com.cn", 10, 90);
 
 		return;
 	}
@@ -72,5 +66,5 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static SkView* MyFactory() { return new TextBaselineView; }
+static SkView* MyFactory() { return new StrokeTextView; }
 static SkViewRegister reg(MyFactory);
