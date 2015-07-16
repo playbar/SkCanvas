@@ -1671,27 +1671,24 @@ void CanvasRenderingContext2D::setFont(const String& newFont)
 	else
 	{
 		String fontFamilyval = parsedStyle->getPropertyValue(CSSPropertyFontFamily);
-		String  fontStyleval = parsedStyle->getPropertyValue(CSSPropertyFontStyle);
-		String  fontVariantval = parsedStyle->getPropertyValue(CSSPropertyFontVariant);
-		String  fontWeightVal = parsedStyle->getPropertyValue(CSSPropertyFontWeight);
-		String  fontSizeVal = parsedStyle->getPropertyValue(CSSPropertyFontSize);
-		String  LineHeightVal = parsedStyle->getPropertyValue(CSSPropertyLineHeight);
+		String fontStyleval = parsedStyle->getPropertyValue(CSSPropertyFontStyle);
+		String fontVariantval = parsedStyle->getPropertyValue(CSSPropertyFontVariant);
+		String fontWeightVal = parsedStyle->getPropertyValue(CSSPropertyFontWeight);
+		String fontSizeVal = parsedStyle->getPropertyValue(CSSPropertyFontSize);
+		String LineHeightVal = parsedStyle->getPropertyValue(CSSPropertyLineHeight);
 		FontFamily fontFamily;
 		fontFamily.setFamily(AtomicString(fontFamilyval));
 		defaultFontDescription.setFamily(fontFamily);
 		defaultFontDescription.setSpecifiedSize(fontSizeVal.toFloat());
-		defaultFontDescription.setComputedSize(defaultFontSize);
+		defaultFontDescription.setComputedSize(fontSizeVal.toFloat());
 		defaultFontDescription.setStyle(fontStyleval=="normal" ?FontStyleNormal: FontStyleItalic);
 		defaultFontDescription.setVariant("normal" == fontVariantval ? FontVariantNormal : FontVariantSmallCaps);
 		defaultFontDescription.setSyntheticBold( false );
 
 	}
 	RefPtr<Font> newStyle = new Font(defaultFontDescription);
-
-    //newStyle->update(newStyle->fontSelector());
-
+    newStyle->update(newStyle->fontSelector());
     modifiableState().m_font = *newStyle;
-    modifiableState().m_font.update(newStyle->fontSelector());
     modifiableState().m_realizedFont = true;
 
 }

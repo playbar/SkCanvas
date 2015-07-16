@@ -49,7 +49,7 @@ protected:
 		ctx->lineTo(395, 100);
 		ctx->stroke();
 		
-		ctx->setFont("40px Arial");
+		ctx->setFont("20px Arial");
 		ctx->setTextBaseline("top");
 		ctx->fillText("Top", 5, 100);
 		ctx->setTextBaseline("bottom");

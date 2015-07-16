@@ -48,7 +48,7 @@ protected:
 		ctx->lineTo(150, 170);
 		ctx->stroke();
 		
-		ctx->setFont("40px Arial");
+		ctx->setFont("15px Arial");
 		ctx->setTextAlign("start");
 		ctx->fillText("textAlign=start", 150, 60);
 
