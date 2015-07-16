@@ -40,7 +40,7 @@ using namespace std;
 
 namespace WebCore {
 
-static const int defaultFontSize = 15;
+static const int defaultFontSize = 30;
 static const char defaultFontFamily[] = "sans-serif";
 static const char defaultFont[] = "10px sans-serif";
 

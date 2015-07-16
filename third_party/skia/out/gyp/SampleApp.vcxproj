@@ -156,6 +156,7 @@
     <ClCompile Include="..\..\samplecode\CreateRadialGradient.cpp" />
     <ClCompile Include="..\..\samplecode\Fill.cpp" />
     <ClCompile Include="..\..\samplecode\FillStyle.cpp" />
+    <ClCompile Include="..\..\samplecode\FillText.cpp" />
     <ClCompile Include="..\..\samplecode\Font.cpp" />
     <ClCompile Include="..\..\samplecode\IsPointInPath.cpp" />
     <ClCompile Include="..\..\samplecode\LineCap.cpp" />
