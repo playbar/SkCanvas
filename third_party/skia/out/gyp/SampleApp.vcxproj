@@ -160,6 +160,8 @@
     <ClCompile Include="..\..\samplecode\FillStyle.cpp" />
     <ClCompile Include="..\..\samplecode\FillText.cpp" />
     <ClCompile Include="..\..\samplecode\Font.cpp" />
+    <ClCompile Include="..\..\samplecode\GlobalAlpha .cpp" />
+    <ClCompile Include="..\..\samplecode\GlobalCompositeOperation.cpp" />
     <ClCompile Include="..\..\samplecode\IsPointInPath.cpp" />
     <ClCompile Include="..\..\samplecode\LineCap.cpp" />
     <ClCompile Include="..\..\samplecode\LineJoin.cpp" />

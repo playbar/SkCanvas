@@ -73,7 +73,8 @@ enum ScaleBehavior {
 };
 
 class PLATFORM_EXPORT ImageBuffer {
-    WTF_MAKE_NONCOPYABLE(ImageBuffer); WTF_MAKE_FAST_ALLOCATED;
+    WTF_MAKE_NONCOPYABLE(ImageBuffer);
+	WTF_MAKE_FAST_ALLOCATED;
 public:
     static PassOwnPtr<ImageBuffer> create(const IntSize&, OpacityMode = NonOpaque);
     static PassOwnPtr<ImageBuffer> create(PassOwnPtr<ImageBufferSurface>);
@@ -104,14 +105,7 @@ public:
     void transformColorSpace(ColorSpace srcColorSpace, ColorSpace dstColorSpace);
     blink::WebLayer* platformLayer() const;
 
-    // FIXME: current implementations of this method have the restriction that they only work
-    // with textures that are RGB or RGBA format, UNSIGNED_BYTE type and level 0, as specified in
-    // Extensions3D::canUseCopyTextureCHROMIUM().
-    // bool copyToPlatformTexture(blink::WebGraphicsContext3D*, Platform3DObject, GLenum, GLenum, GLint, bool, bool);
-
     Platform3DObject getBackingTexture();
-    //bool copyRenderingResultsFromDrawingBuffer(DrawingBuffer*);
-
     void flush();
 
 private:

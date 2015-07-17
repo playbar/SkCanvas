@@ -57,7 +57,7 @@ public:
     }
     virtual ~BitmapImage();
 
-	void src(String src);
+	void src(const char *src);
 	String src();
 
     virtual bool isBitmapImage() const OVERRIDE;

@@ -11,25 +11,17 @@
 #include "SkDevice.h"
 #include "SkColorPriv.h"
 #include "SkShader.h"
-#include "SkStream.h"
-#include "SkImageDecoder.h"
 #include "CanvasRenderingContext2D.h"
-#include "ImageData.h"
-#include "platform/graphics/BitmapImage.h"
-#include "wtf/Uint8ClampedArray.h"
-
 using namespace WebCore;
 using namespace WTF;
 
 
-class DrawImageView : public SampleView
+class GlobalAlphaView : public SampleView
 {
     SkPaint fBGPaint;
 public:
-	DrawImageView() 
+	GlobalAlphaView() 
 	{
-		int i = 0;
-		i++;
     }
 
 protected:
@@ -38,7 +30,7 @@ protected:
 	{
         if (SampleCode::TitleQ(*evt)) 
 		{
-            SampleCode::TitleR(evt, "DrawImageView");
+            SampleCode::TitleR(evt, "GlobalAlphaView ");
             return true;
         }
         return this->INHERITED::onQuery(evt);
@@ -47,21 +39,14 @@ protected:
     virtual void onDrawContent(SkCanvas* canvas)
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
-		
-		RefPtr<BitmapImage> img = BitmapImage::create();
-		img->src("c:/test_ba.png");
-		ctx->drawImage(img.get(), 10, 10);
-		//////////////////////////////////////////////////////////////////////////
-		//SkFILEStream stream("c:/test00_ba.png");
-		//SkPaint paint;
-		//paint.setColor(0xff00ff00);
-		//SkBitmap bitmap;
-		//SkImageDecoder *coder = SkImageDecoder::Factory(&stream);
-		//coder->decode(&stream, &bitmap, SkBitmap::kARGB_8888_Config, SkImageDecoder::kDecodePixels_Mode);
-		//canvas->drawBitmap(bitmap, 10, 10, &paint);
+		ctx->setFillColor("red");
+		ctx->fillRect(20, 20, 75, 50);
 
-		return;
-		
+		ctx->setGlobalAlpha(0.2);
+		ctx->setFillColor("blue");
+		ctx->fillRect(50, 50, 75, 50);
+		ctx->setFillColor("green");
+		ctx->fillRect(80, 80, 75, 50);
 	}
 
 private:
@@ -70,5 +55,5 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static SkView* MyFactory() { return new DrawImageView; }
+static SkView* MyFactory() { return new GlobalAlphaView; }
 static SkViewRegister reg(MyFactory);

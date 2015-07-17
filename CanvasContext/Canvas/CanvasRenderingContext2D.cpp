@@ -1558,32 +1558,32 @@ void CanvasRenderingContext2D::putImageData(ImageData* data, float dx, float dy,
     float dirtyWidth, float dirtyHeight)
 {
 	//ASSERT(false);
-    //ImageBuffer* buffer = canvas()->buffer();
-    //if (!buffer)
-    //    return;
+ //   ImageBuffer* buffer = canvas()->buffer();
+	//if (!buffer)
+	//	return;
 
-    //if (dirtyWidth < 0) {
-    //    dirtyX += dirtyWidth;
-    //    dirtyWidth = -dirtyWidth;
-    //}
+	//if (dirtyWidth < 0) {
+	//	dirtyX += dirtyWidth;
+	//	dirtyWidth = -dirtyWidth;
+	//}
 
-    //if (dirtyHeight < 0) {
-    //    dirtyY += dirtyHeight;
-    //    dirtyHeight = -dirtyHeight;
-    //}
+	//if (dirtyHeight < 0) {
+	//	dirtyY += dirtyHeight;
+	//	dirtyHeight = -dirtyHeight;
+	//}
 
-    //FloatRect clipRect(dirtyX, dirtyY, dirtyWidth, dirtyHeight);
-    //clipRect.intersect(IntRect(0, 0, data->width(), data->height()));
-    //IntSize destOffset(static_cast<int>(dx), static_cast<int>(dy));
-    //IntRect destRect = enclosingIntRect(clipRect);
-    //destRect.move(destOffset);
-    //destRect.intersect(IntRect(IntPoint(), buffer->size()));
-    //if (destRect.isEmpty())
-    //    return;
-    //IntRect sourceRect(destRect);
-    //sourceRect.move(-destOffset);
+	//FloatRect clipRect(dirtyX, dirtyY, dirtyWidth, dirtyHeight);
+	//clipRect.intersect(IntRect(0, 0, data->width(), data->height()));
+	//IntSize destOffset(static_cast<int>(dx), static_cast<int>(dy));
+	//IntRect destRect = enclosingIntRect(clipRect);
+	//destRect.move(destOffset);
+	//destRect.intersect(IntRect(IntPoint(), buffer->size()));
+	//if (destRect.isEmpty())
+	//	return;
+	//IntRect sourceRect(destRect);
+	//sourceRect.move(-destOffset);
 
-    //buffer->putByteArray(Unmultiplied, data->data(), IntSize(data->width(), data->height()), sourceRect, IntPoint(destOffset));
+	//buffer->putByteArray(Unmultiplied, data->data(), IntSize(data->width(), data->height()), sourceRect, IntPoint(destOffset));
 
     //didDraw(destRect);
 }

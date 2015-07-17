@@ -98,10 +98,11 @@ BitmapImage::~BitmapImage()
     stopAnimation();
 }
 
-void BitmapImage::src(String src)
+void BitmapImage::src(const char* src)
 {
 	m_src = src;
-	SkFILEStream stream("c:/test_ba.png");
+	SkFILEStream stream(src);
+	//SkFILEStream stream("c:/test_ba.png");
 	SkPaint paint;
 	paint.setColor(0xff00ff00);
 	SkBitmap bitmap;

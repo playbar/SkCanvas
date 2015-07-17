@@ -224,5 +224,11 @@
     <ClCompile Include="..\..\samplecode\DrawImage.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\samplecode\GlobalAlpha .cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\GlobalCompositeOperation.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
