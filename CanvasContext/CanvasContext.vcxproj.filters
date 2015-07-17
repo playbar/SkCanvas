@@ -219,18 +219,6 @@
     <ClCompile Include="platform\graphics\BitmapImage.cpp">
       <Filter>platform\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Chrome35\src\third_party\WebKit\Source\platform\Timer.cpp">
-      <Filter>platform</Filter>
-    </ClCompile>
-    <ClCompile Include="platform\ThreadTimers.cpp">
-      <Filter>platform</Filter>
-    </ClCompile>
-    <ClCompile Include="platform\PlatformThreadData.cpp">
-      <Filter>platform</Filter>
-    </ClCompile>
-    <ClCompile Include="platform\SharedTimer.cpp">
-      <Filter>platform</Filter>
-    </ClCompile>
     <ClCompile Include="platform\graphics\skia\OpaqueRegionSkia.cpp">
       <Filter>platform\graphics\skia</Filter>
     </ClCompile>
@@ -741,18 +729,6 @@
       <Filter>platform\graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Chrome35\src\third_party\WebKit\Source\platform\TraceLocation.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Chrome35\src\third_party\WebKit\Source\platform\Timer.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="platform\ThreadTimers.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="platform\PlatformThreadData.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="platform\SharedTimer.h">
       <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="platform\graphics\skia\OpaqueRegionSkia.h">

@@ -27,7 +27,7 @@
 #include "config.h"
 #include "platform/graphics/BitmapImage.h"
 
-#include "platform/Timer.h"
+//#include "platform/Timer.h"
 #include "platform/geometry/FloatRect.h"
 #include "platform/graphics/GraphicsContextStateSaver.h"
 #include "platform/graphics/ImageObserver.h"
@@ -46,7 +46,7 @@ BitmapImage::BitmapImage(ImageObserver* observer)
     : Image(observer)
     , m_currentFrame(0)
     , m_frames(0)
-    , m_frameTimer(0)
+    //, m_frameTimer(0)
     , m_repetitionCount(cAnimationNone)
     , m_repetitionCountStatus(Unknown)
     , m_repetitionsComplete(0)
@@ -68,7 +68,7 @@ BitmapImage::BitmapImage(PassRefPtr<NativeImageSkia> nativeImage, ImageObserver*
     , m_size(nativeImage->bitmap().width(), nativeImage->bitmap().height())
     , m_currentFrame(0)
     , m_frames(0)
-    , m_frameTimer(0)
+    //, m_frameTimer(0)
     , m_repetitionCount(cAnimationNone)
     , m_repetitionCountStatus(Unknown)
     , m_repetitionsComplete(0)
@@ -439,8 +439,8 @@ bool BitmapImage::shouldAnimate()
 
 void BitmapImage::startAnimation(bool catchUpIfNecessary)
 {
-    if (m_frameTimer || !shouldAnimate() || frameCount() <= 1)
-        return;
+    //if (m_frameTimer || !shouldAnimate() || frameCount() <= 1)
+    //    return;
 
     // If we aren't already animating, set now as the animation start time.
     const double time = monotonicallyIncreasingTime();
@@ -487,8 +487,8 @@ void BitmapImage::startAnimation(bool catchUpIfNecessary)
 
     if (!catchUpIfNecessary || time < m_desiredFrameStartTime) {
         // Haven't yet reached time for next frame to start; delay until then.
-        m_frameTimer = new Timer<BitmapImage>(this, &BitmapImage::advanceAnimation);
-        m_frameTimer->startOneShot(std::max(m_desiredFrameStartTime - time, 0.), FROM_HERE);
+        //m_frameTimer = new Timer<BitmapImage>(this, &BitmapImage::advanceAnimation);
+        //m_frameTimer->startOneShot(std::max(m_desiredFrameStartTime - time, 0.), FROM_HERE);
     } else {
         // We've already reached or passed the time for the next frame to start.
         // See if we've also passed the time for frames after that to start, in
@@ -537,8 +537,8 @@ void BitmapImage::stopAnimation()
 {
     // This timer is used to animate all occurrences of this image.  Don't invalidate
     // the timer unless all renderers have stopped drawing.
-    delete m_frameTimer;
-    m_frameTimer = 0;
+    //delete m_frameTimer;
+    //m_frameTimer = 0;
 }
 
 void BitmapImage::resetAnimation()
@@ -562,13 +562,13 @@ bool BitmapImage::maybeAnimated()
     return m_source.repetitionCount() != cAnimationNone;
 }
 
-void BitmapImage::advanceAnimation(Timer<BitmapImage>*)
-{
-    internalAdvanceAnimation(false);
-    // At this point the image region has been marked dirty, and if it's
-    // onscreen, we'll soon make a call to draw(), which will call
-    // startAnimation() again to keep the animation moving.
-}
+//void BitmapImage::advanceAnimation(Timer<BitmapImage>*)
+//{
+//    internalAdvanceAnimation(false);
+//    // At this point the image region has been marked dirty, and if it's
+//    // onscreen, we'll soon make a call to draw(), which will call
+//    // startAnimation() again to keep the animation moving.
+//}
 
 bool BitmapImage::internalAdvanceAnimation(bool skippingFrames)
 {

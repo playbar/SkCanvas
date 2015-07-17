@@ -15,7 +15,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Chrome35\src\third_party\WebKit\Source\platform\Timer.cpp" />
     <ClCompile Include="..\third_party\libpng\png.c" />
     <ClCompile Include="..\third_party\libpng\pngerror.c" />
     <ClCompile Include="..\third_party\libpng\pnggccrd.c" />
@@ -184,10 +183,8 @@
     <ClCompile Include="platform\Length.cpp" />
     <ClCompile Include="platform\LengthBox.cpp" />
     <ClCompile Include="platform\LengthFunctions.cpp" />
-    <ClCompile Include="platform\PlatformThreadData.cpp" />
     <ClCompile Include="platform\PurgeableVector.cpp" />
     <ClCompile Include="platform\SharedBuffer.cpp" />
-    <ClCompile Include="platform\SharedTimer.cpp" />
     <ClCompile Include="platform\text\BidiCharacterRun.cpp" />
     <ClCompile Include="platform\text\BidiContext.cpp" />
     <ClCompile Include="platform\text\SurrogatePairAwareTextIterator.cpp" />
@@ -195,7 +192,6 @@
     <ClCompile Include="platform\text\TextBreakIteratorICU.cpp" />
     <ClCompile Include="platform\text\TextBreakIteratorInternalICU.cpp" />
     <ClCompile Include="platform\text\TextRun.cpp" />
-    <ClCompile Include="platform\ThreadTimers.cpp" />
     <ClCompile Include="platform\transforms\AffineTransform.cpp" />
     <ClCompile Include="platform\transforms\TransformationMatrix.cpp" />
     <ClCompile Include="style\BasicShapes.cpp" />
@@ -204,7 +200,6 @@
     <ClCompile Include="style\StyleGeneratedImage.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\Chrome35\src\third_party\WebKit\Source\platform\Timer.h" />
     <ClInclude Include="..\..\..\Chrome35\src\third_party\WebKit\Source\platform\TraceLocation.h" />
     <ClInclude Include="..\third_party\libpng\png.h" />
     <ClInclude Include="..\third_party\libpng\pngconf.h" />
@@ -359,17 +354,14 @@
     <ClInclude Include="platform\LengthBox.h" />
     <ClInclude Include="platform\LengthFunctions.h" />
     <ClInclude Include="platform\LengthSize.h" />
-    <ClInclude Include="platform\PlatformThreadData.h" />
     <ClInclude Include="platform\PurgeableVector.h" />
     <ClInclude Include="platform\SharedBuffer.h" />
-    <ClInclude Include="platform\SharedTimer.h" />
     <ClInclude Include="platform\text\BidiCharacterRun.h" />
     <ClInclude Include="platform\text\BidiContext.h" />
     <ClInclude Include="platform\text\SurrogatePairAwareTextIterator.h" />
     <ClInclude Include="platform\text\TextBreakIterator.h" />
     <ClInclude Include="platform\text\TextBreakIteratorInternalICU.h" />
     <ClInclude Include="platform\text\TextRun.h" />
-    <ClInclude Include="platform\ThreadTimers.h" />
     <ClInclude Include="platform\transforms\AffineTransform.h" />
     <ClInclude Include="platform\transforms\TransformationMatrix.h" />
     <ClInclude Include="style\BasicShapes.h" />
