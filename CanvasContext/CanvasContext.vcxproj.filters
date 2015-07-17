@@ -61,6 +61,9 @@
     <Filter Include="css\resolver">
       <UniqueIdentifier>{32006688-f8bb-45df-9ad2-654f8c1a84e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="platform\image-decoders\png">
+      <UniqueIdentifier>{f060a19a-9a9f-479b-a8dc-cd0e1cae29ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Canvas\CanvasPathMethods.cpp">
@@ -143,9 +146,6 @@
     </ClCompile>
     <ClCompile Include="platform\graphics\ImageBuffer.cpp">
       <Filter>platform\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="platform\image-encoders\skia\WEBPImageEncoder.cpp">
-      <Filter>platform\image-encoders\skia</Filter>
     </ClCompile>
     <ClCompile Include="platform\image-encoders\skia\PNGImageEncoder.cpp">
       <Filter>platform\image-encoders\skia</Filter>
@@ -285,13 +285,7 @@
     <ClCompile Include="platform\image-decoders\ImageDecoder.cpp">
       <Filter>platform\image-decoders</Filter>
     </ClCompile>
-    <ClCompile Include="platform\image-decoders\webp\WEBPImageDecoder.cpp">
-      <Filter>platform\image-decoders</Filter>
-    </ClCompile>
     <ClCompile Include="platform\image-decoders\ImageFrame.cpp">
-      <Filter>platform\image-decoders</Filter>
-    </ClCompile>
-    <ClCompile Include="platform\image-decoders\png\PNGImageDecoder.cpp">
       <Filter>platform\image-decoders</Filter>
     </ClCompile>
     <ClCompile Include="platform\image-decoders\bmp\BMPImageReader.cpp">
@@ -636,6 +630,9 @@
     <ClCompile Include="blink\CSSTokenizer.cpp">
       <Filter>blink</Filter>
     </ClCompile>
+    <ClCompile Include="platform\image-decoders\png\PNGImageDecoder.cpp">
+      <Filter>platform\image-decoders\png</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -718,9 +715,6 @@
     </ClInclude>
     <ClInclude Include="platform\graphics\ImageBuffer.h">
       <Filter>platform\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="platform\image-encoders\skia\WEBPImageEncoder.h">
-      <Filter>platform\image-encoders\skia</Filter>
     </ClInclude>
     <ClInclude Include="platform\image-encoders\skia\PNGImageEncoder.h">
       <Filter>platform\image-encoders\skia</Filter>
@@ -824,13 +818,7 @@
     <ClInclude Include="platform\image-decoders\ImageDecoder.h">
       <Filter>platform\image-decoders</Filter>
     </ClInclude>
-    <ClInclude Include="platform\image-decoders\webp\WEBPImageDecoder.h">
-      <Filter>platform\image-decoders</Filter>
-    </ClInclude>
     <ClInclude Include="platform\image-decoders\ImageFrame.h">
-      <Filter>platform\image-decoders</Filter>
-    </ClInclude>
-    <ClInclude Include="platform\image-decoders\png\PNGImageDecoder.h">
       <Filter>platform\image-decoders</Filter>
     </ClInclude>
     <ClInclude Include="platform\image-decoders\bmp\BMPImageDecoder.h">
@@ -1195,6 +1183,9 @@
     </ClInclude>
     <ClInclude Include="css\CSSTokenizer.h">
       <Filter>css</Filter>
+    </ClInclude>
+    <ClInclude Include="platform\image-decoders\png\PNGImageDecoder.h">
+      <Filter>platform\image-decoders\png</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

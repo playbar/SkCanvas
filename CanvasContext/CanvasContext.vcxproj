@@ -179,10 +179,8 @@
     <ClCompile Include="platform\image-decoders\ImageDecoder.cpp" />
     <ClCompile Include="platform\image-decoders\ImageFrame.cpp" />
     <ClCompile Include="platform\image-decoders\png\PNGImageDecoder.cpp" />
-    <ClCompile Include="platform\image-decoders\webp\WEBPImageDecoder.cpp" />
     <ClCompile Include="platform\image-encoders\skia\JPEGImageEncoder.cpp" />
     <ClCompile Include="platform\image-encoders\skia\PNGImageEncoder.cpp" />
-    <ClCompile Include="platform\image-encoders\skia\WEBPImageEncoder.cpp" />
     <ClCompile Include="platform\Length.cpp" />
     <ClCompile Include="platform\LengthBox.cpp" />
     <ClCompile Include="platform\LengthFunctions.cpp" />
@@ -357,10 +355,8 @@
     <ClInclude Include="platform\image-decoders\ImageDecoder.h" />
     <ClInclude Include="platform\image-decoders\ImageFrame.h" />
     <ClInclude Include="platform\image-decoders\png\PNGImageDecoder.h" />
-    <ClInclude Include="platform\image-decoders\webp\WEBPImageDecoder.h" />
     <ClInclude Include="platform\image-encoders\skia\JPEGImageEncoder.h" />
     <ClInclude Include="platform\image-encoders\skia\PNGImageEncoder.h" />
-    <ClInclude Include="platform\image-encoders\skia\WEBPImageEncoder.h" />
     <ClInclude Include="platform\Length.h" />
     <ClInclude Include="platform\LengthBox.h" />
     <ClInclude Include="platform\LengthFunctions.h" />
@@ -404,21 +400,6 @@
     </ProjectReference>
     <ProjectReference Include="..\third_party\icu\icuuc.vcxproj">
       <Project>{539ced2c-dcac-e5e9-3b83-311f2d981aab}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\third_party\libwebp\libwebp_dec.vcxproj">
-      <Project>{5a5cc5c3-acbd-4382-649d-2f56630ee516}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\third_party\libwebp\libwebp_demux.vcxproj">
-      <Project>{4353dead-27cf-5e4d-64dd-587d4510c4f2}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\third_party\libwebp\libwebp_dsp.vcxproj">
-      <Project>{04f71dfb-3e4a-7754-48b0-ac6ca6a1047b}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\third_party\libwebp\libwebp_enc.vcxproj">
-      <Project>{db59dbd2-afcb-d5b1-7818-931385285e75}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\third_party\libwebp\libwebp_utils.vcxproj">
-      <Project>{0b6686d7-edda-0a19-0bc5-fd4286b13466}</Project>
     </ProjectReference>
     <ProjectReference Include="..\third_party\zlib\zlib.vcxproj">
       <Project>{33b2758b-efd1-beb1-80bb-b999b3f1b0d8}</Project>
