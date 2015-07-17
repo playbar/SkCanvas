@@ -184,8 +184,6 @@
     <ClCompile Include="platform\Length.cpp" />
     <ClCompile Include="platform\LengthBox.cpp" />
     <ClCompile Include="platform\LengthFunctions.cpp" />
-    <ClCompile Include="platform\Logging.cpp" />
-    <ClCompile Include="platform\NotImplemented.cpp" />
     <ClCompile Include="platform\PlatformThreadData.cpp" />
     <ClCompile Include="platform\PurgeableVector.cpp" />
     <ClCompile Include="platform\SharedBuffer.cpp" />
@@ -361,8 +359,6 @@
     <ClInclude Include="platform\LengthBox.h" />
     <ClInclude Include="platform\LengthFunctions.h" />
     <ClInclude Include="platform\LengthSize.h" />
-    <ClInclude Include="platform\Logging.h" />
-    <ClInclude Include="platform\NotImplemented.h" />
     <ClInclude Include="platform\PlatformThreadData.h" />
     <ClInclude Include="platform\PurgeableVector.h" />
     <ClInclude Include="platform\SharedBuffer.h" />

@@ -321,12 +321,6 @@
     <ClCompile Include="platform\fonts\harfbuzz\FontHarfBuzz.cpp">
       <Filter>platform\font\harfbuzz</Filter>
     </ClCompile>
-    <ClCompile Include="platform\NotImplemented.cpp">
-      <Filter>platform</Filter>
-    </ClCompile>
-    <ClCompile Include="platform\Logging.cpp">
-      <Filter>platform</Filter>
-    </ClCompile>
     <ClCompile Include="platform\fonts\harfbuzz\HarfBuzzShaper.cpp">
       <Filter>platform\font\harfbuzz</Filter>
     </ClCompile>
@@ -847,12 +841,6 @@
     </ClInclude>
     <ClInclude Include="platform\text\SurrogatePairAwareTextIterator.h">
       <Filter>platform\text</Filter>
-    </ClInclude>
-    <ClInclude Include="platform\NotImplemented.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="platform\Logging.h">
-      <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="platform\fonts\harfbuzz\HarfBuzzShaper.h">
       <Filter>platform\font\harfbuzz</Filter>
