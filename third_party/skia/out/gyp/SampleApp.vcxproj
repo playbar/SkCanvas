@@ -152,8 +152,10 @@
     <ClCompile Include="..\..\samplecode\BezierCurveTo.cpp" />
     <ClCompile Include="..\..\samplecode\ClearRect.cpp" />
     <ClCompile Include="..\..\samplecode\Clip.cpp" />
+    <ClCompile Include="..\..\samplecode\CreateImageData.cpp" />
     <ClCompile Include="..\..\samplecode\CreateLinearGradient.cpp" />
     <ClCompile Include="..\..\samplecode\CreateRadialGradient.cpp" />
+    <ClCompile Include="..\..\samplecode\DrawImage.cpp" />
     <ClCompile Include="..\..\samplecode\Fill.cpp" />
     <ClCompile Include="..\..\samplecode\FillStyle.cpp" />
     <ClCompile Include="..\..\samplecode\FillText.cpp" />

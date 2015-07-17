@@ -218,5 +218,11 @@
     <ClCompile Include="..\..\samplecode\StrokeText.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\samplecode\CreateImageData.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\DrawImage.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

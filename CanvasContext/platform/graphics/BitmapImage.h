@@ -57,6 +57,9 @@ public:
     }
     virtual ~BitmapImage();
 
+	void src(String src);
+	String src();
+
     virtual bool isBitmapImage() const OVERRIDE;
 
     virtual bool currentFrameHasSingleSecurityOrigin() const OVERRIDE { return true; };
@@ -141,22 +144,13 @@ protected:
     bool shouldAnimate();
     virtual void startAnimation(bool catchUpIfNecessary = true) OVERRIDE;
     void advanceAnimation(Timer<BitmapImage>*);
-
-    // Function that does the real work of advancing the animation.  When
-    // skippingFrames is true, we're in the middle of a loop trying to skip over
-    // a bunch of animation frames, so we should not do things like decode each
-    // one or notify our observers.
-    // Returns whether the animation was advanced.
     bool internalAdvanceAnimation(bool skippingFrames);
-
-    // Checks to see if the image is a 1x1 solid color.  We optimize these images and just do a fill rect instead.
-    // This check should happen regardless whether m_checkedForSolidColor is already set, as the frame may have
-    // changed.
     void checkForSolidColor();
 
     virtual bool mayFillWithSolidColor() OVERRIDE;
     virtual Color solidColor() const OVERRIDE;
 
+	String m_src;
     ImageSource m_source;
     mutable IntSize m_size; // The size to use for the overall image (will just be the size of the first image).
     mutable IntSize m_sizeRespectingOrientation;

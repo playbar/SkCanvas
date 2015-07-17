@@ -37,6 +37,8 @@
 #include "wtf/PassRefPtr.h"
 #include "wtf/Vector.h"
 #include "wtf/text/WTFString.h"
+#include "SkStream.h"
+#include "SkImageDecoder.h"
 
 namespace WebCore {
 
@@ -94,6 +96,27 @@ BitmapImage::BitmapImage(PassRefPtr<NativeImageSkia> nativeImage, ImageObserver*
 BitmapImage::~BitmapImage()
 {
     stopAnimation();
+}
+
+void BitmapImage::src(String src)
+{
+	m_src = src;
+	SkFILEStream stream("c:/test_ba.png");
+	SkPaint paint;
+	paint.setColor(0xff00ff00);
+	SkBitmap bitmap;
+	SkImageDecoder *coder = SkImageDecoder::Factory(&stream);
+	coder->decode(&stream, &bitmap, SkBitmap::kARGB_8888_Config,SkImageDecoder::kDecodePixels_Mode);
+	RefPtr<NativeImageSkia> nativeBmp = NativeImageSkia::create(bitmap);
+	m_frames.grow(1);
+	m_frames[0].m_hasAlpha = !nativeBmp->bitmap().isOpaque();
+	m_frames[0].m_frame = nativeBmp;
+	m_frames[0].m_haveMetadata = true;
+}
+
+String BitmapImage::src()
+{
+	return m_src;
 }
 
 bool BitmapImage::isBitmapImage() const
@@ -178,6 +201,7 @@ void BitmapImage::updateSize() const
 IntSize BitmapImage::size() const
 {
     updateSize();
+	m_size = IntSize(128, 128);
     return m_size;
 }
 
@@ -329,8 +353,8 @@ bool BitmapImage::ensureFrameIsCached(size_t index)
 
 PassRefPtr<NativeImageSkia> BitmapImage::frameAtIndex(size_t index)
 {
-    if (!ensureFrameIsCached(index))
-        return nullptr;
+    //if (!ensureFrameIsCached(index))
+    //   return nullptr;
     return m_frames[index].m_frame;
 }
 

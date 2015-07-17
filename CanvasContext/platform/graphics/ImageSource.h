@@ -76,24 +76,6 @@ public:
     ImageSource(AlphaOption alphaOption = AlphaPremultiplied, GammaAndColorProfileOption gammaAndColorProfileOption = GammaAndColorProfileApplied);
     ~ImageSource();
 
-    // Tells the ImageSource that the Image no longer cares about decoded frame
-    // data except for the specified frame. Callers may pass WTF::kNotFound to
-    // clear all frames.
-    //
-    // In response, the ImageSource should delete cached decoded data for other
-    // frames where possible to keep memory use low. The expectation is that in
-    // the future, the caller may call createFrameAtIndex() with an index larger
-    // than the one passed to this function, and the implementation may then
-    // make use of the preserved frame data here in decoding that frame.
-    // By contrast, callers who call this function and then later ask for an
-    // earlier frame may require more work to be done, e.g. redecoding the image
-    // from the beginning.
-    //
-    // Implementations may elect to preserve more frames than the one requested
-    // here if doing so is likely to save CPU time in the future, but will pay
-    // an increased memory cost to do so.
-    //
-    // Returns the number of bytes of frame data actually cleared.
     size_t clearCacheExceptFrame(size_t);
 
     bool initialized() const;

@@ -147,12 +147,9 @@ public:
 
     void clearShadow();
 
-    void drawImage(CanvasImageSource*, float x, float y);
-    void drawImage(CanvasImageSource*, float x, float y, float width, float height);
-    void drawImage(CanvasImageSource*, float sx, float sy, float sw, float sh, float dx, float dy, float dw, float dh);
-
-    void drawImageFromRect(HTMLImageElement*, float sx = 0, float sy = 0, float sw = 0, float sh = 0,
-                           float dx = 0, float dy = 0, float dw = 0, float dh = 0, const String& compositeOperation = emptyString());
+    void drawImage(Image*, float x, float y);
+	void drawImage(CanvasImageSource*, float x, float y, float width, float height);
+	void drawImage(CanvasImageSource*, float sx, float sy, float sw, float sh, float dx, float dy, float dw, float dh);
 
     void setAlpha(float);
 

@@ -75,18 +75,12 @@ public:
     {
         return adoptRef(new NativeImageSkia());
     }
-
-    // This factory method does a shallow copy of the passed-in SkBitmap
-    // (ie., it references the same pixel data and bumps the refcount). Use
-    // only when you want sharing semantics.
+ 
     static PassRefPtr<NativeImageSkia> create(const SkBitmap& bitmap)
     {
         return adoptRef(new NativeImageSkia(bitmap));
     }
-
-    // This method does a shallow copy of the internal SkBitmap (ie., it
-    // references the same pixel data and bumps the refcount). Use only when
-    // you want sharing semantics.
+ 
     PassRefPtr<NativeImageSkia> clone() const
     {
         return adoptRef(new NativeImageSkia(m_image, m_resizedImage, m_cachedImageInfo, m_resizeRequests));
@@ -94,14 +88,7 @@ public:
 
     ~NativeImageSkia();
 
-    // Returns the number of bytes of image data. This includes the cached
-    // resized version if there is one.
     int decodedSize() const;
-
-    // Sets the immutable flag on the bitmap, indicating that the image data
-    // will not be modified any further. This is called by the image decoder
-    // when all data is complete, used by us to know whether we can cache
-    // resized images, and used by Skia for various optimizations.
     void setDataComplete() { m_image.setImmutable(); }
 
     // Returns true if the entire image has been decoded.
@@ -116,14 +103,6 @@ public:
     // scale and subset.
     bool hasResizedBitmap(const SkISize& scaledImageSize, const SkIRect& scaledImageSubset) const;
 
-    // This will return an existing resized image subset, or generate a new one
-    // of the specified size and subset and possibly cache it.
-    //
-    // scaledImageSize
-    // Dimensions of the scaled full image.
-    //
-    // scaledImageSubset
-    // Rectangle of the subset in the scaled image.
     SkBitmap resizedBitmap(const SkISize& scaledImageSize, const SkIRect& scaledImageSubset) const;
 
     void draw(GraphicsContext*, const SkRect& srcRect, const SkRect& destRect, PassRefPtr<SkXfermode>) const;

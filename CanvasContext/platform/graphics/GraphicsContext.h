@@ -30,7 +30,8 @@ class ImageBuffer;
 typedef SkImageFilter ImageFilter;
 
 class PLATFORM_EXPORT GraphicsContext {
-    WTF_MAKE_NONCOPYABLE(GraphicsContext); WTF_MAKE_FAST_ALLOCATED;
+    WTF_MAKE_NONCOPYABLE(GraphicsContext); 
+	WTF_MAKE_FAST_ALLOCATED;
 public:
     enum AntiAliasingMode {
         NotAntiAliased,
@@ -429,6 +430,8 @@ private:
 
     // null indicates painting is disabled. Never delete this object.
     SkCanvas* m_canvas;
+
+	OwnPtr<ImageBuffer> m_imageBuffer;
 
     // Paint states stack. Enables local drawing state change with save()/restore() calls.
     // This state controls the appearance of drawn content.

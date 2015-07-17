@@ -1193,12 +1193,14 @@ static bool checkImageSource(CanvasImageSource* imageSource)
     return true;
 }
 
-void CanvasRenderingContext2D::drawImage(CanvasImageSource* imageSource, float x, float y )
+void CanvasRenderingContext2D::drawImage(Image* imageSource, float x, float y)
 {
-    if (!checkImageSource(imageSource))
-        return;
-    FloatSize destRectSize = imageSource->defaultDestinationSize();
-    drawImage(imageSource, x, y, destRectSize.width(), destRectSize.height());
+
+	FloatRect srcRect = normalizeRect(FloatRect(0, 0, imageSource->width(), imageSource->height()));
+	FloatRect dstRect = normalizeRect(FloatRect(x, y, imageSource->width(), imageSource->height()));
+
+	GraphicsContext::drawImage(imageSource, dstRect, srcRect);
+	return;
 }
 
 void CanvasRenderingContext2D::drawImage(CanvasImageSource* imageSource,
@@ -1305,20 +1307,6 @@ void CanvasRenderingContext2D::drawImageInternal(CanvasImageSource* imageSource,
 //    stateSaver.restore();
 //}
 
-void CanvasRenderingContext2D::drawImageFromRect(HTMLImageElement* image,
-    float sx, float sy, float sw, float sh,
-    float dx, float dy, float dw, float dh,
-    const String& compositeOperation)
-{
-	ASSERT(false);
-    //CompositeOperator op;
-    //blink::WebBlendMode blendOp = blink::WebBlendModeNormal;
-    //if (!parseCompositeAndBlendOperator(compositeOperation, op, blendOp) || blendOp != blink::WebBlendModeNormal)
-    //    op = CompositeSourceOver;
-
-    //drawImageInternal(image, sx, sy, sw, sh, dx, dy, dw, dh, op, blendOp);
-
-}
 
 void CanvasRenderingContext2D::setAlpha(float alpha)
 {
@@ -1359,7 +1347,6 @@ static void drawImageToContext(Image* image, GraphicsContext* context, const Flo
 template<class T> void  CanvasRenderingContext2D::fullCanvasCompositedDrawImage(T* image, const FloatRect& dest, const FloatRect& src, CompositeOperator op)
 {
     ASSERT(isFullCanvasCompositeMode(op));
-
     drawingContext()->beginLayer(1, op);
     drawImageToContext(image, drawingContext(), dest, src, CompositeSourceOver);
     drawingContext()->endLayer();
@@ -1570,7 +1557,7 @@ void CanvasRenderingContext2D::putImageData(ImageData* data, float dx, float dy)
 void CanvasRenderingContext2D::putImageData(ImageData* data, float dx, float dy, float dirtyX, float dirtyY,
     float dirtyWidth, float dirtyHeight)
 {
-	ASSERT(false);
+	//ASSERT(false);
     //ImageBuffer* buffer = canvas()->buffer();
     //if (!buffer)
     //    return;

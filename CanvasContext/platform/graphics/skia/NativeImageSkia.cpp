@@ -372,7 +372,7 @@ void NativeImageSkia::draw(GraphicsContext* context, const SkRect& srcRect, cons
         // don't send extra pixels.
         context->drawBitmapRect(bitmap(), &srcRect, destRect, &paint);
     }
-	ASSERT(false);
+	//ASSERT(false);
     //if (isLazyDecoded)
     //    PlatformInstrumentation::didDrawLazyPixelRef(bitmap().getGenerationID());
     context->didDrawRect(destRect, paint, &bitmap());
