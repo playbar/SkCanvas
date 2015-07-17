@@ -29,8 +29,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "skia_chrome_opts", "skia\sk
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "skia_opts_ssse3", "skia\skia_opts_ssse3.vcxproj", "{D7B76051-DA6D-CF18-5AF3-1E9692B37996}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "v8", "v8", "{8A3A3294-4C79-4CD6-8B5A-FF7A66E2F35F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "icu", "icu", "{6D04C47D-A1AA-403E-926A-13833039D9C1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "icui18n", "third_party\icu\icui18n.vcxproj", "{5CEBDD75-6CCB-4687-9E21-9E26ECF67F97}"
