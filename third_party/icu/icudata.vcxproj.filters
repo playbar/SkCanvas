@@ -16,19 +16,10 @@
     <Filter Include="source\data\in">
       <UniqueIdentifier>{DADCB38D-684B-558C-2964-BEE5F8A46A67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="mac">
-      <UniqueIdentifier>{DDBFF7CF-DBCF-B2FC-793A-DB701B563E8D}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="mac\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\stubdata\stubdata.c">
       <Filter>source\stubdata</Filter>
     </ClCompile>
-    <None Include="mac\icudt46l_dat.S">
-      <Filter>mac\_excluded_files</Filter>
-    </None>
   </ItemGroup>
 </Project>
