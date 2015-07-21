@@ -453,9 +453,6 @@
     <ClCompile Include="blink\HTMLNames.cpp">
       <Filter>blink</Filter>
     </ClCompile>
-    <ClCompile Include="blink\SVGNames.cpp">
-      <Filter>blink</Filter>
-    </ClCompile>
     <ClCompile Include="blink\XLinkNames.cpp">
       <Filter>blink</Filter>
     </ClCompile>
@@ -954,9 +951,6 @@
       <Filter>dom</Filter>
     </ClInclude>
     <ClInclude Include="blink\HTMLNames.h">
-      <Filter>blink</Filter>
-    </ClInclude>
-    <ClInclude Include="blink\SVGNames.h">
       <Filter>blink</Filter>
     </ClInclude>
     <ClInclude Include="blink\XLinkNames.h">

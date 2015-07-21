@@ -22,7 +22,6 @@
 #include "config.h"
 #include "css/CSSCursorImageValue.h"
 
-#include "SVGNames.h"
 #include "css/CSSImageSetValue.h"
 #include "style/StyleImage.h"
 #include "style/StylePendingImage.h"

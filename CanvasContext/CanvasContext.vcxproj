@@ -39,7 +39,6 @@
     <ClCompile Include="blink\HTMLNames.cpp" />
     <ClCompile Include="blink\RuntimeEnabledFeatures.cpp" />
     <ClCompile Include="blink\StylePropertyShorthand.cpp" />
-    <ClCompile Include="blink\SVGNames.cpp" />
     <ClCompile Include="blink\XLinkNames.cpp" />
     <ClCompile Include="blink\XMLNames.cpp" />
     <ClCompile Include="blink\XMLNSNames.cpp" />
@@ -209,7 +208,6 @@
     <ClInclude Include="blink\HTMLNames.h" />
     <ClInclude Include="blink\RuntimeEnabledFeatures.h" />
     <ClInclude Include="blink\StylePropertyShorthand.h" />
-    <ClInclude Include="blink\SVGNames.h" />
     <ClInclude Include="blink\XLinkNames.h" />
     <ClInclude Include="blink\XMLNames.h" />
     <ClInclude Include="blink\XMLNSNames.h" />
