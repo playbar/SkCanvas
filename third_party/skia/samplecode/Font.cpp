@@ -46,7 +46,7 @@ protected:
 		ctx->setFont("italic small-caps bold 40px sans-serif");
 		String str = "HelloWorld";
 		ctx->strokeText(str, 10, 50);
-		return;
+		//return;
 		//ctx->strokeText("Hello world", 10, 50);
 		SkPaint paint;
 		////paint.setAntiAlias(true);
@@ -67,7 +67,7 @@ protected:
 		//paint.setShader(shader);
 		//shader->unref();
 		//paint.setTextAlign(SkPaint::kCenter_Align);
-		canvas->drawText("", 4, 100, 100, paint);
+		canvas->drawText("test", 4, 100, 100, paint);
 		return;
 	}
 
