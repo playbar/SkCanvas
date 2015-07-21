@@ -517,7 +517,6 @@
     <ClInclude Include="..\third_party\skia\include\effects\SkTileImageFilter.h" />
     <ClInclude Include="..\third_party\skia\include\effects\SkTransparentShader.h" />
     <ClInclude Include="..\third_party\skia\include\effects\SkMagnifierImageFilter.h" />
-    <ClInclude Include="..\third_party\skia\src\xml\SkBML_Verbs.h" />
     <ClInclude Include="ext\convolver.h" />
     <ClInclude Include="ext\convolver_SSE2.h" />
     <ClInclude Include="ext\image_operations.h" />
@@ -685,7 +684,6 @@
     <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkTime_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkTLS_win.cpp" />
-    <ClCompile Include="..\third_party\skia\src\ports\SkXMLParser_empty.cpp" />
     <ClCompile Include="..\third_party\skia\src\sfnt\SkOTTable_name.cpp" />
     <ClCompile Include="..\third_party\skia\src\sfnt\SkOTUtils.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\debugger\SkDebugCanvas.cpp" />
@@ -933,10 +931,6 @@
     <ClCompile Include="..\third_party\skia\src\effects\gradients\SkSweepGradient.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\win\SkIStream.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\win\SkWGL_win.cpp" />
-    <ClCompile Include="..\third_party\skia\src\xml\SkBML_XMLParser.cpp" />
-    <ClCompile Include="..\third_party\skia\src\xml\SkDOM.cpp" />
-    <ClCompile Include="..\third_party\skia\src\xml\SkXMLParser.cpp" />
-    <ClCompile Include="..\third_party\skia\src\xml\SkXMLWriter.cpp" />
     <ClCompile Include="ext\convolver.cc" />
     <ClCompile Include="ext\convolver_SSE2.cc" />
     <ClCompile Include="ext\google_logging.cc" />

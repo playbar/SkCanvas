@@ -9,7 +9,7 @@
 #define SkWidget_DEFINED
 
 #include "SkBitmap.h"
-#include "SkDOM.h"
+//#include "SkDOM.h"
 #include "SkPaint.h"
 #include "SkString.h"
 #include "SkTDArray.h"
@@ -37,7 +37,6 @@ protected:
     virtual void onEnabledChange();
 
     // <event ...> to initialize the event from XML
-    virtual void onInflate(const SkDOM& dom, const SkDOM::Node* node);
 
 private:
     SkEvent fEvent;
@@ -61,7 +60,6 @@ protected:
     virtual void onLabelChange();
 
     // overrides
-    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 
 private:
     SkString    fLabel;
@@ -87,7 +85,6 @@ protected:
     virtual void onButtonStateChange();
 
     // overrides
-    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 
 private:
     State   fState;
@@ -119,7 +116,6 @@ public:
 protected:
     virtual bool onEvent(const SkEvent&);
     virtual void onDraw(SkCanvas*);
-    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 
 private:
     typedef SkButtonWidget INHERITED;
@@ -160,7 +156,6 @@ public:
 protected:
     // overrides
     virtual void onDraw(SkCanvas*);
-    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 
 private:
     SkPoint     fMargin;
@@ -187,7 +182,6 @@ public:
 
 protected:
     virtual void onDraw(SkCanvas*);
-    virtual void onInflate(const SkDOM&, const SkDOM::Node*);
 
 private:
     SkBitmap    fBitmap;
@@ -209,7 +203,6 @@ protected:
     virtual void onLabelChange();
 
     // overrides
-    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -220,7 +213,6 @@ public:
 
 protected:
     virtual void onDraw(SkCanvas*);
-    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -239,7 +231,6 @@ public:
 
 protected:
     virtual void onDraw(SkCanvas*);
-    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 
 private:
     State   fState;
@@ -260,7 +251,6 @@ public:
 
 protected:
     virtual void onDraw(SkCanvas*);
-    virtual void onInflate(const SkDOM& dom, const SkDOM::Node* node);
 
 private:
     uint16_t    fValue, fMax;
@@ -281,7 +271,6 @@ public:
 
     static SkListSource* CreateFromDir(const char path[], const char suffix[],
                                         const char targetPrefix[]);
-    static SkListSource* CreateFromDOM(const SkDOM& dom, const SkDOM::Node* node);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -334,7 +323,6 @@ protected:
     virtual void onDraw(SkCanvas*);
     virtual void onSizeChange();
     virtual bool onEvent(const SkEvent&);
-    virtual void onInflate(const SkDOM& dom, const SkDOM::Node* node);
 
 private:
     SkPaint         fPaint[kAttrCount];
@@ -390,7 +378,6 @@ protected:
     virtual void onDraw(SkCanvas*);
     virtual void onSizeChange();
     virtual bool onEvent(const SkEvent&);
-    virtual void onInflate(const SkDOM& dom, const SkDOM::Node* node);
 
 private:
     SkView*         fScrollBar;

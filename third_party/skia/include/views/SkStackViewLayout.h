@@ -61,7 +61,6 @@ public:
 
 protected:
     virtual void onLayoutChildren(SkView* parent);
-    virtual void onInflate(const SkDOM&, const SkDOM::Node*);
 
 private:
     SkRect      fMargin;
@@ -78,7 +77,6 @@ public:
 protected:
     // overrides;
     virtual void onLayoutChildren(SkView* parent);
-    virtual void onInflate(const SkDOM& dom, const SkDOM::Node* node);
 
 private:
     SkRect  fMargin;

@@ -24,7 +24,6 @@ public:
 protected:
     // overrides
     virtual void onDraw(SkView*, SkCanvas*);
-    virtual void onInflate(const SkDOM&, const SkDOM::Node*);
 
 private:
     SkPaint fPaint;

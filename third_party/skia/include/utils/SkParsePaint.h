@@ -11,7 +11,7 @@
 #define SkParsePaint_DEFINED
 
 #include "SkPaint.h"
-#include "SkDOM.h"
+//#include "SkDOM.h"
 
 /** "color"             color
     "opacity"           scalar  [0..1]
@@ -21,6 +21,6 @@
     "is-antialias"      bool
     "is-lineartext"     bool
 */
-void SkPaint_Inflate(SkPaint*, const SkDOM&, const SkDOM::Node*);
+//void SkPaint_Inflate(SkPaint*, const SkDOM&, const SkDOM::Node*);
 
 #endif

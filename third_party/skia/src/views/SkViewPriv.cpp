@@ -14,15 +14,15 @@ void SkView::Artist::draw(SkView* view, SkCanvas* canvas)
     this->onDraw(view, canvas);
 }
 
-void SkView::Artist::inflate(const SkDOM& dom, const SkDOM::Node* node)
-{
-    this->onInflate(dom, node);
-}
-
-void SkView::Artist::onInflate(const SkDOM&, const SkDOM::Node*)
-{
-    // subclass should override this as needed
-}
+//void SkView::Artist::inflate(const SkDOM& dom, const SkDOM::Node* node)
+//{
+//    this->onInflate(dom, node);
+//}
+//
+//void SkView::Artist::onInflate(const SkDOM&, const SkDOM::Node*)
+//{
+//    // subclass should override this as needed
+//}
 
 SkView::Artist* SkView::getArtist() const
 {
@@ -57,15 +57,15 @@ void SkView::Layout::layoutChildren(SkView* parent)
         this->onLayoutChildren(parent);
 }
 
-void SkView::Layout::inflate(const SkDOM& dom, const SkDOM::Node* node)
-{
-    this->onInflate(dom, node);
-}
-
-void SkView::Layout::onInflate(const SkDOM&, const SkDOM::Node*)
-{
-    // subclass should override this as needed
-}
+//void SkView::Layout::inflate(const SkDOM& dom, const SkDOM::Node* node)
+//{
+//    this->onInflate(dom, node);
+//}
+//
+//void SkView::Layout::onInflate(const SkDOM&, const SkDOM::Node*)
+//{
+//    // subclass should override this as needed
+//}
 
 SkView::Layout* SkView::getLayout() const
 {

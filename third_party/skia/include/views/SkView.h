@@ -3,7 +3,7 @@
 
 #include "SkEventSink.h"
 #include "SkRect.h"
-#include "SkDOM.h"
+//#include "SkDOM.h"
 #include "SkTDict.h"
 #include "SkMatrix.h"
 #include "SkMetaData.h"
@@ -173,10 +173,8 @@ public:
         SK_DECLARE_INST_COUNT(Artist)
 
         void draw(SkView*, SkCanvas*);
-        void inflate(const SkDOM&, const SkDOM::Node*);
     protected:
         virtual void onDraw(SkView*, SkCanvas*) = 0;
-        virtual void onInflate(const SkDOM&, const SkDOM::Node*);
     private:
         typedef SkRefCnt INHERITED;
     };
@@ -189,10 +187,8 @@ public:
         SK_DECLARE_INST_COUNT(Layout)
 
         void layoutChildren(SkView* parent);
-        void inflate(const SkDOM&, const SkDOM::Node*);
     protected:
         virtual void onLayoutChildren(SkView* parent) = 0;
-        virtual void onInflate(const SkDOM&, const SkDOM::Node*);
     private:
         typedef SkRefCnt INHERITED;
     };
@@ -200,7 +196,6 @@ public:
     Layout* getLayout() const;
     Layout* setLayout(Layout*, bool invokeLayoutNow = true);
     void    invokeLayout();
-    void    inflate(const SkDOM& dom, const SkDOM::Node* node);
     void    postInflate(const SkTDict<SkView*>& ids);
 
     SkDEBUGCODE(void dump(bool recurse) const;)
@@ -217,7 +212,6 @@ protected:
 
     virtual bool onSendClickToChildren(float x, float y, unsigned modi);
     virtual bool    onClick(Click*);
-    virtual void    onInflate(const SkDOM& dom, const SkDOM::Node* node);
     virtual void    onPostInflate(const SkTDict<SkView*>&);
 
 public:

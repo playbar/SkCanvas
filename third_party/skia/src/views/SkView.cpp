@@ -571,37 +571,38 @@ bool SkView::globalToLocal(float x, float y, SkPoint* local) const
 /*    Even if the subclass overrides onInflate, they should always be
     sure to call the inherited method, so that we get called.
 */
-void SkView::onInflate(const SkDOM& dom, const SkDOM::Node* node) {
-    float x, y;
-
-    x = this->locX();
-    y = this->locY();
-    (void)dom.findScalar(node, "x", &x);
-    (void)dom.findScalar(node, "y", &y);
-    this->setLoc(x, y);
-
-    x = this->width();
-    y = this->height();
-    (void)dom.findScalar(node, "width", &x);
-    (void)dom.findScalar(node, "height", &y);
-    this->setSize(x, y);
-
-    // inflate the flags
-
-    static const char* gFlagNames[] = {
-        "visible", "enabled", "focusable", "flexH", "flexV"
-    };
-    bool     b;
-    uint32_t flags = this->getFlags();
-    for (unsigned i = 0; i < SK_ARRAY_COUNT(gFlagNames); i++)
-        if (dom.findBool(node, gFlagNames[i], &b))
-            flags = SkSetClearShift(flags, b, i);
-    this->setFlags(flags);
-}
-
-void SkView::inflate(const SkDOM& dom, const SkDOM::Node* node) {
-    this->onInflate(dom, node);
-}
+//
+//void SkView::onInflate(const SkDOM& dom, const SkDOM::Node* node) {
+//    float x, y;
+//
+//    x = this->locX();
+//    y = this->locY();
+//    (void)dom.findScalar(node, "x", &x);
+//    (void)dom.findScalar(node, "y", &y);
+//    this->setLoc(x, y);
+//
+//    x = this->width();
+//    y = this->height();
+//    (void)dom.findScalar(node, "width", &x);
+//    (void)dom.findScalar(node, "height", &y);
+//    this->setSize(x, y);
+//
+//    // inflate the flags
+//
+//    static const char* gFlagNames[] = {
+//        "visible", "enabled", "focusable", "flexH", "flexV"
+//    };
+//    bool     b;
+//    uint32_t flags = this->getFlags();
+//    for (unsigned i = 0; i < SK_ARRAY_COUNT(gFlagNames); i++)
+//        if (dom.findBool(node, gFlagNames[i], &b))
+//            flags = SkSetClearShift(flags, b, i);
+//    this->setFlags(flags);
+//}
+//
+//void SkView::inflate(const SkDOM& dom, const SkDOM::Node* node) {
+//    this->onInflate(dom, node);
+//}
 
 void SkView::onPostInflate(const SkTDict<SkView*>&) {
     // override in subclass as needed

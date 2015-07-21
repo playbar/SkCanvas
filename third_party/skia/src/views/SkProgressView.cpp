@@ -115,15 +115,3 @@ static SkShader* inflate_shader(const char file[])
             NULL;
 }
 
-void SkProgressView::onInflate(const SkDOM& dom, const SkDOM::Node* node)
-{
-    this->INHERITED::onInflate(dom, node);
-
-    const char* s;
-
-    if ((s = dom.findAttr(node, "src-on")) != NULL)
-        fOnShader = inflate_shader(s);
-    if ((s = dom.findAttr(node, "src-off")) != NULL)
-        fOffShader = inflate_shader(s);
-    (void)dom.findBool(node, "do-interp", &fDoInterp);
-}

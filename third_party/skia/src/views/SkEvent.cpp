@@ -117,51 +117,51 @@ void SkEvent::setType(const SkString& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////
-
-void SkEvent::inflate(const SkDOM& dom, const SkDOM::Node* node)
-{
-    const char* name = dom.findAttr(node, "type");
-    if (name)
-        this->setType(name);
-
-    const char* value;
-    if ((value = dom.findAttr(node, "fast32")) != NULL)
-    {
-        int32_t n;
-        if (SkParse::FindS32(value, &n))
-            this->setFast32(n);
-    }
-
-    for (node = dom.getFirstChild(node); node; node = dom.getNextSibling(node))
-    {
-        if (strcmp(dom.getName(node), "data"))
-        {
-            continue;
-        }
-
-        name = dom.findAttr(node, "name");
-        if (name == NULL)
-        {
-            continue;
-        }
-
-        if ((value = dom.findAttr(node, "s32")) != NULL)
-        {
-            int32_t n;
-            if (SkParse::FindS32(value, &n))
-                this->setS32(name, n);
-        }
-        else if ((value = dom.findAttr(node, "scalar")) != NULL)
-        {
-            float x;
-            if (SkParse::FindScalar(value, &x))
-                this->setScalar(name, x);
-        }
-        else if ((value = dom.findAttr(node, "string")) != NULL)
-            this->setString(name, value);
-
-    }
-}
+//
+//void SkEvent::inflate(const SkDOM& dom, const SkDOM::Node* node)
+//{
+//    const char* name = dom.findAttr(node, "type");
+//    if (name)
+//        this->setType(name);
+//
+//    const char* value;
+//    if ((value = dom.findAttr(node, "fast32")) != NULL)
+//    {
+//        int32_t n;
+//        if (SkParse::FindS32(value, &n))
+//            this->setFast32(n);
+//    }
+//
+//    for (node = dom.getFirstChild(node); node; node = dom.getNextSibling(node))
+//    {
+//        if (strcmp(dom.getName(node), "data"))
+//        {
+//            continue;
+//        }
+//
+//        name = dom.findAttr(node, "name");
+//        if (name == NULL)
+//        {
+//            continue;
+//        }
+//
+//        if ((value = dom.findAttr(node, "s32")) != NULL)
+//        {
+//            int32_t n;
+//            if (SkParse::FindS32(value, &n))
+//                this->setS32(name, n);
+//        }
+//        else if ((value = dom.findAttr(node, "scalar")) != NULL)
+//        {
+//            float x;
+//            if (SkParse::FindScalar(value, &x))
+//                this->setScalar(name, x);
+//        }
+//        else if ((value = dom.findAttr(node, "string")) != NULL)
+//            this->setString(name, value);
+//
+//    }
+//}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////

@@ -183,45 +183,6 @@ void SkStackViewLayout::onLayoutChildren(SkView* parent)
 
 #define assert_no_attr(dom, node, attr)
 
-void SkStackViewLayout::onInflate(const SkDOM& dom, const SkDOM::Node* node)
-{
-    int            index;
-    float    value[4];
-
-    if ((index = dom.findList(node, "orient", "horizontal,vertical")) >= 0)
-        this->setOrient((Orient)index);
-    else {
-        assert_no_attr(dom, node, "orient");
-        }
-
-    if (dom.findScalars(node, "margin", value, 4))
-    {
-        SkRect    margin;
-        margin.set(value[0], value[1], value[2], value[3]);
-        this->setMargin(margin);
-    }
-    else {
-        assert_no_attr(dom, node, "margin");
-        }
-
-    if (dom.findScalar(node, "spacer", value))
-        this->setSpacer(value[0]);
-    else {
-        assert_no_attr(dom, node, "spacer");
-        }
-
-    if ((index = dom.findList(node, "pack", "start,center,end")) >= 0)
-        this->setPack((Pack)index);
-    else {
-        assert_no_attr(dom, node, "pack");
-        }
-
-    if ((index = dom.findList(node, "align", "start,center,end,stretch")) >= 0)
-        this->setAlign((Align)index);
-    else {
-        assert_no_attr(dom, node, "align");
-        }
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -252,10 +213,4 @@ void SkFillViewLayout::onLayoutChildren(SkView* parent)
         child->setSize(    parent->width() - fMargin.fRight - fMargin.fLeft,
                         parent->height() - fMargin.fBottom - fMargin.fTop);
     }
-}
-
-void SkFillViewLayout::onInflate(const SkDOM& dom, const SkDOM::Node* node)
-{
-    this->INHERITED::onInflate(dom, node);
-    (void)dom.findScalars(node, "margin", (float*)&fMargin, 4);
 }

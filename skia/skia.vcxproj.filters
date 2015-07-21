@@ -11779,9 +11779,6 @@
     <Filter Include="..\third_party\skia\src\ports">
       <UniqueIdentifier>{5BCFDFF2-7BF8-4B41-9D0B-3B13CB48CE9B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\third_party\skia\src\ports\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
     </Filter>
@@ -12009,9 +12006,6 @@
     </Filter>
     <Filter Include="ext\_excluded_files">
       <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party\skia\src\xml">
-      <UniqueIdentifier>{639c4747-2d83-405d-b691-6e4b0dd92b56}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -14139,21 +14133,6 @@
     <ClCompile Include="..\third_party\skia\src\utils\win\SkWGL_win.cpp">
       <Filter>..\third_party\skia\src\utils\win</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\xml\SkBML_XMLParser.cpp">
-      <Filter>..\third_party\skia\src\xml</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\xml\SkDOM.cpp">
-      <Filter>..\third_party\skia\src\xml</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\xml\SkXMLParser.cpp">
-      <Filter>..\third_party\skia\src\xml</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\xml\SkXMLWriter.cpp">
-      <Filter>..\third_party\skia\src\xml</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkXMLParser_empty.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\images\SkImageEncoder.cpp">
       <Filter>..\third_party\skia\src\images</Filter>
     </ClCompile>
@@ -14248,9 +14227,6 @@
     </ClInclude>
     <ClInclude Include="..\third_party\skia\src\core\SkOrderedReadBuffer.h">
       <Filter>..\third_party\skia\src\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\third_party\skia\src\xml\SkBML_Verbs.h">
-      <Filter>..\third_party\skia\src\xml</Filter>
     </ClInclude>
     <ClInclude Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_SSSE3.h">
       <Filter>..\third_party\skia\src\opts</Filter>

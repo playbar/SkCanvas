@@ -10,7 +10,7 @@
 #ifndef SkViewInflate_DEFINED
 #define SkViewInflate_DEFINED
 
-#include "SkDOM.h"
+//#include "SkDOM.h"
 #include "SkTDict.h"
 #include "SkEvent.h"
 
@@ -26,7 +26,6 @@ public:
 
         Returns null if the tree cannot be built.
     */
-    SkView* inflate(const SkDOM& dom, const SkDOM::Node* node, SkView* root = NULL);
     SkView* inflate(const char xml[], size_t len, SkView* root = NULL);
 
     /** Given an id attribute value, return the corresponding view, or null
@@ -43,12 +42,10 @@ protected:
         Do not call "inflate" on the view, just return it. This will
         get called automatically after createView returns.
     */
-    virtual SkView* createView(const SkDOM& dom, const SkDOM::Node* node);
     /** Base implementation calls view->inflate(dom, node). Subclasses may override this
         to perform additional initializations to view, either before or after calling
         the inherited version.
     */
-    virtual void inflateView(SkView* view, const SkDOM& dom, const SkDOM::Node* node);
 
 private:
     enum {
@@ -65,7 +62,6 @@ private:
 
     void addIDStr(SkTDArray<IDStr>* list, SkView*, const char* str);
 
-    void    rInflate(const SkDOM& dom, const SkDOM::Node* node, SkView* parent);
 };
 
 #endif
