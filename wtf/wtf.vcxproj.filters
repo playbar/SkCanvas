@@ -190,9 +190,6 @@
     <Filter Include="text">
       <UniqueIdentifier>{A03EF847-0682-89DE-DB5E-F3ADE72FEA2E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="text\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
     <Filter Include="text">
       <UniqueIdentifier>{A03EF847-0682-89DE-DB5E-F3ADE72FEA2E}</UniqueIdentifier>
     </Filter>

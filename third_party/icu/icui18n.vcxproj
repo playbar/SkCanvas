@@ -270,9 +270,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="icu.gyp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="source\i18n\anytrans.cpp" />
     <ClCompile Include="source\i18n\astro.cpp" />
     <ClCompile Include="source\i18n\basictz.cpp" />

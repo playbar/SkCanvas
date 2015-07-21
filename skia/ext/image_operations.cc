@@ -6,15 +6,12 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <assert.h>
 
 #include "skia/ext/image_operations.h"
 
 // TODO(pkasting): skia/ext should not depend on base/!
-#include "base/containers/stack_container.h"
-#include "base/debug/trace_event.h"
-#include "base/logging.h"
-#include "base/metrics/histogram.h"
-#include "base/time/time.h"
+
 #include "build/build_config.h"
 #include "skia/ext/convolver.h"
 #include "third_party/skia/include/core/SkColorPriv.h"
@@ -123,7 +120,6 @@ class ResizeFilter {
         // each direction as the size of the window = 3 for Lanczos3.
         return 3.0f;
       default:
-        NOTREACHED();
         return 1.0f;
     }
   }
@@ -155,7 +151,6 @@ class ResizeFilter {
       case ImageOperations::RESIZE_LANCZOS3:
         return EvalLanczos(3, pos);
       default:
-        NOTREACHED();
         return 0;
     }
   }
@@ -173,7 +168,9 @@ class ResizeFilter {
   ConvolutionFilter1D x_filter_;
   ConvolutionFilter1D y_filter_;
 
-  DISALLOW_COPY_AND_ASSIGN(ResizeFilter);
+  //DISALLOW_COPY_AND_ASSIGN(ResizeFilter);
+  ResizeFilter(const ResizeFilter&);
+  void operator=(const ResizeFilter&);
 };
 
 ResizeFilter::ResizeFilter(ImageOperations::ResizeMethod method,
@@ -226,77 +223,78 @@ void ResizeFilter::ComputeFilters(int src_size,
   // Speed up the divisions below by turning them into multiplies.
   float inv_scale = 1.0f / scale;
 
-  base::StackVector<float, 64> filter_values;
-  base::StackVector<int16, 64> fixed_filter_values;
+  assert(false);
+  //base::StackVector<float, 64> filter_values;
+  //base::StackVector<int16, 64> fixed_filter_values;
 
-  // Loop over all pixels in the output range. We will generate one set of
-  // filter values for each one. Those values will tell us how to blend the
-  // source pixels to compute the destination pixel.
-  for (int dest_subset_i = dest_subset_lo; dest_subset_i < dest_subset_hi;
-       dest_subset_i++) {
-    // Reset the arrays. We don't declare them inside so they can re-use the
-    // same malloc-ed buffer.
-    filter_values->clear();
-    fixed_filter_values->clear();
+  //// Loop over all pixels in the output range. We will generate one set of
+  //// filter values for each one. Those values will tell us how to blend the
+  //// source pixels to compute the destination pixel.
+  //for (int dest_subset_i = dest_subset_lo; dest_subset_i < dest_subset_hi;
+  //     dest_subset_i++) {
+  //  // Reset the arrays. We don't declare them inside so they can re-use the
+  //  // same malloc-ed buffer.
+  //  filter_values->clear();
+  //  fixed_filter_values->clear();
 
-    // This is the pixel in the source directly under the pixel in the dest.
-    // Note that we base computations on the "center" of the pixels. To see
-    // why, observe that the destination pixel at coordinates (0, 0) in a 5.0x
-    // downscale should "cover" the pixels around the pixel with *its center*
-    // at coordinates (2.5, 2.5) in the source, not those around (0, 0).
-    // Hence we need to scale coordinates (0.5, 0.5), not (0, 0).
-    float src_pixel = (static_cast<float>(dest_subset_i) + 0.5f) * inv_scale;
+  //  // This is the pixel in the source directly under the pixel in the dest.
+  //  // Note that we base computations on the "center" of the pixels. To see
+  //  // why, observe that the destination pixel at coordinates (0, 0) in a 5.0x
+  //  // downscale should "cover" the pixels around the pixel with *its center*
+  //  // at coordinates (2.5, 2.5) in the source, not those around (0, 0).
+  //  // Hence we need to scale coordinates (0.5, 0.5), not (0, 0).
+  //  float src_pixel = (static_cast<float>(dest_subset_i) + 0.5f) * inv_scale;
 
-    // Compute the (inclusive) range of source pixels the filter covers.
-    int src_begin = std::max(0, FloorInt(src_pixel - src_support));
-    int src_end = std::min(src_size - 1, CeilInt(src_pixel + src_support));
+  //  // Compute the (inclusive) range of source pixels the filter covers.
+  //  int src_begin = std::max(0, FloorInt(src_pixel - src_support));
+  //  int src_end = std::min(src_size - 1, CeilInt(src_pixel + src_support));
 
-    // Compute the unnormalized filter value at each location of the source
-    // it covers.
-    float filter_sum = 0.0f;  // Sub of the filter values for normalizing.
-    for (int cur_filter_pixel = src_begin; cur_filter_pixel <= src_end;
-         cur_filter_pixel++) {
-      // Distance from the center of the filter, this is the filter coordinate
-      // in source space. We also need to consider the center of the pixel
-      // when comparing distance against 'src_pixel'. In the 5x downscale
-      // example used above the distance from the center of the filter to
-      // the pixel with coordinates (2, 2) should be 0, because its center
-      // is at (2.5, 2.5).
-      float src_filter_dist =
-          ((static_cast<float>(cur_filter_pixel) + 0.5f) - src_pixel);
+  //  // Compute the unnormalized filter value at each location of the source
+  //  // it covers.
+  //  float filter_sum = 0.0f;  // Sub of the filter values for normalizing.
+  //  for (int cur_filter_pixel = src_begin; cur_filter_pixel <= src_end;
+  //       cur_filter_pixel++) {
+  //    // Distance from the center of the filter, this is the filter coordinate
+  //    // in source space. We also need to consider the center of the pixel
+  //    // when comparing distance against 'src_pixel'. In the 5x downscale
+  //    // example used above the distance from the center of the filter to
+  //    // the pixel with coordinates (2, 2) should be 0, because its center
+  //    // is at (2.5, 2.5).
+  //    float src_filter_dist =
+  //        ((static_cast<float>(cur_filter_pixel) + 0.5f) - src_pixel);
 
-      // Since the filter really exists in dest space, map it there.
-      float dest_filter_dist = src_filter_dist * clamped_scale;
+  //    // Since the filter really exists in dest space, map it there.
+  //    float dest_filter_dist = src_filter_dist * clamped_scale;
 
-      // Compute the filter value at that location.
-      float filter_value = ComputeFilter(dest_filter_dist);
-      filter_values->push_back(filter_value);
+  //    // Compute the filter value at that location.
+  //    float filter_value = ComputeFilter(dest_filter_dist);
+  //    filter_values->push_back(filter_value);
 
-      filter_sum += filter_value;
-    }
-    DCHECK(!filter_values->empty()) << "We should always get a filter!";
+  //    filter_sum += filter_value;
+  //  }
+  //  DCHECK(!filter_values->empty()) << "We should always get a filter!";
 
-    // The filter must be normalized so that we don't affect the brightness of
-    // the image. Convert to normalized fixed point.
-    int16 fixed_sum = 0;
-    for (size_t i = 0; i < filter_values->size(); i++) {
-      int16 cur_fixed = output->FloatToFixed(filter_values[i] / filter_sum);
-      fixed_sum += cur_fixed;
-      fixed_filter_values->push_back(cur_fixed);
-    }
+  //  // The filter must be normalized so that we don't affect the brightness of
+  //  // the image. Convert to normalized fixed point.
+  //  int16 fixed_sum = 0;
+  //  for (size_t i = 0; i < filter_values->size(); i++) {
+  //    int16 cur_fixed = output->FloatToFixed(filter_values[i] / filter_sum);
+  //    fixed_sum += cur_fixed;
+  //    fixed_filter_values->push_back(cur_fixed);
+  //  }
 
-    // The conversion to fixed point will leave some rounding errors, which
-    // we add back in to avoid affecting the brightness of the image. We
-    // arbitrarily add this to the center of the filter array (this won't always
-    // be the center of the filter function since it could get clipped on the
-    // edges, but it doesn't matter enough to worry about that case).
-    int16 leftovers = output->FloatToFixed(1.0f) - fixed_sum;
-    fixed_filter_values[fixed_filter_values->size() / 2] += leftovers;
+  //  // The conversion to fixed point will leave some rounding errors, which
+  //  // we add back in to avoid affecting the brightness of the image. We
+  //  // arbitrarily add this to the center of the filter array (this won't always
+  //  // be the center of the filter function since it could get clipped on the
+  //  // edges, but it doesn't matter enough to worry about that case).
+  //  int16 leftovers = output->FloatToFixed(1.0f) - fixed_sum;
+  //  fixed_filter_values[fixed_filter_values->size() / 2] += leftovers;
 
-    // Now it's ready to go.
-    output->AddFilter(src_begin, &fixed_filter_values[0],
-                      static_cast<int>(fixed_filter_values->size()));
-  }
+  //  // Now it's ready to go.
+  //  output->AddFilter(src_begin, &fixed_filter_values[0],
+  //                    static_cast<int>(fixed_filter_values->size()));
+  //}
 
   output->PaddingForSIMD();
 }
@@ -354,109 +352,11 @@ SkBitmap ImageOperations::ResizeSubpixel(const SkBitmap& source,
                                          int dest_width, int dest_height,
                                          const SkIRect& dest_subset,
                                          SkBitmap::Allocator* allocator) {
-  TRACE_EVENT2("skia", "ImageOperations::ResizeSubpixel",
-               "src_pixels", source.width()*source.height(),
-               "dst_pixels", dest_width*dest_height);
+
   // Currently only works on Linux/BSD because these are the only platforms
   // where SkFontHost::GetSubpixelOrder is defined.
-#if defined(OS_LINUX) && !defined(GTV)
-  // Understand the display.
-  const SkFontHost::LCDOrder order = SkFontHost::GetSubpixelOrder();
-  const SkFontHost::LCDOrientation orientation =
-      SkFontHost::GetSubpixelOrientation();
 
-  // Decide on which dimension, if any, to deploy subpixel rendering.
-  int w = 1;
-  int h = 1;
-  switch (orientation) {
-    case SkFontHost::kHorizontal_LCDOrientation:
-      w = dest_width < source.width() ? 3 : 1;
-      break;
-    case SkFontHost::kVertical_LCDOrientation:
-      h = dest_height < source.height() ? 3 : 1;
-      break;
-  }
-
-  // Resize the image.
-  const int width = dest_width * w;
-  const int height = dest_height * h;
-  SkIRect subset = { dest_subset.fLeft, dest_subset.fTop,
-                     dest_subset.fLeft + dest_subset.width() * w,
-                     dest_subset.fTop + dest_subset.height() * h };
-  SkBitmap img = ResizeBasic(source, ImageOperations::RESIZE_LANCZOS3, width,
-                             height, subset, allocator);
-  const int row_words = img.rowBytes() / 4;
-  if (w == 1 && h == 1)
-    return img;
-
-  // Render into subpixels.
-  SkBitmap result;
-  result.setConfig(SkBitmap::kARGB_8888_Config, dest_subset.width(),
-                   dest_subset.height(), 0, img.alphaType());
-  result.allocPixels(allocator, NULL);
-  if (!result.readyToDraw())
-    return img;
-
-  SkAutoLockPixels locker(img);
-  if (!img.readyToDraw())
-    return img;
-
-  uint32* src_row = img.getAddr32(0, 0);
-  uint32* dst_row = result.getAddr32(0, 0);
-  for (int y = 0; y < dest_subset.height(); y++) {
-    uint32* src = src_row;
-    uint32* dst = dst_row;
-    for (int x = 0; x < dest_subset.width(); x++, src += w, dst++) {
-      uint8 r = 0, g = 0, b = 0, a = 0;
-      switch (order) {
-        case SkFontHost::kRGB_LCDOrder:
-          switch (orientation) {
-            case SkFontHost::kHorizontal_LCDOrientation:
-              r = SkGetPackedR32(src[0]);
-              g = SkGetPackedG32(src[1]);
-              b = SkGetPackedB32(src[2]);
-              a = SkGetPackedA32(src[1]);
-              break;
-            case SkFontHost::kVertical_LCDOrientation:
-              r = SkGetPackedR32(src[0 * row_words]);
-              g = SkGetPackedG32(src[1 * row_words]);
-              b = SkGetPackedB32(src[2 * row_words]);
-              a = SkGetPackedA32(src[1 * row_words]);
-              break;
-          }
-          break;
-        case SkFontHost::kBGR_LCDOrder:
-          switch (orientation) {
-            case SkFontHost::kHorizontal_LCDOrientation:
-              b = SkGetPackedB32(src[0]);
-              g = SkGetPackedG32(src[1]);
-              r = SkGetPackedR32(src[2]);
-              a = SkGetPackedA32(src[1]);
-              break;
-            case SkFontHost::kVertical_LCDOrientation:
-              b = SkGetPackedB32(src[0 * row_words]);
-              g = SkGetPackedG32(src[1 * row_words]);
-              r = SkGetPackedR32(src[2 * row_words]);
-              a = SkGetPackedA32(src[1 * row_words]);
-              break;
-          }
-          break;
-        case SkFontHost::kNONE_LCDOrder:
-          NOTREACHED();
-      }
-      // Premultiplied alpha is very fragile.
-      a = a > r ? a : r;
-      a = a > g ? a : g;
-      a = a > b ? a : b;
-      *dst = SkPackARGB32(a, r, g, b);
-    }
-    src_row += h * row_words;
-    dst_row += result.rowBytes() / 4;
-  }
-  return result;
-#else
   return SkBitmap();
-#endif  // OS_POSIX && !OS_MACOSX && !defined(OS_ANDROID)
 }
 
 // static
@@ -464,18 +364,14 @@ SkBitmap ImageOperations::ResizeBasic(const SkBitmap& source,
                                       ResizeMethod method,
                                       int dest_width, int dest_height,
                                       const SkIRect& dest_subset,
-                                      SkBitmap::Allocator* allocator) {
-  TRACE_EVENT2("skia", "ImageOperations::ResizeBasic",
-               "src_pixels", source.width()*source.height(),
-               "dst_pixels", dest_width*dest_height);
-  // Ensure that the ResizeMethod enumeration is sound.
+                                      SkBitmap::Allocator* allocator)
+{
+
+   //Ensure that the ResizeMethod enumeration is sound.
 
   // Time how long this takes to see if it's a problem for users.
-  base::TimeTicks resize_start = base::TimeTicks::Now();
 
   SkIRect dest = { 0, 0, dest_width, dest_height };
-  DCHECK(dest.contains(dest_subset)) <<
-      "The supplied subset does not fall within the destination image.";
 
   // If the size of source or destination is 0, i.e. 0x0, 0xN or Nx0, just
   // return empty.
@@ -496,8 +392,8 @@ SkBitmap ImageOperations::ResizeBasic(const SkBitmap& source,
   // Get a source bitmap encompassing this touched area. We construct the
   // offsets and row strides such that it looks like a new bitmap, while
   // referring to the old data.
-  const uint8* source_subset =
-      reinterpret_cast<const uint8*>(source.getPixels());
+  const unsigned char* source_subset =
+	  reinterpret_cast<const unsigned char*>(source.getPixels());
 
   // Convolve into the result.
   SkBitmap result;
@@ -513,8 +409,6 @@ SkBitmap ImageOperations::ResizeBasic(const SkBitmap& source,
                  static_cast<unsigned char*>(result.getPixels()),
                  true);
 
-  base::TimeDelta delta = base::TimeTicks::Now() - resize_start;
-  UMA_HISTOGRAM_TIMES("Image.ResampleMS", delta);
 
   return result;
 }

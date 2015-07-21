@@ -5,7 +5,6 @@
 #ifndef SKIA_EXT_OPACITY_DRAW_FILTER_H
 #define SKIA_EXT_OPACITY_DRAW_FILTER_H
 
-#include "base/values.h"
 #include "third_party/skia/include/core/SkDrawFilter.h"
 
 class SkPaint;
@@ -20,7 +19,7 @@ class SK_API OpacityDrawFilter : public SkDrawFilter {
  public:
   OpacityDrawFilter(float opacity, bool disable_image_filtering);
   virtual ~OpacityDrawFilter();
-  virtual bool filter(SkPaint* paint, SkDrawFilter::Type type) OVERRIDE;
+  virtual bool filter(SkPaint* paint, SkDrawFilter::Type type);
 
  private:
   int alpha_;

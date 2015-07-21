@@ -270,13 +270,12 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="skia.gyp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\third_party\skia\src\core\SkOrderedReadBuffer.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkOrderedWriteBuffer.h" />
+    <ClInclude Include="..\third_party\skia\src\core\SkScaledImageCache.h" />
     <ClInclude Include="..\third_party\skia\src\images\SkScaledBitmapSampler.h" />
     <ClInclude Include="..\third_party\skia\src\image\SkDataPixelRef.h" />
+    <ClInclude Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_SSSE3.h" />
     <ClInclude Include="..\third_party\skia\src\ports\SkFontHost_FreeType_common.h" />
     <ClInclude Include="..\third_party\skia\src\sfnt\SkOTTable_name.h" />
     <ClInclude Include="..\third_party\skia\src\sfnt\SkOTUtils.h" />
@@ -523,17 +522,13 @@
     <ClInclude Include="..\third_party\skia\include\pdf\SkPDFDocument.h" />
     <ClInclude Include="..\third_party\skia\src\xml\SkBML_Verbs.h" />
     <ClInclude Include="ext\convolver.h" />
+    <ClInclude Include="ext\convolver_SSE2.h" />
     <ClInclude Include="ext\image_operations.h" />
     <ClInclude Include="ext\lazy_pixel_ref.h" />
     <ClInclude Include="ext\opacity_draw_filter.h" />
     <ClInclude Include="ext\paint_simplifier.h" />
-    <ClInclude Include="ext\platform_canvas.h" />
-    <ClInclude Include="ext\platform_device.h" />
-    <ClInclude Include="ext\recursive_gaussian_convolution.h" />
     <ClInclude Include="ext\refptr.h" />
-    <ClInclude Include="ext\SkDiscardableMemory_chrome.h" />
     <ClInclude Include="ext\skia_trace_shim.h" />
-    <ClInclude Include="ext\skia_utils_base.h" />
     <ClInclude Include="ext\skia_utils_win.h" />
     <ClInclude Include="..\third_party\skia\include\gpu\gl\SkNullGLContext.h" />
     <ClInclude Include="..\third_party\skia\include\gpu\GrBackendEffectFactory.h" />
@@ -659,6 +654,7 @@
     <ClCompile Include="..\third_party\skia\src\core\SkOrderedReadBuffer.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkOrderedWriteBuffer.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkPaintOptionsAndroid.cpp" />
+    <ClCompile Include="..\third_party\skia\src\core\SkScaledImageCache.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\glew.c" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrGpuFactory.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder.cpp" />
@@ -672,6 +668,16 @@
     <ClCompile Include="..\third_party\skia\src\image\SkDataPixelRef.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkScaledBitmapSampler.cpp" />
     <ClCompile Include="..\third_party\skia\src\opts\opts_check_SSE2.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapFilter_opts_SSE2.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_SSE2.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_SSSE3.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkBlitRect_opts_SSE2.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkBlitRow_opts_SSE2.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkBlurImage_opts_SSE2.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkMorphology_opts_SSE2.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkUtils_opts_SSE2.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkXfermode_opts_none.cpp" />
+    <ClCompile Include="..\third_party\skia\src\ports\SkDiscardableMemory_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkImageDecoder_WIC.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkPurgeableMemoryBlock_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win.cpp" />
@@ -806,7 +812,6 @@
     <ClCompile Include="..\third_party\skia\src\core\SkRegion_path.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkRRect.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkRTree.cpp" />
-    <ClCompile Include="..\third_party\skia\src\core\SkScaledImageCache.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkScalar.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkScalerContext.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkScan.cpp" />
@@ -936,18 +941,13 @@
     <ClCompile Include="..\third_party\skia\src\xml\SkXMLParser.cpp" />
     <ClCompile Include="..\third_party\skia\src\xml\SkXMLWriter.cpp" />
     <ClCompile Include="ext\convolver.cc" />
+    <ClCompile Include="ext\convolver_SSE2.cc" />
     <ClCompile Include="ext\google_logging.cc" />
     <ClCompile Include="ext\image_operations.cc" />
     <ClCompile Include="ext\lazy_pixel_ref.cc" />
     <ClCompile Include="ext\opacity_draw_filter.cc" />
     <ClCompile Include="ext\paint_simplifier.cc" />
-    <ClCompile Include="ext\platform_canvas.cc" />
-    <ClCompile Include="ext\platform_device.cc" />
-    <ClCompile Include="ext\platform_device_win.cc" />
-    <ClCompile Include="ext\recursive_gaussian_convolution.cc" />
-    <ClCompile Include="ext\SkDiscardableMemory_chrome.cc" />
     <ClCompile Include="ext\SkMemory_new_handler.cpp" />
-    <ClCompile Include="ext\skia_utils_base.cc" />
     <ClCompile Include="ext\skia_utils_win.cc" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrAAHairLinePathRenderer.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrAAConvexPathRenderer.cpp" />
@@ -1026,37 +1026,7 @@
     <ClCompile Include="..\third_party\skia\src\gpu\SkGrFontScaler.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\SkGrPixelRef.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\SkGLContextHelper.cpp" />
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontConfigInterface_android.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontConfigInterface_direct.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\fonts\SkFontMgr_fontconfig.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_fontconfig.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_FreeType.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_FreeType_common.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontConfigParser_android.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_mac.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_posix.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkTime_Unix.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkTLS_pthread.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\utils\mac\SkCreateCGImageRef.cpp">
@@ -1064,37 +1034,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\base\base.vcxproj">
-      <Project>{ce87fe56-bf45-2ef7-4d1a-616f1a765f8f}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\base\third_party\dynamic_annotations\dynamic_annotations.vcxproj">
-      <Project>{a230f5ec-5416-2659-8cbe-30c395131532}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\third_party\icu\icuuc.vcxproj">
       <Project>{539ced2c-dcac-e5e9-3b83-311f2d981aab}</Project>
     </ProjectReference>
     <ProjectReference Include="..\third_party\zlib\zlib.vcxproj">
       <Project>{33b2758b-efd1-beb1-80bb-b999b3f1b0d8}</Project>
-    </ProjectReference>
-    <ProjectReference Include="skia_opts.vcxproj">
-      <Project>{3935C98D-12F3-F071-03B8-23B263448B9D}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="skia_library.vcxproj">
-      <Project>{0101F956-6C02-B41B-4FBC-F2E3D6A84898}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="skia_chrome_opts.vcxproj">
-      <Project>{4AACDB61-63A0-2BE0-6F53-07C759222C04}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\third_party\sfntly\sfntly.vcxproj">
-      <Project>{8F5F0EE3-D062-C84B-356A-02915309D9D5}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="skia_opts_ssse3.vcxproj">
-      <Project>{D7B76051-DA6D-CF18-5AF3-1E9692B37996}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

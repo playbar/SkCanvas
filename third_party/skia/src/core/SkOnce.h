@@ -121,12 +121,6 @@ static void sk_once_slow(SkOnceFlag* once, Func f, Arg arg) {
 // rather than continue to reproduce it here.
 
 #if DYNAMIC_ANNOTATIONS_ENABLED
-// TSAN provides this hook to supress a known-safe apparent race.
-extern "C" {
-void AnnotateBenignRace(const char* file, int line, const volatile void* mem, const char* desc);
-}
-#define ANNOTATE_BENIGN_RACE(mem, desc) AnnotateBenignRace(__FILE__, __LINE__, mem, desc)
-#else
 #define ANNOTATE_BENIGN_RACE(mem, desc)
 #endif
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="source">
@@ -16,18 +16,6 @@
     <Filter Include="source\data\in">
       <UniqueIdentifier>{DADCB38D-684B-558C-2964-BEE5F8A46A67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="android">
-      <UniqueIdentifier>{840B8E33-5F8C-45A0-5FD6-F07AA5687203}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="android\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="linux">
-      <UniqueIdentifier>{978C4E9B-8123-1CA3-A70B-0A340D4435AD}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="linux\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
     <Filter Include="mac">
       <UniqueIdentifier>{DDBFF7CF-DBCF-B2FC-793A-DB701B563E8D}</UniqueIdentifier>
     </Filter>
@@ -39,16 +27,6 @@
     <ClCompile Include="source\stubdata\stubdata.c">
       <Filter>source\stubdata</Filter>
     </ClCompile>
-    <None Include="icu.gyp"/>
-    <None Include="source\data\in\icudtl.dat">
-      <Filter>source\data\in</Filter>
-    </None>
-    <None Include="android\icudt46l_dat.S">
-      <Filter>android\_excluded_files</Filter>
-    </None>
-    <None Include="linux\icudt46l_dat.S">
-      <Filter>linux\_excluded_files</Filter>
-    </None>
     <None Include="mac\icudt46l_dat.S">
       <Filter>mac\_excluded_files</Filter>
     </None>

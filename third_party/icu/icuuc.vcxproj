@@ -270,9 +270,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="icu.gyp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="source\common\bmpset.cpp" />
     <ClCompile Include="source\common\brkeng.cpp" />
     <ClCompile Include="source\common\brkiter.cpp" />

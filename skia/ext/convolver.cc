@@ -4,7 +4,6 @@
 
 #include <algorithm>
 
-#include "base/logging.h"
 #include "skia/ext/convolver.h"
 #include "skia/ext/convolver_SSE2.h"
 #include "skia/ext/convolver_mips_dspr2.h"
@@ -527,7 +526,6 @@ void SingleChannelConvolveX1D(const unsigned char* source_data,
       filter.GetSingleFilter(&filter_size, &filter_offset, &filter_length);
 
   if (filter_values == NULL || image_size.width() < filter_size) {
-    NOTREACHED();
     return;
   }
 
@@ -611,7 +609,6 @@ void SingleChannelConvolveY1D(const unsigned char* source_data,
       filter.GetSingleFilter(&filter_size, &filter_offset, &filter_length);
 
   if (filter_values == NULL || image_size.height() < filter_size) {
-    NOTREACHED();
     return;
   }
 
@@ -677,8 +674,6 @@ void SingleChannelConvolveY1D(const unsigned char* source_data,
 void SetUpGaussianConvolutionKernel(ConvolutionFilter1D* filter,
                                     float kernel_sigma,
                                     bool derivative) {
-  DCHECK(filter != NULL);
-  DCHECK_GT(kernel_sigma, 0.0);
   const int tail_length = static_cast<int>(4.0f * kernel_sigma + 0.5f);
   const int kernel_size = tail_length * 2 + 1;
   const float sigmasq = kernel_sigma * kernel_sigma;

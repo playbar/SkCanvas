@@ -8,8 +8,6 @@
 #include <cmath>
 #include <vector>
 
-#include "base/basictypes.h"
-#include "base/cpu.h"
 #include "third_party/skia/include/core/SkSize.h"
 #include "third_party/skia/include/core/SkTypes.h"
 
@@ -61,7 +59,6 @@ class ConvolutionFilter1D {
     // The cast relies on Fixed being a short, implying that on
     // the platforms we care about all (16) bits will fit into
     // the mantissa of a (32-bit) float.
-    COMPILE_ASSERT(sizeof(Fixed) == 2, fixed_type_should_fit_in_float_mantissa);
     float raw = static_cast<float>(x);
     return ldexpf(raw, -kShiftBits);
   }
