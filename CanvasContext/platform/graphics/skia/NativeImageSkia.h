@@ -1,33 +1,3 @@
-/*
- * Copyright (c) 2008, Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 #ifndef NativeImageSkia_h
 #define NativeImageSkia_h
 
@@ -45,7 +15,8 @@
 class SkMatrix;
 class SkPaint;
 
-namespace WebCore {
+namespace WebCore
+{
 
 class FloatPoint;
 class FloatRect;
@@ -53,7 +24,8 @@ class FloatSize;
 class GraphicsContext;
 
 // Used by computeResamplingMode to tell how bitmaps should be resampled.
-enum ResamplingMode {
+enum ResamplingMode 
+{
     // Nearest neighbor resampling. Used when we detect that the page is
     // trying to make a pattern by stretching a small bitmap very large.
     NoResampling,
@@ -124,7 +96,8 @@ private:
     // ImageResourceInfo is used to uniquely identify cached or requested image
     // resizes.
     // Image resize is identified by the scaled image size and scaled image subset.
-    struct ImageResourceInfo {
+    struct ImageResourceInfo
+	{
         SkISize scaledImageSize;
         SkIRect scaledImageSubset;
 
@@ -137,20 +110,7 @@ private:
 
     NativeImageSkia(const SkBitmap& image, const SkBitmap& resizedImage, const ImageResourceInfo&, int resizeRequests);
 
-    // Returns true if the given resize operation should either resize the whole
-    // image and cache it, or resize just the part it needs and throw the result
-    // away.
-    //
-    // Calling this function may increment a request count that can change the
-    // result of subsequent calls.
-    //
-    // On the one hand, if only a small subset is desired, then we will waste a
-    // lot of time resampling the entire thing, so we only want to do exactly
-    // what's required. On the other hand, resampling the entire bitmap is
-    // better if we're going to be using it more than once (like a bitmap
-    // scrolling on and off the screen. Since we only cache when doing the
-    // entire thing, it's best to just do it up front.
-    bool shouldCacheResampling(const SkISize& scaledImageSize, const SkIRect& scaledImageSubset) const;
+	bool shouldCacheResampling(const SkISize& scaledImageSize, const SkIRect& scaledImageSubset) const;
 
     ResamplingMode computeResamplingMode(const SkMatrix&, float srcWidth, float srcHeight, float destWidth, float destHeight) const;
     SkBitmap extractScaledImageFragment(const SkRect& srcRect, float scaleX, float scaleY, SkRect* scaledSrcRect) const;

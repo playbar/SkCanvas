@@ -28,7 +28,7 @@
 #include "config.h"
 #include "platform/graphics/Pattern.h"
 
-#include <v8.h>
+//#include <v8.h>
 #include "SkCanvas.h"
 #include "SkColorShader.h"
 #include "platform/graphics/skia/SkiaUtils.h"
@@ -48,8 +48,8 @@ Pattern::Pattern(PassRefPtr<Image> image, bool repeatX, bool repeatY)
 
 Pattern::~Pattern()
 {
-    if (m_externalMemoryAllocated)
-        v8::Isolate::GetCurrent()->AdjustAmountOfExternalAllocatedMemory(-m_externalMemoryAllocated);
+    //if (m_externalMemoryAllocated)
+    //    v8::Isolate::GetCurrent()->AdjustAmountOfExternalAllocatedMemory(-m_externalMemoryAllocated);
 }
 
 SkShader* Pattern::shader()
@@ -93,7 +93,7 @@ SkShader* Pattern::shader()
 
         // Clamp to int, since that's what the adjust function takes.
         m_externalMemoryAllocated = static_cast<int>(std::min(static_cast<size_t>(INT_MAX), bm2.getSafeSize()));
-        v8::Isolate::GetCurrent()->AdjustAmountOfExternalAllocatedMemory(m_externalMemoryAllocated);
+        //v8::Isolate::GetCurrent()->AdjustAmountOfExternalAllocatedMemory(m_externalMemoryAllocated);
     }
     m_pattern->setLocalMatrix(affineTransformToSkMatrix(m_patternSpaceTransformation));
     return m_pattern.get();

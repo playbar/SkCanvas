@@ -282,9 +282,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="wtf.gyp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="ASCIICType.h" />
     <ClInclude Include="Alignment.h" />
     <ClInclude Include="ArrayBuffer.h" />

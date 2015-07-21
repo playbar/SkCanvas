@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -24,7 +24,7 @@
     <RootNamespace>harfbuzz-ng</RootNamespace>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -32,12 +32,12 @@
   <PropertyGroup Label="Locals">
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
-  <ImportGroup Label="ExtensionSettings"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="PropertySheets">
-    <Import Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"/>
+    <Import Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros"/>
+  <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <ExecutablePath>$(ExecutablePath);$(MSBuildProjectDirectory)\..\..\third_party\cygwin\bin\;$(MSBuildProjectDirectory)\..\..\third_party\python_26\</ExecutablePath>
     <OutDir>..\..\build\$(Configuration)\</OutDir>
@@ -282,67 +282,66 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="src\hb-atomic-private.hh"/>
-    <None Include="src\hb-buffer-deserialize-json.hh"/>
-    <None Include="src\hb-buffer-deserialize-text.hh"/>
-    <None Include="src\hb-buffer-private.hh"/>
-    <None Include="src\hb-cache-private.hh"/>
-    <None Include="src\hb-face-private.hh"/>
-    <None Include="src\hb-font-private.hh"/>
-    <None Include="src\hb-mutex-private.hh"/>
-    <None Include="src\hb-object-private.hh"/>
-    <None Include="src\hb-open-file-private.hh"/>
-    <None Include="src\hb-open-type-private.hh"/>
-    <None Include="src\hb-ot-head-table.hh"/>
-    <None Include="src\hb-ot-hhea-table.hh"/>
-    <None Include="src\hb-ot-hmtx-table.hh"/>
-    <None Include="src\hb-ot-layout-common-private.hh"/>
-    <None Include="src\hb-ot-layout-gdef-table.hh"/>
-    <None Include="src\hb-ot-layout-gpos-table.hh"/>
-    <None Include="src\hb-ot-layout-gsub-table.hh"/>
-    <None Include="src\hb-ot-layout-gsubgpos-private.hh"/>
-    <None Include="src\hb-ot-layout-private.hh"/>
-    <None Include="src\hb-ot-map-private.hh"/>
-    <None Include="src\hb-ot-maxp-table.hh"/>
-    <None Include="src\hb-ot-name-table.hh"/>
-    <None Include="src\hb-ot-shape-complex-arabic-fallback.hh"/>
-    <None Include="src\hb-ot-shape-complex-arabic-table.hh"/>
-    <None Include="src\hb-ot-shape-complex-indic-machine.hh"/>
-    <None Include="src\hb-ot-shape-complex-indic-private.hh"/>
-    <None Include="src\hb-ot-shape-complex-myanmar-machine.hh"/>
-    <None Include="src\hb-ot-shape-complex-private.hh"/>
-    <None Include="src\hb-ot-shape-complex-sea-machine.hh"/>
-    <None Include="src\hb-ot-shape-fallback-private.hh"/>
-    <None Include="src\hb-ot-shape-normalize-private.hh"/>
-    <None Include="src\hb-ot-shape-private.hh"/>
-    <None Include="src\hb-private.hh"/>
-    <None Include="src\hb-set-private.hh"/>
-    <None Include="src\hb-shape-plan-private.hh"/>
-    <None Include="src\hb-shaper-impl-private.hh"/>
-    <None Include="src\hb-shaper-list.hh"/>
-    <None Include="src\hb-shaper-private.hh"/>
-    <None Include="src\hb-unicode-private.hh"/>
-    <None Include="src\hb-utf-private.hh"/>
-    <None Include="harfbuzz.gyp"/>
+    <None Include="src\hb-atomic-private.hh" />
+    <None Include="src\hb-buffer-deserialize-json.hh" />
+    <None Include="src\hb-buffer-deserialize-text.hh" />
+    <None Include="src\hb-buffer-private.hh" />
+    <None Include="src\hb-cache-private.hh" />
+    <None Include="src\hb-face-private.hh" />
+    <None Include="src\hb-font-private.hh" />
+    <None Include="src\hb-mutex-private.hh" />
+    <None Include="src\hb-object-private.hh" />
+    <None Include="src\hb-open-file-private.hh" />
+    <None Include="src\hb-open-type-private.hh" />
+    <None Include="src\hb-ot-head-table.hh" />
+    <None Include="src\hb-ot-hhea-table.hh" />
+    <None Include="src\hb-ot-hmtx-table.hh" />
+    <None Include="src\hb-ot-layout-common-private.hh" />
+    <None Include="src\hb-ot-layout-gdef-table.hh" />
+    <None Include="src\hb-ot-layout-gpos-table.hh" />
+    <None Include="src\hb-ot-layout-gsub-table.hh" />
+    <None Include="src\hb-ot-layout-gsubgpos-private.hh" />
+    <None Include="src\hb-ot-layout-private.hh" />
+    <None Include="src\hb-ot-map-private.hh" />
+    <None Include="src\hb-ot-maxp-table.hh" />
+    <None Include="src\hb-ot-name-table.hh" />
+    <None Include="src\hb-ot-shape-complex-arabic-fallback.hh" />
+    <None Include="src\hb-ot-shape-complex-arabic-table.hh" />
+    <None Include="src\hb-ot-shape-complex-indic-machine.hh" />
+    <None Include="src\hb-ot-shape-complex-indic-private.hh" />
+    <None Include="src\hb-ot-shape-complex-myanmar-machine.hh" />
+    <None Include="src\hb-ot-shape-complex-private.hh" />
+    <None Include="src\hb-ot-shape-complex-sea-machine.hh" />
+    <None Include="src\hb-ot-shape-fallback-private.hh" />
+    <None Include="src\hb-ot-shape-normalize-private.hh" />
+    <None Include="src\hb-ot-shape-private.hh" />
+    <None Include="src\hb-private.hh" />
+    <None Include="src\hb-set-private.hh" />
+    <None Include="src\hb-shape-plan-private.hh" />
+    <None Include="src\hb-shaper-impl-private.hh" />
+    <None Include="src\hb-shaper-list.hh" />
+    <None Include="src\hb-shaper-private.hh" />
+    <None Include="src\hb-unicode-private.hh" />
+    <None Include="src\hb-utf-private.hh" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\hb-blob.h"/>
-    <ClInclude Include="src\hb-buffer.h"/>
-    <ClInclude Include="src\hb-common.h"/>
-    <ClInclude Include="src\hb-deprecated.h"/>
-    <ClInclude Include="src\hb-face.h"/>
-    <ClInclude Include="src\hb-font.h"/>
-    <ClInclude Include="src\hb-icu.h"/>
-    <ClInclude Include="src\hb-ot-layout.h"/>
-    <ClInclude Include="src\hb-ot-shape.h"/>
-    <ClInclude Include="src\hb-ot-tag.h"/>
-    <ClInclude Include="src\hb-ot.h"/>
-    <ClInclude Include="src\hb-set.h"/>
-    <ClInclude Include="src\hb-shape-plan.h"/>
-    <ClInclude Include="src\hb-shape.h"/>
-    <ClInclude Include="src\hb-unicode.h"/>
-    <ClInclude Include="src\hb-version.h"/>
-    <ClInclude Include="src\hb.h"/>
+    <ClInclude Include="src\hb-blob.h" />
+    <ClInclude Include="src\hb-buffer.h" />
+    <ClInclude Include="src\hb-common.h" />
+    <ClInclude Include="src\hb-deprecated.h" />
+    <ClInclude Include="src\hb-face.h" />
+    <ClInclude Include="src\hb-font.h" />
+    <ClInclude Include="src\hb-icu.h" />
+    <ClInclude Include="src\hb-ot-layout.h" />
+    <ClInclude Include="src\hb-ot-shape.h" />
+    <ClInclude Include="src\hb-ot-tag.h" />
+    <ClInclude Include="src\hb-ot.h" />
+    <ClInclude Include="src\hb-set.h" />
+    <ClInclude Include="src\hb-shape-plan.h" />
+    <ClInclude Include="src\hb-shape.h" />
+    <ClInclude Include="src\hb-unicode.h" />
+    <ClInclude Include="src\hb-version.h" />
+    <ClInclude Include="src\hb.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\build\precompile.cc">
@@ -351,37 +350,37 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\hb-blob.cc"/>
-    <ClCompile Include="src\hb-buffer-serialize.cc"/>
-    <ClCompile Include="src\hb-buffer.cc"/>
-    <ClCompile Include="src\hb-common.cc"/>
-    <ClCompile Include="src\hb-face.cc"/>
-    <ClCompile Include="src\hb-fallback-shape.cc"/>
-    <ClCompile Include="src\hb-font.cc"/>
-    <ClCompile Include="src\hb-icu.cc"/>
-    <ClCompile Include="src\hb-ot-layout.cc"/>
-    <ClCompile Include="src\hb-ot-map.cc"/>
-    <ClCompile Include="src\hb-ot-shape-complex-arabic.cc"/>
-    <ClCompile Include="src\hb-ot-shape-complex-default.cc"/>
-    <ClCompile Include="src\hb-ot-shape-complex-hangul.cc"/>
-    <ClCompile Include="src\hb-ot-shape-complex-hebrew.cc"/>
-    <ClCompile Include="src\hb-ot-shape-complex-indic-table.cc"/>
-    <ClCompile Include="src\hb-ot-shape-complex-indic.cc"/>
-    <ClCompile Include="src\hb-ot-shape-complex-myanmar.cc"/>
-    <ClCompile Include="src\hb-ot-shape-complex-sea.cc"/>
-    <ClCompile Include="src\hb-ot-shape-complex-thai.cc"/>
-    <ClCompile Include="src\hb-ot-shape-complex-tibetan.cc"/>
-    <ClCompile Include="src\hb-ot-shape-fallback.cc"/>
-    <ClCompile Include="src\hb-ot-shape-normalize.cc"/>
-    <ClCompile Include="src\hb-ot-shape.cc"/>
-    <ClCompile Include="src\hb-ot-tag.cc"/>
-    <ClCompile Include="src\hb-set.cc"/>
-    <ClCompile Include="src\hb-shape-plan.cc"/>
-    <ClCompile Include="src\hb-shape.cc"/>
-    <ClCompile Include="src\hb-shaper.cc"/>
-    <ClCompile Include="src\hb-tt-font.cc"/>
-    <ClCompile Include="src\hb-unicode.cc"/>
-    <ClCompile Include="src\hb-warning.cc"/>
+    <ClCompile Include="src\hb-blob.cc" />
+    <ClCompile Include="src\hb-buffer-serialize.cc" />
+    <ClCompile Include="src\hb-buffer.cc" />
+    <ClCompile Include="src\hb-common.cc" />
+    <ClCompile Include="src\hb-face.cc" />
+    <ClCompile Include="src\hb-fallback-shape.cc" />
+    <ClCompile Include="src\hb-font.cc" />
+    <ClCompile Include="src\hb-icu.cc" />
+    <ClCompile Include="src\hb-ot-layout.cc" />
+    <ClCompile Include="src\hb-ot-map.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-arabic.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-default.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-hangul.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-hebrew.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-indic-table.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-indic.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-myanmar.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-sea.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-thai.cc" />
+    <ClCompile Include="src\hb-ot-shape-complex-tibetan.cc" />
+    <ClCompile Include="src\hb-ot-shape-fallback.cc" />
+    <ClCompile Include="src\hb-ot-shape-normalize.cc" />
+    <ClCompile Include="src\hb-ot-shape.cc" />
+    <ClCompile Include="src\hb-ot-tag.cc" />
+    <ClCompile Include="src\hb-set.cc" />
+    <ClCompile Include="src\hb-shape-plan.cc" />
+    <ClCompile Include="src\hb-shape.cc" />
+    <ClCompile Include="src\hb-shaper.cc" />
+    <ClCompile Include="src\hb-tt-font.cc" />
+    <ClCompile Include="src\hb-unicode.cc" />
+    <ClCompile Include="src\hb-warning.cc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\icu\icuuc.vcxproj">
@@ -389,6 +388,6 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
-  <ImportGroup Label="ExtensionTargets"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

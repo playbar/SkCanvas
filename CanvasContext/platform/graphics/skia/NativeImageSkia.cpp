@@ -327,11 +327,16 @@ void NativeImageSkia::draw(GraphicsContext* context, const SkRect& srcRect, cons
     paint.setAntiAlias(hasNon90rotation(context));
 
     ResamplingMode resampling;
-    if (context->isAccelerated()) {
+    if (context->isAccelerated()) 
+	{
         resampling = LinearResampling;
-    } else if (context->printing()) {
+    } 
+	else if (context->printing()) 
+	{
         resampling = NoResampling;
-    } else {
+    } 
+	else
+	{
         // Take into account scale applied to the canvas when computing sampling mode (e.g. CSS scale or page scale).
         SkRect destRectTarget = destRect;
         SkMatrix totalMatrix = context->getTotalMatrix();
@@ -343,7 +348,8 @@ void NativeImageSkia::draw(GraphicsContext* context, const SkRect& srcRect, cons
             SkScalarToFloat(destRectTarget.width()), SkScalarToFloat(destRectTarget.height()));
     }
 
-    if (resampling == NoResampling) {
+    if (resampling == NoResampling) 
+	{
         // FIXME: This is to not break tests (it results in the filter bitmap flag
         // being set to true). We need to decide if we respect NoResampling
         // being returned from computeResamplingMode.
