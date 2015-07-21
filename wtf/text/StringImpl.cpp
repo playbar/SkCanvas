@@ -1,30 +1,5 @@
-/*
- * Copyright (C) 1999 Lars Knoll (knoll@kde.org)
- *           (C) 1999 Antti Koivisto (koivisto@kde.org)
- *           (C) 2001 Dirk Mueller ( mueller@kde.org )
- * Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2013 Apple Inc. All rights reserved.
- * Copyright (C) 2006 Andrew Wellington (proton@wiretapped.net)
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public License
- * along with this library; see the file COPYING.LIB.  If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1301, USA.
- *
- */
-
 #include "config.h"
 #include "wtf/text/StringImpl.h"
-
 #include "wtf/DynamicAnnotations.h"
 #include "wtf/LeakAnnotations.h"
 #include "wtf/MainThread.h"
@@ -40,224 +15,13 @@
 #include <unicode/translit.h>
 #include <unicode/unistr.h>
 
-#ifdef STRING_STATS
-#include "wtf/DataLog.h"
-#include "wtf/HashMap.h"
-#include "wtf/HashSet.h"
-#include "wtf/ProcessID.h"
-#include "wtf/RefCounted.h"
-#include "wtf/ThreadingPrimitives.h"
-#include <unistd.h>
-#endif
 
 using namespace std;
 
-namespace WTF {
+namespace WTF 
+{
 
 using namespace Unicode;
-
-COMPILE_ASSERT(sizeof(StringImpl) == 3 * sizeof(int), StringImpl_should_stay_small);
-
-#ifdef STRING_STATS
-
-static Mutex& statsMutex()
-{
-    DEFINE_STATIC_LOCAL(Mutex, mutex, ());
-    return mutex;
-}
-
-static HashSet<void*>& liveStrings()
-{
-    // Notice that we can't use HashSet<StringImpl*> because then HashSet would dedup identical strings.
-    DEFINE_STATIC_LOCAL(HashSet<void*>, strings, ());
-    return strings;
-}
-
-void addStringForStats(StringImpl* string)
-{
-    MutexLocker locker(statsMutex());
-    liveStrings().add(string);
-}
-
-void removeStringForStats(StringImpl* string)
-{
-    MutexLocker locker(statsMutex());
-    liveStrings().remove(string);
-}
-
-static void fillWithSnippet(const StringImpl* string, Vector<char>& snippet)
-{
-    const unsigned kMaxSnippetLength = 64;
-    snippet.clear();
-
-    size_t expectedLength = std::min(string->length(), kMaxSnippetLength);
-    if (expectedLength == kMaxSnippetLength)
-        expectedLength += 3; // For the "...".
-    ++expectedLength; // For the terminating '\0'.
-    snippet.reserveCapacity(expectedLength);
-
-    size_t i;
-    for (i = 0; i < string->length() && i < kMaxSnippetLength; ++i) {
-        UChar c = (*string)[i];
-        if (isASCIIPrintable(c))
-            snippet.append(c);
-        else
-            snippet.append('?');
-    }
-    if (i < string->length()) {
-        snippet.append('.');
-        snippet.append('.');
-        snippet.append('.');
-    }
-    snippet.append('\0');
-}
-
-static bool isUnnecessarilyWide(const StringImpl* string)
-{
-    if (string->is8Bit())
-        return false;
-    UChar c = 0;
-    for (unsigned i = 0; i < string->length(); ++i)
-        c |= (*string)[i] >> 8;
-    return !c;
-}
-
-class PerStringStats : public RefCounted<PerStringStats> {
-public:
-    static PassRefPtr<PerStringStats> create()
-    {
-        return adoptRef(new PerStringStats);
-    }
-
-    void add(const StringImpl* string)
-    {
-        ++m_numberOfCopies;
-        if (!m_length) {
-            m_length = string->length();
-            fillWithSnippet(string, m_snippet);
-        }
-        if (string->isAtomic())
-            ++m_numberOfAtomicCopies;
-        if (isUnnecessarilyWide(string))
-            m_unnecessarilyWide = true;
-    }
-
-    size_t totalCharacters() const
-    {
-        return m_numberOfCopies * m_length;
-    }
-
-    void print()
-    {
-        const char* status = "ok";
-        if (m_unnecessarilyWide)
-            status = "16";
-        dataLogF("%8u copies (%s) of length %8u %s\n", m_numberOfCopies, status, m_length, m_snippet.data());
-    }
-
-    bool m_unnecessarilyWide;
-    unsigned m_numberOfCopies;
-    unsigned m_length;
-    unsigned m_numberOfAtomicCopies;
-    Vector<char> m_snippet;
-
-private:
-    PerStringStats()
-        : m_unnecessarilyWide(false)
-        , m_numberOfCopies(0)
-        , m_length(0)
-        , m_numberOfAtomicCopies(0)
-    {
-    }
-};
-
-bool operator<(const RefPtr<PerStringStats>& a, const RefPtr<PerStringStats>& b)
-{
-    if (a->m_unnecessarilyWide != b->m_unnecessarilyWide)
-        return !a->m_unnecessarilyWide && b->m_unnecessarilyWide;
-    if (a->totalCharacters() != b->totalCharacters())
-        return a->totalCharacters() < b->totalCharacters();
-    if (a->m_numberOfCopies != b->m_numberOfCopies)
-        return a->m_numberOfCopies < b->m_numberOfCopies;
-    if (a->m_length != b->m_length)
-        return a->m_length < b->m_length;
-    return a->m_numberOfAtomicCopies < b->m_numberOfAtomicCopies;
-}
-
-static void printLiveStringStats(void*)
-{
-    MutexLocker locker(statsMutex());
-    HashSet<void*>& strings = liveStrings();
-
-    HashMap<StringImpl*, RefPtr<PerStringStats> > stats;
-    for (HashSet<void*>::iterator iter = strings.begin(); iter != strings.end(); ++iter) {
-        StringImpl* string = static_cast<StringImpl*>(*iter);
-        HashMap<StringImpl*, RefPtr<PerStringStats> >::iterator entry = stats.find(string);
-        RefPtr<PerStringStats> value = entry == stats.end() ? RefPtr<PerStringStats>(PerStringStats::create()) : entry->value;
-        value->add(string);
-        stats.set(string, value.release());
-    }
-
-    Vector<RefPtr<PerStringStats> > all;
-    for (HashMap<StringImpl*, RefPtr<PerStringStats> >::iterator iter = stats.begin(); iter != stats.end(); ++iter)
-        all.append(iter->value);
-
-    std::sort(all.begin(), all.end());
-    std::reverse(all.begin(), all.end());
-    for (size_t i = 0; i < 20 && i < all.size(); ++i)
-        all[i]->print();
-}
-
-StringStats StringImpl::m_stringStats;
-
-unsigned StringStats::s_stringRemovesTillPrintStats = StringStats::s_printStringStatsFrequency;
-
-void StringStats::removeString(StringImpl* string)
-{
-    unsigned length = string->length();
-    --m_totalNumberStrings;
-
-    if (string->is8Bit()) {
-        --m_number8BitStrings;
-        m_total8BitData -= length;
-    } else {
-        --m_number16BitStrings;
-        m_total16BitData -= length;
-    }
-
-    if (!--s_stringRemovesTillPrintStats) {
-        s_stringRemovesTillPrintStats = s_printStringStatsFrequency;
-        printStats();
-    }
-}
-
-void StringStats::printStats()
-{
-    dataLogF("String stats for process id %d:\n", getCurrentProcessID());
-
-    unsigned long long totalNumberCharacters = m_total8BitData + m_total16BitData;
-    double percent8Bit = m_totalNumberStrings ? ((double)m_number8BitStrings * 100) / (double)m_totalNumberStrings : 0.0;
-    double average8bitLength = m_number8BitStrings ? (double)m_total8BitData / (double)m_number8BitStrings : 0.0;
-    dataLogF("%8u (%5.2f%%) 8 bit        %12llu chars  %12llu bytes  avg length %6.1f\n", m_number8BitStrings, percent8Bit, m_total8BitData, m_total8BitData, average8bitLength);
-
-    double percent16Bit = m_totalNumberStrings ? ((double)m_number16BitStrings * 100) / (double)m_totalNumberStrings : 0.0;
-    double average16bitLength = m_number16BitStrings ? (double)m_total16BitData / (double)m_number16BitStrings : 0.0;
-    dataLogF("%8u (%5.2f%%) 16 bit       %12llu chars  %12llu bytes  avg length %6.1f\n", m_number16BitStrings, percent16Bit, m_total16BitData, m_total16BitData * 2, average16bitLength);
-
-    double averageLength = m_totalNumberStrings ? (double)totalNumberCharacters / (double)m_totalNumberStrings : 0.0;
-    unsigned long long totalDataBytes = m_total8BitData + m_total16BitData * 2;
-    dataLogF("%8u Total                 %12llu chars  %12llu bytes  avg length %6.1f\n", m_totalNumberStrings, totalNumberCharacters, totalDataBytes, averageLength);
-    unsigned long long totalSavedBytes = m_total8BitData;
-    double percentSavings = totalSavedBytes ? ((double)totalSavedBytes * 100) / (double)(totalDataBytes + totalSavedBytes) : 0.0;
-    dataLogF("         Total savings %12llu bytes (%5.2f%%)\n", totalSavedBytes, percentSavings);
-
-    unsigned totalOverhead = m_totalNumberStrings * sizeof(StringImpl);
-    double overheadPercent = (double)totalOverhead / (double)totalDataBytes * 100;
-    dataLogF("         StringImpl overheader: %8u (%5.2f%%)\n", totalOverhead, overheadPercent);
-
-    callOnMainThread(printLiveStringStats, 0);
-}
-#endif
 
 void* StringImpl::operator new(size_t size)
 {
@@ -385,9 +149,6 @@ StringImpl* StringImpl::createStatic(const char* string, unsigned length, unsign
     LChar* data = reinterpret_cast<LChar*>(impl + 1);
     impl = new (impl) StringImpl(length, hash, StaticString);
     memcpy(data, string, length * sizeof(LChar));
-#ifndef NDEBUG
-    impl->assertHashIsCorrect();
-#endif
 
     ASSERT(isMainThread());
     m_highestStaticStringLength = std::max(m_highestStaticStringLength, length);

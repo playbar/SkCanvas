@@ -1,25 +1,3 @@
-/*
- * Copyright (C) 1999 Lars Knoll (knoll@kde.org)
- * Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2013 Apple Inc. All rights reserved.
- * Copyright (C) 2009 Google Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public License
- * along with this library; see the file COPYING.LIB.  If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1301, USA.
- *
- */
-
 #ifndef StringImpl_h
 #define StringImpl_h
 
@@ -32,15 +10,8 @@
 #include "wtf/WTFExport.h"
 #include "wtf/unicode/Unicode.h"
 
-#if USE(CF)
-typedef const struct __CFString * CFStringRef;
-#endif
-
-#ifdef __OBJC__
-@class NSString;
-#endif
-
-namespace WTF {
+namespace WTF
+{
 
 struct AlreadyHashed;
 struct CStringTranslator;
@@ -60,52 +31,14 @@ typedef bool (*CharacterMatchFunctionPtr)(UChar);
 typedef bool (*IsWhiteSpaceFunctionPtr)(UChar);
 typedef HashMap<unsigned, StringImpl*, AlreadyHashed> StaticStringsTable;
 
-// Define STRING_STATS to turn on run time statistics of string sizes and memory usage
-#undef STRING_STATS
-
-#ifdef STRING_STATS
-struct StringStats {
-    inline void add8BitString(unsigned length)
-    {
-        ++m_totalNumberStrings;
-        ++m_number8BitStrings;
-        m_total8BitData += length;
-    }
-
-    inline void add16BitString(unsigned length)
-    {
-        ++m_totalNumberStrings;
-        ++m_number16BitStrings;
-        m_total16BitData += length;
-    }
-
-    void removeString(StringImpl*);
-    void printStats();
-
-    static const unsigned s_printStringStatsFrequency = 5000;
-    static unsigned s_stringRemovesTillPrintStats;
-
-    unsigned m_totalNumberStrings;
-    unsigned m_number8BitStrings;
-    unsigned m_number16BitStrings;
-    unsigned long long m_total8BitData;
-    unsigned long long m_total16BitData;
-};
-
-void addStringForStats(StringImpl*);
-void removeStringForStats(StringImpl*);
-
-#define STRING_STATS_ADD_8BIT_STRING(length) StringImpl::stringStats().add8BitString(length); addStringForStats(this)
-#define STRING_STATS_ADD_16BIT_STRING(length) StringImpl::stringStats().add16BitString(length); addStringForStats(this)
-#define STRING_STATS_REMOVE_STRING(string) StringImpl::stringStats().removeString(string); removeStringForStats(this)
-#else
 #define STRING_STATS_ADD_8BIT_STRING(length) ((void)0)
 #define STRING_STATS_ADD_16BIT_STRING(length) ((void)0)
 #define STRING_STATS_REMOVE_STRING(string) ((void)0)
-#endif
+
 
 // You can find documentation about this class in this doc:
-class WTF_EXPORT StringImpl {
+class WTF_EXPORT StringImpl
+{
     WTF_MAKE_NONCOPYABLE(StringImpl);
     friend struct WTF::CStringTranslator;
     template<typename CharacterType> friend struct WTF::HashAndCharactersTranslator;
@@ -421,17 +354,6 @@ public:
     PassRefPtr<StringImpl> replace(unsigned index, unsigned len, StringImpl*);
     PassRefPtr<StringImpl> upconvertedString();
 
-#if USE(CF)
-    RetainPtr<CFStringRef> createCFString();
-#endif
-#ifdef __OBJC__
-    operator NSString*();
-#endif
-
-#ifdef STRING_STATS
-    ALWAYS_INLINE static StringStats& stringStats() { return m_stringStats; }
-#endif
-
 private:
     template<typename CharType> static size_t allocationSize(unsigned length)
     {
@@ -446,19 +368,7 @@ private:
     template <typename CharType, class UCharPredicate> PassRefPtr<StringImpl> simplifyMatchedCharactersToSpace(UCharPredicate, StripBehavior);
     NEVER_INLINE unsigned hashSlowCase() const;
 
-#ifdef STRING_STATS
-    static StringStats m_stringStats;
-#endif
-
     static unsigned m_highestStaticStringLength;
-
-#ifndef NDEBUG
-    void assertHashIsCorrect()
-    {
-        ASSERT(hasHash());
-        ASSERT(existingHash() == StringHasher::computeHashAndMaskTop8Bits(characters8(), length()));
-    }
-#endif
 
 private:
     unsigned m_refCount;

@@ -1,24 +1,3 @@
-/*
- * (C) 1999 Lars Knoll (knoll@kde.org)
- * Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2012, 2013 Apple Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public License
- * along with this library; see the file COPYING.LIB.  If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1301, USA.
- *
- */
-
 #ifndef WTFString_h
 #define WTFString_h
 
@@ -74,12 +53,14 @@ WTF_EXPORT float charactersToFloat(const UChar*, size_t, bool* ok = 0);
 WTF_EXPORT float charactersToFloat(const LChar*, size_t, size_t& parsedLength);
 WTF_EXPORT float charactersToFloat(const UChar*, size_t, size_t& parsedLength);
 
-enum TrailingZerosTruncatingPolicy {
+enum TrailingZerosTruncatingPolicy 
+{
     KeepTrailingZeros,
     TruncateTrailingZeros
 };
 
-enum UTF8ConversionMode {
+enum UTF8ConversionMode 
+{
     LenientUTF8Conversion,
     StrictUTF8Conversion,
     StrictUTF8ConversionReplacingUnpairedSurrogatesWithFFFD
@@ -88,21 +69,12 @@ enum UTF8ConversionMode {
 template<bool isSpecialCharacter(UChar), typename CharacterType>
 bool isAllSpecialCharacters(const CharacterType*, size_t);
 
-class WTF_EXPORT String {
+class WTF_EXPORT String 
+{
 public:
-    // Construct a null string, distinguishable from an empty string.
     String() { }
-
-    // Construct a string with UTF-16 data.
     String(const UChar* characters, unsigned length);
 
-    // Construct a string by copying the contents of a vector.
-    // This method will never create a null string. Vectors with size() == 0
-    // will return the empty string.
-    // NOTE: This is different from String(vector.data(), vector.size())
-    // which will sometimes return a null string when vector.data() is null
-    // which can only occur for vectors without inline capacity.
-    // See: https://bugs.webkit.org/show_bug.cgi?id=109792
     template<size_t inlineCapacity>
     explicit String(const Vector<UChar, inlineCapacity>&);
 
@@ -120,15 +92,6 @@ public:
     // Construct a string referencing an existing StringImpl.
     String(StringImpl* impl) : m_impl(impl) { }
     String(PassRefPtr<StringImpl> impl) : m_impl(impl) { }
-
-#if COMPILER_SUPPORTS(CXX_RVALUE_REFERENCES)
-    // We have to declare the copy constructor and copy assignment operator as well, otherwise
-    // they'll be implicitly deleted by adding the move constructor and move assignment operator.
-    String(const String& other) : m_impl(other.m_impl) { }
-    String(String&& other) : m_impl(other.m_impl.release()) { }
-    String& operator=(const String& other) { m_impl = other.m_impl; return *this; }
-    String& operator=(String&& other) { m_impl = other.m_impl.release(); return *this; }
-#endif
 
     // Inline the destructor.
     ALWAYS_INLINE ~String() { }
@@ -379,19 +342,6 @@ public:
 
     String isolatedCopy() const;
     bool isSafeToSendToAnotherThread() const;
-
-#if USE(CF)
-    String(CFStringRef);
-    RetainPtr<CFStringRef> createCFString() const;
-#endif
-
-#ifdef __OBJC__
-    String(NSString*);
-
-    // This conversion maps NULL to "", which loses the meaning of NULL, but we
-    // need this mapping because AppKit crashes when passed nil NSStrings.
-    operator NSString*() const { if (!m_impl) return @""; return *m_impl; }
-#endif
 
     static String make8BitFrom16BitSource(const UChar*, size_t);
     template<size_t inlineCapacity>
