@@ -124,15 +124,6 @@ void Sk64::abs()
     }
 }
 
-#if 0
-SkBool Sk64::isFixed() const
-{
-    Sk64 tmp = *this;
-    tmp.roundRight(16);
-    return tmp.is32();
-}
-#endif
-
 void Sk64::sub(const Sk64& a)
 {
     fHi = fHi - a.fHi - (fLo < a.fLo);

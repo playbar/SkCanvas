@@ -298,7 +298,6 @@
     <ClInclude Include="..\third_party\skia\include\utils\SkNullCanvas.h" />
     <ClInclude Include="..\third_party\skia\include\utils\SkPictureUtils.h" />
     <ClInclude Include="..\third_party\skia\include\utils\SkProxyCanvas.h" />
-    <ClInclude Include="..\third_party\skia\src\core\ARGB32_Clamp_Bilinear_BitmapShader.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkAntiRun.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkBBoxHierarchy.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkBBoxRecord.h" />
@@ -518,8 +517,6 @@
     <ClInclude Include="..\third_party\skia\include\effects\SkTileImageFilter.h" />
     <ClInclude Include="..\third_party\skia\include\effects\SkTransparentShader.h" />
     <ClInclude Include="..\third_party\skia\include\effects\SkMagnifierImageFilter.h" />
-    <ClInclude Include="..\third_party\skia\include\pdf\SkPDFDevice.h" />
-    <ClInclude Include="..\third_party\skia\include\pdf\SkPDFDocument.h" />
     <ClInclude Include="..\third_party\skia\src\xml\SkBML_Verbs.h" />
     <ClInclude Include="ext\convolver.h" />
     <ClInclude Include="ext\convolver_SSE2.h" />
@@ -1026,9 +1023,6 @@
     <ClCompile Include="..\third_party\skia\src\gpu\SkGrFontScaler.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\SkGrPixelRef.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\SkGLContextHelper.cpp" />
-    <ClCompile Include="..\third_party\skia\src\fonts\SkFontMgr_fontconfig.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\utils\mac\SkCreateCGImageRef.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
