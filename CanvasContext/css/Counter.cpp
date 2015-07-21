@@ -7,11 +7,6 @@
 
 namespace WebCore {
 
-//void Counter::trace(Visitor* visitor)
-//{
-//    visitor->trace(m_identifier);
-//    visitor->trace(m_listStyle);
-//    visitor->trace(m_separator);
-//}
+
 
 }
