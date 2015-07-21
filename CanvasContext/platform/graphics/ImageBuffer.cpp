@@ -40,7 +40,6 @@
 #include "platform/graphics/UnacceleratedImageBufferSurface.h"
 #include "platform/graphics/skia/NativeImageSkia.h"
 #include "platform/graphics/skia/SkiaUtils.h"
-#include "platform/image-encoders/skia/JPEGImageEncoder.h"
 #include "platform/image-encoders/skia/PNGImageEncoder.h"
 #include "third_party/skia/include/effects/SkTableColorFilter.h"
 #include "wtf/MathExtras.h"
@@ -337,13 +336,13 @@ static bool encodeImage(T& source, const String& mimeType, const double* quality
 {
     Vector<unsigned char>* encodedImage = reinterpret_cast<Vector<unsigned char>*>(output);
 
-    if (mimeType == "image/jpeg") {
-        int compressionQuality = JPEGImageEncoder::DefaultCompressionQuality;
-        if (quality && *quality >= 0.0 && *quality <= 1.0)
-            compressionQuality = static_cast<int>(*quality * 100 + 0.5);
-        if (!JPEGImageEncoder::encode(source, compressionQuality, encodedImage))
-            return false;
-    } 
+    //if (mimeType == "image/jpeg") {
+    //    int compressionQuality = JPEGImageEncoder::DefaultCompressionQuality;
+    //    if (quality && *quality >= 0.0 && *quality <= 1.0)
+    //        compressionQuality = static_cast<int>(*quality * 100 + 0.5);
+    //    if (!JPEGImageEncoder::encode(source, compressionQuality, encodedImage))
+    //        return false;
+    //} 
 	//else if (mimeType == "image/webp")
 	//{
  //       int compressionQuality = WEBPImageEncoder::DefaultCompressionQuality;
@@ -352,7 +351,7 @@ static bool encodeImage(T& source, const String& mimeType, const double* quality
  //       if (!WEBPImageEncoder::encode(source, compressionQuality, encodedImage))
  //           return false;
  //   }
-	else
+	//else
 	{
         if (!PNGImageEncoder::encode(source, encodedImage))
             return false;

@@ -174,7 +174,6 @@
     <ClCompile Include="platform\image-decoders\ImageDecoder.cpp" />
     <ClCompile Include="platform\image-decoders\ImageFrame.cpp" />
     <ClCompile Include="platform\image-decoders\png\PNGImageDecoder.cpp" />
-    <ClCompile Include="platform\image-encoders\skia\JPEGImageEncoder.cpp" />
     <ClCompile Include="platform\image-encoders\skia\PNGImageEncoder.cpp" />
     <ClCompile Include="platform\Length.cpp" />
     <ClCompile Include="platform\LengthBox.cpp" />
@@ -340,7 +339,6 @@
     <ClInclude Include="platform\image-decoders\ImageDecoder.h" />
     <ClInclude Include="platform\image-decoders\ImageFrame.h" />
     <ClInclude Include="platform\image-decoders\png\PNGImageDecoder.h" />
-    <ClInclude Include="platform\image-encoders\skia\JPEGImageEncoder.h" />
     <ClInclude Include="platform\image-encoders\skia\PNGImageEncoder.h" />
     <ClInclude Include="platform\Length.h" />
     <ClInclude Include="platform\LengthBox.h" />

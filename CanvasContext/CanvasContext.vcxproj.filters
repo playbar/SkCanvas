@@ -201,9 +201,6 @@
     <ClCompile Include="..\third_party\libpng\pngwtran.c">
       <Filter>png</Filter>
     </ClCompile>
-    <ClCompile Include="platform\image-encoders\skia\JPEGImageEncoder.cpp">
-      <Filter>platform\image-encoders\skia</Filter>
-    </ClCompile>
     <ClCompile Include="platform\graphics\UnacceleratedImageBufferSurface.cpp">
       <Filter>platform\graphics</Filter>
     </ClCompile>
@@ -697,9 +694,6 @@
     </ClInclude>
     <ClInclude Include="..\third_party\libpng\pngusr.h">
       <Filter>png</Filter>
-    </ClInclude>
-    <ClInclude Include="platform\image-encoders\skia\JPEGImageEncoder.h">
-      <Filter>platform\image-encoders\skia</Filter>
     </ClInclude>
     <ClInclude Include="platform\graphics\UnacceleratedImageBufferSurface.h">
       <Filter>platform\graphics</Filter>

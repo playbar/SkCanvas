@@ -44,7 +44,8 @@ protected:
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
 		ctx->setFont("italic small-caps bold 40px sans-serif");
-		ctx->strokeText("Hello world", 10, 50);
+		String str = "HelloWorld";
+		ctx->strokeText(str, 10, 50);
 		return;
 		//ctx->strokeText("Hello world", 10, 50);
 		SkPaint paint;
@@ -66,7 +67,7 @@ protected:
 		//paint.setShader(shader);
 		//shader->unref();
 		//paint.setTextAlign(SkPaint::kCenter_Align);
-		canvas->drawText("test", 4, 100, 100, paint);
+		canvas->drawText("", 4, 100, 100, paint);
 		return;
 	}
 
