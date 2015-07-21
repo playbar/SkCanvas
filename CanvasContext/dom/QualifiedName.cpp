@@ -26,9 +26,6 @@
 #endif
 
 #include "HTMLNames.h"
-#include "XLinkNames.h"
-#include "XMLNSNames.h"
-#include "XMLNames.h"
 #include "dom/QualifiedName.h"
 #include "wtf/Assertions.h"
 #include "wtf/HashSet.h"
@@ -37,10 +34,7 @@
 
 namespace WebCore {
 
-static const int staticQualifiedNamesCount = HTMLNames::HTMLTagsCount + HTMLNames::HTMLAttrsCount
-    + XLinkNames::XLinkAttrsCount
-    + XMLNSNames::XMLNSAttrsCount
-    + XMLNames::XMLAttrsCount;
+static const int staticQualifiedNamesCount = HTMLNames::HTMLTagsCount + HTMLNames::HTMLAttrsCount;
 
 struct QualifiedNameHashTraits : public HashTraits<QualifiedName::QualifiedNameImpl*> {
     static const unsigned minimumTableSize = WTF::HashTableCapacityForSize<staticQualifiedNamesCount>::value;

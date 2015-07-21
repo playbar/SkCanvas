@@ -453,15 +453,6 @@
     <ClCompile Include="blink\HTMLNames.cpp">
       <Filter>blink</Filter>
     </ClCompile>
-    <ClCompile Include="blink\XLinkNames.cpp">
-      <Filter>blink</Filter>
-    </ClCompile>
-    <ClCompile Include="blink\XMLNames.cpp">
-      <Filter>blink</Filter>
-    </ClCompile>
-    <ClCompile Include="blink\XMLNSNames.cpp">
-      <Filter>blink</Filter>
-    </ClCompile>
     <ClCompile Include="css\CSSOMUtils.cpp">
       <Filter>css</Filter>
     </ClCompile>
@@ -951,15 +942,6 @@
       <Filter>dom</Filter>
     </ClInclude>
     <ClInclude Include="blink\HTMLNames.h">
-      <Filter>blink</Filter>
-    </ClInclude>
-    <ClInclude Include="blink\XLinkNames.h">
-      <Filter>blink</Filter>
-    </ClInclude>
-    <ClInclude Include="blink\XMLNames.h">
-      <Filter>blink</Filter>
-    </ClInclude>
-    <ClInclude Include="blink\XMLNSNames.h">
       <Filter>blink</Filter>
     </ClInclude>
     <ClInclude Include="style\RenderStyleConstants.h">
