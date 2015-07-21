@@ -377,6 +377,11 @@ private:
     unsigned m_isAtomic : 1;
     unsigned m_is8Bit : 1;
     unsigned m_isStatic : 1;
+	union
+	{
+		LChar *m_LData;
+		UChar *m_UData;
+	};
 };
 
 template <>

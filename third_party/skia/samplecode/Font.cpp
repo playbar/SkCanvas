@@ -43,7 +43,7 @@ protected:
     virtual void onDrawContent(SkCanvas* canvas)
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
-		ctx->setFont("italic small-caps bold 10px sans-serif");
+		ctx->setFont("italic small-caps bold 40px sans-serif");
 		ctx->strokeText("Hello world", 10, 50);
 		return;
 		//ctx->strokeText("Hello world", 10, 50);

@@ -475,14 +475,6 @@ inline bool String::containsOnlyLatin1() const
     return !(ored & 0xFF00);
 }
 
-
-#ifdef __OBJC__
-// This is for situations in WebKit where the long standing behavior has been
-// "nil if empty", so we try to maintain longstanding behavior for the sake of
-// entrenched clients
-inline NSString* nsStringNilIfEmpty(const String& str) {  return str.isEmpty() ? nil : (NSString*)str; }
-#endif
-
 inline bool String::containsOnlyASCII() const
 {
     if (isEmpty())

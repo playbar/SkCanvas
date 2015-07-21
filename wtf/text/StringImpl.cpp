@@ -61,8 +61,8 @@ PassRefPtr<StringImpl> StringImpl::createUninitialized(unsigned length, LChar*& 
     // struct as well as the data which it contains. This removes one
     // heap allocation from this call.
     StringImpl* string = static_cast<StringImpl*>(partitionAllocGeneric(Partitions::getBufferPartition(), allocationSize<LChar>(length)));
-
     data = reinterpret_cast<LChar*>(string + 1);
+	string->m_LData = data;
     return adoptRef(new (string) StringImpl(length, Force8BitConstructor));
 }
 
@@ -79,6 +79,7 @@ PassRefPtr<StringImpl> StringImpl::createUninitialized(unsigned length, UChar*& 
     StringImpl* string = static_cast<StringImpl*>(partitionAllocGeneric(Partitions::getBufferPartition(), allocationSize<UChar>(length)));
 
     data = reinterpret_cast<UChar*>(string + 1);
+	string->m_UData = data;
     return adoptRef(new (string) StringImpl(length));
 }
 
@@ -147,6 +148,7 @@ StringImpl* StringImpl::createStatic(const char* string, unsigned length, unsign
     StringImpl* impl = static_cast<StringImpl*>(partitionAllocGeneric(Partitions::getBufferPartition(), size));
 
     LChar* data = reinterpret_cast<LChar*>(impl + 1);
+	impl->m_LData = data;
     impl = new (impl) StringImpl(length, hash, StaticString);
     memcpy(data, string, length * sizeof(LChar));
 
@@ -167,6 +169,7 @@ PassRefPtr<StringImpl> StringImpl::create(const UChar* characters, unsigned leng
     UChar* data;
     RefPtr<StringImpl> string = createUninitialized(length, data);
     memcpy(data, characters, length * sizeof(UChar));
+	string->m_UData = data;
     return string.release();
 }
 
@@ -178,6 +181,7 @@ PassRefPtr<StringImpl> StringImpl::create(const LChar* characters, unsigned leng
     LChar* data;
     RefPtr<StringImpl> string = createUninitialized(length, data);
     memcpy(data, characters, length * sizeof(LChar));
+	//string->m_LData = data;
     return string.release();
 }
 
