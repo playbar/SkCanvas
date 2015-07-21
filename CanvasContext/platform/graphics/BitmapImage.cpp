@@ -280,7 +280,7 @@ void BitmapImage::draw(GraphicsContext* ctxt, const FloatRect& dstRect, const Fl
     // Spin the animation to the correct frame before we try to draw it, so we
     // don't draw an old frame and then immediately need to draw a newer one,
     // causing flicker and wasting CPU.
-    startAnimation();
+    //startAnimation();
 
     RefPtr<NativeImageSkia> bm = nativeImageForCurrentFrame();
     if (!bm)
