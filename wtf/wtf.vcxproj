@@ -365,7 +365,6 @@
     <ClInclude Include="StringHasher.h" />
     <ClInclude Include="TemporaryChange.h" />
     <ClInclude Include="ThreadFunctionInvocation.h" />
-    <ClInclude Include="ThreadRestrictionVerifier.h" />
     <ClInclude Include="ThreadSpecific.h" />
     <ClInclude Include="Threading.h" />
     <ClInclude Include="TreeNode.h" />

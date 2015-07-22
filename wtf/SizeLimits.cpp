@@ -35,29 +35,19 @@
 #include "wtf/PassRefPtr.h"
 #include "wtf/RefCounted.h"
 #include "wtf/RefPtr.h"
-#include "wtf/ThreadRestrictionVerifier.h"
 #include "wtf/Vector.h"
 
 namespace WTF {
 
-#if !defined(NDEBUG) || SECURITY_ASSERT_ENABLED
 // The debug/assertion version may get bigger.
 struct SameSizeAsRefCounted {
     int a;
 #if SECURITY_ASSERT_ENABLED
     bool b;
 #endif
-#if !defined(NDEBUG)
-    bool c;
-    ThreadRestrictionVerifier d;
-#endif
+
 };
-#else
-struct SameSizeAsRefCounted {
-    int a;
-    // Don't add anything here because this should stay small.
-};
-#endif
+
 template<typename T, unsigned inlineCapacity = 0>
 struct SameSizeAsVectorWithInlineCapacity;
 
