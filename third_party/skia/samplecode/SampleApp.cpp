@@ -1911,11 +1911,6 @@ void SampleWindow::onSizeChange() {
     fZoomCenterX = SkScalarHalf(this->width());
     fZoomCenterY = SkScalarHalf(this->height());
 
-#ifdef SK_BUILD_FOR_ANDROID
-    // FIXME: The first draw after a size change does not work on Android, so
-    // we post an invalidate.
-    this->postInvalDelay();
-#endif
     this->updateTitle();    // to refresh our config
     fDevManager->windowSizeChanged(this);
 
