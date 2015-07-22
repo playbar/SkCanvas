@@ -35,7 +35,6 @@
 #include "platform/graphics/BitmapImage.h"
 #include "platform/graphics/GraphicsContext.h"
 #include "platform/graphics/GraphicsContextStateSaver.h"
-#include "wtf/MainThread.h"
 #include "wtf/StdLibExtras.h"
 
 #include <math.h>

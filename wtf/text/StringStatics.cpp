@@ -33,7 +33,6 @@
 #include "AtomicString.h"
 #include "StringImpl.h"
 #include "wtf/DynamicAnnotations.h"
-#include "wtf/MainThread.h"
 #include "wtf/StaticConstructors.h"
 
 namespace WTF {

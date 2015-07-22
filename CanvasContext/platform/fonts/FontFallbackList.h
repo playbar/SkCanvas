@@ -25,7 +25,6 @@
 #include "platform/fonts/SimpleFontData.h"
 #include "platform/fonts/WidthCache.h"
 #include "wtf/Forward.h"
-#include "wtf/MainThread.h"
 
 namespace WebCore {
 

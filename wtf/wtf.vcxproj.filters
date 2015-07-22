@@ -278,8 +278,6 @@
     <ClInclude Include="LinkedStack.h" />
     <ClInclude Include="ListHashSet.h" />
     <ClInclude Include="Locker.h" />
-    <ClCompile Include="MainThread.cpp" />
-    <ClInclude Include="MainThread.h" />
     <ClInclude Include="MallocZoneSupport.h" />
     <ClInclude Include="MathExtras.h" />
     <ClInclude Include="MessageQueue.h" />
@@ -314,7 +312,6 @@
     <ClInclude Include="StringExtras.h" />
     <ClInclude Include="StringHasher.h" />
     <ClInclude Include="TemporaryChange.h" />
-    <ClInclude Include="ThreadFunctionInvocation.h" />
     <ClInclude Include="ThreadSpecific.h" />
     <ClCompile Include="ThreadSpecificWin.cpp" />
     <ClInclude Include="TreeNode.h" />

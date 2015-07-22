@@ -336,7 +336,6 @@
     <ClInclude Include="LinkedStack.h" />
     <ClInclude Include="ListHashSet.h" />
     <ClInclude Include="Locker.h" />
-    <ClInclude Include="MainThread.h" />
     <ClInclude Include="MallocZoneSupport.h" />
     <ClInclude Include="MathExtras.h" />
     <ClInclude Include="MessageQueue.h" />
@@ -364,7 +363,6 @@
     <ClInclude Include="StringExtras.h" />
     <ClInclude Include="StringHasher.h" />
     <ClInclude Include="TemporaryChange.h" />
-    <ClInclude Include="ThreadFunctionInvocation.h" />
     <ClInclude Include="ThreadSpecific.h" />
     <ClInclude Include="TreeNode.h" />
     <ClInclude Include="TypeTraits.h" />
@@ -431,7 +429,6 @@
     <ClCompile Include="GregorianDateTime.cpp" />
     <ClCompile Include="HashTable.cpp" />
     <ClCompile Include="InstanceCounter.cpp" />
-    <ClCompile Include="MainThread.cpp" />
     <ClCompile Include="NullPtr.cpp" />
     <ClCompile Include="PageAllocator.cpp" />
     <ClCompile Include="PartitionAlloc.cpp" />

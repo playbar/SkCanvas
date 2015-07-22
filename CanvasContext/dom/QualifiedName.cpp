@@ -29,7 +29,6 @@
 #include "dom/QualifiedName.h"
 #include "wtf/Assertions.h"
 #include "wtf/HashSet.h"
-#include "wtf/MainThread.h"
 #include "wtf/StaticConstructors.h"
 
 namespace WebCore {

@@ -2,7 +2,6 @@
 #include "wtf/text/StringImpl.h"
 #include "wtf/DynamicAnnotations.h"
 #include "wtf/LeakAnnotations.h"
-#include "wtf/MainThread.h"
 #include "wtf/OwnPtr.h"
 #include "wtf/PartitionAlloc.h"
 #include "wtf/PassOwnPtr.h"
