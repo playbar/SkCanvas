@@ -317,8 +317,6 @@
     <ClInclude Include="ThreadFunctionInvocation.h" />
     <ClInclude Include="ThreadSpecific.h" />
     <ClCompile Include="ThreadSpecificWin.cpp" />
-    <ClCompile Include="Threading.cpp" />
-    <ClInclude Include="Threading.h" />
     <ClInclude Include="TreeNode.h" />
     <ClCompile Include="TypeTraits.cpp" />
     <ClInclude Include="TypeTraits.h" />

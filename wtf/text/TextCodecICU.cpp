@@ -31,7 +31,6 @@
 #include <unicode/ucnv_cb.h>
 #include "wtf/Assertions.h"
 #include "wtf/StringExtras.h"
-#include "wtf/Threading.h"
 #include "wtf/WTFThreadData.h"
 #include "wtf/text/CString.h"
 #include "wtf/text/StringBuilder.h"

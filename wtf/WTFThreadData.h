@@ -31,7 +31,6 @@
 #include "wtf/HashSet.h"
 #include "wtf/Noncopyable.h"
 #include "wtf/ThreadSpecific.h"
-#include "wtf/Threading.h"
 #include "wtf/WTFExport.h"
 #include "wtf/text/StringHash.h"
 

@@ -29,7 +29,6 @@
 #include "wtf/Noncopyable.h"
 #include "wtf/PassRefPtr.h"
 #include "wtf/RefPtr.h"
-#include "wtf/Threading.h"
 #include "FastAllocBase.h"
 #include "RefCounted.h"
 

@@ -31,7 +31,6 @@
 
 #include "wtf/Assertions.h"
 #include "wtf/StringExtras.h"
-#include "wtf/Threading.h"
 //#include "wtf/ThreadingPrimitives.h"
 #include <stdlib.h>
 #include <string.h>
