@@ -24,13 +24,10 @@
 #include "config.h"
 #include "platform/text/BidiCharacterRun.h"
 
-#include "wtf/RefCountedLeakCounter.h"
 
 using namespace WTF;
 
 namespace WebCore {
-
-DEFINE_DEBUG_ONLY_GLOBAL(RefCountedLeakCounter, bidiRunCounter, ("BidiCharacterRun"));
 
 void* BidiCharacterRun::operator new(size_t sz)
 {

@@ -353,7 +353,6 @@
     <ClInclude Include="PrintStream.h" />
     <ClInclude Include="ProcessID.h" />
     <ClInclude Include="RefCounted.h" />
-    <ClInclude Include="RefCountedLeakCounter.h" />
     <ClInclude Include="RefPtr.h" />
     <ClInclude Include="RetainPtr.h" />
     <ClInclude Include="SHA1.h" />
@@ -433,7 +432,6 @@
     <ClCompile Include="PageAllocator.cpp" />
     <ClCompile Include="PartitionAlloc.cpp" />
     <ClCompile Include="PrintStream.cpp" />
-    <ClCompile Include="RefCountedLeakCounter.cpp" />
     <ClCompile Include="SHA1.cpp" />
     <ClCompile Include="SizeLimits.cpp" />
     <ClCompile Include="ThreadSpecificWin.cpp" />

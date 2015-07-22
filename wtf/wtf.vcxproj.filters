@@ -299,8 +299,6 @@
     <ClInclude Include="PrintStream.h" />
     <ClInclude Include="ProcessID.h" />
     <ClInclude Include="RefCounted.h" />
-    <ClCompile Include="RefCountedLeakCounter.cpp" />
-    <ClInclude Include="RefCountedLeakCounter.h" />
     <ClInclude Include="RefPtr.h" />
     <ClInclude Include="RetainPtr.h" />
     <ClCompile Include="SHA1.cpp" />
