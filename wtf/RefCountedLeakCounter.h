@@ -32,8 +32,8 @@ namespace WTF {
         explicit RefCountedLeakCounter(const char* description);
         ~RefCountedLeakCounter();
 
-        void increment();
-        void decrement();
+        //void increment();
+        //void decrement();
 
 #ifndef NDEBUG
     private:

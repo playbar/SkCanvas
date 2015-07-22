@@ -34,9 +34,6 @@ DEFINE_DEBUG_ONLY_GLOBAL(RefCountedLeakCounter, bidiRunCounter, ("BidiCharacterR
 
 void* BidiCharacterRun::operator new(size_t sz)
 {
-#ifndef NDEBUG
-    bidiRunCounter.increment();
-#endif
     //return partitionAlloc(Partitions::getRenderingPartition(), sz);
 	void* result = malloc(sz);
 	RELEASE_ASSERT(result);
@@ -44,9 +41,6 @@ void* BidiCharacterRun::operator new(size_t sz)
 
 void BidiCharacterRun::operator delete(void* ptr)
 {
-#ifndef NDEBUG
-    bidiRunCounter.decrement();
-#endif
     free(ptr);
 }
 

@@ -290,7 +290,6 @@
     <ClInclude Include="ArrayBufferDeallocationObserver.h" />
     <ClInclude Include="ArrayBufferView.h" />
     <ClInclude Include="Assertions.h" />
-    <ClInclude Include="Atomics.h" />
     <ClInclude Include="BitArray.h" />
     <ClInclude Include="BitVector.h" />
     <ClInclude Include="BitwiseOperations.h" />
@@ -360,7 +359,6 @@
     <ClInclude Include="RetainPtr.h" />
     <ClInclude Include="SHA1.h" />
     <ClInclude Include="SaturatedArithmetic.h" />
-    <ClInclude Include="SpinLock.h" />
     <ClInclude Include="StaticConstructors.h" />
     <ClInclude Include="StdLibExtras.h" />
     <ClInclude Include="StringExtras.h" />
@@ -368,7 +366,6 @@
     <ClInclude Include="TemporaryChange.h" />
     <ClInclude Include="ThreadFunctionInvocation.h" />
     <ClInclude Include="ThreadRestrictionVerifier.h" />
-    <ClInclude Include="ThreadSafeRefCounted.h" />
     <ClInclude Include="ThreadSpecific.h" />
     <ClInclude Include="Threading.h" />
     <ClInclude Include="TreeNode.h" />

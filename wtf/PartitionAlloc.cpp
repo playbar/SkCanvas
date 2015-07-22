@@ -102,14 +102,12 @@ static void parititonAllocBaseInit(PartitionRootBase* root)
 {
     ASSERT(!root->initialized);
 
-    spinLockLock(&PartitionRootBase::gInitializedLock);
     if (!PartitionRootBase::gInitialized) {
         PartitionRootBase::gInitialized = true;
         // We mark the seed page as free to make sure it is skipped by our
         // logic to find a new active page.
         PartitionRootBase::gPagedBucket.activePagesHead = &PartitionRootGeneric::gSeedPage;
     }
-    spinLockUnlock(&PartitionRootBase::gInitializedLock);
 
     root->initialized = true;
     root->totalSizeOfSuperPages = 0;

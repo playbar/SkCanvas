@@ -101,7 +101,7 @@
 #include "wtf/ByteSwap.h"
 #include "wtf/CPU.h"
 #include "wtf/PageAllocator.h"
-#include "wtf/SpinLock.h"
+//#include "wtf/SpinLock.h"
 
 #include <limits.h>
 
@@ -529,19 +529,11 @@ ALWAYS_INLINE PartitionBucket* partitionGenericSizeToBucket(PartitionRootGeneric
 
 ALWAYS_INLINE void* partitionAllocGenericFlags(PartitionRootGeneric* root, int flags, size_t size)
 {
-#if defined(MEMORY_TOOL_REPLACES_ALLOCATOR)
-    void* result = malloc(size);
-    RELEASE_ASSERT(result);
-    return result;
-#else
     ASSERT(root->initialized);
     size = partitionCookieSizeAdjustAdd(size);
     PartitionBucket* bucket = partitionGenericSizeToBucket(root, size);
-    spinLockLock(&root->lock);
     void* ret = partitionBucketAlloc(root, flags, size, bucket);
-    spinLockUnlock(&root->lock);
     return ret;
-#endif
 }
 
 ALWAYS_INLINE void* partitionAllocGeneric(PartitionRootGeneric* root, size_t size)
@@ -551,21 +543,14 @@ ALWAYS_INLINE void* partitionAllocGeneric(PartitionRootGeneric* root, size_t siz
 
 ALWAYS_INLINE void partitionFreeGeneric(PartitionRootGeneric* root, void* ptr)
 {
-#if defined(MEMORY_TOOL_REPLACES_ALLOCATOR)
-    free(ptr);
-#else
     ASSERT(root->initialized);
-
     if (UNLIKELY(!ptr))
         return;
 
     ptr = partitionCookieFreePointerAdjust(ptr);
     ASSERT(partitionPointerIsValid(ptr));
     PartitionPage* page = partitionPointerToPage(ptr);
-    spinLockLock(&root->lock);
     partitionFreeWithPage(ptr, page);
-    spinLockUnlock(&root->lock);
-#endif
 }
 
 ALWAYS_INLINE bool partitionBucketIsDirectMapped(PartitionBucket* bucket)

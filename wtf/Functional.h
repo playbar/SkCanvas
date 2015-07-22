@@ -29,7 +29,6 @@
 #include "wtf/Assertions.h"
 #include "wtf/PassRefPtr.h"
 #include "wtf/RefPtr.h"
-#include "wtf/ThreadSafeRefCounted.h"
 #include "wtf/WeakPtr.h"
 
 namespace WTF {
@@ -352,7 +351,7 @@ template<typename T> struct ParamStorageTraits<RetainPtr<T> > {
     static typename RetainPtr<T>::PtrType unwrap(const StorageType& value) { return value.get(); }
 };
 
-class FunctionImplBase : public ThreadSafeRefCounted<FunctionImplBase> {
+class FunctionImplBase : public RefCounted<FunctionImplBase> {
 public:
     virtual ~FunctionImplBase() { }
 };

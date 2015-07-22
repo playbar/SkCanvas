@@ -23,7 +23,7 @@
 
 #ifndef NDEBUG
 #include "wtf/Assertions.h"
-#include "wtf/Atomics.h"
+//#include "wtf/Atomics.h"
 #include "wtf/HashCountedSet.h"
 #endif
 
@@ -81,15 +81,15 @@ RefCountedLeakCounter::~RefCountedLeakCounter()
     }
 }
 
-void RefCountedLeakCounter::increment()
-{
-    atomicIncrement(&m_count);
-}
-
-void RefCountedLeakCounter::decrement()
-{
-    atomicDecrement(&m_count);
-}
+//void RefCountedLeakCounter::increment()
+//{
+//    atomicIncrement(&m_count);
+//}
+//
+//void RefCountedLeakCounter::decrement()
+//{
+//    atomicDecrement(&m_count);
+//}
 
 #endif
 

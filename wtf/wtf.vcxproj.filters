@@ -220,7 +220,6 @@
     <ClInclude Include="ArrayBufferView.h" />
     <ClCompile Include="Assertions.cpp" />
     <ClInclude Include="Assertions.h" />
-    <ClInclude Include="Atomics.h" />
     <ClInclude Include="BitArray.h" />
     <ClCompile Include="BitVector.cpp" />
     <ClInclude Include="BitVector.h" />
@@ -310,7 +309,6 @@
     <ClInclude Include="SHA1.h" />
     <ClInclude Include="SaturatedArithmetic.h" />
     <ClCompile Include="SizeLimits.cpp" />
-    <ClInclude Include="SpinLock.h" />
     <ClInclude Include="StaticConstructors.h" />
     <ClInclude Include="StdLibExtras.h" />
     <ClInclude Include="StringExtras.h" />
@@ -318,7 +316,6 @@
     <ClInclude Include="TemporaryChange.h" />
     <ClInclude Include="ThreadFunctionInvocation.h" />
     <ClInclude Include="ThreadRestrictionVerifier.h" />
-    <ClInclude Include="ThreadSafeRefCounted.h" />
     <ClInclude Include="ThreadSpecific.h" />
     <ClCompile Include="ThreadSpecificWin.cpp" />
     <ClCompile Include="Threading.cpp" />

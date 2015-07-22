@@ -29,13 +29,14 @@
 #include "wtf/Noncopyable.h"
 #include "wtf/PassRefPtr.h"
 #include "wtf/RefPtr.h"
-#include "wtf/ThreadSafeRefCounted.h"
 #include "wtf/Threading.h"
+#include "FastAllocBase.h"
+#include "RefCounted.h"
 
 namespace WTF {
 
 template<typename T>
-class WeakReference : public ThreadSafeRefCounted<WeakReference<T> > {
+class WeakReference : public RefCounted<WeakReference<T> > {
     WTF_MAKE_NONCOPYABLE(WeakReference<T>);
     WTF_MAKE_FAST_ALLOCATED;
 public:
