@@ -1043,9 +1043,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\third_party\icu\icuuc.vcxproj">
-      <Project>{539ced2c-dcac-e5e9-3b83-311f2d981aab}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\third_party\zlib\zlib.vcxproj">
       <Project>{33b2758b-efd1-beb1-80bb-b999b3f1b0d8}</Project>
     </ProjectReference>
