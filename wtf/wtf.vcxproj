@@ -371,7 +371,6 @@
     <ClInclude Include="ThreadSafeRefCounted.h" />
     <ClInclude Include="ThreadSpecific.h" />
     <ClInclude Include="Threading.h" />
-    <ClInclude Include="ThreadingPrimitives.h" />
     <ClInclude Include="TreeNode.h" />
     <ClInclude Include="TypeTraits.h" />
     <ClInclude Include="TypedArrayBase.h" />
@@ -447,7 +446,6 @@
     <ClCompile Include="SizeLimits.cpp" />
     <ClCompile Include="ThreadSpecificWin.cpp" />
     <ClCompile Include="Threading.cpp" />
-    <ClCompile Include="ThreadingWin.cpp" />
     <ClCompile Include="TypeTraits.cpp" />
     <ClCompile Include="unicode\WTFUTF8.cpp" />
     <ClCompile Include="WTF.cpp" />

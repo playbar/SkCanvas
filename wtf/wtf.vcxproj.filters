@@ -323,8 +323,6 @@
     <ClCompile Include="ThreadSpecificWin.cpp" />
     <ClCompile Include="Threading.cpp" />
     <ClInclude Include="Threading.h" />
-    <ClInclude Include="ThreadingPrimitives.h" />
-    <ClCompile Include="ThreadingWin.cpp" />
     <ClInclude Include="TreeNode.h" />
     <ClCompile Include="TypeTraits.cpp" />
     <ClInclude Include="TypeTraits.h" />
