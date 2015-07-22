@@ -34,13 +34,11 @@
 #include "wtf/Forward.h"
 #include "wtf/unicode/Unicode.h"
 
-// Utilities for CSSOM http://dev.w3.org/csswg/cssom/
 // FIXME: This file has a similar purpose to
 // CSSMarkup.h. Perhaps the two should be combined?
 
 namespace WebCore {
 
-// Common serializing methods. See: http://dev.w3.org/csswg/cssom/#common-serializing-idioms
 void serializeCharacter(UChar32, StringBuilder& appendTo);
 void serializeCharacterAsCodePoint(UChar32, StringBuilder& appendTo);
 void serializeIdentifier(const String& identifier, StringBuilder& appendTo);
