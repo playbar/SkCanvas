@@ -10,10 +10,6 @@
 #include "wtf/text/StringImpl.h"
 #include "wtf/text/StringView.h"
 
-#ifdef __OBJC__
-#include <objc/objc.h>
-#endif
-
 namespace WTF {
 
 class CString;
