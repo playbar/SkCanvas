@@ -35,7 +35,6 @@
 #include "wtf/PassRefPtr.h"
 #include "wtf/RefCounted.h"
 #include "wtf/RefPtr.h"
-#include "wtf/ThreadingPrimitives.h"
 #include "wtf/ThreadSafeRefCounted.h"
 #include "wtf/Vector.h"
 
@@ -119,10 +118,8 @@ private:
     OwnPtr<ImageDecoderFactory> m_imageDecoderFactory;
 
     // Prevents multiple decode operations on the same data.
-    Mutex m_decodeMutex;
 
     // Protect concurrent access to m_hasAlpha.
-    Mutex m_alphaMutex;
 };
 
 } // namespace WebCore

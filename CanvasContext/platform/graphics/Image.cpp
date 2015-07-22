@@ -53,7 +53,6 @@ Image::~Image()
 
 Image* Image::nullImage()
 {
-    ASSERT(isMainThread());
     DEFINE_STATIC_REF(Image, nullImage, (BitmapImage::create()));
     return nullImage;
 }

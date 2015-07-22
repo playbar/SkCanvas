@@ -27,7 +27,6 @@
 #include "wtf/HashMap.h"
 #include "wtf/PassOwnPtr.h"
 #include "wtf/ThreadSpecific.h"
-#include "wtf/ThreadingPrimitives.h"
 #include "wtf/text/AtomicString.h"
 #include "wtf/text/CString.h"
 #include "wtf/text/WTFString.h"
@@ -604,8 +603,6 @@ static TextBreakIterator* nonSharedCharacterBreakIterator;
 
 static inline bool compareAndSwapNonSharedCharacterBreakIterator(TextBreakIterator* expected, TextBreakIterator* newValue)
 {
-    DEFINE_STATIC_LOCAL(Mutex, nonSharedCharacterBreakIteratorMutex, ());
-    MutexLocker locker(nonSharedCharacterBreakIteratorMutex);
     if (nonSharedCharacterBreakIterator != expected)
         return false;
     nonSharedCharacterBreakIterator = newValue;
