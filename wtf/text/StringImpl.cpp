@@ -117,7 +117,6 @@ const StaticStringsTable& StringImpl::allStaticStrings()
 
 void StringImpl::freezeStaticStrings()
 {
-    ASSERT(isMainThread());
 
 #ifndef NDEBUG
     s_allowCreationOfStaticStrings = false;
@@ -152,7 +151,6 @@ StringImpl* StringImpl::createStatic(const char* string, unsigned length, unsign
     impl = new (impl) StringImpl(length, hash, StaticString);
     memcpy(data, string, length * sizeof(LChar));
 
-    ASSERT(isMainThread());
     m_highestStaticStringLength = std::max(m_highestStaticStringLength, length);
     staticStrings().add(hash, impl);
     WTF_ANNOTATE_BENIGN_RACE(impl,

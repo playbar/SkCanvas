@@ -45,8 +45,6 @@ public:
     ThreadFunction entryPoint;
     void* data;
     const char* name;
-
-    Mutex creationMutex;
 };
 
 static void threadEntryPoint(void* contextData)
@@ -55,10 +53,7 @@ static void threadEntryPoint(void* contextData)
 
     // Block until our creating thread has completed any extra setup work, including
     // establishing ThreadIdentifier.
-    {
-        MutexLocker locker(context->creationMutex);
-    }
-
+  
     initializeCurrentThreadInternal(context->name);
 
     // Grab the info that we need out of the context, then deallocate it.
@@ -69,21 +64,20 @@ static void threadEntryPoint(void* contextData)
     entryPoint(data);
 }
 
-ThreadIdentifier createThread(ThreadFunction entryPoint, void* data, const char* name)
-{
-    // Visual Studio has a 31-character limit on thread names. Longer names will
-    // be truncated silently, but we'd like callers to know about the limit.
-#if !LOG_DISABLED
-    if (name && strlen(name) > 31)
-        WTF_LOG_ERROR("Thread name \"%s\" is longer than 31 characters and will be truncated by Visual Studio", name);
-#endif
-
-    NewThreadContext* context = new NewThreadContext(entryPoint, data, name);
-
-    // Prevent the thread body from executing until we've established the thread identifier.
-    MutexLocker locker(context->creationMutex);
-
-    return createThreadInternal(threadEntryPoint, context, name);
-}
+//ThreadIdentifier createThread(ThreadFunction entryPoint, void* data, const char* name)
+//{
+//    // Visual Studio has a 31-character limit on thread names. Longer names will
+//    // be truncated silently, but we'd like callers to know about the limit.
+//#if !LOG_DISABLED
+//    if (name && strlen(name) > 31)
+//        WTF_LOG_ERROR("Thread name \"%s\" is longer than 31 characters and will be truncated by Visual Studio", name);
+//#endif
+//
+//    NewThreadContext* context = new NewThreadContext(entryPoint, data, name);
+//
+//    // Prevent the thread body from executing until we've established the thread identifier.
+//
+//    return createThreadInternal(threadEntryPoint, context, name);
+//}
 
 } // namespace WTF

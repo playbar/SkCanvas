@@ -28,7 +28,7 @@
 
 #include "wtf/HashMap.h"
 #include "wtf/StdLibExtras.h"
-#include "wtf/ThreadingPrimitives.h"
+//#include "wtf/ThreadingPrimitives.h"
 #include "wtf/text/StringBuilder.h"
 #include "wtf/text/StringHash.h"
 #include "wtf/text/WTFString.h"

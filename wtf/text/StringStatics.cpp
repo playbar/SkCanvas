@@ -63,16 +63,12 @@ NEVER_INLINE unsigned StringImpl::hashSlowCase() const
 
 void AtomicString::init()
 {
-    ASSERT(isMainThread());
-
     new (NotNull, (void*)&nullAtom) AtomicString;
     new (NotNull, (void*)&emptyAtom) AtomicString("");
 }
 
 void StringStatics::init()
 {
-    ASSERT(isMainThread());
-
     // FIXME: These should be allocated at compile time.
     new (NotNull, (void*)&starAtom) AtomicString("*", AtomicString::ConstructFromLiteral);
     new (NotNull, (void*)&xmlAtom) AtomicString("xml", AtomicString::ConstructFromLiteral);

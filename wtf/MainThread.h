@@ -47,10 +47,10 @@ WTF_EXPORT void callOnMainThread(MainThreadFunction*, void* context);
 template<typename> class Function;
 WTF_EXPORT void callOnMainThread(const Function<void ()>&);
 
-WTF_EXPORT bool isMainThread();
+//WTF_EXPORT bool isMainThread();
 
 } // namespace WTF
 
 using WTF::callOnMainThread;
-using WTF::isMainThread;
+//using WTF::isMainThread;
 #endif // MainThread_h

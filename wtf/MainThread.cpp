@@ -37,7 +37,6 @@
 
 namespace WTF {
 
-static ThreadIdentifier mainThreadIdentifier;
 static void (*callOnMainThreadFunction)(MainThreadFunction, void*);
 
 void initializeMainThread(void (*function)(MainThreadFunction, void*))
@@ -48,7 +47,6 @@ void initializeMainThread(void (*function)(MainThreadFunction, void*))
     initializedMainThread = true;
     callOnMainThreadFunction = function;
 
-    mainThreadIdentifier = currentThread();
 }
 
 void callOnMainThread(MainThreadFunction* function, void* context)
@@ -66,11 +64,6 @@ static void callFunctionObject(void* context)
 void callOnMainThread(const Function<void()>& function)
 {
     callOnMainThread(callFunctionObject, new Function<void()>(function));
-}
-
-bool isMainThread()
-{
-    return currentThread() == mainThreadIdentifier;
 }
 
 } // namespace WTF

@@ -34,7 +34,7 @@
 #include "wtf/MainThread.h"
 #include "wtf/StdLibExtras.h"
 #include "wtf/StringExtras.h"
-#include "wtf/ThreadingPrimitives.h"
+//#include "wtf/ThreadingPrimitives.h"
 #include "wtf/text/CString.h"
 #include "wtf/text/TextCodecICU.h"
 #include "wtf/text/TextCodecLatin1.h"
@@ -102,15 +102,6 @@ struct TextCodecFactory {
 
 typedef HashMap<const char*, const char*, TextEncodingNameHash> TextEncodingNameMap;
 typedef HashMap<const char*, TextCodecFactory> TextCodecMap;
-
-static Mutex& encodingRegistryMutex()
-{
-    // We don't have to use AtomicallyInitializedStatic here because
-    // this function is called on the main thread for any page before
-    // it is used in worker threads.
-    DEFINE_STATIC_LOCAL(Mutex, mutex, ());
-    return mutex;
-}
 
 static TextEncodingNameMap* textEncodingNameMap;
 static TextCodecMap* textCodecMap;
@@ -202,7 +193,6 @@ static void pruneBlacklistedCodecs()
 
 static void buildBaseTextCodecMaps()
 {
-    ASSERT(isMainThread());
     ASSERT(!textCodecMap);
     ASSERT(!textEncodingNameMap);
 
@@ -286,8 +276,6 @@ static void extendTextCodecMaps()
 
 PassOwnPtr<TextCodec> newTextCodec(const TextEncoding& encoding)
 {
-    MutexLocker lock(encodingRegistryMutex());
-
     ASSERT(textCodecMap);
     TextCodecFactory factory = textCodecMap->get(encoding.name());
     ASSERT(factory.function);
@@ -300,8 +288,6 @@ const char* atomicCanonicalTextEncodingName(const char* name)
         return 0;
     if (!textEncodingNameMap)
         buildBaseTextCodecMaps();
-
-    MutexLocker lock(encodingRegistryMutex());
 
     if (const char* atomicName = textEncodingNameMap->get(name))
         return atomicName;
@@ -349,8 +335,6 @@ void dumpTextEncodingNameMap()
 {
     unsigned size = textEncodingNameMap->size();
     fprintf(stderr, "Dumping %u entries in WTF::TextEncodingNameMap...\n", size);
-
-    MutexLocker lock(encodingRegistryMutex());
 
     TextEncodingNameMap::const_iterator it = textEncodingNameMap->begin();
     TextEncodingNameMap::const_iterator end = textEncodingNameMap->end();

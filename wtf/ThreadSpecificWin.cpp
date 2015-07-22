@@ -25,7 +25,7 @@
 #if OS(WIN)
 
 #include "StdLibExtras.h"
-#include "ThreadingPrimitives.h"
+//#include "ThreadingPrimitives.h"
 #include "wtf/DoublyLinkedList.h"
 
 namespace WTF {
@@ -34,12 +34,6 @@ static DoublyLinkedList<PlatformThreadSpecificKey>& destructorsList()
 {
     DEFINE_STATIC_LOCAL(DoublyLinkedList<PlatformThreadSpecificKey>, staticList, ());
     return staticList;
-}
-
-static Mutex& destructorsMutex()
-{
-    DEFINE_STATIC_LOCAL(Mutex, staticMutex, ());
-    return staticMutex;
 }
 
 class PlatformThreadSpecificKey : public DoublyLinkedListNode<PlatformThreadSpecificKey> {
@@ -91,13 +85,11 @@ void threadSpecificKeyCreate(ThreadSpecificKey* key, void (*destructor)(void *))
 {
     *key = new PlatformThreadSpecificKey(destructor);
 
-    MutexLocker locker(destructorsMutex());
     destructorsList().push(*key);
 }
 
 void threadSpecificKeyDelete(ThreadSpecificKey key)
 {
-    MutexLocker locker(destructorsMutex());
     destructorsList().remove(key);
     delete key;
 }
@@ -121,7 +113,6 @@ void ThreadSpecificThreadExit()
             data->destructor(data);
     }
 
-    MutexLocker locker(destructorsMutex());
     PlatformThreadSpecificKey* key = destructorsList().head();
     while (key) {
         PlatformThreadSpecificKey* nextKey = key->next();

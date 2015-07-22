@@ -40,8 +40,6 @@
 
 namespace WTF {
 
-extern void initializeThreading();
-
 bool s_initialized;
 bool s_shutdown;
 bool Partitions::s_initialized;
@@ -57,7 +55,6 @@ void initialize(TimeFunction currentTimeFunction, TimeFunction monotonicallyIncr
     Partitions::initialize();
     setCurrentTimeFunction(currentTimeFunction);
     setMonotonicallyIncreasingTimeFunction(monotonicallyIncreasingTimeFunction);
-    initializeThreading();
 }
 
 void shutdown()

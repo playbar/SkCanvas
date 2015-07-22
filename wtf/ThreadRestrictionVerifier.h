@@ -46,7 +46,6 @@ class ThreadRestrictionVerifier {
 public:
     ThreadRestrictionVerifier()
         : m_shared(false)
-        , m_owningThread(0)
     {
     }
 
@@ -63,7 +62,6 @@ public:
 
         ASSERT(shared != previouslyShared);
         // Capture the current thread to verify that subsequent ref/deref happen on this thread.
-        m_owningThread = currentThread();
     }
 
     // Is it OK to use the object at this moment on the current thread?
@@ -71,15 +69,12 @@ public:
     {
         if (!m_shared)
             return true;
-
-        return m_owningThread == currentThread();
+		return true;
     }
 
 private:
     bool m_shared;
 
-    // Used by SingleThreadVerificationMode
-    ThreadIdentifier m_owningThread;
 };
 
 }

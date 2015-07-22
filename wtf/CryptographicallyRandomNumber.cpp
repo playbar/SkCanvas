@@ -31,7 +31,8 @@
 #include "CryptographicallyRandomNumber.h"
 
 #include "StdLibExtras.h"
-#include "ThreadingPrimitives.h"
+//#include "ThreadingPrimitives.h"
+#include "FastAllocBase.h"
 
 namespace WTF {
 
@@ -70,7 +71,6 @@ private:
 
     ARC4Stream m_stream;
     int m_count;
-    Mutex m_mutex;
 };
 
 ARC4Stream::ARC4Stream()
@@ -142,8 +142,6 @@ uint32_t ARC4RandomNumberGenerator::getWord()
 
 uint32_t ARC4RandomNumberGenerator::randomNumber()
 {
-    MutexLocker locker(m_mutex);
-
     m_count -= 4;
     stirIfNeeded();
     return getWord();
@@ -151,8 +149,6 @@ uint32_t ARC4RandomNumberGenerator::randomNumber()
 
 void ARC4RandomNumberGenerator::randomValues(void* buffer, size_t length)
 {
-    MutexLocker locker(m_mutex);
-
     unsigned char* result = reinterpret_cast<unsigned char*>(buffer);
     stirIfNeeded();
     while (length--) {
