@@ -12004,6 +12004,9 @@
     <Filter Include="ext\_excluded_files">
       <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
     </Filter>
+    <Filter Include="..\third_party\png">
+      <UniqueIdentifier>{375c3e04-7532-456f-8b13-e122e33bb5c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\skia\src\core\SkFlate.cpp">
@@ -14211,7 +14214,61 @@
     <ClCompile Include="ext\convolver.cc">
       <Filter>ext</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_WIC.cpp">
+    <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_libpng.cpp">
+      <Filter>..\third_party\skia\src\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\png.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngerror.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pnggccrd.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngget.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngmem.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngpread.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngread.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngrio.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngrtran.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngrutil.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngset.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngtrans.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngvcrd.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngwio.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngwrite.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngwtran.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngwutil.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_FactoryDefault.cpp">
       <Filter>..\third_party\skia\src\images</Filter>
     </ClCompile>
   </ItemGroup>
@@ -14239,6 +14296,15 @@
     </ClInclude>
     <ClInclude Include="ext\convolver.h">
       <Filter>ext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\libpng\png.h">
+      <Filter>..\third_party\png</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\libpng\pngconf.h">
+      <Filter>..\third_party\png</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\libpng\pngusr.h">
+      <Filter>..\third_party\png</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

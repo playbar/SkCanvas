@@ -106,6 +106,7 @@ void BitmapImage::src(const char* src)
 	SkPaint paint;
 	paint.setColor(0xff00ff00);
 	SkBitmap bitmap;
+	//SkImageDecoder::DecodeFile(src, &bitmap, SkBitmap::kARGB_8888_Config, SkImageDecoder::kDecodePixels_Mode);
 	SkImageDecoder *coder = SkImageDecoder::Factory(&stream);
 	coder->decode(&stream, &bitmap, SkBitmap::kARGB_8888_Config,SkImageDecoder::kDecodePixels_Mode);
 	RefPtr<NativeImageSkia> nativeBmp = NativeImageSkia::create(bitmap);

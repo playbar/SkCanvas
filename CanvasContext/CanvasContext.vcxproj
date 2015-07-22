@@ -15,23 +15,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\third_party\libpng\png.c" />
-    <ClCompile Include="..\third_party\libpng\pngerror.c" />
-    <ClCompile Include="..\third_party\libpng\pnggccrd.c" />
-    <ClCompile Include="..\third_party\libpng\pngget.c" />
-    <ClCompile Include="..\third_party\libpng\pngmem.c" />
-    <ClCompile Include="..\third_party\libpng\pngpread.c" />
-    <ClCompile Include="..\third_party\libpng\pngread.c" />
-    <ClCompile Include="..\third_party\libpng\pngrio.c" />
-    <ClCompile Include="..\third_party\libpng\pngrtran.c" />
-    <ClCompile Include="..\third_party\libpng\pngrutil.c" />
-    <ClCompile Include="..\third_party\libpng\pngset.c" />
-    <ClCompile Include="..\third_party\libpng\pngtrans.c" />
-    <ClCompile Include="..\third_party\libpng\pngvcrd.c" />
-    <ClCompile Include="..\third_party\libpng\pngwio.c" />
-    <ClCompile Include="..\third_party\libpng\pngwrite.c" />
-    <ClCompile Include="..\third_party\libpng\pngwtran.c" />
-    <ClCompile Include="..\third_party\libpng\pngwutil.c" />
     <ClCompile Include="blink\ColorData.cpp" />
     <ClCompile Include="blink\CSSGrammar.cpp" />
     <ClCompile Include="blink\CSSTokenizer.cpp" />
@@ -192,9 +175,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Chrome35\src\third_party\WebKit\Source\platform\TraceLocation.h" />
-    <ClInclude Include="..\third_party\libpng\png.h" />
-    <ClInclude Include="..\third_party\libpng\pngconf.h" />
-    <ClInclude Include="..\third_party\libpng\pngusr.h" />
     <ClInclude Include="blink\CSSGrammar.h" />
     <ClInclude Include="blink\FontFamilyNames.h" />
     <ClInclude Include="blink\HTMLNames.h" />

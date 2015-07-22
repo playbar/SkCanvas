@@ -60,7 +60,6 @@ public:
         , fPng_ptr(png_ptr)
         , fInfo_ptr(info_ptr)
         , fConfig(SkBitmap::kNo_Config) {
-        SkASSERT(stream != NULL);
         stream->ref();
     }
     ~SkPNGImageIndex() {
@@ -169,7 +168,6 @@ static bool pos_le(int value, int max) {
 }
 
 static bool substituteTranspColor(SkBitmap* bm, SkPMColor match) {
-    SkASSERT(bm->config() == SkBitmap::kARGB_8888_Config);
 
     bool reallyHasAlpha = false;
 
@@ -379,7 +377,6 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
             // since it would not be very interesting.
             reallyHasAlpha = true;
             // A8 is only allowed if the original was GRAY.
-            SkASSERT(PNG_COLOR_TYPE_GRAY == colorType);
         }
         for (int i = 0; i < number_passes; i++) {
             for (png_uint_32 y = 0; y < origHeight; y++) {
@@ -396,7 +393,6 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
             srcBytesPerPixel = 1;
         } else if (SkBitmap::kA8_Config == config) {
             // A8 is only allowed if the original was GRAY.
-            SkASSERT(PNG_COLOR_TYPE_GRAY == colorType);
             sc = SkScaledBitmapSampler::kGray;
             srcBytesPerPixel = 1;
         } else if (hasAlpha) {
@@ -451,7 +447,6 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
             // skip the rest of the rows (if any)
             png_uint_32 read = (height - 1) * sampler.srcDY() +
                                sampler.srcY0() + 1;
-            SkASSERT(read <= origHeight);
             skip_src_rows(png_ptr, srcRow, origHeight - read);
         }
     }
@@ -583,7 +578,6 @@ bool SkPNGImageDecoder::getBitmapConfig(png_structp png_ptr, png_infop info_ptr,
         if (PNG_COLOR_TYPE_GRAY == colorType) {
             srcDepth = k8BitGray_SrcDepth;
             // Remove this assert, which fails on desk_pokemonwiki.skp
-            //SkASSERT(!*hasAlphap);
         }
 
         *configp = this->getPrefConfig(srcDepth, *hasAlphap);
