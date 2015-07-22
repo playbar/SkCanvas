@@ -655,6 +655,7 @@
     <ClCompile Include="..\third_party\skia\src\gpu\GrGpuFactory.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_FactoryRegistrar.cpp" />
+    <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_WIC.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkImageEncoder.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkImageEncoder_Factory.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkImageRef.cpp" />
@@ -674,7 +675,6 @@
     <ClCompile Include="..\third_party\skia\src\opts\SkUtils_opts_SSE2.cpp" />
     <ClCompile Include="..\third_party\skia\src\opts\SkXfermode_opts_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkDiscardableMemory_none.cpp" />
-    <ClCompile Include="..\third_party\skia\src\ports\SkImageDecoder_WIC.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkPurgeableMemoryBlock_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win_dw.cpp" />

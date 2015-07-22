@@ -14139,9 +14139,6 @@
     <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_FactoryRegistrar.cpp">
       <Filter>..\third_party\skia\src\images</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkImageDecoder_WIC.cpp">
-      <Filter>..\third_party\skia\src\images</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\images\SkImageEncoder_Factory.cpp">
       <Filter>..\third_party\skia\src\images</Filter>
     </ClCompile>
@@ -14213,6 +14210,9 @@
     </ClCompile>
     <ClCompile Include="ext\convolver.cc">
       <Filter>ext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_WIC.cpp">
+      <Filter>..\third_party\skia\src\images</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
