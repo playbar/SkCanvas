@@ -87,7 +87,15 @@ enum LineJoin {
 
 enum HorizontalAlignment { AlignLeft, AlignRight, AlignHCenter };
 
-enum TextBaseline { AlphabeticTextBaseline, TopTextBaseline, MiddleTextBaseline, BottomTextBaseline, IdeographicTextBaseline, HangingTextBaseline };
+enum TextBaseline 
+{
+	AlphabeticTextBaseline, 
+	TopTextBaseline,
+	MiddleTextBaseline,
+	BottomTextBaseline,
+	IdeographicTextBaseline,
+	HangingTextBaseline 
+};
 
 enum TextAlign { StartTextAlign, EndTextAlign, LeftTextAlign, CenterTextAlign, RightTextAlign };
 

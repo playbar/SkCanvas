@@ -14265,6 +14265,9 @@
     <ClCompile Include="..\third_party\skia\src\ports\SkFontMgr_default_gdi.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win_dw.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\third_party\skia\src\core\SkOrderedWriteBuffer.h">

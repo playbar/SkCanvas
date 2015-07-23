@@ -697,6 +697,7 @@
     <ClCompile Include="..\third_party\skia\src\opts\SkXfermode_opts_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkDiscardableMemory_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win.cpp" />
+    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win_dw.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkFontMgr_default_gdi.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkPurgeableMemoryBlock_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkGlobalInitialization_chromium.cpp" />

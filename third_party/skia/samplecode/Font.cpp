@@ -14,6 +14,7 @@
 #include "CanvasRenderingContext2D.h"
 #include "SkBlurMaskFilter.h"
 #include "SkGradientShader.h"
+#include "TextMetrics.h"
 
 using namespace WebCore;
 using namespace WTF;
@@ -115,37 +116,98 @@ protected:
 		pskCanvas->drawPath(fPath, embossPaint);
 	}
 
+	void TestAlign(SkCanvas *canvas)
+	{
+		SkPaint paint;
+		paint.setAntiAlias(true);
+		paint.setColor(0xffff0000);
+		paint.setTextSize(30);
+		paint.setStyle(SkPaint::kStroke_Style);
+		paint.setStrokeWidth(2);
+		paint.setVerticalText(true);
+		paint.setUnderlineText(true);
+		canvas->drawLine(150, 20, 150, 170, paint);
+		paint.setTextAlign(SkPaint::kCenter_Align);
+		canvas->drawText("test", 4, 150, 60, paint);
+
+		paint.setTextAlign(SkPaint::kLeft_Align);
+		canvas->drawText("test", 4, 150, 80, paint);
+		paint.setTextAlign(SkPaint::kRight_Align);
+		canvas->drawText("test", 4, 150, 140, paint );
+
+	}
+
+	void TestBaseLine(SkCanvas *canvas)
+	{
+		//SkPaint paint;
+		//paint.setAntiAlias(true);
+		//paint.setColor(0xffff0000);
+		//paint.setTextSize(30);
+		//paint.setStyle(SkPaint::kStroke_Style);
+		//paint.setStrokeWidth(2);
+		SkPaint paint;
+		paint.setAntiAlias(true);
+		paint.setColor(0xffff0000);
+		paint.setTextSize(30);
+		paint.setStyle(SkPaint::kStroke_Style);
+		//paint.setStrokeWidth(1);
+		//paint.setVerticalText(true);
+		paint.setUnderlineText(true);
+
+		std::string str1 = Unicode2ASCII(std::wstring(L"Hello"));
+		float ilen = paint.measureText(str1.c_str(), str1.length());
+		ilen += 0;
+		canvas->drawLine(5, 100, 395, 100, paint);
+		canvas->drawText("test", 4, 150, 60, paint);
+		
+
+		paint.setTextAlign(SkPaint::kLeft_Align);
+		canvas->drawText("test", 4, 150, 80, paint);
+		paint.setTextAlign(SkPaint::kRight_Align);
+		canvas->drawText("test", 4, 150, 140, paint);
+
+	}
+
 	void DrawTest(SkCanvas *canvas)
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
-		ctx->setFont("italic small-caps bold 40px sans-serif");
+		ctx->setFont("italic small-caps 800 40px sans-serif");
 		//ctx->setFont("40px Arial");
-		std::string str1 = Unicode2ASCII(std::wstring(L"测试test"));
-		String str = "HelloWorld";
+		String str = "Hello";
+		RefPtr<TextMetrics> textMetri = ctx->measureText(str);
 		ctx->strokeText(str, 10, 50);
 		//return;
 		//ctx->strokeText("Hello world", 10, 50);
 		SkPaint paint;
 		paint.setAntiAlias(true);
 		paint.setColor(0xffff0000);
-		paint.setTextSize(150);
+		paint.setTextSize(30);
 		paint.setStyle(SkPaint::kStroke_Style);
 		paint.setStrokeWidth(2);
-		SkPoint p = SkPoint::Make(50, 50);
-		SkPoint q = SkPoint::Make(100, 50);
+		paint.setVerticalText(true);
+		paint.setUnderlineText(true);
+		
+		SkPoint p = SkPoint::Make(50, 100);
+		SkPoint q = SkPoint::Make(10, 100);
 		SkPoint pts[] = { p, q };
-		SkScalar t, temp, x, y;
+		//SkScalar t, temp, x, y;
 		SkColor colors[] = {
 			SK_ColorRED, SK_ColorGREEN, SK_ColorBLUE, SK_ColorWHITE, SK_ColorBLACK
 		};
 		////红、绿、蓝、白、黑，这些宏的alpha值都是FF，即不透明
 		SkShader *shader;
-		shader = SkGradientShader::CreateLinear(
-			pts, colors, NULL, SK_ARRAY_COUNT(colors), SkShader::kMirror_TileMode);		canvas->drawText("test", 4, 100, 100, paint);
-		paint.setShader(shader);
-		//shader->unref();
+		shader = SkGradientShader::CreateLinear(pts, colors, NULL, SK_ARRAY_COUNT(colors), SkShader::kMirror_TileMode);		
+		
+		//canvas->drawText("test", 4, 100, 100, paint);
+		//paint.setShader(shader);
+		shader->unref();
 		//paint.setTextAlign(SkPaint::kCenter_Align);
-		canvas->drawText(str1.c_str(), str1.length(), 100, 200, paint);
+		std::string str1 = Unicode2ASCII(std::wstring(L"Hello"));
+		SkPaint::FontMetrics metrix;
+		paint.getFontMetrics(&metrix);
+		canvas->drawPosText(str1.c_str(), str1.length(), pts, paint);
+		float ilen = paint.measureText(str1.c_str(), str1.length());
+		ilen += 0;
 		return;
 	}
 
@@ -195,7 +257,7 @@ protected:
 
     virtual void onDrawContent(SkCanvas* canvas)
 	{
-		PaintShader(canvas);
+		TestBaseLine(canvas);
 	}
 
 private:
