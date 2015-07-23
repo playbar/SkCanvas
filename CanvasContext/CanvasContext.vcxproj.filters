@@ -28,9 +28,6 @@
     <Filter Include="platform\font">
       <UniqueIdentifier>{292a6cca-bf9f-4ffb-879c-9e8119eeaee8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="png">
-      <UniqueIdentifier>{d9d02376-d1ef-481e-932b-889df895ad87}</UniqueIdentifier>
-    </Filter>
     <Filter Include="platform\image-decoders">
       <UniqueIdentifier>{18cd579a-8f61-43a5-8ce5-3fe5a4e6b9cc}</UniqueIdentifier>
     </Filter>

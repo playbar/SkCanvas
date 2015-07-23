@@ -66,8 +66,8 @@ protected:
 		SkPaint paint;
 		paint.setAntiAlias(true);
 		paint.setColor(0xffff0000);
-		paint.setTextSize(40);
-		paint.setStyle(SkPaint::kFill_Style);
+		paint.setTextSize(80);
+		paint.setStyle(SkPaint::kStroke_Style);
 		//SkPoint p = SkPoint::Make(50, 50);
 		//SkPoint q = SkPoint::Make(100, 50);
 		//SkPoint pts[] = { p, q };
@@ -82,7 +82,7 @@ protected:
 		//paint.setShader(shader);
 		//shader->unref();
 		//paint.setTextAlign(SkPaint::kCenter_Align);
-		canvas->drawText(str1.c_str(), str1.length(), 100, 100, paint);
+		canvas->drawText(str1.c_str(), str1.length(), 100, 200, paint);
 		return;
 	}
 
