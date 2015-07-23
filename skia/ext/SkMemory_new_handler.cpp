@@ -77,7 +77,8 @@ void* sk_calloc_throw(size_t size) {
 }
 
 // Jump through the same hoops as sk_malloc_nothrow to avoid a crash, but for calloc.
-void* sk_calloc(size_t size) {
+void* sk_calloc(size_t size)
+{
 #if defined(ANDROID)
     return calloc(size, 1);
 #elif defined(OS_MACOSX) && !defined(OS_IOS)

@@ -109,7 +109,6 @@ void SkProgressView::onDraw(SkCanvas* canvas)
 static SkShader* inflate_shader(const char file[])
 {
     SkBitmap    bm;
-
     return SkImageDecoder::DecodeFile(file, &bm) ?
             SkShader::CreateBitmapShader(bm, SkShader::kRepeat_TileMode, SkShader::kRepeat_TileMode) :
             NULL;

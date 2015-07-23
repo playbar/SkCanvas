@@ -195,10 +195,6 @@ public:
 
     bool isUndefined() const { return type() == Undefined; }
 
-    // FIXME calc: https://bugs.webkit.org/show_bug.cgi?id=80357. A calculated Length
-    // always contains a percentage, and without a maxValue passed to these functions
-    // it's impossible to determine the sign or zero-ness. We assume all calc values
-    // are positive and non-zero for now.
     bool isZero() const
     {
         ASSERT(!isUndefined());

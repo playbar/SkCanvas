@@ -44,7 +44,8 @@ class FloatRect;
 class FloatSize;
 class Path;
 
-class BasicShape : public RefCounted<BasicShape> {
+class BasicShape : public RefCounted<BasicShape> 
+{
 public:
     virtual ~BasicShape() { }
 

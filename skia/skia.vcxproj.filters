@@ -11992,9 +11992,6 @@
     <Filter Include="ext">
       <UniqueIdentifier>{3EE5B703-384C-67C2-8DE0-73108365DC85}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ext\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ext">
       <UniqueIdentifier>{3EE5B703-384C-67C2-8DE0-73108365DC85}</UniqueIdentifier>
     </Filter>
