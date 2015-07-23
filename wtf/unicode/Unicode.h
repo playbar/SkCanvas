@@ -26,7 +26,7 @@
 #include "wtf/Assertions.h"
 
 // Define platform neutral 8 bit character type (L is for Latin-1).
-typedef unsigned char LChar;
+typedef char LChar;
 
 #include "wtf/unicode/icu/UnicodeIcu.h"
 

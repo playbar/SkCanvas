@@ -87,11 +87,6 @@ namespace WTF {
             return StringHasher::computeHashAndMaskTop8Bits<LChar, foldCase<LChar> >(data, length);
         }
 
-        static inline unsigned hash(const char* data, unsigned length)
-        {
-            return CaseFoldingHash::hash(reinterpret_cast<const LChar*>(data), length);
-        }
-
         static inline bool equal(const StringImpl* a, const StringImpl* b)
         {
             return equalIgnoringCaseNonNull(a, b);

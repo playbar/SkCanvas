@@ -36,7 +36,6 @@ public:
 
     AtomicString() { }
     AtomicString(const LChar* s) : m_string(add(s)) { }
-    AtomicString(const char* s) : m_string(add(s)) { }
     AtomicString(const LChar* s, unsigned length) : m_string(add(s, length)) { }
     AtomicString(const UChar* s, unsigned length) : m_string(add(s, length)) { }
     AtomicString(const UChar* s, unsigned length, unsigned existingHash) : m_string(add(s, length, existingHash)) { }
@@ -172,10 +171,8 @@ private:
     String m_string;
 
     static PassRefPtr<StringImpl> add(const LChar*);
-    ALWAYS_INLINE static PassRefPtr<StringImpl> add(const char* s) { return add(reinterpret_cast<const LChar*>(s)); };
     static PassRefPtr<StringImpl> add(const LChar*, unsigned length);
     static PassRefPtr<StringImpl> add(const UChar*, unsigned length);
-    ALWAYS_INLINE static PassRefPtr<StringImpl> add(const char* s, unsigned length) { return add(reinterpret_cast<const LChar*>(s), length); };
     static PassRefPtr<StringImpl> add(const UChar*, unsigned length, unsigned existingHash);
     static PassRefPtr<StringImpl> add(const UChar*);
     static PassRefPtr<StringImpl> add(StringImpl*, unsigned offset, unsigned length);
@@ -205,7 +202,6 @@ inline bool operator==(const Vector<UChar>& a, const AtomicString& b) { return b
 
 inline bool operator!=(const AtomicString& a, const AtomicString& b) { return a.impl() != b.impl(); }
 inline bool operator!=(const AtomicString& a, const LChar* b) { return !(a == b); }
-inline bool operator!=(const AtomicString& a, const char* b) { return !(a == b); }
 inline bool operator!=(const AtomicString& a, const String& b) { return !equal(a.impl(), b.impl()); }
 inline bool operator!=(const AtomicString& a, const Vector<UChar>& b) { return !(a == b); }
 inline bool operator!=(const LChar* a, const AtomicString& b) { return !(b == a); }
@@ -214,10 +210,8 @@ inline bool operator!=(const Vector<UChar>& a, const AtomicString& b) { return !
 
 inline bool equalIgnoringCase(const AtomicString& a, const AtomicString& b) { return equalIgnoringCase(a.impl(), b.impl()); }
 inline bool equalIgnoringCase(const AtomicString& a, const LChar* b) { return equalIgnoringCase(a.impl(), b); }
-inline bool equalIgnoringCase(const AtomicString& a, const char* b) { return equalIgnoringCase(a.impl(), reinterpret_cast<const LChar*>(b)); }
 inline bool equalIgnoringCase(const AtomicString& a, const String& b) { return equalIgnoringCase(a.impl(), b.impl()); }
 inline bool equalIgnoringCase(const LChar* a, const AtomicString& b) { return equalIgnoringCase(a, b.impl()); }
-inline bool equalIgnoringCase(const char* a, const AtomicString& b) { return equalIgnoringCase(reinterpret_cast<const LChar*>(a), b.impl()); }
 inline bool equalIgnoringCase(const String& a, const AtomicString& b) { return equalIgnoringCase(a.impl(), b.impl()); }
 
 // Define external global variables for the commonly used atomic strings.
