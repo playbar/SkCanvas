@@ -170,6 +170,7 @@ protected:
 
 	void DrawTest(SkCanvas *canvas)
 	{
+		SkString testaa("test");
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
 		ctx->setFont("italic small-caps 800 40px sans-serif");
 		//ctx->setFont("40px Arial");
@@ -205,7 +206,7 @@ protected:
 		std::string str1 = Unicode2ASCII(std::wstring(L"Hello"));
 		SkPaint::FontMetrics metrix;
 		paint.getFontMetrics(&metrix);
-		canvas->drawPosText(str1.c_str(), str1.length(), pts, paint);
+		canvas->drawText(str1.c_str(), str1.length(), 100, 100, paint);
 		float ilen = paint.measureText(str1.c_str(), str1.length());
 		ilen += 0;
 		return;
@@ -257,7 +258,7 @@ protected:
 
     virtual void onDrawContent(SkCanvas* canvas)
 	{
-		TestBaseLine(canvas);
+		DrawTest(canvas);
 	}
 
 private:
