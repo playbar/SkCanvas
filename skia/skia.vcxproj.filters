@@ -11806,9 +11806,6 @@
     <Filter Include="..\third_party\skia\src\ports">
       <UniqueIdentifier>{5BCFDFF2-7BF8-4B41-9D0B-3B13CB48CE9B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\third_party\skia\src\ports\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
     </Filter>
@@ -12030,15 +12027,6 @@
     <ClInclude Include="..\third_party\skia\src\ports\SkFontHost_FreeType_common.h">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win_dw.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontMgr_default_gdi.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\ports\SkGlobalInitialization_chromium.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
@@ -14270,6 +14258,12 @@
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_FactoryDefault.cpp">
       <Filter>..\third_party\skia\src\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkFontMgr_default_gdi.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

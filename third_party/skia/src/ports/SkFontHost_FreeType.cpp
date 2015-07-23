@@ -285,7 +285,6 @@ static SkFaceRec* ref_ft_face(const SkTypeface* typeface) {
     SkFaceRec* rec = gFaceRecHead;
     while (rec) {
         if (rec->fFontID == fontID) {
-            SkASSERT(rec->fFace);
             rec->fRefCnt += 1;
             return rec;
         }
@@ -322,7 +321,6 @@ static SkFaceRec* ref_ft_face(const SkTypeface* typeface) {
         SkDELETE(rec);
         return NULL;
     } else {
-        SkASSERT(rec->fFace);
         //fprintf(stderr, "Opened font '%s'\n", filename.c_str());
         rec->fNext = gFaceRecHead;
         gFaceRecHead = rec;
@@ -351,7 +349,6 @@ static void unref_ft_face(FT_Face face) {
         prev = rec;
         rec = next;
     }
-    SkDEBUGFAIL("shouldn't get here, face not in list");
 }
 
 class AutoFTAccess {
@@ -359,8 +356,9 @@ public:
     AutoFTAccess(const SkTypeface* tf) : fRec(NULL), fFace(NULL) {
         gFTMutex.acquire();
         if (1 == ++gFTCount) {
-            if (!InitFreetype()) {
-                sk_throw();
+            if (!InitFreetype()) 
+			{
+                return;
             }
         }
         fRec = ref_ft_face(tf);
@@ -443,7 +441,6 @@ static bool getWidthAdvance(FT_Face face, int gId, int16_t* data) {
     if (getAdvances(face, gId, 1, FT_LOAD_NO_SCALE, &advance)) {
         return false;
     }
-    SkASSERT(data);
     *data = advance;
     return true;
 }
@@ -651,8 +648,8 @@ SkAdvancedTypefaceMetrics* SkTypeface_FreeType::onGetAdvancedTypefaceMetrics(
     }
 
     if (perGlyphInfo & SkAdvancedTypefaceMetrics::kVAdvance_PerGlyphInfo &&
-            FT_HAS_VERTICAL(face)) {
-        SkASSERT(false);  // Not implemented yet.
+            FT_HAS_VERTICAL(face)) 
+	{
     }
 
     if (perGlyphInfo & SkAdvancedTypefaceMetrics::kGlyphNames_PerGlyphInfo &&
@@ -825,7 +822,7 @@ SkScalerContext_FreeType::SkScalerContext_FreeType(SkTypeface* typeface,
 
     if (gFTCount == 0) {
         if (!InitFreetype()) {
-            sk_throw();
+            return;
         }
     }
     ++gFTCount;
@@ -1179,16 +1176,13 @@ void SkScalerContext_FreeType::generateMetrics(SkGlyph* glyph) {
     FT_Error    err;
 
     if (this->setupSize()) {
-        goto ERROR;
-    }
+		glyph->zeroMetrics();
+		return;
+	}
 
     err = FT_Load_Glyph( fFace, glyph->getGlyphID(fBaseGlyphCount), fLoadGlyphFlags );
     if (err != 0) {
-#if 0
-        SkDEBUGF(("SkScalerContext_FreeType::generateMetrics(%x): FT_Load_Glyph(glyph:%d flags:%x) returned 0x%x\n",
-                    fFaceRec->fFontID, glyph->getGlyphID(fBaseGlyphCount), fLoadGlyphFlags, err));
-#endif
-    ERROR:
+
         glyph->zeroMetrics();
         return;
     }
@@ -1243,9 +1237,9 @@ void SkScalerContext_FreeType::generateMetrics(SkGlyph* glyph) {
         break;
 
       default:
-        SkDEBUGFAIL("unknown glyph format");
-        goto ERROR;
-    }
+		  glyph->zeroMetrics();
+		  return;
+	}
 
     if (fRec.fFlags & SkScalerContext::kVertical_Flag) {
         if (fDoLinearMetrics) {
@@ -1289,14 +1283,14 @@ void SkScalerContext_FreeType::generateImage(const SkGlyph& glyph) {
     FT_Error    err;
 
     if (this->setupSize()) {
-        goto ERROR;
-    }
+		memset(glyph.fImage, 0, glyph.rowBytes() * glyph.fHeight);
+		return;
+	}
 
     err = FT_Load_Glyph( fFace, glyph.getGlyphID(fBaseGlyphCount), fLoadGlyphFlags);
     if (err != 0) {
         SkDEBUGF(("SkScalerContext_FreeType::generateImage: FT_Load_Glyph(glyph:%d width:%d height:%d rb:%d flags:%d) returned 0x%x\n",
                     glyph.getGlyphID(fBaseGlyphCount), glyph.fWidth, glyph.fHeight, glyph.rowBytes(), fLoadGlyphFlags, err));
-    ERROR:
         memset(glyph.fImage, 0, glyph.rowBytes() * glyph.fHeight);
         return;
     }
@@ -1308,8 +1302,6 @@ void SkScalerContext_FreeType::generateImage(const SkGlyph& glyph) {
 void SkScalerContext_FreeType::generatePath(const SkGlyph& glyph,
                                             SkPath* path) {
     SkAutoMutexAcquire  ac(gFTMutex);
-
-    SkASSERT(&glyph && path);
 
     if (this->setupSize()) {
         path->reset();
@@ -1351,7 +1343,7 @@ void SkScalerContext_FreeType::generateFontMetrics(SkPaint::FontMetrics* mx,
     SkAutoMutexAcquire  ac(gFTMutex);
 
     if (this->setupSize()) {
-        ERROR:
+flag1:
         if (mx) {
             sk_bzero(mx, sizeof(SkPaint::FontMetrics));
         }
@@ -1424,7 +1416,7 @@ void SkScalerContext_FreeType::generateFontMetrics(SkPaint::FontMetrics* mx,
         ymin = descent + leading;
         ymax = ascent - descent;
     } else {
-        goto ERROR;
+        goto flag1;
     }
 
     // synthesize elements that were not provided by the os/2 table or format-specific metrics
@@ -1494,7 +1486,6 @@ static EncodingProc find_encoding_proc(SkTypeface::Encoding enc) {
     static const EncodingProc gProcs[] = {
         next_utf8, next_utf16, next_utf32
     };
-    SkASSERT((size_t)enc < SK_ARRAY_COUNT(gProcs));
     return gProcs[enc];
 }
 
