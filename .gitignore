@@ -43,7 +43,6 @@ third_party/sfntly/OWNERS
 *.ipch
 wtf/wtf/dtoa/COPYING
 wtf/wtf/OWNERS
-*.mk
 *.icu
 *.json
 *.bin
