@@ -46,39 +46,25 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
-/**
- * A simple GLSurfaceView sub-class that demonstrate how to perform
- * OpenGL ES 2.0 rendering into a GL Surface. Note the following important
- * details:
- *
- * - The class must use a custom context factory to enable 2.0 rendering.
- *   See ContextFactory class definition below.
- *
- * - The class must use a custom EGLConfigChooser to be able to select
- *   an EGLConfig that supports 2.0. This is done by providing a config
- *   specification to eglChooseConfig() that has the attribute
- *   EGL10.ELG_RENDERABLE_TYPE containing the EGL_OPENGL_ES2_BIT flag
- *   set. See ConfigChooser class definition below.
- *
- * - The class must select the surface's format, then choose an EGLConfig
- *   that matches it exactly (with regards to red/green/blue/alpha channels
- *   bit depths). Failure to do so would result in an EGL_BAD_MATCH error.
- */
-class GL2JNIView extends GLSurfaceView {
+class GL2JNIView extends GLSurfaceView 
+{
     private static String TAG = "GL2JNIView";
     private static final boolean DEBUG = false;
 
-    public GL2JNIView(Context context) {
+    public GL2JNIView(Context context)
+    {
         super(context);
         init(false, 0, 0);
     }
 
-    public GL2JNIView(Context context, boolean translucent, int depth, int stencil) {
+    public GL2JNIView(Context context, boolean translucent, int depth, int stencil)
+    {
         super(context);
         init(translucent, depth, stencil);
     }
 
-    private void init(boolean translucent, int depth, int stencil) {
+    private void init(boolean translucent, int depth, int stencil) 
+    {
 
         /* By default, GLSurfaceView() creates a RGB_565 opaque surface.
          * If we want a translucent one, we should change the surface's
@@ -339,11 +325,11 @@ class GL2JNIView extends GLSurfaceView {
         	{
         		icou = 0;
         	}
-            GL2JNILib.step();
+            GL2JNILib.drawFrame();
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-            GL2JNILib.init(width, height);
+            GL2JNILib.changed(width, height);
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
