@@ -8,7 +8,8 @@
 
 #include "GrGLUtil.h"
 #include "SkMatrix.h"
-#include "gl/glew.h"
+//#include "gl/glew.h"
+#include "eggl.h"
 #include "GrConfig.h"
 #include <stdio.h>
 

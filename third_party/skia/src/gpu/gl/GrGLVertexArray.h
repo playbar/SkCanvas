@@ -10,7 +10,8 @@
 
 #include "GrResource.h"
 #include "GrTypesPriv.h"
-#include "gl/glew.h"
+//#include "gl/glew.h"
+#include "eggl.h"
 
 #include "SkTArray.h"
 

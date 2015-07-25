@@ -9,7 +9,8 @@
 #define GrGLUtil_DEFINED
 
 #include "SkRefCnt.h"
-#include "gl/glew.h"
+//#include "gl/glew.h"
+#include "eggl.h"
 
 class SkMatrix;
 

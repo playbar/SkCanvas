@@ -24,7 +24,8 @@
 
 #if SK_SUPPORT_GPU
 #include "gl/GrGLUtil.h"
-#include "gl/glew.h"
+//#include "gl/glew.h"
+#include "eggl.h"
 #include "GrRenderTarget.h"
 #include "GrContext.h"
 #include "SkGpuDevice.h"

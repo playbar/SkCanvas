@@ -10,7 +10,8 @@
 #define GrGLStencilBuffer_DEFINED
 
 #include "GrStencilBuffer.h"
-#include "gl/glew.h"
+//#include "gl/glew.h"
+#include "eggl.h"
 
 class GrGLStencilBuffer : public GrStencilBuffer
 {
