@@ -10,8 +10,9 @@
 
 /** Android framework atomics. */
 
-#include <cutils/atomic.h>
+#include <asm/atomic.h>
 #include <stdint.h>
+#include <assert.h>
 
 #define sk_atomic_inc(addr)         android_atomic_inc(addr)
 #define sk_atomic_add(addr, inc)    android_atomic_add(inc, addr)
@@ -30,9 +31,10 @@ static inline __attribute__((always_inline)) int32_t sk_atomic_conditional_inc(i
         if (value == 0) {
             return 0;
         }
-        if (0 == android_atomic_release_cas(value, value + 1, addr)) {
-            return value;
-        }
+        assert(false);
+        //if (0 == android_atomic_release_cas(value, value + 1, addr)) {
+        //    return value;
+        //}
     }
 }
 

@@ -20,6 +20,11 @@ LOCAL_C_INCLUDES :=  \
 					$(MY_ANDROID_SOURCE)/hardware/libhardware/include \
 					$(LOCAL_PATH)      \
 					$../../third_party/skia/include/core   \
+					$../../third_party/skia/src/image \
+					$../../third_party/skia/include/utils \
+					$../../third_party/skia/include \
+					$../../third_party/skia/src/gpu \
+					$../../third_party/skia/include/gpu \
 					$../../ \
 					$../../skia/config \
 					

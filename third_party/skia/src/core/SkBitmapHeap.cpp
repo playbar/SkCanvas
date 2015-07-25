@@ -28,7 +28,8 @@ void SkBitmapHeapEntry::addReferences(int count) {
         // need to be an atomic operation.
         fRefCount = count;
     } else {
-        sk_atomic_add(&fRefCount, count);
+    	fRefCount += count;
+        //sk_atomic_add(&fRefCount, count);
     }
 }
 
