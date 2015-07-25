@@ -8,7 +8,8 @@
 #ifndef SkGLContextHelper_DEFINED
 #define SkGLContextHelper_DEFINED
 
-#include "gl/glew.h"
+//#include "gl/glew.h"
+#include "eggl.h"
 #include "SkRefCnt.h"
 
 /**

@@ -10,7 +10,8 @@
 #ifndef GrGLIRect_DEFINED
 #define GrGLIRect_DEFINED
 
-#include "gl/glew.h"
+//#include "gl/glew.h"
+#include "eggl.h"
 #include "GrGLUtil.h"
 #include "GrTypes.h"
 

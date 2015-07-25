@@ -14303,5 +14303,8 @@
     <ClInclude Include="..\third_party\libpng\pngusr.h">
       <Filter>..\third_party\png</Filter>
     </ClInclude>
+    <ClInclude Include="..\third_party\skia\include\gpu\eggl.h">
+      <Filter>..\third_party\skia\include\gpu</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
