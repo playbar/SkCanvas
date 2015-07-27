@@ -7855,9 +7855,6 @@
     <Filter Include="..\third_party\skia\src">
       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\third_party\skia\src\pdf">
-      <UniqueIdentifier>{56480206-DE3F-C823-DE52-8906D4B76BB3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
     </Filter>
@@ -7869,9 +7866,6 @@
     </Filter>
     <Filter Include="..\third_party\skia\src">
       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party\skia\src\pdf">
-      <UniqueIdentifier>{56480206-DE3F-C823-DE52-8906D4B76BB3}</UniqueIdentifier>
     </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
@@ -11821,9 +11815,6 @@
     <Filter Include="..\third_party\skia\src\ports">
       <UniqueIdentifier>{5BCFDFF2-7BF8-4B41-9D0B-3B13CB48CE9B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\third_party\skia\src\ports\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
     </Filter>
@@ -11838,9 +11829,6 @@
     </Filter>
     <Filter Include="..\third_party\skia\src\ports">
       <UniqueIdentifier>{5BCFDFF2-7BF8-4B41-9D0B-3B13CB48CE9B}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party\skia\src\ports\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
     </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
@@ -12027,16 +12015,7 @@
     <ClInclude Include="..\third_party\skia\src\ports\SkFontHost_FreeType_common.h">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\ports\SkGlobalInitialization_chromium.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_stdio.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_win.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkTLS_win.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\sfnt\SkOTTable_name.cpp">
@@ -14266,6 +14245,15 @@
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win_dw.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_none.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkTLS_none.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkGlobalInitialization_default.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
   </ItemGroup>

@@ -522,9 +522,7 @@ bool SkAAClip::trimBounds() {
 
 void SkAAClip::freeRuns() {
     if (fRunHead) {
-        //if (1 == sk_atomic_dec(&fRunHead->fRefCnt))
-        if( 1 == --fRunHead->fRefCnt)
-        {
+        if (1 == sk_atomic_dec(&fRunHead->fRefCnt)) {
             sk_free(fRunHead);
         }
     }
@@ -554,8 +552,7 @@ SkAAClip& SkAAClip::operator=(const SkAAClip& src) {
         fBounds = src.fBounds;
         fRunHead = src.fRunHead;
         if (fRunHead) {
-        	fRunHead->fRefCnt++;
-            //sk_atomic_inc(&fRunHead->fRefCnt);
+            sk_atomic_inc(&fRunHead->fRefCnt);
         }
     }
     return *this;

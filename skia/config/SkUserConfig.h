@@ -210,21 +210,11 @@ SK_API void SkDebugf_FileLine(const char* file, int line, bool fatal,
 // #define SK_USER_TRACE_INCLUDE_FILE "skia/ext/skia_trace_shim.h"
 
 #ifndef SK_ATOMICS_PLATFORM_H
-#  if defined(SK_BUILD_FOR_WIN)
-#    define SK_ATOMICS_PLATFORM_H "third_party/skia/src/ports/SkAtomics_win.h"
-#  elif defined(SK_BUILD_FOR_ANDROID_FRAMEWORK)
-#    define SK_ATOMICS_PLATFORM_H "third_party/skia/src/ports/SkAtomics_android.h"
-#  else
-#    define SK_ATOMICS_PLATFORM_H "third_party/skia/src/ports/SkAtomics_sync.h"
-#  endif
+#define SK_ATOMICS_PLATFORM_H "third_party/skia/src/ports/SkAtomics_none.h"
 #endif
 
 #ifndef SK_MUTEX_PLATFORM_H
-#  if defined(SK_BUILD_FOR_WIN)
-#    define SK_MUTEX_PLATFORM_H "third_party/skia/src/ports/SkMutex_win.h"
-#  else
-#    define SK_MUTEX_PLATFORM_H "third_party/skia/src/ports/SkMutex_pthread.h"
-#  endif
+#    define SK_MUTEX_PLATFORM_H "third_party/skia/src/ports/SkMutex_none.h"
 #endif
 
 // ===== End Chrome-specific definitions =====

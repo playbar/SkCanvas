@@ -65,16 +65,12 @@ struct SkBitmap::MipMap : SkNoncopyable {
     void* pixels() { return levels() + fLevelCount; }
 
     void ref() {
-        //if (SK_MaxS32 == sk_atomic_inc(&fRefCnt))
-    	if( SK_MaxS32 == ++fRefCnt )
-    	{
+        if (SK_MaxS32 == sk_atomic_inc(&fRefCnt)) {
 			abort();
         }
     }
     void unref() {
-        //if (sk_atomic_dec(&fRefCnt) == 1)
-    	if( 1 == --fRefCnt )
-        {
+        if (sk_atomic_dec(&fRefCnt) == 1) {
             sk_free(this);
         }
     }
@@ -498,18 +494,14 @@ SkPixelRef* SkBitmap::setPixelRef(SkPixelRef* pr, size_t offset) {
 }
 
 void SkBitmap::lockPixels() const {
-    //if (NULL != fPixelRef && 0 == sk_atomic_inc(&fPixelLockCount))
-	if (NULL != fPixelRef && 0 == ++fPixelLockCount )
-	{
+    if (NULL != fPixelRef && 0 == sk_atomic_inc(&fPixelLockCount)) {
         fPixelRef->lockPixels();
         this->updatePixelsFromRef();
     }
 }
 
 void SkBitmap::unlockPixels() const {
-    //if (NULL != fPixelRef && 1 == sk_atomic_dec(&fPixelLockCount))
-	if (NULL != fPixelRef && 1 == --fPixelLockCount)
-    {
+    if (NULL != fPixelRef && 1 == sk_atomic_dec(&fPixelLockCount)) {
         fPixelRef->unlockPixels();
         this->updatePixelsFromRef();
     }
