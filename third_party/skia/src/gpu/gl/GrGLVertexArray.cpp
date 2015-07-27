@@ -142,11 +142,6 @@ void GrGLVertexArray::onAbandon() {
 }
 
 void GrGLVertexArray::onRelease() {
-    if (0 != fID) {
-		glDeleteVertexArrays(1, &fID);
-        GPUGL->notifyVertexArrayDelete(fID);
-        fID = 0;
-    }
     INHERITED::onRelease();
 }
 
