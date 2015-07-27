@@ -19,6 +19,7 @@ LOCAL_C_INCLUDES :=  \
 					$(MY_ANDROID_SOURCE)/external/astl/include \
 					$(MY_ANDROID_SOURCE)/hardware/libhardware/include \
 					$(LOCAL_PATH)      \
+					$../../third_party/libpng \
 					$../../third_party/skia/include/core   \
 					$../../third_party/skia/src/core \
 					$../../third_party/skia/src/image \
@@ -30,7 +31,7 @@ LOCAL_C_INCLUDES :=  \
 					$../../third_party/skia/include/ports \
 					$../../third_party/skia/include/effects \
 					$../../third_party/skia/src/opts \
-					$../../third_party/skia/include\images \
+					$../../third_party/skia/include/images \
 					$../../ \
 					$../../skia/config \
 					
@@ -61,15 +62,34 @@ LOCAL_C_INCLUDES :=  \
 #MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 #LOCAL_SRC_FILES += $(MY_FILES)	
 
-MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/images/*.cpp)
-MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-LOCAL_SRC_FILES += $(MY_FILES)		
-					 
+	
+
+#images
+LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/images/SkImageDecoder.cpp \
+					../../../third_party/skia/src/images/SkImageDecoder_FactoryDefault.cpp \
+					../../../third_party/skia/src/images/SkImageDecoder_FactoryRegistrar.cpp \
+					../../../third_party/skia/src/images/SkImageDecoder_libpng.cpp \
+					../../../third_party/skia/src/images/SkImageEncoder.cpp \
+					../../../third_party/skia/src/images/SkImageEncoder_Factory.cpp \
+					../../../third_party/skia/src/images/SkImageRef.cpp \
+					../../../third_party/skia/src/images/SkImageRef_GlobalPool.cpp \
+					../../../third_party/skia/src/images/SkImageRefPool.cpp \
+					../../../third_party/skia/src/images/SkImages.cpp \
+					../../../third_party/skia/src/images/SkScaledBitmapSampler.cpp \
+					
+#lazy
+LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/lazy/SkCachingPixelRef.cpp \
+					../../../third_party/skia/src/lazy/SkDiscardableMemoryPool.cpp \					
+
+#opts 
+LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/opts/opts_check_SSE2.cpp \
+
+				 
 #base android
 #MY_FILES := $(wildcard $(LOCAL_PATH)/../../../../src/base/android/*.cpp)
 #MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 #LOCAL_SRC_FILES += $(MY_FILES)				
-LOCAL_SRC_FILES	+=  /../../../../src/base/android/GGBase.cpp \
+LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/images/Error.cp \
 
 
 
