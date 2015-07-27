@@ -31,7 +31,7 @@ const char *get_error_string(uint32_t err) {
         return "Invalid Operation";
     case GL_OUT_OF_MEMORY:
         return "Out of Memory";
-    case GL_CONTEXT_LOST:
+    default:
         return "Context Lost";
     }
     return "Unknown";
