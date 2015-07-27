@@ -8,7 +8,6 @@
 
 #include "GrGpuGL.h"
 #include "GrGLStencilBuffer.h"
-#include "GrGLPath.h"
 #include "GrGLShaderBuilder.h"
 #include "GrTemplates.h"
 #include "GrTypes.h"
@@ -1206,9 +1205,9 @@ GrIndexBuffer* GrGpuGL::onCreateIndexBuffer(size_t size, bool dynamic) {
     }
 }
 
-GrPath* GrGpuGL::onCreatePath(const SkPath& inPath, const SkStrokeRec& stroke) {
-    return SkNEW_ARGS(GrGLPath, (this, inPath, stroke));
-}
+//GrPath* GrGpuGL::onCreatePath(const SkPath& inPath, const SkStrokeRec& stroke) {
+//    return SkNEW_ARGS(GrGLPath, (this, inPath, stroke));
+//}
 
 void GrGpuGL::flushScissor() {
     if (fScissorState.fEnabled) {
@@ -1569,62 +1568,62 @@ static GLenum gr_stencil_op_to_gl_path_rendering_fill_mode(GrStencilOp op) {
 
 void GrGpuGL::onGpuStencilPath(const GrPath* path, SkPath::FillType fill) {
 
-    GLuint id = static_cast<const GrGLPath*>(path)->pathID();
-    flushPathStencilSettings(fill);
+    //GLuint id = static_cast<const GrGLPath*>(path)->pathID();
+    //flushPathStencilSettings(fill);
 
-    // Decide how to manipulate the stencil buffer based on the fill rule.
+    //// Decide how to manipulate the stencil buffer based on the fill rule.
 
-    GLenum fillMode =
-        gr_stencil_op_to_gl_path_rendering_fill_mode(fHWPathStencilSettings.passOp(GrStencilSettings::kFront_Face));
-    GLint writeMask = fHWPathStencilSettings.writeMask(GrStencilSettings::kFront_Face);
-    glStencilFillPathNV(id, fillMode, writeMask);
+    //GLenum fillMode =
+    //    gr_stencil_op_to_gl_path_rendering_fill_mode(fHWPathStencilSettings.passOp(GrStencilSettings::kFront_Face));
+    //GLint writeMask = fHWPathStencilSettings.writeMask(GrStencilSettings::kFront_Face);
+    //glStencilFillPathNV(id, fillMode, writeMask);
 }
 
 void GrGpuGL::onGpuDrawPath(const GrPath* path, SkPath::FillType fill) 
 {
-    GLuint id = static_cast<const GrGLPath*>(path)->pathID();
+  //  GLuint id = static_cast<const GrGLPath*>(path)->pathID();
 
-    flushPathStencilSettings(fill);
-    const SkStrokeRec& stroke = path->getStroke();
+  //  flushPathStencilSettings(fill);
+  //  const SkStrokeRec& stroke = path->getStroke();
 
-    SkPath::FillType nonInvertedFill = SkPath::ConvertToNonInverseFillType(fill);
-    GLenum fillMode =
-        gr_stencil_op_to_gl_path_rendering_fill_mode(fHWPathStencilSettings.passOp(GrStencilSettings::kFront_Face));
-    GLint writeMask = fHWPathStencilSettings.writeMask(GrStencilSettings::kFront_Face);
+  //  SkPath::FillType nonInvertedFill = SkPath::ConvertToNonInverseFillType(fill);
+  //  GLenum fillMode =
+  //      gr_stencil_op_to_gl_path_rendering_fill_mode(fHWPathStencilSettings.passOp(GrStencilSettings::kFront_Face));
+  //  GLint writeMask = fHWPathStencilSettings.writeMask(GrStencilSettings::kFront_Face);
 
-    if (stroke.isFillStyle() || SkStrokeRec::kStrokeAndFill_Style == stroke.getStyle()) {
-		glStencilFillPathNV(id, fillMode, writeMask);
-    }
-    if (stroke.needToApply()) {
-        glStencilStrokePathNV(id, 0xffff, writeMask);
-    }
+  //  if (stroke.isFillStyle() || SkStrokeRec::kStrokeAndFill_Style == stroke.getStyle()) {
+		//glStencilFillPathNV(id, fillMode, writeMask);
+  //  }
+  //  if (stroke.needToApply()) {
+  //      glStencilStrokePathNV(id, 0xffff, writeMask);
+  //  }
 
-    if (nonInvertedFill == fill) {
-        if (stroke.needToApply()) {
-            glCoverStrokePathNV(id, GL_BOUNDING_BOX_NV);
-        } else {
-            glCoverFillPathNV(id, GL_BOUNDING_BOX_NV);
-        }
-    } else {
-        GrDrawState* drawState = this->drawState();
-        GrDrawState::AutoViewMatrixRestore avmr;
-        SkRect bounds = SkRect::MakeLTRB(0, 0,
-                                         SkIntToScalar(drawState->getRenderTarget()->width()),
-                                         SkIntToScalar(drawState->getRenderTarget()->height()));
-        SkMatrix vmi;
-        // mapRect through persp matrix may not be correct
-        if (!drawState->getViewMatrix().hasPerspective() && drawState->getViewInverse(&vmi)) {
-            vmi.mapRect(&bounds);
-            // theoretically could set bloat = 0, instead leave it because of matrix inversion
-            // precision.
-            float bloat = drawState->getViewMatrix().getMaxStretch() * SK_ScalarHalf;
-            bounds.outset(bloat, bloat);
-        } else {
-            avmr.setIdentity(drawState);
-        }
+  //  if (nonInvertedFill == fill) {
+  //      if (stroke.needToApply()) {
+  //          glCoverStrokePathNV(id, GL_BOUNDING_BOX_NV);
+  //      } else {
+  //          glCoverFillPathNV(id, GL_BOUNDING_BOX_NV);
+  //      }
+  //  } else {
+  //      GrDrawState* drawState = this->drawState();
+  //      GrDrawState::AutoViewMatrixRestore avmr;
+  //      SkRect bounds = SkRect::MakeLTRB(0, 0,
+  //                                       SkIntToScalar(drawState->getRenderTarget()->width()),
+  //                                       SkIntToScalar(drawState->getRenderTarget()->height()));
+  //      SkMatrix vmi;
+  //      // mapRect through persp matrix may not be correct
+  //      if (!drawState->getViewMatrix().hasPerspective() && drawState->getViewInverse(&vmi)) {
+  //          vmi.mapRect(&bounds);
+  //          // theoretically could set bloat = 0, instead leave it because of matrix inversion
+  //          // precision.
+  //          float bloat = drawState->getViewMatrix().getMaxStretch() * SK_ScalarHalf;
+  //          bounds.outset(bloat, bloat);
+  //      } else {
+  //          avmr.setIdentity(drawState);
+  //      }
 
-        this->drawSimpleRect(bounds, NULL);
-    }
+  //      this->drawSimpleRect(bounds, NULL);
+  //  }
 }
 
 void GrGpuGL::onResolveRenderTarget(GrRenderTarget* target) {

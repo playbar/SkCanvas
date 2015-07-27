@@ -1712,11 +1712,12 @@ GrPath* GrContext::createPath(const SkPath& inPath, const SkStrokeRec& stroke) {
     GrPath* path = static_cast<GrPath*>(fTextureCache->find(resourceKey));
     if (NULL != path && path->isEqualTo(inPath, stroke)) {
         path->ref();
-    } else {
-        path = fGpu->createPath(inPath, stroke);
-        fTextureCache->purgeAsNeeded(1, path->sizeInBytes());
-        fTextureCache->addResource(resourceKey, path);
-    }
+    } 
+	//else {
+ //       path = fGpu->createPath(inPath, stroke);
+ //       fTextureCache->purgeAsNeeded(1, path->sizeInBytes());
+ //       fTextureCache->addResource(resourceKey, path);
+ //   }
     return path;
 }
 
