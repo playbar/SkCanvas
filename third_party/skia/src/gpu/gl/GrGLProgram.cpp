@@ -80,9 +80,9 @@ void GrGLProgram::overrideBlend(GrBlendCoeff* srcCoeff,
         // output and the dst is blended by one minus that value.
         case GrGLProgramDesc::kSecondaryCoverage_CoverageOutput:
         case GrGLProgramDesc::kSecondaryCoverageISA_CoverageOutput:
-        case GrGLProgramDesc::kSecondaryCoverageISC_CoverageOutput:
-            *dstCoeff = (GrBlendCoeff)GrGpu::kIS2C_GrBlendCoeff;
-            break;
+        //case GrGLProgramDesc::kSecondaryCoverageISC_CoverageOutput:
+        //    *dstCoeff = (GrBlendCoeff)GrGpu::kIS2C_GrBlendCoeff;
+        //    break;
         case GrGLProgramDesc::kCombineWithDst_CoverageOutput:
             // We should only have set this if the blend was specified as (1, 0)
             break;

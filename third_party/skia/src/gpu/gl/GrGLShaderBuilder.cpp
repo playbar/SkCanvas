@@ -693,12 +693,12 @@ bool GrGLShaderBuilder::compileAndAttachShaders(GLuint programId) const {
 }
 
 void GrGLShaderBuilder::bindProgramLocations(GLuint programId) const {
-    if (fHasCustomColorOutput) {
-        glBindFragDataLocation(programId, 0, declared_color_output_name());
-    }
-    if (fHasSecondaryOutput) {
-        glBindFragDataLocationIndexed(programId, 0, 1, dual_source_output_name());
-    }
+    //if (fHasCustomColorOutput) {
+    //    glBindFragDataLocation(programId, 0, declared_color_output_name());
+    //}
+    //if (fHasSecondaryOutput) {
+    //    glBindFragDataLocationIndexed(programId, 0, 1, dual_source_output_name());
+    //}
 }
 
 const GrGLContextInfo& GrGLShaderBuilder::ctxInfo() const {
