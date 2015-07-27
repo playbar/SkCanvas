@@ -12003,9 +12003,6 @@
     <ClInclude Include="..\third_party\skia\src\images\SkScaledBitmapSampler.h">
       <Filter>..\third_party\skia\src\images</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\opts\opts_check_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\ports\SkPurgeableMemoryBlock_none.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
@@ -14130,33 +14127,6 @@
     <ClCompile Include="..\third_party\skia\src\utils\SkParseColor.cpp">
       <Filter>..\third_party\skia\src\utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_SSSE3.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkXfermode_opts_none.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapFilter_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkBlitRect_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkBlitRow_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkBlurImage_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkMorphology_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkUtils_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
     <ClCompile Include="ext\convolver_SSE2.cc">
       <Filter>ext</Filter>
     </ClCompile>
@@ -14250,6 +14220,27 @@
     <ClCompile Include="..\third_party\skia\src\ports\SkGlobalInitialization_default.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkBlitMask_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkBlitRow_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkUtils_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkXfermode_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkBlurImage_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkMorphology_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\third_party\skia\src\core\SkOrderedWriteBuffer.h">
@@ -14260,9 +14251,6 @@
     </ClInclude>
     <ClInclude Include="..\third_party\skia\src\core\SkOrderedReadBuffer.h">
       <Filter>..\third_party\skia\src\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_SSSE3.h">
-      <Filter>..\third_party\skia\src\opts</Filter>
     </ClInclude>
     <ClInclude Include="ext\convolver_SSE2.h">
       <Filter>ext</Filter>
