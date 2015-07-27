@@ -705,7 +705,7 @@
     <ClCompile Include="..\third_party\skia\src\ports\SkGlobalInitialization_chromium.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_stdio.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkTime_win.cpp" />
-    <ClCompile Include="..\third_party\skia\src\ports\SkTLS_win.cpp" />
+    <ClCompile Include="..\third_party\skia\src\ports\SkTLS_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\sfnt\SkOTTable_name.cpp" />
     <ClCompile Include="..\third_party\skia\src\sfnt\SkOTUtils.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\debugger\SkDebugCanvas.cpp" />
