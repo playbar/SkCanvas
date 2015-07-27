@@ -113,11 +113,6 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/doc</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/effects</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -2603,16 +2598,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/core/SkXfermode_proccoeff.h</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/doc/SkDocument.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/doc/SkDocument.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/doc/SkDocument_PDF.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/doc/SkDocument_PDF.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/effects/Sk1DPathEffect.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/effects/Sk1DPathEffect.cpp</locationURI>
@@ -3663,124 +3648,14 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/lazy/SkPurgeableMemoryBlock_common.cpp</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/opts/SkBitmapFilter_opts_SSE2.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBitmapFilter_opts_SSE2.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBitmapFilter_opts_SSE2.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBitmapFilter_opts_SSE2.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBitmapProcState_arm_neon.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBitmapProcState_arm_neon.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBitmapProcState_filter_neon.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBitmapProcState_filter_neon.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBitmapProcState_matrixProcs_neon.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBitmapProcState_matrixProcs_neon.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBitmapProcState_matrix_clamp_neon.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBitmapProcState_matrix_clamp_neon.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBitmapProcState_matrix_repeat_neon.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBitmapProcState_matrix_repeat_neon.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBitmapProcState_opts_SSE2.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBitmapProcState_opts_SSE2.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBitmapProcState_opts_SSE2.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBitmapProcState_opts_SSE2.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBitmapProcState_opts_SSSE3.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBitmapProcState_opts_SSSE3.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBitmapProcState_opts_SSSE3.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBitmapProcState_opts_SSSE3.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBitmapProcState_opts_arm.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBitmapProcState_opts_arm.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/opts/SkBitmapProcState_opts_none.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBitmapProcState_opts_none.cpp</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/opts/SkBlitMask_opts_arm.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlitMask_opts_arm.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBlitMask_opts_arm_neon.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlitMask_opts_arm_neon.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBlitMask_opts_arm_neon.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlitMask_opts_arm_neon.h</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/opts/SkBlitMask_opts_none.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlitMask_opts_none.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBlitRect_opts_SSE2.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlitRect_opts_SSE2.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBlitRect_opts_SSE2.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlitRect_opts_SSE2.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBlitRow_opts_SSE2.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlitRow_opts_SSE2.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBlitRow_opts_SSE2.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlitRow_opts_SSE2.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBlitRow_opts_arm.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlitRow_opts_arm.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBlitRow_opts_arm_neon.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlitRow_opts_arm_neon.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBlitRow_opts_arm_neon.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlitRow_opts_arm_neon.h</locationURI>
 		</link>
 		<link>
 			<name>jni/skia/src/opts/SkBlitRow_opts_none.cpp</name>
@@ -3793,39 +3668,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlurImage_opts.h</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/opts/SkBlurImage_opts_SSE2.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlurImage_opts_SSE2.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBlurImage_opts_SSE2.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlurImage_opts_SSE2.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBlurImage_opts_neon.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlurImage_opts_neon.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkBlurImage_opts_neon.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlurImage_opts_neon.h</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/opts/SkBlurImage_opts_none.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkBlurImage_opts_none.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkCachePreload_arm.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkCachePreload_arm.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkColor_opts_neon.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkColor_opts_neon.h</locationURI>
 		</link>
 		<link>
 			<name>jni/skia/src/opts/SkMorphology_opts.h</name>
@@ -3833,39 +3678,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkMorphology_opts.h</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/opts/SkMorphology_opts_SSE2.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkMorphology_opts_SSE2.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkMorphology_opts_SSE2.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkMorphology_opts_SSE2.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkMorphology_opts_neon.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkMorphology_opts_neon.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkMorphology_opts_neon.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkMorphology_opts_neon.h</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/opts/SkMorphology_opts_none.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkMorphology_opts_none.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkUtils_opts_SSE2.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkUtils_opts_SSE2.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkUtils_opts_SSE2.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkUtils_opts_SSE2.h</locationURI>
 		</link>
 		<link>
 			<name>jni/skia/src/opts/SkUtils_opts_none.cpp</name>
@@ -3873,49 +3688,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkUtils_opts_none.cpp</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/opts/SkXfermode_opts_arm.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkXfermode_opts_arm.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkXfermode_opts_arm_neon.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkXfermode_opts_arm_neon.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/SkXfermode_opts_arm_neon.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkXfermode_opts_arm_neon.h</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/opts/SkXfermode_opts_none.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/SkXfermode_opts_none.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/memset.arm.S</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/memset.arm.S</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/memset16_neon.S</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/memset16_neon.S</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/memset32_neon.S</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/memset32_neon.S</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/opts_check_SSE2.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/opts_check_SSE2.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/opts/opts_check_arm.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/opts/opts_check_arm.cpp</locationURI>
 		</link>
 		<link>
 			<name>jni/skia/src/pathops/SkAddIntersections.cpp</name>

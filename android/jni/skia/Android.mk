@@ -64,25 +64,31 @@ LOCAL_C_INCLUDES :=  \
 
 	
 
-#images
-LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/images/SkImageDecoder.cpp \
-					../../../third_party/skia/src/images/SkImageDecoder_FactoryDefault.cpp \
-					../../../third_party/skia/src/images/SkImageDecoder_FactoryRegistrar.cpp \
-					../../../third_party/skia/src/images/SkImageDecoder_libpng.cpp \
-					../../../third_party/skia/src/images/SkImageEncoder.cpp \
-					../../../third_party/skia/src/images/SkImageEncoder_Factory.cpp \
-					../../../third_party/skia/src/images/SkImageRef.cpp \
-					../../../third_party/skia/src/images/SkImageRef_GlobalPool.cpp \
-					../../../third_party/skia/src/images/SkImageRefPool.cpp \
-					../../../third_party/skia/src/images/SkImages.cpp \
-					../../../third_party/skia/src/images/SkScaledBitmapSampler.cpp \
-					
-#lazy
-LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/lazy/SkCachingPixelRef.cpp \
-					../../../third_party/skia/src/lazy/SkDiscardableMemoryPool.cpp \					
+##images
+#LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/images/SkImageDecoder.cpp \
+#					../../../third_party/skia/src/images/SkImageDecoder_FactoryDefault.cpp \
+#					../../../third_party/skia/src/images/SkImageDecoder_FactoryRegistrar.cpp \
+#					../../../third_party/skia/src/images/SkImageDecoder_libpng.cpp \
+#					../../../third_party/skia/src/images/SkImageEncoder.cpp \
+#					../../../third_party/skia/src/images/SkImageEncoder_Factory.cpp \
+#					../../../third_party/skia/src/images/SkImageRef.cpp \
+#					../../../third_party/skia/src/images/SkImageRef_GlobalPool.cpp \
+#					../../../third_party/skia/src/images/SkImageRefPool.cpp \
+#					../../../third_party/skia/src/images/SkImages.cpp \
+#					../../../third_party/skia/src/images/SkScaledBitmapSampler.cpp \
+#					
+##lazy
+#LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/lazy/SkCachingPixelRef.cpp \
+#					../../../third_party/skia/src/lazy/SkDiscardableMemoryPool.cpp \					
 
 #opts 
-LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/opts/opts_check_SSE2.cpp \
+LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/opts/SkBitmapProcState_opts_none.cpp \
+					../../../third_party/skia/src/opts/SkBlitRow_opts_none.cpp \
+					../../../third_party/skia/src/opts/SkBlurImage_opts_none.cpp \
+					../../../third_party/skia/src/opts/SkMorphology_opts_none.cpp \
+					../../../third_party/skia/src/opts/SkUtils_opts_none.cpp \
+					../../../third_party/skia/src/opts/SkXfermode_opts_none.cpp \
+					
 
 				 
 #base android
