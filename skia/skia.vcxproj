@@ -619,7 +619,6 @@
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLVertexEffect.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLIndexBuffer.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLIRect.h" />
-    <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLPath.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLProgram.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLProgramDesc.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLProgramEffects.h" />
@@ -1011,7 +1010,6 @@
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLCaps.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLContext.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLIndexBuffer.cpp" />
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLPath.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLProgram.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLProgramDesc.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLProgramEffects.cpp" />
