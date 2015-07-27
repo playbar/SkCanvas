@@ -856,7 +856,6 @@
     <ClCompile Include="..\third_party\skia\src\core\SkValidatingReadBuffer.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkWriter32.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkXfermode.cpp" />
-    <ClCompile Include="..\third_party\skia\src\doc\SkDocument.cpp" />
     <ClCompile Include="..\third_party\skia\src\image\SkImage.cpp" />
     <ClCompile Include="..\third_party\skia\src\image\SkImagePriv.cpp" />
     <ClCompile Include="..\third_party\skia\src\image\SkImage_Codec.cpp" />
