@@ -33,11 +33,11 @@ static const GLenum gXfermodeCoeff2Blend[] = {
     GL_CONSTANT_ALPHA,
     GL_ONE_MINUS_CONSTANT_ALPHA,
 
-    // extended blend coeffs
-    GL_SRC1_COLOR,
-    GL_ONE_MINUS_SRC1_COLOR,
-    GL_SRC1_ALPHA,
-    GL_ONE_MINUS_SRC1_ALPHA,
+    //// extended blend coeffs
+    //GL_SRC1_COLOR,
+    //GL_ONE_MINUS_SRC1_COLOR,
+    //GL_SRC1_ALPHA,
+    //GL_ONE_MINUS_SRC1_ALPHA,
 };
 
 bool GrGpuGL::BlendCoeffReferencesConstant(GrBlendCoeff coeff) {
@@ -58,14 +58,14 @@ bool GrGpuGL::BlendCoeffReferencesConstant(GrBlendCoeff coeff) {
         true,
 
         // extended blend coeffs
-        false,
-        false,
-        false,
-        false,
+        //false,
+        //false,
+        //false,
+        //false,
     };
     return gCoeffReferencesBlendConst[coeff];
-    GR_STATIC_ASSERT(kTotalGrBlendCoeffCount ==
-                     GR_ARRAY_COUNT(gCoeffReferencesBlendConst));
+    //GR_STATIC_ASSERT(kTotalGrBlendCoeffCount ==
+    //                 GR_ARRAY_COUNT(gCoeffReferencesBlendConst));
 
     GR_STATIC_ASSERT(0 == kZero_GrBlendCoeff);
     GR_STATIC_ASSERT(1 == kOne_GrBlendCoeff);
@@ -82,14 +82,14 @@ bool GrGpuGL::BlendCoeffReferencesConstant(GrBlendCoeff coeff) {
     GR_STATIC_ASSERT(12 == kConstA_GrBlendCoeff);
     GR_STATIC_ASSERT(13 == kIConstA_GrBlendCoeff);
 
-    GR_STATIC_ASSERT(14 == kS2C_GrBlendCoeff);
-    GR_STATIC_ASSERT(15 == kIS2C_GrBlendCoeff);
-    GR_STATIC_ASSERT(16 == kS2A_GrBlendCoeff);
-    GR_STATIC_ASSERT(17 == kIS2A_GrBlendCoeff);
+    //GR_STATIC_ASSERT(14 == kS2C_GrBlendCoeff);
+    //GR_STATIC_ASSERT(15 == kIS2C_GrBlendCoeff);
+    //GR_STATIC_ASSERT(16 == kS2A_GrBlendCoeff);
+    //GR_STATIC_ASSERT(17 == kIS2A_GrBlendCoeff);
 
     // assertion for gXfermodeCoeff2Blend have to be in GrGpu scope
-    GR_STATIC_ASSERT(kTotalGrBlendCoeffCount ==
-                     GR_ARRAY_COUNT(gXfermodeCoeff2Blend));
+    //GR_STATIC_ASSERT(kTotalGrBlendCoeffCount ==
+    //                 GR_ARRAY_COUNT(gXfermodeCoeff2Blend));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

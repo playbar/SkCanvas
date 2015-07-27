@@ -54,26 +54,31 @@ void GrGLAttribArrayState::setFixedFunctionVertexArray(const GrGpuGL* gpu,
                                                        GLint size,
                                                        GLenum type,
                                                        GLsizei stride,
-                                                       GLvoid* offset)
-{
-//    AttribArrayState* array = &fFixedFunctionVertexArray;
-//    if (!array->fAttribPointerIsValid ||
-//        array->fVertexBufferID != buffer->bufferID() ||
-//        array->fSize != size ||
-//        array->fStride != stride ||
-//        array->fOffset != offset) {
-//
-//        buffer->bind();
-//        glVertexPointer(size,
-//			type,
-//			stride,
-//			offset);
-//		array->fAttribPointerIsValid = true;
-//        array->fVertexBufferID = buffer->bufferID();
-//        array->fSize = size;
-//        array->fStride = stride;
-//        array->fOffset = offset;
-//    }
+                                                       GLvoid* offset) {
+ //   AttribArrayState* array = &fFixedFunctionVertexArray;
+ ////   if (!array->fEnableIsValid || !array->fEnabled)
+	////{
+	////	glEnableClientState(GL_VERTEX_ARRAY);
+ ////       array->fEnableIsValid = true;
+ ////       array->fEnabled = true;
+ ////   }
+ //   if (!array->fAttribPointerIsValid ||
+ //       array->fVertexBufferID != buffer->bufferID() ||
+ //       array->fSize != size ||
+ //       array->fStride != stride ||
+ //       array->fOffset != offset) {
+
+ //       buffer->bind();
+ //       glVertexPointer(size,
+	//		type,
+	//		stride,
+	//		offset);
+	//	array->fAttribPointerIsValid = true;
+ //       array->fVertexBufferID = buffer->bufferID();
+ //       array->fSize = size;
+ //       array->fStride = stride;
+ //       array->fOffset = offset;
+ //   }
 }
 
 void GrGLAttribArrayState::disableUnusedArrays(const GrGpuGL* gpu, uint64_t usedMask, bool usingFFVertexArray) {
@@ -92,6 +97,34 @@ void GrGLAttribArrayState::disableUnusedArrays(const GrGpuGL* gpu, uint64_t used
         usedMask >>= 1;
     }
 
+  //  // Deal with fixed-function vertex arrays.
+  //  if (gpu->glCaps().fixedFunctionSupport()) {
+  //      if (!usingFFVertexArray) {
+  //          if (!fFixedFunctionVertexArray.fEnableIsValid || fFixedFunctionVertexArray.fEnabled) {
+  //              glDisableClientState(GL_VERTEX_ARRAY);
+  //              fFixedFunctionVertexArray.fEnableIsValid = true;
+  //              fFixedFunctionVertexArray.fEnabled = false;
+  //          }
+  //      } else {
+  //      }
+  //      // When we use fixed function vertex processing we always use the vertex array and none of
+  //      // the other arrays.
+  //      if (!fUnusedFixedFunctionArraysDisabled) 
+		//{
+  //          glDisableClientState(GL_NORMAL_ARRAY);
+  //          glDisableClientState(GL_COLOR_ARRAY);
+  //          glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
+  //          glDisableClientState(GL_INDEX_ARRAY);
+  //          glDisableClientState(GL_EDGE_FLAG_ARRAY);
+  //          for (int i = 0; i < gpu->glCaps().maxFixedFunctionTextureCoords(); ++i) 
+		//	{
+  //              glClientActiveTexture(GL_TEXTURE0 + i);
+  //              glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+  //          }
+  //          fUnusedFixedFunctionArraysDisabled = true;
+  //      }
+  //  } else {
+  //  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,6 +142,11 @@ void GrGLVertexArray::onAbandon() {
 }
 
 void GrGLVertexArray::onRelease() {
+    if (0 != fID) {
+		glDeleteVertexArrays(1, &fID);
+        GPUGL->notifyVertexArrayDelete(fID);
+        fID = 0;
+    }
     INHERITED::onRelease();
 }
 

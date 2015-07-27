@@ -321,7 +321,7 @@ GrGLShaderBuilder::FragPosKey GrGLShaderBuilder::KeyForFragmentPosition(const Gr
 const GLenum* GrGLShaderBuilder::GetTexParamSwizzle(GrPixelConfig config, const GrGLCaps& caps) {
     if (caps.textureSwizzleSupport() && GrPixelConfigIsAlphaOnly(config)) {
         if (caps.textureRedSupport()) {
-            static const GLenum gRedSmear[] = { GL_RED_BITS, GL_RED_BITS, GL_RED_BITS, GL_RED_BITS };
+            static const GLenum gRedSmear[] = { GL_RED, GL_RED, GL_RED, GL_RED };
             return gRedSmear;
         } else {
             static const GLenum gAlphaSmear[] = { GL_ALPHA, GL_ALPHA,
@@ -329,7 +329,7 @@ const GLenum* GrGLShaderBuilder::GetTexParamSwizzle(GrPixelConfig config, const 
             return gAlphaSmear;
         }
     } else {
-        static const GLenum gStraight[] = { GL_RED_BITS, GL_GREEN_BITS, GL_BLUE_BITS, GL_ALPHA_BITS };
+        static const GLenum gStraight[] = { GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA };
         return gStraight;
     }
 }
@@ -693,12 +693,12 @@ bool GrGLShaderBuilder::compileAndAttachShaders(GLuint programId) const {
 }
 
 void GrGLShaderBuilder::bindProgramLocations(GLuint programId) const {
-//    if (fHasCustomColorOutput) {
-//        glBindFragDataLocation(programId, 0, declared_color_output_name());
-//    }
-//    if (fHasSecondaryOutput) {
-//        glBindFragDataLocationIndexed(programId, 0, 1, dual_source_output_name());
-//    }
+    //if (fHasCustomColorOutput) {
+    //    glBindFragDataLocation(programId, 0, declared_color_output_name());
+    //}
+    //if (fHasSecondaryOutput) {
+    //    glBindFragDataLocationIndexed(programId, 0, 1, dual_source_output_name());
+    //}
 }
 
 const GrGLContextInfo& GrGLShaderBuilder::ctxInfo() const {
