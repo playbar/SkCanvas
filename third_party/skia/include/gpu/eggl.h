@@ -13,7 +13,7 @@
 #define glBindVertexArray	glBindVertexArrayOES
 #define GL_RED				0x1903
 #define GL_GREEN			0x1904
-#define GL_BLUE_BITS		0x1905
+#define GL_BLUE				0x1905
 #endif
 
 
