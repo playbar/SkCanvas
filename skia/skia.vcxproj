@@ -700,10 +700,10 @@
     <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win_dw.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkFontMgr_default_gdi.cpp" />
+    <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkPurgeableMemoryBlock_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkGlobalInitialization_chromium.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_stdio.cpp" />
-    <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkTime_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkTLS_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\sfnt\SkOTTable_name.cpp" />
