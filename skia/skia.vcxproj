@@ -711,7 +711,6 @@
     <ClCompile Include="..\third_party\skia\src\utils\SkBitSet.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkCanvasStack.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkCanvasStateUtils.cpp" />
-    <ClCompile Include="..\third_party\skia\src\utils\SkDeferredCanvas.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkInterpolator.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkMatrix44.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkNullCanvas.cpp" />
@@ -860,8 +859,6 @@
     <ClCompile Include="..\third_party\skia\src\image\SkSurface.cpp" />
     <ClCompile Include="..\third_party\skia\src\image\SkSurface_Picture.cpp" />
     <ClCompile Include="..\third_party\skia\src\image\SkSurface_Raster.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pipe\SkGPipeRead.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pipe\SkGPipeWrite.cpp" />
     <ClCompile Include="..\third_party\skia\src\lazy\SkCachingPixelRef.cpp" />
     <ClCompile Include="..\third_party\skia\src\pathops\SkAddIntersections.cpp" />
     <ClCompile Include="..\third_party\skia\src\pathops\SkDCubicIntersection.cpp" />
