@@ -144,8 +144,7 @@ GrPixelConfig GrGpuGL::preferredReadPixelsConfig(GrPixelConfig readConfig,
         // Perhaps this should be guarded by some compiletime or runtime check.
         return surfaceConfig;
     } 
-	else if (readConfig == kBGRA_8888_GrPixelConfig &&
-		!this->glCaps().readPixelsSupported( GL_BGRA, GL_UNSIGNED_BYTE))
+	else if (readConfig == kBGRA_8888_GrPixelConfig )
 	{
         return kRGBA_8888_GrPixelConfig;
     } else {
@@ -659,42 +658,6 @@ bool GrGpuGL::uploadTexData(const GrGLTexture::Desc& desc,
 	return succeeded;
 }
 
-static bool renderbuffer_storage_msaa(GrGLContext& ctx,
-                                      int sampleCount,
-                                      GLenum format,
-                                      int width, int height) 
-{
-    switch (ctx.info().caps()->msFBOType()) {
-        case GrGLCaps::kDesktop_ARB_MSFBOType:
-        case GrGLCaps::kDesktop_EXT_MSFBOType:
-        case GrGLCaps::kES_3_0_MSFBOType:
-                            glRenderbufferStorageMultisample(GL_RENDERBUFFER,
-                                                            sampleCount,
-                                                            format,
-                                                            width, height);
-            break;
-        case GrGLCaps::kES_Apple_MSFBOType:
-			assert(false);
-                            //glRenderbufferStorageMultisampleES2APPLE(GL_RENDERBUFFER,
-                            //                                        sampleCount,
-                            //                                        format,
-                            //                                        width, height);
-            break;
-        case GrGLCaps::kES_EXT_MsToTexture_MSFBOType:
-        case GrGLCaps::kES_IMG_MsToTexture_MSFBOType:
-                            //glRenderbufferStorageMultisampleES2EXT(GL_RENDERBUFFER,
-                            //                                    sampleCount,
-                            //                                    format,
-                            //                                    width, height);
-			assert(false);
-            break;
-        case GrGLCaps::kNone_MSFBOType:
-            GrCrash("Shouldn't be here if we don't support multisampled renderbuffers.");
-            break;
-    }
-
-    return (GL_NO_ERROR == glGetError());
-}
 
 bool GrGpuGL::createRenderTargetObjects(int width, int height,
                                         GLuint texID,
@@ -746,12 +709,7 @@ bool GrGpuGL::createRenderTargetObjects(int width, int height,
     if (desc->fRTFBOID != desc->fTexFBOID) {
         glBindRenderbuffer(GL_RENDERBUFFER,
                                desc->fMSColorRenderbufferID);
-        if (!renderbuffer_storage_msaa(fGLContext,
-                                       desc->fSampleCnt,
-                                       msColorFormat,
-                                       width, height)) {
-            goto FAILED;
-        }
+
         glBindFramebuffer(GL_FRAMEBUFFER, desc->fRTFBOID);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER,
                                       GL_COLOR_ATTACHMENT0,
@@ -998,12 +956,7 @@ bool GrGpuGL::createStencilBufferForRenderTarget(GrRenderTarget* rt,
         // we do this "if" so that we don't call the multisample
         // version on a GL that doesn't have an MSAA extension.
         bool created;
-        if (samples > 0) {
-            created = renderbuffer_storage_msaa(fGLContext,
-                                                samples,
-                                                sFmt.fInternalFormat,
-                                                width, height);
-        } else {
+		{
                           glRenderbufferStorage(GL_RENDERBUFFER,
                                               sFmt.fInternalFormat,
                                               width, height);
