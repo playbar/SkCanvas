@@ -1315,12 +1315,12 @@ bool GrGpuGL::onReadPixels(GrRenderTarget* target,
             artr.set(this->drawState(), target);
             this->flushRenderTarget(&SkIRect::EmptyIRect());
             break;
-        case GrGLRenderTarget::kCanResolve_ResolveType:
-            this->onResolveRenderTarget(tgt);
-            // we don't track the state of the READ FBO ID.
-			glBindFramebuffer(GL_READ_FRAMEBUFFER,
-                                    tgt->textureFBOID());
-            break;
+   //     case GrGLRenderTarget::kCanResolve_ResolveType:
+   //         this->onResolveRenderTarget(tgt);
+   //         // we don't track the state of the READ FBO ID.
+			//glBindFramebuffer(GL_READ_FRAMEBUFFER,
+   //                                 tgt->textureFBOID());
+   //         break;
         default:
             GrCrash("Unknown resolve type");
     }
@@ -1342,11 +1342,12 @@ bool GrGpuGL::onReadPixels(GrRenderTarget* target,
     // a scratch buffer.
     SkAutoSMalloc<32 * sizeof(GrColor)> scratch;
     if (rowBytes != tightRowBytes) {
-        if (this->glCaps().packRowLengthSupport()) {
-            glPixelStorei(GL_PACK_ROW_LENGTH,
-                                static_cast<GLint>(rowBytes / sizeof(GrColor)));
-            readDstRowBytes = rowBytes;
-        } else {
+        //if (this->glCaps().packRowLengthSupport()) {
+        //    glPixelStorei(GL_PACK_ROW_LENGTH,
+        //                        static_cast<GLint>(rowBytes / sizeof(GrColor)));
+        //    readDstRowBytes = rowBytes;
+        //} else 
+		{
             scratch.reset(tightRowBytes * height);
             readDst = scratch.get();
         }
@@ -1357,10 +1358,10 @@ bool GrGpuGL::onReadPixels(GrRenderTarget* target,
     glReadPixels(readRect.fLeft, readRect.fBottom,
                        readRect.fWidth, readRect.fHeight,
                        format, type, readDst);
-    if (readDstRowBytes != tightRowBytes) 
-	{
-        glPixelStorei(GL_PACK_ROW_LENGTH, 0);
-    }
+ //   if (readDstRowBytes != tightRowBytes) 
+	//{
+ //       glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+ //   }
     if (flipY && this->glCaps().packFlipYSupport()) 
 	{
         glPixelStorei(GL_PACK_REVERSE_ROW_ORDER, 0);
@@ -1463,17 +1464,17 @@ void GrGpuGL::onGpuDraw(const DrawInfo& info)
 	return;
 }
 
-static GLenum gr_stencil_op_to_gl_path_rendering_fill_mode(GrStencilOp op) {
-    switch (op) {
-        default:
-            GrCrash("Unexpected path fill.");
-            /* fallthrough */;
-        case kIncClamp_StencilOp:
-            return GL_COUNT_UP_NV;
-        case kInvert_StencilOp:
-            return GL_INVERT;
-    }
-}
+//static GLenum gr_stencil_op_to_gl_path_rendering_fill_mode(GrStencilOp op) {
+//    switch (op) {
+//        default:
+//            GrCrash("Unexpected path fill.");
+//            /* fallthrough */;
+//        case kIncClamp_StencilOp:
+//            return GL_COUNT_UP_NV;
+//        case kInvert_StencilOp:
+//            return GL_INVERT;
+//    }
+//}
 
 void GrGpuGL::onGpuStencilPath(const GrPath* path, SkPath::FillType fill) {
 
@@ -1540,8 +1541,8 @@ void GrGpuGL::onResolveRenderTarget(GrRenderTarget* target) {
     if (rt->needsResolve()) {
         // Some extensions automatically resolves the texture when it is read.
         if (this->glCaps().usesMSAARenderBuffers()) {
-            glBindFramebuffer(GL_READ_FRAMEBUFFER, rt->renderFBOID());
-            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, rt->textureFBOID());
+            //glBindFramebuffer(GL_READ_FRAMEBUFFER, rt->renderFBOID());
+            //glBindFramebuffer(GL_DRAW_FRAMEBUFFER, rt->textureFBOID());
             // make sure we go through flushRenderTarget() since we've modified
             // the bound DRAW FBO ID.
             fHWBoundRenderTarget = NULL;
@@ -1699,69 +1700,69 @@ void GrGpuGL::flushAAState(DrawType type) {
     #define RT_HAS_MSAA (rt->isMultisampled() || kDrawLines_DrawType == type)
 #endif
 
-    const GrRenderTarget* rt = this->getDrawState().getRenderTarget();
-    if (kDesktop_GrGLBinding == this->glBinding()) {
-        // ES doesn't support toggling GL_MULTISAMPLE and doesn't have
-        // smooth lines.
-        // we prefer smooth lines over multisampled lines
-        bool smoothLines = false;
+    //const GrRenderTarget* rt = this->getDrawState().getRenderTarget();
+    //if (kDesktop_GrGLBinding == this->glBinding()) {
+    //    // ES doesn't support toggling GL_MULTISAMPLE and doesn't have
+    //    // smooth lines.
+    //    // we prefer smooth lines over multisampled lines
+    //    bool smoothLines = false;
 
-        if (kDrawLines_DrawType == type) {
-            smoothLines = this->willUseHWAALines();
-            if (smoothLines) {
-                if (kYes_TriState != fHWAAState.fSmoothLineEnabled) 
-				{
-                    glEnable(GL_LINE_SMOOTH);
-                    fHWAAState.fSmoothLineEnabled = kYes_TriState;
-                    // must disable msaa to use line smoothing
-                    if (RT_HAS_MSAA &&
-                        kNo_TriState != fHWAAState.fMSAAEnabled)
-					{
-                        glDisable(GL_MULTISAMPLE);
-                        fHWAAState.fMSAAEnabled = kNo_TriState;
-                    }
-                }
-            } else {
-                if (kNo_TriState != fHWAAState.fSmoothLineEnabled) {
-                    glDisable(GL_LINE_SMOOTH);
-                    fHWAAState.fSmoothLineEnabled = kNo_TriState;
-                }
-            }
-        }
-        if (!smoothLines && RT_HAS_MSAA) {
-            // FIXME: GL_NV_pr doesn't seem to like MSAA disabled. The paths
-            // convex hulls of each segment appear to get filled.
-            bool enableMSAA = kStencilPath_DrawType == type ||
-                              this->getDrawState().isHWAntialiasState();
-            if (enableMSAA) {
-                if (kYes_TriState != fHWAAState.fMSAAEnabled) {
-                    glEnable(GL_MULTISAMPLE);
-                    fHWAAState.fMSAAEnabled = kYes_TriState;
-                }
-            } else {
-                if (kNo_TriState != fHWAAState.fMSAAEnabled) {
-                    glDisable(GL_MULTISAMPLE);
-                    fHWAAState.fMSAAEnabled = kNo_TriState;
-                }
-            }
-        }
-    }
+    //    if (kDrawLines_DrawType == type) {
+    //        smoothLines = this->willUseHWAALines();
+    //        if (smoothLines) {
+    //            if (kYes_TriState != fHWAAState.fSmoothLineEnabled) 
+				//{
+    //                glEnable(GL_LINE_SMOOTH);
+    //                fHWAAState.fSmoothLineEnabled = kYes_TriState;
+    //                // must disable msaa to use line smoothing
+    //                if (RT_HAS_MSAA &&
+    //                    kNo_TriState != fHWAAState.fMSAAEnabled)
+				//	{
+    //                    glDisable(GL_MULTISAMPLE);
+    //                    fHWAAState.fMSAAEnabled = kNo_TriState;
+    //                }
+    //            }
+    //        } else {
+    //            if (kNo_TriState != fHWAAState.fSmoothLineEnabled) {
+    //                glDisable(GL_LINE_SMOOTH);
+    //                fHWAAState.fSmoothLineEnabled = kNo_TriState;
+    //            }
+    //        }
+    //    }
+    //    if (!smoothLines && RT_HAS_MSAA) {
+    //        // FIXME: GL_NV_pr doesn't seem to like MSAA disabled. The paths
+    //        // convex hulls of each segment appear to get filled.
+    //        bool enableMSAA = kStencilPath_DrawType == type ||
+    //                          this->getDrawState().isHWAntialiasState();
+    //        if (enableMSAA) {
+    //            if (kYes_TriState != fHWAAState.fMSAAEnabled) {
+    //                glEnable(GL_MULTISAMPLE);
+    //                fHWAAState.fMSAAEnabled = kYes_TriState;
+    //            }
+    //        } else {
+    //            if (kNo_TriState != fHWAAState.fMSAAEnabled) {
+    //                glDisable(GL_MULTISAMPLE);
+    //                fHWAAState.fMSAAEnabled = kNo_TriState;
+    //            }
+    //        }
+    //    }
+    //}
 }
 
 void GrGpuGL::flushPathStencilSettings(SkPath::FillType fill) {
     GrStencilSettings pathStencilSettings;
     this->getPathStencilSettingsForFillType(fill, &pathStencilSettings);
-    if (fHWPathStencilSettings != pathStencilSettings) {
-        // Just the func, ref, and mask is set here. The op and write mask are params to the call
-        // that draws the path to the SB (glStencilFillPath)
-        GLenum func =
-            gr_to_gl_stencil_func(pathStencilSettings.func(GrStencilSettings::kFront_Face));
-        glPathStencilFuncNV(func,
-                                pathStencilSettings.funcRef(GrStencilSettings::kFront_Face),
-                                pathStencilSettings.funcMask(GrStencilSettings::kFront_Face));
+    //if (fHWPathStencilSettings != pathStencilSettings) {
+    //    // Just the func, ref, and mask is set here. The op and write mask are params to the call
+    //    // that draws the path to the SB (glStencilFillPath)
+    //    GLenum func =
+    //        gr_to_gl_stencil_func(pathStencilSettings.func(GrStencilSettings::kFront_Face));
+    //    glPathStencilFuncNV(func,
+    //                            pathStencilSettings.funcRef(GrStencilSettings::kFront_Face),
+    //                            pathStencilSettings.funcMask(GrStencilSettings::kFront_Face));
 
-        fHWPathStencilSettings = pathStencilSettings;
-    }
+    //    fHWPathStencilSettings = pathStencilSettings;
+    //}
 }
 
 void GrGpuGL::flushBlend(bool isLines,
@@ -1909,18 +1910,19 @@ void GrGpuGL::bindTexture(int unitIdx, const GrTextureParams& params, GrGLTextur
                           oldTexParams.fSwizzleRGBA,
                           sizeof(newTexParams.fSwizzleRGBA)))) {
         this->setTextureUnit(unitIdx);
-        if (this->glBinding() == kES_GrGLBinding) {
-            // ES3 added swizzle support but not GL_TEXTURE_SWIZZLE_RGBA.
-            const GLenum* swizzle = newTexParams.fSwizzleRGBA;
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, swizzle[0]);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, swizzle[1]);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, swizzle[2]);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, swizzle[3]);
-        } else {
-            GR_STATIC_ASSERT(sizeof(newTexParams.fSwizzleRGBA[0]) == sizeof(GLint));
-            const GLint* swizzle = reinterpret_cast<const GLint*>(newTexParams.fSwizzleRGBA);
-            glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle);
-        }
+        //if (this->glBinding() == kES_GrGLBinding) {
+        //    // ES3 added swizzle support but not GL_TEXTURE_SWIZZLE_RGBA.
+        //    const GLenum* swizzle = newTexParams.fSwizzleRGBA;
+        //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, swizzle[0]);
+        //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, swizzle[1]);
+        //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, swizzle[2]);
+        //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, swizzle[3]);
+        //} else 
+		{
+			GR_STATIC_ASSERT(sizeof(newTexParams.fSwizzleRGBA[0]) == sizeof(GLint));
+			const GLint* swizzle = reinterpret_cast<const GLint*>(newTexParams.fSwizzleRGBA);
+			glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle);
+		}
     }
     texture->setCachedTexParams(newTexParams, this->getResetTimestamp());
 }
@@ -1942,55 +1944,56 @@ void GrGpuGL::setProjectionMatrix(const SkMatrix& matrix,
 
     GLfloat glMatrix[4 * 4];
     fHWProjectionMatrixState.getGLMatrix<4>(glMatrix);
-    glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(glMatrix);
+    //glMatrixMode(GL_PROJECTION);
+    //glLoadMatrixf(glMatrix);
 }
 
 void GrGpuGL::enableTexGen(int unitIdx,
                            TexGenComponents components,
                            const GLfloat* coefficients) {
 
-    if (GL_OBJECT_LINEAR == fHWTexGenSettings[unitIdx].fMode &&
-        components == fHWTexGenSettings[unitIdx].fNumComponents &&
-        !memcmp(coefficients, fHWTexGenSettings[unitIdx].fCoefficients,
-                3 * components * sizeof(GLfloat))) {
-        return;
-    }
+    //if (GL_OBJECT_LINEAR == fHWTexGenSettings[unitIdx].fMode &&
+    //    components == fHWTexGenSettings[unitIdx].fNumComponents &&
+    //    !memcmp(coefficients, fHWTexGenSettings[unitIdx].fCoefficients,
+    //            3 * components * sizeof(GLfloat))) {
+    //    return;
+    //}
 
-    this->setTextureUnit(unitIdx);
+    //this->setTextureUnit(unitIdx);
 
-    if (GL_OBJECT_LINEAR != fHWTexGenSettings[unitIdx].fMode) {
-        for (int i = 0; i < 4; i++) {
-           glTexGeni(GL_S + i, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-        }
-        fHWTexGenSettings[unitIdx].fMode = GL_OBJECT_LINEAR;
-    }
+    //if (GL_OBJECT_LINEAR != fHWTexGenSettings[unitIdx].fMode) {
+    //    for (int i = 0; i < 4; i++) {
+    //       glTexGeni(GL_S + i, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+    //    }
+    //    fHWTexGenSettings[unitIdx].fMode = GL_OBJECT_LINEAR;
+    //}
 
-    for (int i = fHWTexGenSettings[unitIdx].fNumComponents; i < components; i++) {
-        glEnable(GL_TEXTURE_GEN_S + i);
-    }
-    for (int i = components; i < fHWTexGenSettings[unitIdx].fNumComponents; i++) {
-        glDisable(GL_TEXTURE_GEN_S + i);
-    }
-    fHWTexGenSettings[unitIdx].fNumComponents = components;
+    //for (int i = fHWTexGenSettings[unitIdx].fNumComponents; i < components; i++) {
+    //    glEnable(GL_TEXTURE_GEN_S + i);
+    //}
+    //for (int i = components; i < fHWTexGenSettings[unitIdx].fNumComponents; i++) {
+    //    glDisable(GL_TEXTURE_GEN_S + i);
+    //}
+    //fHWTexGenSettings[unitIdx].fNumComponents = components;
 
-    for (int i = 0; i < components; i++) {
-        GLfloat plane[] = {coefficients[0 + 3 * i],
-                             coefficients[1 + 3 * i],
-                             0,
-                             coefficients[2 + 3 * i]};
-        glTexGenfv(GL_S + i, GL_OBJECT_PLANE, plane);
-    }
+    //for (int i = 0; i < components; i++) {
+    //    GLfloat plane[] = {coefficients[0 + 3 * i],
+    //                         coefficients[1 + 3 * i],
+    //                         0,
+    //                         coefficients[2 + 3 * i]};
+    //    glTexGenfv(GL_S + i, GL_OBJECT_PLANE, plane);
+    //}
 
-    if (this->caps()->pathRenderingSupport()) {
-        glPathTexGenNV(GL_TEXTURE0 + unitIdx,
-                           GL_OBJECT_LINEAR,
-                           components,
-                           coefficients);
-    }
+    //if (this->caps()->pathRenderingSupport()) {
+    //    glPathTexGenNV(GL_TEXTURE0 + unitIdx,
+    //                       GL_OBJECT_LINEAR,
+    //                       components,
+    //                       coefficients);
+    //}
 
     memcpy(fHWTexGenSettings[unitIdx].fCoefficients, coefficients,
            3 * components * sizeof(GLfloat));
+
 }
 
 void GrGpuGL::enableTexGen(int unitIdx, TexGenComponents components, const SkMatrix& matrix) {
@@ -2019,19 +2022,19 @@ void GrGpuGL::flushTexGenSettings(int numUsedTexCoordSets) {
     // Only write the inactive tex gens, since active tex gens were written
     // when they were enabled.
 
-    for (int i = numUsedTexCoordSets; i < fHWActiveTexGenSets; i++) {
+    //for (int i = numUsedTexCoordSets; i < fHWActiveTexGenSets; i++) {
 
-        this->setTextureUnit(i);
-        for (int j = 0; j < fHWTexGenSettings[i].fNumComponents; j++) {
-            glDisable(GL_TEXTURE_GEN_S + j);
-        }
+    //    this->setTextureUnit(i);
+    //    for (int j = 0; j < fHWTexGenSettings[i].fNumComponents; j++) {
+    //        glDisable(GL_TEXTURE_GEN_S + j);
+    //    }
 
-        if (this->caps()->pathRenderingSupport()) {
-            glPathTexGenNV(GL_TEXTURE0 + i, GL_NONE, 0, NULL);
-        }
+    //    if (this->caps()->pathRenderingSupport()) {
+    //        glPathTexGenNV(GL_TEXTURE0 + i, GL_NONE, 0, NULL);
+    //    }
 
-        fHWTexGenSettings[i].fNumComponents = 0;
-    }
+    //    fHWTexGenSettings[i].fNumComponents = 0;
+    //}
 
     fHWActiveTexGenSets = numUsedTexCoordSets;
 }
@@ -2122,7 +2125,7 @@ bool GrGpuGL::configToGLFormats(GrPixelConfig config,
             *internalFormat = GL_RGBA;
             *externalFormat = GL_RGBA;
             if (getSizedInternalFormat) {
-                *internalFormat = GL_RGBA8;
+                *internalFormat = GL_RGBA;
             } else {
                 *internalFormat = GL_RGBA;
             }
@@ -2132,19 +2135,20 @@ bool GrGpuGL::configToGLFormats(GrPixelConfig config,
             if (!this->glCaps().bgraFormatSupport()) {
                 return false;
             }
-            if (this->glCaps().bgraIsInternalFormat()) {
-                if (getSizedInternalFormat) {
-                    *internalFormat = GL_BGRA8;
-                } else {
-                    *internalFormat = GL_BGRA;
-                }
-            } else {
-                if (getSizedInternalFormat) {
-                    *internalFormat = GL_RGBA8;
-                } else {
-                    *internalFormat = GL_RGBA;
-                }
-            }
+            //if (this->glCaps().bgraIsInternalFormat()) {
+            //    if (getSizedInternalFormat) {
+            //        *internalFormat = GL_BGRA8;
+            //    } else {
+            //        *internalFormat = GL_BGRA;
+            //    }
+            //} else {
+            //    if (getSizedInternalFormat) {
+            //        *internalFormat = GL_RGBA8;
+            //    } else {
+            //        *internalFormat = GL_RGBA;
+            //    }
+            //}
+			*internalFormat = GL_RGBA;
             *externalFormat = GL_BGRA;
             *externalType = GL_UNSIGNED_BYTE;
             break;
@@ -2199,7 +2203,7 @@ bool GrGpuGL::configToGLFormats(GrPixelConfig config,
                 *internalFormat = GL_ALPHA;
                 *externalFormat = GL_ALPHA;
                 if (getSizedInternalFormat) {
-                    *internalFormat = GL_ALPHA8;
+                    *internalFormat = GL_ALPHA;
                 } else {
                     *internalFormat = GL_ALPHA;
                 }
@@ -2396,64 +2400,64 @@ bool GrGpuGL::onCopySurface(GrSurface* dst,
             selfOverlap = SkIRect::IntersectsNoEmptyCheck(dstRect, srcRect);
         }
 
-        if (!selfOverlap) {
-            GLuint dstFBO;
-            GLuint srcFBO;
-            GrGLIRect dstVP;
-            GrGLIRect srcVP;
-            dstFBO = bind_surface_as_fbo(dst, GL_DRAW_FRAMEBUFFER, &dstVP);
-            srcFBO = bind_surface_as_fbo(src, GL_READ_FRAMEBUFFER, &srcVP);
-            // We modified the bound FBO
-            fHWBoundRenderTarget = NULL;
-            GrGLIRect srcGLRect;
-            GrGLIRect dstGLRect;
-            srcGLRect.setRelativeTo(srcVP,
-                                    srcRect.fLeft,
-                                    srcRect.fTop,
-                                    srcRect.width(),
-                                    srcRect.height(),
-                                    src->origin());
-            dstGLRect.setRelativeTo(dstVP,
-                                    dstRect.fLeft,
-                                    dstRect.fTop,
-                                    dstRect.width(),
-                                    dstRect.height(),
-                                    dst->origin());
+    //    if (!selfOverlap) {
+    //        GLuint dstFBO;
+    //        GLuint srcFBO;
+    //        GrGLIRect dstVP;
+    //        GrGLIRect srcVP;
+    //        dstFBO = bind_surface_as_fbo(dst, GL_DRAW_FRAMEBUFFER, &dstVP);
+    //        srcFBO = bind_surface_as_fbo(src, GL_READ_FRAMEBUFFER, &srcVP);
+    //        // We modified the bound FBO
+    //        fHWBoundRenderTarget = NULL;
+    //        GrGLIRect srcGLRect;
+    //        GrGLIRect dstGLRect;
+    //        srcGLRect.setRelativeTo(srcVP,
+    //                                srcRect.fLeft,
+    //                                srcRect.fTop,
+    //                                srcRect.width(),
+    //                                srcRect.height(),
+    //                                src->origin());
+    //        dstGLRect.setRelativeTo(dstVP,
+    //                                dstRect.fLeft,
+    //                                dstRect.fTop,
+    //                                dstRect.width(),
+    //                                dstRect.height(),
+    //                                dst->origin());
 
-            GrAutoTRestore<ScissorState> asr;
-            if (GrGLCaps::kDesktop_EXT_MSFBOType == this->glCaps().msFBOType()) {
-                // The EXT version applies the scissor during the blit, so disable it.
-                asr.reset(&fScissorState);
-                fScissorState.fEnabled = false;
-                this->flushScissor();
-            }
-            GLint srcY0;
-            GLint srcY1;
-            // Does the blit need to y-mirror or not?
-            if (src->origin() == dst->origin()) {
-                srcY0 = srcGLRect.fBottom;
-                srcY1 = srcGLRect.fBottom + srcGLRect.fHeight;
-            } else {
-                srcY0 = srcGLRect.fBottom + srcGLRect.fHeight;
-                srcY1 = srcGLRect.fBottom;
-            }
-            glBlitFramebuffer(srcGLRect.fLeft,
-                                    srcY0,
-                                    srcGLRect.fLeft + srcGLRect.fWidth,
-                                    srcY1,
-                                    dstGLRect.fLeft,
-                                    dstGLRect.fBottom,
-                                    dstGLRect.fLeft + dstGLRect.fWidth,
-                                    dstGLRect.fBottom + dstGLRect.fHeight,
-                                    GL_COLOR_BUFFER_BIT, GL_NEAREST);
-            if (dstFBO) {
-                glDeleteFramebuffers(1, &dstFBO);
-            }
-            if (srcFBO) {
-                glDeleteFramebuffers(1, &srcFBO);
-            }
-            copied = true;
-        }
+    //        GrAutoTRestore<ScissorState> asr;
+    //        if (GrGLCaps::kDesktop_EXT_MSFBOType == this->glCaps().msFBOType()) {
+    //            // The EXT version applies the scissor during the blit, so disable it.
+    //            asr.reset(&fScissorState);
+    //            fScissorState.fEnabled = false;
+    //            this->flushScissor();
+    //        }
+    //        GLint srcY0;
+    //        GLint srcY1;
+    //        // Does the blit need to y-mirror or not?
+    //        if (src->origin() == dst->origin()) {
+    //            srcY0 = srcGLRect.fBottom;
+    //            srcY1 = srcGLRect.fBottom + srcGLRect.fHeight;
+    //        } else {
+    //            srcY0 = srcGLRect.fBottom + srcGLRect.fHeight;
+    //            srcY1 = srcGLRect.fBottom;
+    //        }
+    //        glBlitFramebuffer(srcGLRect.fLeft,
+    //                                srcY0,
+    //                                srcGLRect.fLeft + srcGLRect.fWidth,
+    //                                srcY1,
+    //                                dstGLRect.fLeft,
+    //                                dstGLRect.fBottom,
+    //                                dstGLRect.fLeft + dstGLRect.fWidth,
+    //                                dstGLRect.fBottom + dstGLRect.fHeight,
+    //                                GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    //        if (dstFBO) {
+    //            glDeleteFramebuffers(1, &dstFBO);
+    //        }
+    //        if (srcFBO) {
+    //            glDeleteFramebuffers(1, &srcFBO);
+    //        }
+    //        copied = true;
+    //    }
     }
     if (!copied && inheritedCouldCopy) {
         copied = INHERITED::onCopySurface(dst, src, srcRect, dstPoint);
