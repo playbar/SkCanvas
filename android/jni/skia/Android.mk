@@ -25,6 +25,8 @@ LOCAL_C_INCLUDES :=  \
 					$../../third_party/skia/include \
 					$../../third_party/skia/src/gpu \
 					$../../third_party/skia/include/gpu \
+					$../../third_party/skia/include/pathops \
+					$../../third_party/skia/include/ports \
 					$../../ \
 					$../../skia/config \
 					

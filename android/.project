@@ -1078,6 +1078,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/include/gpu/SkGrPixelRef.h</locationURI>
 		</link>
 		<link>
+			<name>jni/skia/include/gpu/eggl.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/include/gpu/eggl.h</locationURI>
+		</link>
+		<link>
 			<name>jni/skia/include/gpu/gl</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>

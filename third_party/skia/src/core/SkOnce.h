@@ -127,7 +127,7 @@ static void sk_once_slow(SkOnceFlag* once, Func f, Arg arg) {
 // This is our fast path, called all the time.  We do really want it to be inlined.
 template <typename Func, typename Arg>
 inline void SkOnce(SkOnceFlag* once, Func f, Arg arg) {
-    ANNOTATE_BENIGN_RACE(&(once->done), "Don't worry TSAN, we're sure this is safe.");
+    //ANNOTATE_BENIGN_RACE(&(once->done), "Don't worry TSAN, we're sure this is safe.");
     if (!once->done) {
         sk_once_slow(once, f, arg);
     }
