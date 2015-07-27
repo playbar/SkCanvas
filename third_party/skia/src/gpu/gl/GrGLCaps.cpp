@@ -325,9 +325,9 @@ void GrGLCaps::initStencilFormats(const GrGLContextInfo& ctxInfo) {
                   // internal Format      stencil bits      total bits        packed?
         gS8    = {GL_STENCIL_INDEX8,   8,                8,                false},
         //gS16   = {GL_STENCIL_INDEX16_OES,  16,               16,               false},
-        gD24S8 = {GL_DEPTH24_STENCIL8_OES, 8,                32,               true },
-        gS4    = {GL_STENCIL_INDEX4_OES,   4,                4,                false},
-        gDS    = {GL_DEPTH_STENCIL_OES,    kUnknownBitCount, kUnknownBitCount, true };
+        gD24S8 = {GL_DEPTH24_STENCIL8, 8,                32,               true },
+        gS4    = {GL_STENCIL_INDEX4,   4,                4,                false},
+        gDS    = {GL_DEPTH_STENCIL,    kUnknownBitCount, kUnknownBitCount, true };
 
 	bool supportsPackedDS = true;
            
