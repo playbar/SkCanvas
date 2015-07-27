@@ -95,7 +95,26 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/opts/SkBitmapProcState_opts_no
 #MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 #LOCAL_SRC_FILES += $(MY_FILES)		
 
-				 
+#sfnt
+LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/sfnt/SkOTTable_name.cpp \
+					../../../third_party/skia/src/sfnt/SkOTUtils.cpp \
+					
+
+#sfnt
+LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/utils/SkBase64.cpp \
+					../../../third_party/skia/src/utils/SkBitSet.cpp \
+					../../../third_party/skia/src/utils/SkCanvasStack.cpp \
+					../../../third_party/skia/src/utils/SkCanvasStateUtils.cpp \
+					../../../third_party/skia/src/utils/SkInterpolator.cpp \
+					../../../third_party/skia/src/utils/SkMatrix44.cpp \
+					../../../third_party/skia/src/utils/SkNullCanvas.cpp \
+					../../../third_party/skia/src/utils/SkNWayCanvas.cpp \
+					../../../third_party/skia/src/utils/SkParse.cpp \
+					../../../third_party/skia/src/utils/SkParseColor.cpp \
+					../../../third_party/skia/src/utils/SkPictureUtils.cpp \
+					../../../third_party/skia/src/utils/SkProxyCanvas.cpp \
+					../../../third_party/skia/src/utils/SkRTConf.cpp\
+					
 #base android
 #MY_FILES := $(wildcard $(LOCAL_PATH)/../../../../src/base/android/*.cpp)
 #MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)

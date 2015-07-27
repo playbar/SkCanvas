@@ -88,11 +88,6 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/include/pipe</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/include/ports</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -144,11 +139,6 @@
 		</link>
 		<link>
 			<name>jni/skia/src/pathops</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/pipe</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -1116,11 +1106,6 @@
 			<name>jni/skia/include/pathops/SkPathOps.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/include/pathops/SkPathOps.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/include/pipe/SkGPipe.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/include/pipe/SkGPipe.h</locationURI>
 		</link>
 		<link>
 			<name>jni/skia/include/ports/SkFontConfigInterface.h</name>
@@ -3953,26 +3938,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/pathops/SkReduceOrder.h</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/pipe/SkGPipePriv.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/pipe/SkGPipePriv.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/pipe/SkGPipeRead.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/pipe/SkGPipeRead.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/pipe/SkGPipeWrite.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/pipe/SkGPipeWrite.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/pipe/utils</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/ports/SkAtomics_android.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkAtomics_android.h</locationURI>
@@ -5336,16 +5301,6 @@
 			<name>jni/skia/src/gpu/gl/win</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/pipe/utils/SamplePipeControllers.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/pipe/utils/SamplePipeControllers.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/pipe/utils/SamplePipeControllers.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/pipe/utils/SamplePipeControllers.h</locationURI>
 		</link>
 		<link>
 			<name>jni/skia/src/utils/android/ashmem.cpp</name>
