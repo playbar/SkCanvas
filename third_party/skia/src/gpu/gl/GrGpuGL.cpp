@@ -1561,19 +1561,20 @@ void GrGpuGL::onResolveRenderTarget(GrRenderTarget* target) {
                 this->flushScissor();
 				assert(false);
                 //glResolveMultisampleFramebuffer();
-            } else {
-                if (GrGLCaps::kDesktop_EXT_MSFBOType == this->glCaps().msFBOType()) {
-                    // this respects the scissor during the blit, so disable it.
-                    asr.reset(&fScissorState);
-                    fScissorState.fEnabled = false;
-                    this->flushScissor();
-                }
-                int right = r.fLeft + r.fWidth;
-                int top = r.fBottom + r.fHeight;
-                glBlitFramebuffer(r.fLeft, r.fBottom, right, top,
-                                        r.fLeft, r.fBottom, right, top,
-                                        GL_COLOR_BUFFER_BIT, GL_NEAREST);
             }
+//            else {
+//                if (GrGLCaps::kDesktop_EXT_MSFBOType == this->glCaps().msFBOType()) {
+//                    // this respects the scissor during the blit, so disable it.
+//                    asr.reset(&fScissorState);
+//                    fScissorState.fEnabled = false;
+//                    this->flushScissor();
+//                }
+//                int right = r.fLeft + r.fWidth;
+//                int top = r.fBottom + r.fHeight;
+//                glBlitFramebuffer(r.fLeft, r.fBottom, right, top,
+//                                        r.fLeft, r.fBottom, right, top,
+//                                        GL_COLOR_BUFFER_BIT, GL_NEAREST);
+//            }
         }
         rt->flagAsResolved();
     }
