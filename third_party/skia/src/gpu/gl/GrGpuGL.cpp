@@ -106,23 +106,6 @@ GrGpuGL::GrGpuGL(const GrGLContext& ctx, GrContext* context)
     fHWTexGenSettings.reset(ctx.info().caps()->maxFixedFunctionTextureCoords());
 
     GrGLClearErr();
-
-    if (gPrintStartupSpew) {
-        const GLubyte* vendor;
-        const GLubyte* renderer;
-        const GLubyte* version;
-        vendor =  glGetString(GL_VENDOR);
-        renderer =  glGetString(GL_RENDERER);
-        version = glGetString(GL_VERSION);
-        GrPrintf("-------------- create GrGpuGL %p --------------\n", this);
-        GrPrintf("------ VENDOR %s\n", vendor);
-        GrPrintf("------ RENDERER %s\n", renderer);
-        GrPrintf("------ VERSION %s\n",  version);
-        GrPrintf("------ EXTENSIONS\n");
-		GrPrintf("\n");
-        GrPrintf(ctx.info().caps()->dump().c_str());
-    }
-
     fProgramCache = SkNEW_ARGS(ProgramCache, (this));
 
     fLastSuccessfulStencilFmtIdx = 0;
@@ -214,25 +197,25 @@ void GrGpuGL::onResetContext(uint32_t resetBits) {
         fHWDitherEnabled = kUnknown_TriState;
 
             // Desktop-only state that we never change
-            if (!this->glCaps().isCoreProfile())
-			{
-				glDisable(GL_POINT_SMOOTH);
-                glDisable(GL_LINE_SMOOTH);
-				glDisable(GL_POLYGON_SMOOTH);
-                glDisable(GL_POLYGON_STIPPLE);
-                glDisable(GL_COLOR_LOGIC_OP);
-                glDisable(GL_INDEX_LOGIC_OP);
-            }
+   //         if (!this->glCaps().isCoreProfile())
+			//{
+			//	glDisable(GL_POINT_SMOOTH);
+   //             glDisable(GL_LINE_SMOOTH);
+			//	glDisable(GL_POLYGON_SMOOTH);
+   //             glDisable(GL_POLYGON_STIPPLE);
+   //             glDisable(GL_COLOR_LOGIC_OP);
+   //             glDisable(GL_INDEX_LOGIC_OP);
+   //         }
             // The windows NVIDIA driver has GL_ARB_imaging in the extension string when using a
             // core profile. This seems like a bug since the core spec removes any mention of
             // GL_ARB_imaging.
-            if (this->glCaps().imagingSupport() && !this->glCaps().isCoreProfile()) {
-                glDisable(GL_COLOR_TABLE);
-            }
+            //if (this->glCaps().imagingSupport() && !this->glCaps().isCoreProfile()) {
+            //    glDisable(GL_COLOR_TABLE);
+            //}
 			glDisable(GL_POLYGON_OFFSET_FILL);
             // Since ES doesn't support glPointSize at all we always use the VS to
             // set the point size
-            glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+            //glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
             // We should set glPolygonMode(FRONT_AND_BACK,FILL) here, too. It isn't
             // currently part of our gl interface. There are probably others as
@@ -278,52 +261,24 @@ void GrGpuGL::onResetContext(uint32_t resetBits) {
         fHWBoundRenderTarget = NULL;
     }
 
-    if (resetBits & (kFixedFunction_GrGLBackendState | kPathRendering_GrGLBackendState)) {
-        if (this->glCaps().fixedFunctionSupport()) 
-		{
-            fHWProjectionMatrixState.invalidate();
-            // we don't use the model view matrix.
-			glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
-
-            for (int i = 0; i < this->glCaps().maxFixedFunctionTextureCoords(); ++i) {
-                glActiveTexture(GL_TEXTURE0 + i);
-				glDisable(GL_TEXTURE_GEN_S);
-				glDisable(GL_TEXTURE_GEN_T);
-                glDisable(GL_TEXTURE_GEN_Q);
-                glDisable(GL_TEXTURE_GEN_R);
-                if (this->caps()->pathRenderingSupport())
-				{
-					glPathTexGenNV(GL_TEXTURE0 + i, GL_NONE, 0, NULL);
-                }
-                fHWTexGenSettings[i].fMode = GL_NONE;
-                fHWTexGenSettings[i].fNumComponents = 0;
-            }
-            fHWActiveTexGenSets = 0;
-        }
-        if (this->caps()->pathRenderingSupport()) {
-            fHWPathStencilSettings.invalidate();
-        }
-    }
-
     // we assume these values
-    if (resetBits & kPixelStore_GrGLBackendState) {
-        if (this->glCaps().unpackRowLengthSupport()) 
-		{
-            glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-        }
-        if (this->glCaps().packRowLengthSupport()) 
-		{
-            glPixelStorei(GL_PACK_ROW_LENGTH, 0);
-        }
-        if (this->glCaps().unpackFlipYSupport()) {
-			glPixelStorei(GL_UNPACK_FLIP_Y, GL_FALSE);
-        }
-        if (this->glCaps().packFlipYSupport()) 
-		{
-            glPixelStorei(GL_PACK_REVERSE_ROW_ORDER, GL_FALSE);
-        }
-    }
+  //  if (resetBits & kPixelStore_GrGLBackendState) {
+  //      if (this->glCaps().unpackRowLengthSupport()) 
+		//{
+  //          glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+  //      }
+  //      if (this->glCaps().packRowLengthSupport()) 
+		//{
+  //          glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+  //      }
+  //      if (this->glCaps().unpackFlipYSupport()) {
+		//	glPixelStorei(GL_UNPACK_FLIP_Y, GL_FALSE);
+  //      }
+  //      if (this->glCaps().packFlipYSupport()) 
+		//{
+  //          glPixelStorei(GL_PACK_REVERSE_ROW_ORDER, GL_FALSE);
+  //      }
+  //  }
 
     if (resetBits & kProgram_GrGLBackendState) {
         fHWProgramID = 0;
@@ -593,15 +548,15 @@ bool GrGpuGL::uploadTexData(const GrGLTexture::Desc& desc,
 				swFlipY = true;
 			}
 		}
-		if (this->glCaps().unpackRowLengthSupport() && !swFlipY) {
-			// can't use this for flipping, only non-neg values allowed. :(
-			if (rowBytes != trimRowBytes) {
-				GLint rowLength = static_cast<GLint>(rowBytes / bpp);
-				glPixelStorei(GL_UNPACK_ROW_LENGTH, rowLength);
-				restoreGLRowLength = true;
-			}
-		}
-		else
+		//if (this->glCaps().unpackRowLengthSupport() && !swFlipY) {
+		//	// can't use this for flipping, only non-neg values allowed. :(
+		//	if (rowBytes != trimRowBytes) {
+		//		GLint rowLength = static_cast<GLint>(rowBytes / bpp);
+		//		glPixelStorei(GL_UNPACK_ROW_LENGTH, rowLength);
+		//		restoreGLRowLength = true;
+		//	}
+		//}
+		//else
 		{
 			if (trimRowBytes != rowBytes || swFlipY)
 			{
@@ -636,14 +591,15 @@ bool GrGpuGL::uploadTexData(const GrGLTexture::Desc& desc,
 		0 == left && 0 == top &&
 		desc.fWidth == width && desc.fHeight == height)
 	{
-		if (useTexStorage) {
-			// We never resize  or change formats of textures.
-			glTexStorage2D(GL_TEXTURE_2D,
-				1, // levels
-				internalFormat,
-				desc.fWidth, desc.fHeight);
-		}
-		else {
+		//if (useTexStorage) {
+		//	// We never resize  or change formats of textures.
+		//	glTexStorage2D(GL_TEXTURE_2D,
+		//		1, // levels
+		//		internalFormat,
+		//		desc.fWidth, desc.fHeight);
+		//}
+		//else 
+		{
 			if (GL_PALETTE8_RGBA8 == internalFormat) {
 				GLsizei imageSize = desc.fWidth * desc.fHeight +
 					kGrColorTableSize;
@@ -693,13 +649,13 @@ bool GrGpuGL::uploadTexData(const GrGLTexture::Desc& desc,
 			externalFormat, externalType, data);
 	}
 
-	if (restoreGLRowLength)
-	{
-		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-	}
-	if (glFlipY) {
-		glPixelStorei(GL_UNPACK_FLIP_Y, GL_FALSE);
-	}
+	//if (restoreGLRowLength)
+	//{
+	//	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+	//}
+	//if (glFlipY) {
+	//	glPixelStorei(GL_UNPACK_FLIP_Y, GL_FALSE);
+	//}
 	return succeeded;
 }
 
