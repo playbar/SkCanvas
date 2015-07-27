@@ -11,6 +11,9 @@
 #define GL_STENCIL_INDEX4	GL_STENCIL_INDEX4_OES
 #define GL_DEPTH_STENCIL	GL_DEPTH_STENCIL_OES
 #define glBindVertexArray	glBindVertexArrayOES
+#define GL_RED				0x1903
+#define GL_GREEN			0x1904
+#define GL_BLUE_BITS		0x1905
 #endif
 
 
