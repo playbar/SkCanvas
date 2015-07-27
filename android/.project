@@ -3953,11 +3953,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/pathops/SkReduceOrder.h</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/pathops/main.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/pathops/main.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/pipe/SkGPipePriv.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/pipe/SkGPipePriv.h</locationURI>

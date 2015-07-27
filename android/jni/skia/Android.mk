@@ -90,6 +90,11 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/opts/SkBitmapProcState_opts_no
 					../../../third_party/skia/src/opts/SkXfermode_opts_none.cpp \
 					
 
+#pathops
+#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/pathops/*.cpp)
+#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+#LOCAL_SRC_FILES += $(MY_FILES)		
+
 				 
 #base android
 #MY_FILES := $(wildcard $(LOCAL_PATH)/../../../../src/base/android/*.cpp)
