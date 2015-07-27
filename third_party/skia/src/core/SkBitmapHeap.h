@@ -29,8 +29,7 @@ public:
     SkBitmap* getBitmap() { return &fBitmap; }
 
     void releaseRef() {
-    	fRefCount--;
-        //sk_atomic_dec(&fRefCount);
+        sk_atomic_dec(&fRefCount);
     }
 
 private:
