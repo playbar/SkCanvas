@@ -330,7 +330,7 @@ private:
             }
             if (!fBoundVertexArrayIDIsValid || arrayID != fBoundVertexArrayID)
 			{
-                glBindVertexArray(arrayID);
+                glBindVertexArray_OES(arrayID);
                 fBoundVertexArrayIDIsValid = true;
                 fBoundVertexArrayID = arrayID;
             }

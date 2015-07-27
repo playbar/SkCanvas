@@ -73,16 +73,7 @@ void* GrGLBufferImpl::lock(GrGpuGL* gpu)
 	{
         fLockPtr = fCPUData;
     } 
-	else if (gpu->caps()->bufferLockSupport()) 
-	{
-        this->bind(gpu);
-        // Let driver know it can discard the old data
-        glBufferData(fBufferType,
-                                (GLsizeiptr) fDesc.fSizeInBytes,
-                                NULL,
-								fDesc.fDynamic ? GL_STREAM_DRAW : GL_STATIC_DRAW);
-		fLockPtr = glMapBuffer(fBufferType, GL_WRITE_ONLY);
-    }
+
     return fLockPtr;
 }
 
@@ -91,7 +82,7 @@ void GrGLBufferImpl::unlock(GrGpuGL* gpu)
     if (0 != fDesc.fID) 
 	{
         this->bind(gpu);
-       glUnmapBuffer(fBufferType);
+       //glUnmapBuffer(fBufferType);
     }
     fLockPtr = NULL;
 }
