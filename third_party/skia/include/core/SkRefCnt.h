@@ -36,11 +36,15 @@ public:
     }
 
     void ref() const {
-        sk_atomic_inc(&fRefCnt);  // No barrier required.
+    	fRefCnt++;
+        //sk_atomic_inc(&fRefCnt);  // No barrier required.
     }
 
     void unref() const {
-        if (sk_atomic_dec(&fRefCnt) == 1) {   
+        //if (sk_atomic_dec(&fRefCnt) == 1)
+    	fRefCnt--;
+    	if( fRefCnt == 1 )
+        {
 			sk_membar_acquire__after_atomic_dec();
             internal_dispose();
         }
@@ -48,7 +52,10 @@ public:
 
 	void deref()const
 	{
-		if (sk_atomic_dec(&fRefCnt) == 1) {
+		//if (sk_atomic_dec(&fRefCnt) == 1)
+		fRefCnt--;
+		if( fRefCnt == 1 )
+		{
 			sk_membar_acquire__after_atomic_dec();
 			internal_dispose();
 		}

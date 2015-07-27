@@ -374,21 +374,11 @@
 //////////////////////////////////////////////////////////////////////
 
 #ifndef SK_ATOMICS_PLATFORM_H
-#  if defined(_WIN32)
-#    define SK_ATOMICS_PLATFORM_H "../../src/ports/SkAtomics_win.h"
-#  elif defined(SK_BUILD_FOR_ANDROID_FRAMEWORK)
-#    define SK_ATOMICS_PLATFORM_H "../../src/ports/SkAtomics_android.h"
-#  else
-#    define SK_ATOMICS_PLATFORM_H "../../src/ports/SkAtomics_sync.h"
-#  endif
+#    define SK_ATOMICS_PLATFORM_H "../../src/ports/SkAtomics_none.h"
 #endif
 
 #ifndef SK_MUTEX_PLATFORM_H
-#  if defined(_WIN32)
-#    define SK_MUTEX_PLATFORM_H "../../src/ports/SkMutex_win.h"
-#  else
-#    define SK_MUTEX_PLATFORM_H "../../src/ports/SkMutex_pthread.h"
-#  endif
+#    define SK_MUTEX_PLATFORM_H "../../src/ports/SkMutex_none.h"
 #endif
 
 #endif // SkPostConfig_DEFINED
