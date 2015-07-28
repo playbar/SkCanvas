@@ -65,6 +65,33 @@ LOCAL_SRC_FILES += 	../../../wtf/unicode/icu/CollatorICU.cpp\
 LOCAL_SRC_FILES += 	../../../wtf/ArrayBuffer.cpp \
 					../../../wtf/ArrayBufferBuilder.cpp \
 					../../../wtf/ArrayBufferContents.cpp \
+					../../../wtf/ArrayBufferView.cpp \
+					../../../wtf/Assertions.cpp \
+					../../../wtf/BitVector.cpp \
+					../../../wtf/CryptographicallyRandomNumber.cpp \
+					../../../wtf/CurrentTime.cpp \
+					../../../wtf/DataLog.cpp \
+					../../../wtf/DateMath.cpp \
+					../../../wtf/DecimalNumber.cpp \
+					../../../wtf/dtoa.cpp \
+					../../../wtf/DynamicAnnotations.cpp \
+					../../../wtf/FastMalloc.cpp \
+					../../../wtf/FilePrintStream.cpp \
+					../../../wtf/GregorianDateTime.cpp \
+					../../../wtf/HashTable.cpp \
+					../../../wtf/InstanceCounter.cpp \
+					../../../wtf/NullPtr.cpp \
+					../../../wtf/PageAllocator.cpp \
+					../../../wtf/PartitionAlloc.cpp \
+					../../../wtf/PrintStream.cpp \
+					../../../wtf/SHA1.cpp \
+					../../../wtf/SizeLimits.cpp \
+					../../../wtf/TypeTraits.cpp \
+					../../../wtf/WTF.cpp \
+					../../../wtf/WTFThreadData.cpp \
+					
+					
+					
 					
 
 				
