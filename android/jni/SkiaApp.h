@@ -12,6 +12,7 @@ namespace egret {
 
 class SkiaApp {
 protected:
+	static SkiaApp * _instance;
 	GrContext * fCurContext;
 	GrRenderTarget * fCurRenderTarget;
 	SkCanvas * canvas;
@@ -19,10 +20,16 @@ public:
 	SkiaApp();
 	virtual ~SkiaApp();
 
+	static SkiaApp * createSkiaApp();
+
+	static SkiaApp * getSkiaApp();
+
 	void initApp(int width , int height);
 
 	void pauseApp();
 	void resumeApp();
+
+	void mainLoop();
 
 	void windowChanged(int width,int height);
 	SkCanvas* createCanvas();

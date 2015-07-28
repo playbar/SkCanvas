@@ -7,7 +7,8 @@
 */
 #include "gl/SkGLContextHelper.h"
 #include "GrGLUtil.h"
-
+#include "EGTLog.h"
+#define LOG_TAG "SkGLContextHelper"
 SkGLContextHelper::SkGLContextHelper()
 	: fFBO(0)
 	, fColorBufferID(0)
@@ -91,6 +92,7 @@ bool SkGLContextHelper::init(int width, int height)
 		GL_STENCIL_ATTACHMENT,
 		GL_RENDERBUFFER,
 		fDepthStencilBufferID);
+	LOGD("%s:dddddddddd",__func__);
 	glViewport(0, 0, width, height);
 	glClearStencil(0);
 	glClear(GL_STENCIL_BUFFER_BIT);

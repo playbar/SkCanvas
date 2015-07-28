@@ -90,9 +90,10 @@ class GL2JNIView extends GLSurfaceView
                              new ConfigChooser(5, 6, 5, 0, depth, stencil) );
 
         /* Set the renderer responsible for frame rendering */
-        setRenderer(new Renderer());
+        render = new Renderer();
+        setRenderer(render);
     }
-
+    Renderer render;
     private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
         private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
         public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
@@ -108,6 +109,18 @@ class GL2JNIView extends GLSurfaceView
             egl.eglDestroyContext(display, context);
         }
     }
+    
+	@Override
+	protected void onSizeChanged(final int pNewSurfaceWidth,
+			final int pNewSurfaceHeight, final int pOldSurfaceWidth,
+			final int pOldSurfaceHeight) {
+
+			
+		render.setScreenWidthAndHeight(pNewSurfaceWidth,
+					pNewSurfaceHeight);
+
+
+	}
 
     private static void checkEglError(String prompt, EGL10 egl) {
         int error;
@@ -317,23 +330,31 @@ class GL2JNIView extends GLSurfaceView
         	long currentMillis = System.currentTimeMillis();
         	if( icou == 0 )
         	{
-        		long FPS = (1000 * 5) / (currentMillis - preMillis );
-            	Log.e("FPS", "FPS--->" + FPS );
+        		long FPS = (1000*5 ) / (currentMillis - preMillis );
+            //	Log.e("FPS", "FPS--->" + FPS );
         		preMillis = currentMillis;
         	}
         	if( icou ++ > 4 )
         	{
         		icou = 0;
         	}
-            GL2JNILib.drawFrame();
+        
+            //GL2JNILib.drawFrame();
+        	JniShell.mainLoop();
+        }
+        int width,height;
+        public void setScreenWidthAndHeight(int width ,int height){
+        	this.width = width;
+        	this.height = height;
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-            GL2JNILib.changed(width, height);
+           //GL2JNILib.changed(width, height);
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
             // Do nothing.
+        	JniShell.initApp(width, height);
         }
     }
 }

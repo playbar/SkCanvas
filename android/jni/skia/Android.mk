@@ -33,6 +33,7 @@ LOCAL_C_INCLUDES := $../../third_party/libpng \
 					$../../third_party/freetype2/include/android \
 					$../../ \
 					$../../skia/config \
+					$../../android/jni
 					
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
 

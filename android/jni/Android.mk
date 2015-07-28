@@ -10,7 +10,10 @@ LOCAL_CFLAGS    := -Werror
 
 LOCAL_SRC_FILES := gl_code.cpp \
 				   GlesUtil.cpp \
-				   SkiaApp.cpp
+				   SkiaApp.cpp \
+				   JniShell.cpp \
+				   EGTLog.cpp \
+				   StdC.cpp
 				  
 
 LOCAL_STATIC_LIBRARIES := skia
