@@ -40,58 +40,55 @@ LOCAL_C_INCLUDES :=  \
 					$../../skia/config \
 					
 
-
-#LOCAL_SRC_FILES += \
-#		../../../third_party/skia/src/core/*.cpp \
 		
-#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/core/*.cpp)
-#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-#LOCAL_SRC_FILES += $(MY_FILES)	
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/core/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
 			
-#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/effects/*.cpp)
-#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-#LOCAL_SRC_FILES += $(MY_FILES)	
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/effects/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
 					 			
 			
-#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/effects/gradients/*.cpp)
-#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-#LOCAL_SRC_FILES += $(MY_FILES)	
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/effects/gradients/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
 
 #--todo
-#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/effects/*.cpp)
-#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-#LOCAL_SRC_FILES += $(MY_FILES)	
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/effects/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
 
-#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/gl/*.cpp)
-#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-#LOCAL_SRC_FILES += $(MY_FILES)
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/gl/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)
 
-#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/*.cpp)
-#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-#LOCAL_SRC_FILES += $(MY_FILES)
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)
 			
-#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/image/*.cpp)
-#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-#LOCAL_SRC_FILES += $(MY_FILES)	
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/image/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
 
 	
 
-##images
-#LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/images/SkImageDecoder.cpp \
-#					../../../third_party/skia/src/images/SkImageDecoder_FactoryDefault.cpp \
-#					../../../third_party/skia/src/images/SkImageDecoder_FactoryRegistrar.cpp \
-#					../../../third_party/skia/src/images/SkImageDecoder_libpng.cpp \
-#					../../../third_party/skia/src/images/SkImageEncoder.cpp \
-#					../../../third_party/skia/src/images/SkImageEncoder_Factory.cpp \
-#					../../../third_party/skia/src/images/SkImageRef.cpp \
-#					../../../third_party/skia/src/images/SkImageRef_GlobalPool.cpp \
-#					../../../third_party/skia/src/images/SkImageRefPool.cpp \
-#					../../../third_party/skia/src/images/SkImages.cpp \
-#					../../../third_party/skia/src/images/SkScaledBitmapSampler.cpp \
-#					
-##lazy
-#LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/lazy/SkCachingPixelRef.cpp \
-#					../../../third_party/skia/src/lazy/SkDiscardableMemoryPool.cpp \					
+#images
+LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/images/SkImageDecoder.cpp \
+					../../../third_party/skia/src/images/SkImageDecoder_FactoryDefault.cpp \
+					../../../third_party/skia/src/images/SkImageDecoder_FactoryRegistrar.cpp \
+					../../../third_party/skia/src/images/SkImageDecoder_libpng.cpp \
+					../../../third_party/skia/src/images/SkImageEncoder.cpp \
+					../../../third_party/skia/src/images/SkImageEncoder_Factory.cpp \
+					../../../third_party/skia/src/images/SkImageRef.cpp \
+					../../../third_party/skia/src/images/SkImageRef_GlobalPool.cpp \
+					../../../third_party/skia/src/images/SkImageRefPool.cpp \
+					../../../third_party/skia/src/images/SkImages.cpp \
+					../../../third_party/skia/src/images/SkScaledBitmapSampler.cpp \
+					
+#lazy
+LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/lazy/SkCachingPixelRef.cpp \
+					../../../third_party/skia/src/lazy/SkDiscardableMemoryPool.cpp \					
 
 #opts 
 LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/opts/SkBitmapProcState_opts_none.cpp \
@@ -103,9 +100,9 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/opts/SkBitmapProcState_opts_no
 					
 
 #pathops
-#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/pathops/*.cpp)
-#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-#LOCAL_SRC_FILES += $(MY_FILES)	
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/pathops/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
 
 #ports
 LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/ports/SkFontHost_none.cpp \
@@ -118,7 +115,7 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/sfnt/SkOTTable_name.cpp \
 					../../../third_party/skia/src/sfnt/SkOTUtils.cpp \
 					
 
-#sfnt
+#utils
 LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/utils/SkBase64.cpp \
 					../../../third_party/skia/src/utils/SkBitSet.cpp \
 					../../../third_party/skia/src/utils/SkCanvasStack.cpp \
@@ -133,11 +130,6 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/utils/SkBase64.cpp \
 					../../../third_party/skia/src/utils/SkProxyCanvas.cpp \
 					../../../third_party/skia/src/utils/SkRTConf.cpp\
 					
-#base android
-#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../../src/base/android/*.cpp)
-#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-#LOCAL_SRC_FILES += $(MY_FILES)				
-#LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/images/Error.cp \
 
 
 
