@@ -137,6 +137,55 @@ LOCAL_SRC_FILES	+=  ../../../third_party/icu/source/common/bmpset.cpp  \
 					../../../third_party/icu/source/common/uloc.c \
 					../../../third_party/icu/source/common/uloc_tag.c \
 					../../../third_party/icu/source/common/umapfile.c \
+					../../../third_party/icu/source/common/umath.c \
+					../../../third_party/icu/source/common/umutex.c \
+					../../../third_party/icu/source/common/unames.c \
+					../../../third_party/icu/source/common/unifilt.cpp \
+					../../../third_party/icu/source/common/unifunct.cpp \
+					../../../third_party/icu/source/common/uniset.cpp \
+					../../../third_party/icu/source/common/uniset_props.cpp \
+					../../../third_party/icu/source/common/unisetspan.cpp \
+					../../../third_party/icu/source/common/unistr.cpp \
+					../../../third_party/icu/source/common/unistr_case.cpp \
+					../../../third_party/icu/source/common/unistr_cnv.cpp \
+					../../../third_party/icu/source/common/unistr_props.cpp \
+					../../../third_party/icu/source/common/unorm.cpp \
+					../../../third_party/icu/source/common/unorm_it.c \
+					../../../third_party/icu/source/common/unormcmp.cpp \
+					../../../third_party/icu/source/common/uobject.cpp \
+					../../../third_party/icu/source/common/uprops.cpp \
+					../../../third_party/icu/source/common/ures_cnv.c \
+					../../../third_party/icu/source/common/uresbund.c \
+					../../../third_party/icu/source/common/uresdata.c \
+					../../../third_party/icu/source/common/usc_impl.c \
+					../../../third_party/icu/source/common/uscript.c \
+					../../../third_party/icu/source/common/uset.cpp \
+					../../../third_party/icu/source/common/uset_props.cpp \
+					../../../third_party/icu/source/common/usetiter.cpp \
+					../../../third_party/icu/source/common/ushape.c \
+					../../../third_party/icu/source/common/usprep.cpp \
+					../../../third_party/icu/source/common/ustack.cpp \
+					../../../third_party/icu/source/common/ustr_cnv.c \
+					../../../third_party/icu/source/common/ustr_wcs.c \
+					../../../third_party/icu/source/common/ustrcase.c \
+					../../../third_party/icu/source/common/ustrenum.cpp \
+					../../../third_party/icu/source/common/ustrfmt.c \
+					../../../third_party/icu/source/common/ustring.c \
+					../../../third_party/icu/source/common/ustrtrns.c \
+					../../../third_party/icu/source/common/utext.cpp \
+					../../../third_party/icu/source/common/utf_impl.c \
+					../../../third_party/icu/source/common/util.cpp \
+					../../../third_party/icu/source/common/util_props.cpp \
+					../../../third_party/icu/source/common/utrace.c \
+					../../../third_party/icu/source/common/utrie.c \
+					../../../third_party/icu/source/common/utrie2.cpp \
+					../../../third_party/icu/source/common/utrie2_builder.c \
+					../../../third_party/icu/source/common/uts46.cpp \
+					../../../third_party/icu/source/common/utypes.c \
+					../../../third_party/icu/source/common/uvector.cpp \
+					../../../third_party/icu/source/common/uvectr32.cpp \
+					../../../third_party/icu/source/common/uvectr64.cpp \
+					../../../third_party/icu/source/common/wintz.c \
 								
 					
 
