@@ -21,11 +21,15 @@ LOCAL_C_INCLUDES :=  \
 					$(MY_ANDROID_SOURCE)/external/astl/include \
 					$(MY_ANDROID_SOURCE)/hardware/libhardware/include \
 					$(LOCAL_PATH)      \
+					$../../third_party/libpng \
+					$../../third_party/icu/source/common \
+					$../../third_party/icu/source/i18n \
+					$../../third_party/stlport \
 					$../../wtf/dtoa \
 					$../../wtf \
 					$../../ \		
 
-#harfbuzz
+#dtoa
 LOCAL_SRC_FILES	+=  ../../../wtf/dtoa/bignum.cc \
 					../../../wtf/dtoa/bignum-dtoa.cc \
 					../../../wtf/dtoa/cached-powers.cc \
@@ -34,6 +38,9 @@ LOCAL_SRC_FILES	+=  ../../../wtf/dtoa/bignum.cc \
 					../../../wtf/dtoa/fast-dtoa.cc \
 					../../../wtf/dtoa/fixed-dtoa.cc \
 					../../../wtf/dtoa/strtod.cc \
+					
+#text 
+LOCAL_SRC_FILES	+=  ../../../wtf/text/AtomicString.cpp \
 				
 					
 
