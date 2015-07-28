@@ -10,6 +10,8 @@
 
 #include "unicode/utypes.h"
 
+#include <string>
+
 #if !UCONFIG_NO_TRANSLITERATION
 
 #include "unicode/uobject.h"
