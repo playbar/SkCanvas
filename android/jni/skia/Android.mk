@@ -12,7 +12,7 @@ LOCAL_CFLAGS += -DSK_BUILD_FOR_ANDROID_FRAMEWORK\
 				-D_ARGB_PIXEL_  \
 				-fshort-wchar	\
 				-fexceptions
-				
+			
 LOCAL_C_INCLUDES :=  \
 					$(JNI_H_INCLUDE)  \
 					$(MY_ANDROID_SOURCE)/frameworks/base/include \

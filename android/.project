@@ -3398,11 +3398,6 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/gpu/FlingState.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/gpu/FlingState.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/gpu/GrAAConvexPathRenderer.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/gpu/GrAAConvexPathRenderer.cpp</locationURI>

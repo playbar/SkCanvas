@@ -11,6 +11,7 @@ LOCAL_SRC_FILES := gl_code.cpp \
 				   GlesUtil.cpp
 
 LOCAL_STATIC_LIBRARIES := skia
+LOCAL_STATIC_LIBRARIES += harfbuzz
 
 #LOCAL_STATIC_LIBRARIES += GGDom
 
