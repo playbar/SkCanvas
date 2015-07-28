@@ -30,6 +30,7 @@
 #define HB_OT_MAP_PRIVATE_HH
 
 #include "hb-buffer-private.hh"
+#include "hb-ot.h"
 
 
 struct hb_ot_shape_plan_t;
