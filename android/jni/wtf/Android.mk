@@ -41,6 +41,32 @@ LOCAL_SRC_FILES	+=  ../../../wtf/dtoa/bignum.cc \
 					
 #text 
 LOCAL_SRC_FILES	+=  ../../../wtf/text/AtomicString.cpp \
+					../../../wtf/text/Base64.cpp \
+					../../../wtf/text/CString.cpp \
+					../../../wtf/text/StringBuilder.cpp \
+					../../../wtf/text/StringImpl.cpp \
+					../../../wtf/text/StringStatics.cpp \
+					../../../wtf/text/TextCodec.cpp \
+					../../../wtf/text/TextCodecICU.cpp \
+					../../../wtf/text/TextCodecLatin1.cpp \
+					../../../wtf/text/TextCodecUserDefined.cpp \
+					../../../wtf/text/TextCodecUTF8.cpp \
+					../../../wtf/text/TextCodecUTF16.cpp \
+					../../../wtf/text/TextEncoding.cpp \
+					../../../wtf/text/TextEncodingRegistry.cpp \
+					../../../wtf/text/TextPosition.cpp \
+					../../../wtf/text/WTFString.cpp \
+					
+#unicode 
+LOCAL_SRC_FILES += 	../../../wtf/unicode/icu/CollatorICU.cpp\
+					../../../wtf/unicode/WTFUTF8.cpp \
+					
+#wtf
+LOCAL_SRC_FILES += 	../../../wtf/ArrayBuffer.cpp \
+					../../../wtf/ArrayBufferBuilder.cpp \
+					../../../wtf/ArrayBufferContents.cpp \
+					
+
 				
 					
 
