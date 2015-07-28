@@ -3938,49 +3938,14 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/pathops/SkReduceOrder.h</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/ports/SkAtomics_android.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkAtomics_android.h</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/ports/SkAtomics_none.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkAtomics_none.h</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/ports/SkAtomics_sync.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkAtomics_sync.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkAtomics_win.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkAtomics_win.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkDebug_android.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkDebug_android.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkDebug_nacl.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkDebug_nacl.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/ports/SkDebug_stdio.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkDebug_stdio.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkDebug_win.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkDebug_win.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkDiscardableMemory_ashmem.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkDiscardableMemory_ashmem.cpp</locationURI>
 		</link>
 		<link>
 			<name>jni/skia/src/ports/SkDiscardableMemory_none.cpp</name>
@@ -4073,11 +4038,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkFontMgr_fontconfig.cpp</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/ports/SkGlobalInitialization_chromium.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkGlobalInitialization_chromium.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/ports/SkGlobalInitialization_default.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkGlobalInitialization_default.cpp</locationURI>
@@ -4088,29 +4048,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkHarfBuzzFont.cpp</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/ports/SkMemory_malloc.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkMemory_malloc.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkMemory_mozalloc.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkMemory_mozalloc.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/ports/SkMutex_none.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkMutex_none.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkMutex_pthread.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkMutex_pthread.h</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkMutex_win.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkMutex_win.h</locationURI>
 		</link>
 		<link>
 			<name>jni/skia/src/ports/SkOSFile_none.cpp</name>
@@ -4118,29 +4058,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkOSFile_none.cpp</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/ports/SkOSFile_posix.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkOSFile_posix.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/ports/SkOSFile_stdio.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkOSFile_stdio.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkOSFile_win.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkOSFile_win.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkPurgeableMemoryBlock_android.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkPurgeableMemoryBlock_android.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkPurgeableMemoryBlock_mac.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkPurgeableMemoryBlock_mac.cpp</locationURI>
 		</link>
 		<link>
 			<name>jni/skia/src/ports/SkPurgeableMemoryBlock_none.cpp</name>
@@ -4153,16 +4073,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkTLS_none.cpp</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/ports/SkTLS_pthread.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkTLS_pthread.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkTLS_win.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkTLS_win.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/ports/SkTime_Unix.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkTime_Unix.cpp</locationURI>
@@ -4171,26 +4081,6 @@
 			<name>jni/skia/src/ports/SkTime_win.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkTime_win.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkXMLParser_empty.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkXMLParser_empty.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkXMLParser_expat.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkXMLParser_expat.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkXMLParser_tinyxml.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkXMLParser_tinyxml.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/ports/SkXMLPullParser_expat.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/src/ports/SkXMLPullParser_expat.cpp</locationURI>
 		</link>
 		<link>
 			<name>jni/skia/src/sfnt/SkIBMFamilyClass.h</name>

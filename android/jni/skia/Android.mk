@@ -32,7 +32,10 @@ LOCAL_C_INCLUDES :=  \
 					$../../third_party/skia/include/ports \
 					$../../third_party/skia/include/effects \
 					$../../third_party/skia/src/opts \
+					$../../third_party/skia/src/sfnt \
 					$../../third_party/skia/include/images \
+					$../../third_party/freetype2/include/android/freeType2 \
+					$../../third_party/freetype2/include/android \
 					$../../ \
 					$../../skia/config \
 					
@@ -55,17 +58,17 @@ LOCAL_C_INCLUDES :=  \
 #LOCAL_SRC_FILES += $(MY_FILES)	
 
 #--todo
-MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/effects/*.cpp)
-MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-LOCAL_SRC_FILES += $(MY_FILES)	
+#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/effects/*.cpp)
+#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+#LOCAL_SRC_FILES += $(MY_FILES)	
 
-MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/gl/*.cpp)
-MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-LOCAL_SRC_FILES += $(MY_FILES)
+#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/gl/*.cpp)
+#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+#LOCAL_SRC_FILES += $(MY_FILES)
 
-MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/*.cpp)
-MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-LOCAL_SRC_FILES += $(MY_FILES)
+#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/*.cpp)
+#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+#LOCAL_SRC_FILES += $(MY_FILES)
 			
 #MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/image/*.cpp)
 #MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
@@ -108,7 +111,7 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/opts/SkBitmapProcState_opts_no
 LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/ports/SkFontHost_none.cpp \
 					../../../third_party/skia/src/ports/SkOSFile_none.cpp \
 					../../../third_party/skia/src/ports/SkOSFile_stdio.cpp \
-					../../../third_party/skia/src/ports/
+					../../../third_party/skia/src/ports/SkFontHost_FreeType.cpp \
 
 #sfnt
 LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/sfnt/SkOTTable_name.cpp \

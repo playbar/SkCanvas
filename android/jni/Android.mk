@@ -2,14 +2,23 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := libruntimecanvas
+LOCAL_MODULE    := runtimecanvas
+
+LOCAL_ARM_MODE := arm
+
 LOCAL_CFLAGS    := -Werror
 LOCAL_SRC_FILES := gl_code.cpp \
 				   GlesUtil.cpp
 
+LOCAL_STATIC_LIBRARIES := skia
+
+#LOCAL_STATIC_LIBRARIES += GGDom
+
 LOCAL_LDLIBS    := -llog -lGLESv2
 
-include $(BUILD_STATIC_LIBRARY)
+#include $(BUILD_STATIC_LIBRARY)
+
+include $(BUILD_SHARED_LIBRARY)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
 
