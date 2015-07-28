@@ -39,6 +39,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;

@@ -10,7 +10,7 @@
 #include "SkTypes.h"
 #include "SkError.h"
 #include "SkErrorInternals.h"
-
+#include "SkUserConfig.h"
 #include <stdio.h>
 #include <stdarg.h>
 

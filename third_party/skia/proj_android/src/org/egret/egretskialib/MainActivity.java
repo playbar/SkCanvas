@@ -17,7 +17,12 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		layout = new FrameLayout(this);
-		layout.addView(new GL2JNIView(this));
-		setContentView(layout);
+		//layout.addView(new GL2JNIView(this));
+	
+		setContentView(new SkiaTestView(this));
+	}
+	
+	static{
+		System.loadLibrary("egretskialib");
 	}
 }

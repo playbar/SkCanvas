@@ -27,9 +27,9 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 	public void onDrawFrame(GL10 gl) {
 		
 		//if(isFirst){
-			isFirst = false;
-			gl.glClear( GL10.GL_COLOR_BUFFER_BIT | GL10.GL_COLOR_BUFFER_BIT);
-			gl.glClearColor(1, 0, 0, 1);
+//			isFirst = false;
+//			gl.glClear( GL10.GL_COLOR_BUFFER_BIT | GL10.GL_COLOR_BUFFER_BIT);
+//			gl.glClearColor(1, 0, 0, 1);
 		//	return;
 		//}
 
@@ -48,7 +48,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 			}
 			preTime =  System.currentTimeMillis();
 			if(renderDelayFrame == 0){
-		//	    mainloop();
+			    mainloop();
 			}else{
 			    renderDelayFrame--;
 			}
@@ -82,21 +82,6 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 		// Do nothing.
 		EgretContext.logInfo("MyRenderer", "MyRenderer::onSurfaceCreated (" + _screenw + ","
 				+ _screenh + ")");
-
-//		EgretRuntime  egretRuntime = GL2JNIView.currentGl2jniview.getEgretRuntime();
-//		if( egretRuntime == null )
-//			return ;
-//		
-//		String _root =  egretRuntime.getEgretRootFolder();
-//		if (false == _root.endsWith("/")) {
-//			_root += "/";
-//		}
-//		
-	//	gl.glClearColor(1, 0, 0, 1);
-		
-		
-//		nativeInit(_screenw, _screenh);
-		
 		
 		startNewGame();
 	}
@@ -129,13 +114,14 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 		isGameRun = false;
 		renderDelayFrame = 1;
 	//	nativeOnPause();
+		JniShell.nativePauseApp();
 	}
 
 	public void handleOnResume() {
 	    isGameRun = true;
         preTime =  System.currentTimeMillis();
 	//	nativeOnResume();
-		
+		JniShell.nativeResumeApp();
         if( GL2JNIView.currentGl2jniview!=null ){
             GL2JNIView.currentGl2jniview.requestRender();
         }
@@ -180,13 +166,17 @@ public class MyRenderer implements GLSurfaceView.Renderer {
 		//return nativeGetContentText();
 		return "getContentText unimplement";
 	}
+	
+	private void mainloop(){
+		JniShell.nativeMainLoop();
+	}
 
 	public void startNewGame() {
 		
-		if (!EgretContext.isRunning){
-			return;
-		}
-
+//		if (!EgretContext.isRunning){
+//			return;
+//		}
+		JniShell.nativeInit(_screenw, _screenh);
 	//	nativeStartNewGame(egretRoot, gameId, loaderUrl, updateUrl);
 	}
 
