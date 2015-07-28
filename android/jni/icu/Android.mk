@@ -7,7 +7,7 @@ LOCAL_ARM_MODE := arm
 
 LOCAL_MODULE := icu
 
-LOCAL_CFLAGS +=  \
+LOCAL_CFLAGS += -DU_COMMON_IMPLEMENTATION \
 				-fshort-wchar	\
 				-fexceptions
 				
@@ -17,6 +17,128 @@ LOCAL_C_INCLUDES :=  \
 					$../../third_party/libpng \
 					$../../third_party/icu/source/common \
 					$../../third_party/icu/source/i18n \
+
+#stubdata
+LOCAL_SRC_FILES	+= ../../../third_party/icu/source/stubdata/stubdata.c \
+
+
+			
+#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/icu/source/common/*.cpp)
+#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+#LOCAL_SRC_FILES += $(MY_FILES)	
+#					 			
+#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/icu/source/common/*.c)
+#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+#MY_FILES := $(foreach n, $(MY_FILES), $(if $(findstring uchar_props_data.c,$(n)),,$(n)))
+#MY_FILES := $(foreach n, $(MY_FILES), $(if $(findstring ubidi_props_data.c,$(n)),,$(n)))
+#LOCAL_SRC_FILES += $(MY_FILES)	
+
+#common
+LOCAL_SRC_FILES	+=  ../../../third_party/icu/source/common/bmpset.cpp  \
+					../../../third_party/icu/source/common/brkeng.cpp \
+					../../../third_party/icu/source/common/brkiter.cpp \
+					../../../third_party/icu/source/common/bytestream.cpp \
+					../../../third_party/icu/source/common/caniter.cpp \
+					../../../third_party/icu/source/common/chariter.cpp \
+					../../../third_party/icu/source/common/charstr.cpp \
+					../../../third_party/icu/source/common/cmemory.c \
+					../../../third_party/icu/source/common/cstring.c \
+					../../../third_party/icu/source/common//cwchar.c \
+					../../../third_party/icu/source/common/dictbe.cpp \
+					../../../third_party/icu/source/common/dtintrv.cpp \
+					../../../third_party/icu/source/common/errorcode.cpp \
+					../../../third_party/icu/source/common/filterednormalizer2.cpp \
+					../../../third_party/icu/source/common/icudataver.c \
+					../../../third_party/icu/source/common/icuplug.c \
+					../../../third_party/icu/source/common/locavailable.cpp \
+					../../../third_party/icu/source/common/locbased.cpp \
+					../../../third_party/icu/source/common/locdispnames.cpp \
+					../../../third_party/icu/source/common/locid.cpp \
+					../../../third_party/icu/source/common/loclikely.cpp \
+					../../../third_party/icu/source/common/locmap.c \
+					../../../third_party/icu/source/common/locresdata.cpp \
+					../../../third_party/icu/source/common/locutil.cpp \
+					../../../third_party/icu/source/common/mutex.cpp \
+					../../../third_party/icu/source/common/normalizer2.cpp \
+					../../../third_party/icu/source/common/normalizer2impl.cpp \
+					../../../third_party/icu/source/common/normlzr.cpp \
+					../../../third_party/icu/source/common/parsepos.cpp \
+					../../../third_party/icu/source/common/propname.cpp \
+					../../../third_party/icu/source/common/propsvec.c \
+					../../../third_party/icu/source/common/punycode.c \
+					../../../third_party/icu/source/common/putil.c \
+					../../../third_party/icu/source/common/rbbi.cpp \
+					../../../third_party/icu/source/common/rbbidata.cpp \
+					../../../third_party/icu/source/common/rbbinode.cpp \
+					../../../third_party/icu/source/common/rbbirb.cpp \
+					../../../third_party/icu/source/common/rbbiscan.cpp \
+					../../../third_party/icu/source/common/rbbisetb.cpp \
+					../../../third_party/icu/source/common/rbbistbl.cpp \
+					../../../third_party/icu/source/common/rbbitblb.cpp \
+					../../../third_party/icu/source/common/resbund.cpp \
+					../../../third_party/icu/source/common/resbund_cnv.cpp \
+					../../../third_party/icu/source/common/ruleiter.cpp \
+					../../../third_party/icu/source/common/schriter.cpp \
+					../../../third_party/icu/source/common/serv.cpp \
+					../../../third_party/icu/source/common/servlk.cpp \
+					../../../third_party/icu/source/common/servls.cpp \
+					../../../third_party/icu/source/common/servnotf.cpp \
+					../../../third_party/icu/source/common/servrbf.cpp \
+					../../../third_party/icu/source/common/servslkf.cpp \
+					../../../third_party/icu/source/common/stringpiece.cpp \
+					../../../third_party/icu/source/common/triedict.cpp \
+					../../../third_party/icu/source/common/uarrsort.c \
+					../../../third_party/icu/source/common/ubidi.c \
+					../../../third_party/icu/source/common/ubidi_props.c \
+					../../../third_party/icu/source/common/ubidiln.c \
+					../../../third_party/icu/source/common/ubidiwrt.c \
+					../../../third_party/icu/source/common/ubrk.cpp \
+					../../../third_party/icu/source/common/ucase.c \
+					../../../third_party/icu/source/common/ucasemap.c \
+					../../../third_party/icu/source/common/ucat.c \
+					../../../third_party/icu/source/common/uchar.c \
+					../../../third_party/icu/source/common/uchriter.cpp \
+					../../../third_party/icu/source/common/ucln_cmn.c \
+					../../../third_party/icu/source/common/ucmndata.c \
+					../../../third_party/icu/source/common/ucnv.c \
+					../../../third_party/icu/source/common/ucnv_bld.c \
+					../../../third_party/icu/source/common/ucnv_cb.c \
+					../../../third_party/icu/source/common/ucnv_cnv.c \
+					../../../third_party/icu/source/common/ucnv_err.c \
+					../../../third_party/icu/source/common/ucnv_ext.c \
+					../../../third_party/icu/source/common/ucnv_io.c \
+					../../../third_party/icu/source/common/ucnv_lmb.c \
+					../../../third_party/icu/source/common/ucnv_set.c \
+					../../../third_party/icu/source/common/ucnv_u7.c \
+					../../../third_party/icu/source/common/ucnv_u8.c \
+					../../../third_party/icu/source/common/ucnv_u16.c \
+					../../../third_party/icu/source/common/ucnv_u32.c \
+					../../../third_party/icu/source/common/ucnv2022.c \
+					../../../third_party/icu/source/common/ucnvbocu.c \
+					../../../third_party/icu/source/common/ucnvdisp.c \
+					../../../third_party/icu/source/common/ucnvhz.c \
+					../../../third_party/icu/source/common/ucnvisci.c \
+					../../../third_party/icu/source/common/ucnvlat1.c \
+					../../../third_party/icu/source/common/ucnvmbcs.c \
+					../../../third_party/icu/source/common/ucnvscsu.c \
+					../../../third_party/icu/source/common/ucnvsel.cpp \
+					../../../third_party/icu/source/common/ucol_swp.cpp \
+					../../../third_party/icu/source/common/udata.cpp \
+					../../../third_party/icu/source/common/udatamem.c \
+					../../../third_party/icu/source/common/udataswp.c \
+					../../../third_party/icu/source/common/uenum.c \
+					../../../third_party/icu/source/common/uhash.c \
+					../../../third_party/icu/source/common/uhash_us.cpp \
+					../../../third_party/icu/source/common/uidna.cpp \
+					../../../third_party/icu/source/common/uinit.c \
+					../../../third_party/icu/source/common/uinvchar.c \
+					../../../third_party/icu/source/common/uiter.cpp \
+					../../../third_party/icu/source/common/ulist.c \
+					../../../third_party/icu/source/common/uloc.c \
+					../../../third_party/icu/source/common/uloc_tag.c \
+					../../../third_party/icu/source/common/umapfile.c \
+								
+					
 
 #i18n
 LOCAL_SRC_FILES	+=  ../../../third_party/icu/source/i18n/anytrans.cpp \
