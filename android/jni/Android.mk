@@ -7,14 +7,17 @@ LOCAL_MODULE    := runtimecanvas
 LOCAL_ARM_MODE := arm
 
 LOCAL_CFLAGS    := -Werror
+
 LOCAL_SRC_FILES := gl_code.cpp \
-				   GlesUtil.cpp
+				   GlesUtil.cpp \
+				   SkiaApp.cpp
+				  
 
 LOCAL_STATIC_LIBRARIES := skia
 
 #LOCAL_STATIC_LIBRARIES += GGDom
 
-LOCAL_LDLIBS    := -llog -lGLESv2
+LOCAL_LDLIBS    := -llog -lGLESv2 -lEGL
 
 #include $(BUILD_STATIC_LIBRARY)
 

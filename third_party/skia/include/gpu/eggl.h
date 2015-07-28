@@ -7,8 +7,14 @@
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+
+#ifdef GL_GLEXT_PROTOTYPES
 #define glBindVertexArray	glBindVertexArrayOES
 #define glGenVertexArrays	glGenVertexArraysOES
+#else
+#define glBindVertexArray (*(PFNGLBINDVERTEXARRAYOESPROC)eglGetProcAddress("glBindVertexArray"))
+#define glGenVertexArrays (*(PFNGLGENVERTEXARRAYSOESPROC)eglGetProcAddress("glGenVertexArrays"))
+#endif
 #define GL_DEPTH24_STENCIL8 GL_DEPTH24_STENCIL8_OES
 #define GL_STENCIL_INDEX4	GL_STENCIL_INDEX4_OES
 #define GL_DEPTH_STENCIL	GL_DEPTH_STENCIL_OES

@@ -8,19 +8,14 @@ LOCAL_ARM_MODE := arm
 LOCAL_MODULE := skia
 
 LOCAL_CFLAGS += -DSK_BUILD_FOR_ANDROID_FRAMEWORK\
-				-DGL_GLEXT_PROTOTYPES \
 				-D_ARGB_PIXEL_  \
-				-fshort-wchar	\
 				-fexceptions
+#				-fshort-wchar	
+#				-DGL_GLEXT_PROTOTYPES
 				
-LOCAL_C_INCLUDES :=  \
-					$(JNI_H_INCLUDE)  \
-					$(MY_ANDROID_SOURCE)/frameworks/base/include \
-					$(MY_ANDROID_SOURCE)/system/core/include \
-					$(MY_ANDROID_SOURCE)/external/astl/include \
-					$(MY_ANDROID_SOURCE)/hardware/libhardware/include \
-					$(LOCAL_PATH)      \
-					$../../third_party/libpng \
+LOCAL_LDLIBS    := -llog -lGLESv2 -ljnigraphics -lEGL
+				
+LOCAL_C_INCLUDES := $../../third_party/libpng \
 					$../../third_party/skia/include/core   \
 					$../../third_party/skia/src/core \
 					$../../third_party/skia/src/image \
@@ -39,8 +34,11 @@ LOCAL_C_INCLUDES :=  \
 					$../../ \
 					$../../skia/config \
 					
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
 
-		
+LOCAL_SRC_FILES := SkUserConfig_android.cpp \
+				   ../../../skia/ext/SkMemory_new_handler.cpp
+
 MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/core/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
@@ -85,6 +83,7 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/images/SkImageDecoder.cpp \
 					../../../third_party/skia/src/images/SkImageRefPool.cpp \
 					../../../third_party/skia/src/images/SkImages.cpp \
 					../../../third_party/skia/src/images/SkScaledBitmapSampler.cpp \
+					../../../third_party/skia/src/images/SkImageRef_ashmem.cpp
 					
 #lazy
 LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/lazy/SkCachingPixelRef.cpp \
@@ -97,6 +96,7 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/opts/SkBitmapProcState_opts_no
 					../../../third_party/skia/src/opts/SkMorphology_opts_none.cpp \
 					../../../third_party/skia/src/opts/SkUtils_opts_none.cpp \
 					../../../third_party/skia/src/opts/SkXfermode_opts_none.cpp \
+					../../../third_party/skia/src/opts/SkBlitMask_opts_none.cpp
 					
 
 #pathops
@@ -109,6 +109,8 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/ports/SkFontHost_none.cpp \
 					../../../third_party/skia/src/ports/SkOSFile_none.cpp \
 					../../../third_party/skia/src/ports/SkOSFile_stdio.cpp \
 					../../../third_party/skia/src/ports/SkFontHost_FreeType.cpp \
+					../../../third_party/skia/src/ports/SkTLS_none.cpp \
+					../../../third_party/skia/src/ports/SkGlobalInitialization_default.cpp
 
 #sfnt
 LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/sfnt/SkOTTable_name.cpp \
@@ -129,7 +131,7 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/utils/SkBase64.cpp \
 					../../../third_party/skia/src/utils/SkPictureUtils.cpp \
 					../../../third_party/skia/src/utils/SkProxyCanvas.cpp \
 					../../../third_party/skia/src/utils/SkRTConf.cpp\
-					
+					../../../third_party/skia/src/utils/android/ashmem.cpp
 
 
 
