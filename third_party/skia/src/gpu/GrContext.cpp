@@ -1,12 +1,3 @@
-
-/*
- * Copyright 2011 Google Inc.
- *
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-
 #include "GrContext.h"
 
 #include "effects/GrSingleTextureEffect.h"
@@ -39,13 +30,6 @@ SK_CONF_DECLARE(bool, c_Defer, "gpu.deferContext", true,
                 "Defers rendering in GrContext via GrInOrderDrawBuffer.");
 
 #define BUFFERED_DRAW (c_Defer ? kYes_BufferedDraw : kNo_BufferedDraw)
-
-#ifdef SK_DEBUG
-    // change this to a 1 to see notifications when partial coverage fails
-    #define GR_DEBUG_PARTIAL_COVERAGE_CHECK 0
-#else
-    #define GR_DEBUG_PARTIAL_COVERAGE_CHECK 0
-#endif
 
 static const size_t MAX_RESOURCE_CACHE_COUNT = GR_DEFAULT_RESOURCE_CACHE_COUNT_LIMIT;
 static const size_t MAX_RESOURCE_CACHE_BYTES = GR_DEFAULT_RESOURCE_CACHE_MB_LIMIT * 1024 * 1024;
@@ -1728,11 +1712,12 @@ GrPath* GrContext::createPath(const SkPath& inPath, const SkStrokeRec& stroke) {
     GrPath* path = static_cast<GrPath*>(fTextureCache->find(resourceKey));
     if (NULL != path && path->isEqualTo(inPath, stroke)) {
         path->ref();
-    } else {
-        path = fGpu->createPath(inPath, stroke);
-        fTextureCache->purgeAsNeeded(1, path->sizeInBytes());
-        fTextureCache->addResource(resourceKey, path);
-    }
+    } 
+	//else {
+ //       path = fGpu->createPath(inPath, stroke);
+ //       fTextureCache->purgeAsNeeded(1, path->sizeInBytes());
+ //       fTextureCache->addResource(resourceKey, path);
+ //   }
     return path;
 }
 

@@ -35,7 +35,6 @@
 #include "platform/fonts/WidthIterator.h"
 #include "platform/geometry/FloatRect.h"
 #include "platform/text/TextRun.h"
-#include "wtf/MainThread.h"
 #include "wtf/StdLibExtras.h"
 #include "wtf/unicode/CharacterNames.h"
 #include "wtf/unicode/Unicode.h"

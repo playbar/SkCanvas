@@ -127,9 +127,7 @@ public:
         return create8BitIfPossible(vector.data(), vector.size());
     }
 
-    ALWAYS_INLINE static PassRefPtr<StringImpl> create(const char* s, unsigned length) { return create(reinterpret_cast<const LChar*>(s), length); }
     static PassRefPtr<StringImpl> create(const LChar*);
-    ALWAYS_INLINE static PassRefPtr<StringImpl> create(const char* s) { return create(reinterpret_cast<const LChar*>(s)); }
 
     static PassRefPtr<StringImpl> createUninitialized(unsigned length, LChar*& data);
     static PassRefPtr<StringImpl> createUninitialized(unsigned length, UChar*& data);
@@ -314,15 +312,12 @@ public:
     ALWAYS_INLINE PassRefPtr<StringImpl> removeCharacters(const CharType* characters, CharacterMatchFunctionPtr);
 
     size_t find(LChar character, unsigned start = 0);
-    size_t find(char character, unsigned start = 0);
     size_t find(UChar character, unsigned start = 0);
     size_t find(CharacterMatchFunctionPtr, unsigned index = 0);
     size_t find(const LChar*, unsigned index = 0);
-    ALWAYS_INLINE size_t find(const char* s, unsigned index = 0) { return find(reinterpret_cast<const LChar*>(s), index); }
     size_t find(StringImpl*);
     size_t find(StringImpl*, unsigned index);
     size_t findIgnoringCase(const LChar*, unsigned index = 0);
-    ALWAYS_INLINE size_t findIgnoringCase(const char* s, unsigned index = 0) { return findIgnoringCase(reinterpret_cast<const LChar*>(s), index); }
     size_t findIgnoringCase(StringImpl*, unsigned index = 0);
 
     size_t findNextLineStart(unsigned index = UINT_MAX);
@@ -347,7 +342,6 @@ public:
 
     PassRefPtr<StringImpl> replace(UChar, UChar);
     PassRefPtr<StringImpl> replace(UChar, StringImpl*);
-    ALWAYS_INLINE PassRefPtr<StringImpl> replace(UChar pattern, const char* replacement, unsigned replacementLength) { return replace(pattern, reinterpret_cast<const LChar*>(replacement), replacementLength); }
     PassRefPtr<StringImpl> replace(UChar, const LChar*, unsigned replacementLength);
     PassRefPtr<StringImpl> replace(UChar, const UChar*, unsigned replacementLength);
     PassRefPtr<StringImpl> replace(StringImpl*, StringImpl*);
@@ -392,12 +386,9 @@ ALWAYS_INLINE const UChar* StringImpl::getCharacters<UChar>() const { return cha
 
 WTF_EXPORT bool equal(const StringImpl*, const StringImpl*);
 WTF_EXPORT bool equal(const StringImpl*, const LChar*);
-inline bool equal(const StringImpl* a, const char* b) { return equal(a, reinterpret_cast<const LChar*>(b)); }
 WTF_EXPORT bool equal(const StringImpl*, const LChar*, unsigned);
 WTF_EXPORT bool equal(const StringImpl*, const UChar*, unsigned);
-inline bool equal(const StringImpl* a, const char* b, unsigned length) { return equal(a, reinterpret_cast<const LChar*>(b), length); }
 inline bool equal(const LChar* a, StringImpl* b) { return equal(b, a); }
-inline bool equal(const char* a, StringImpl* b) { return equal(b, reinterpret_cast<const LChar*>(a)); }
 WTF_EXPORT bool equalNonNull(const StringImpl* a, const StringImpl* b);
 
 template<typename CharType>
@@ -419,10 +410,7 @@ WTF_EXPORT bool equalIgnoringCase(const StringImpl*, const LChar*);
 inline bool equalIgnoringCase(const LChar* a, const StringImpl* b) { return equalIgnoringCase(b, a); }
 WTF_EXPORT bool equalIgnoringCase(const LChar*, const LChar*, unsigned);
 WTF_EXPORT bool equalIgnoringCase(const UChar*, const LChar*, unsigned);
-inline bool equalIgnoringCase(const UChar* a, const char* b, unsigned length) { return equalIgnoringCase(a, reinterpret_cast<const LChar*>(b), length); }
 inline bool equalIgnoringCase(const LChar* a, const UChar* b, unsigned length) { return equalIgnoringCase(b, a, length); }
-inline bool equalIgnoringCase(const char* a, const UChar* b, unsigned length) { return equalIgnoringCase(b, reinterpret_cast<const LChar*>(a), length); }
-inline bool equalIgnoringCase(const char* a, const LChar* b, unsigned length) { return equalIgnoringCase(b, reinterpret_cast<const LChar*>(a), length); }
 inline bool equalIgnoringCase(const UChar* a, const UChar* b, int length)
 {
     ASSERT(length >= 0);
@@ -553,11 +541,6 @@ inline size_t StringImpl::find(LChar character, unsigned start)
     if (is8Bit())
         return WTF::find(characters8(), m_length, character, start);
     return WTF::find(characters16(), m_length, character, start);
-}
-
-ALWAYS_INLINE size_t StringImpl::find(char character, unsigned start)
-{
-    return find(static_cast<LChar>(character), start);
 }
 
 inline size_t StringImpl::find(UChar character, unsigned start)

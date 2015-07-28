@@ -29,7 +29,6 @@
 #include "dom/QualifiedName.h"
 #include "wtf/Assertions.h"
 #include "wtf/HashSet.h"
-#include "wtf/MainThread.h"
 #include "wtf/StaticConstructors.h"
 
 namespace WebCore {
@@ -45,7 +44,6 @@ typedef HashSet<QualifiedName::QualifiedNameImpl*, QualifiedNameHash, QualifiedN
 static QualifiedNameCache& qualifiedNameCache()
 {
     // This code is lockless and thus assumes it all runs on one thread!
-    ASSERT(isMainThread());
     static QualifiedNameCache* gNameCache = new QualifiedNameCache;
     return *gNameCache;
 }

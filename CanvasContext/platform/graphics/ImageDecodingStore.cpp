@@ -91,7 +91,6 @@ bool ImageDecodingStore::lockCache(const ImageFrameGenerator* generator, const S
 
     Vector<OwnPtr<CacheEntry> > cacheEntriesToDelete;
     {
-        MutexLocker lock(m_mutex);
         // Public access is restricted to complete images only.
         ImageCacheMap::iterator iter = m_imageCacheMap.find(ImageCacheEntry::makeCacheKey(generator, scaledSize, index, ScaledImageFragment::CompleteImage));
         if (iter == m_imageCacheMap.end())
@@ -104,7 +103,6 @@ void ImageDecodingStore::unlockCache(const ImageFrameGenerator* generator, const
 {
     Vector<OwnPtr<CacheEntry> > cacheEntriesToDelete;
     {
-        MutexLocker lock(m_mutex);
         cachedImage->bitmap().unlockPixels();
         ImageCacheMap::iterator iter = m_imageCacheMap.find(ImageCacheEntry::makeCacheKey(generator, cachedImage->scaledSize(), cachedImage->index(), cachedImage->generation()));
         ASSERT_WITH_SECURITY_IMPLICATION(iter != m_imageCacheMap.end());
@@ -136,7 +134,6 @@ const ScaledImageFragment* ImageDecodingStore::insertAndLockCache(const ImageFra
     OwnPtr<ImageCacheEntry> newCacheEntry = ImageCacheEntry::createAndUse(generator, image);
     Vector<OwnPtr<CacheEntry> > cacheEntriesToDelete;
     {
-        MutexLocker lock(m_mutex);
 
         ImageCacheMap::iterator iter = m_imageCacheMap.find(newCacheEntry->cacheKey());
 
@@ -163,7 +160,6 @@ bool ImageDecodingStore::lockDecoder(const ImageFrameGenerator* generator, const
 {
     ASSERT(decoder);
 
-    MutexLocker lock(m_mutex);
     DecoderCacheMap::iterator iter = m_decoderCacheMap.find(DecoderCacheEntry::makeCacheKey(generator, scaledSize));
     if (iter == m_decoderCacheMap.end())
         return false;
@@ -179,7 +175,6 @@ bool ImageDecodingStore::lockDecoder(const ImageFrameGenerator* generator, const
 
 void ImageDecodingStore::unlockDecoder(const ImageFrameGenerator* generator, const ImageDecoder* decoder)
 {
-    MutexLocker lock(m_mutex);
     DecoderCacheMap::iterator iter = m_decoderCacheMap.find(DecoderCacheEntry::makeCacheKey(generator, decoder));
     ASSERT_WITH_SECURITY_IMPLICATION(iter != m_decoderCacheMap.end());
 
@@ -198,7 +193,6 @@ void ImageDecodingStore::insertDecoder(const ImageFrameGenerator* generator, Pas
 
     OwnPtr<DecoderCacheEntry> newCacheEntry = DecoderCacheEntry::create(generator, decoder, isDiscardable);
 
-    MutexLocker lock(m_mutex);
     ASSERT(!m_decoderCacheMap.contains(newCacheEntry->cacheKey()));
     insertCacheInternal(newCacheEntry.release(), &m_decoderCacheMap, &m_decoderCacheKeyMap);
 }
@@ -207,7 +201,6 @@ void ImageDecodingStore::removeDecoder(const ImageFrameGenerator* generator, con
 {
     Vector<OwnPtr<CacheEntry> > cacheEntriesToDelete;
     {
-        MutexLocker lock(m_mutex);
         DecoderCacheMap::iterator iter = m_decoderCacheMap.find(DecoderCacheEntry::makeCacheKey(generator, decoder));
         ASSERT_WITH_SECURITY_IMPLICATION(iter != m_decoderCacheMap.end());
 
@@ -227,7 +220,6 @@ void ImageDecodingStore::removeDecoder(const ImageFrameGenerator* generator, con
 
 bool ImageDecodingStore::isCached(const ImageFrameGenerator* generator, const SkISize& scaledSize, size_t index)
 {
-    MutexLocker lock(m_mutex);
     ImageCacheMap::iterator iter = m_imageCacheMap.find(ImageCacheEntry::makeCacheKey(generator, scaledSize, index, ScaledImageFragment::CompleteImage));
     if (iter == m_imageCacheMap.end())
         return false;
@@ -238,7 +230,6 @@ void ImageDecodingStore::removeCacheIndexedByGenerator(const ImageFrameGenerator
 {
     Vector<OwnPtr<CacheEntry> > cacheEntriesToDelete;
     {
-        MutexLocker lock(m_mutex);
 
         // Remove image cache objects and decoder cache objects associated
         // with a ImageFrameGenerator.
@@ -254,7 +245,6 @@ void ImageDecodingStore::clear()
 {
     size_t cacheLimitInBytes;
     {
-        MutexLocker lock(m_mutex);
         cacheLimitInBytes = m_heapLimitInBytes;
         m_heapLimitInBytes = 0;
     }
@@ -262,7 +252,6 @@ void ImageDecodingStore::clear()
     prune();
 
     {
-        MutexLocker lock(m_mutex);
         m_heapLimitInBytes = cacheLimitInBytes;
     }
 }
@@ -271,7 +260,6 @@ void ImageDecodingStore::setCacheLimitInBytes(size_t cacheLimit)
 {
     // Note that the discardable entries limit is constant (i.e. only the heap limit is updated).
     {
-        MutexLocker lock(m_mutex);
         m_heapLimitInBytes = cacheLimit;
     }
     prune();
@@ -279,25 +267,21 @@ void ImageDecodingStore::setCacheLimitInBytes(size_t cacheLimit)
 
 size_t ImageDecodingStore::memoryUsageInBytes()
 {
-    MutexLocker lock(m_mutex);
     return m_heapMemoryUsageInBytes;
 }
 
 int ImageDecodingStore::cacheEntries()
 {
-    MutexLocker lock(m_mutex);
     return m_imageCacheMap.size() + m_decoderCacheMap.size();
 }
 
 int ImageDecodingStore::imageCacheEntries()
 {
-    MutexLocker lock(m_mutex);
     return m_imageCacheMap.size();
 }
 
 int ImageDecodingStore::decoderCacheEntries()
 {
-    MutexLocker lock(m_mutex);
     return m_decoderCacheMap.size();
 }
 
@@ -305,7 +289,6 @@ void ImageDecodingStore::prune()
 {
     Vector<OwnPtr<CacheEntry> > cacheEntriesToDelete;
     {
-        MutexLocker lock(m_mutex);
 
         // Head of the list is the least recently used entry.
         const CacheEntry* cacheEntry = m_orderedCacheList.head();

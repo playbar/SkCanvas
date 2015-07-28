@@ -51,7 +51,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\third_party\wtl\include;..\third_party\skia\include\xml;..\third_party\skia\include\views;..\third_party\skia\include\core;..\third_party\skia\include\effects;..\third_party\skia\include\images;..\third_party\skia\include\lazy;..\third_party\skia\include\pathops;..\third_party\skia\include\pdf;..\third_party\skia\include\pipe;..\third_party\skia\include\ports;..\third_party\skia\include\utils;..\third_party\skia\src\core;..\third_party\skia\src\opts;..\third_party\skia\src\image;..\third_party\skia\src\ports;..\third_party\skia\src\sfnt;..\third_party\skia\src\utils;..\third_party\skia\src\lazy;..;config;..\third_party\skia\include\gpu;..\third_party\skia\src\gpu;..\third_party\skia\include\utils\win;..\third_party\skia\src\utils\win;..\third_party\zlib;C:\Program Files (x86)\Windows Kits\8.0\Include\shared;C:\Program Files (x86)\Windows Kits\8.0\Include\um;C:\Program Files (x86)\Windows Kits\8.0\Include\winrt;$(VSInstallDir)\VC\atlmfc\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\third_party\wtl\include;..\third_party\libpng;..\third_party\freetype2\include\win32;..\third_party\skia\include\xml;..\third_party\skia\include\views;..\third_party\skia\include\core;..\third_party\skia\include\effects;..\third_party\skia\include\images;..\third_party\skia\include\lazy;..\third_party\skia\include\pathops;..\third_party\skia\include\pdf;..\third_party\skia\include\pipe;..\third_party\skia\include\ports;..\third_party\skia\include\utils;..\third_party\skia\src\core;..\third_party\skia\src\opts;..\third_party\skia\src\image;..\third_party\skia\src\ports;..\third_party\skia\src\sfnt;..\third_party\skia\src\utils;..\third_party\skia\src\lazy;..;config;..\third_party\skia\include\gpu;..\third_party\skia\src\gpu;..\third_party\skia\include\utils\win;..\third_party\skia\src\utils\win;..\third_party\zlib;C:\Program Files (x86)\Windows Kits\8.0\Include\shared;C:\Program Files (x86)\Windows Kits\8.0\Include\um;C:\Program Files (x86)\Windows Kits\8.0\Include\winrt;$(VSInstallDir)\VC\atlmfc\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <BufferSecurityCheck>true</BufferSecurityCheck>
@@ -73,8 +73,8 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Lib>
     <Link>
-      <AdditionalDependencies>OpenGL32.lib;gdi32.lib;wininet.lib;dnsapi.lib;version.lib;msimg32.lib;ws2_32.lib;usp10.lib;psapi.lib;dbghelp.lib;winmm.lib;shlwapi.lib;kernel32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;delayimp.lib;credui.lib;netapi32.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:/Program Files (x86)/Windows Kits/8.0/Lib/win8/um/x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenGL32.lib;gdi32.lib;user32.lib;ole32.lib;usp10.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Program Files (x86)/Windows Kits/8.0/Lib/win8/um/x86;..\third_party\freetype2\prebuilt\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/safeseh /dynamicbase /ignore:4199 /ignore:4221 /nxcompat /largeaddressaware %(AdditionalOptions)</AdditionalOptions>
       <DelayLoadDLLs>dbghelp.dll;dwmapi.dll;shell32.dll;uxtheme.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <FixedBaseAddress>false</FixedBaseAddress>
@@ -270,12 +270,15 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\third_party\libpng\png.h" />
+    <ClInclude Include="..\third_party\libpng\pngconf.h" />
+    <ClInclude Include="..\third_party\libpng\pngusr.h" />
+    <ClInclude Include="..\third_party\skia\include\gpu\eggl.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkOrderedReadBuffer.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkOrderedWriteBuffer.h" />
     <ClInclude Include="..\third_party\skia\src\core\SkScaledImageCache.h" />
     <ClInclude Include="..\third_party\skia\src\images\SkScaledBitmapSampler.h" />
     <ClInclude Include="..\third_party\skia\src\image\SkDataPixelRef.h" />
-    <ClInclude Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_SSSE3.h" />
     <ClInclude Include="..\third_party\skia\src\ports\SkFontHost_FreeType_common.h" />
     <ClInclude Include="..\third_party\skia\src\sfnt\SkOTTable_name.h" />
     <ClInclude Include="..\third_party\skia\src\sfnt\SkOTUtils.h" />
@@ -616,7 +619,6 @@
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLVertexEffect.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLIndexBuffer.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLIRect.h" />
-    <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLPath.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLProgram.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLProgramDesc.h" />
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLProgramEffects.h" />
@@ -643,6 +645,23 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\third_party\libpng\png.c" />
+    <ClCompile Include="..\third_party\libpng\pngerror.c" />
+    <ClCompile Include="..\third_party\libpng\pnggccrd.c" />
+    <ClCompile Include="..\third_party\libpng\pngget.c" />
+    <ClCompile Include="..\third_party\libpng\pngmem.c" />
+    <ClCompile Include="..\third_party\libpng\pngpread.c" />
+    <ClCompile Include="..\third_party\libpng\pngread.c" />
+    <ClCompile Include="..\third_party\libpng\pngrio.c" />
+    <ClCompile Include="..\third_party\libpng\pngrtran.c" />
+    <ClCompile Include="..\third_party\libpng\pngrutil.c" />
+    <ClCompile Include="..\third_party\libpng\pngset.c" />
+    <ClCompile Include="..\third_party\libpng\pngtrans.c" />
+    <ClCompile Include="..\third_party\libpng\pngvcrd.c" />
+    <ClCompile Include="..\third_party\libpng\pngwio.c" />
+    <ClCompile Include="..\third_party\libpng\pngwrite.c" />
+    <ClCompile Include="..\third_party\libpng\pngwtran.c" />
+    <ClCompile Include="..\third_party\libpng\pngwutil.c" />
     <ClCompile Include="..\third_party\skia\src\core\Sk64.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkFlate.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkFlattenableBuffers.cpp" />
@@ -654,7 +673,9 @@
     <ClCompile Include="..\third_party\skia\src\gpu\glew.c" />
     <ClCompile Include="..\third_party\skia\src\gpu\GrGpuFactory.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder.cpp" />
+    <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_FactoryDefault.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_FactoryRegistrar.cpp" />
+    <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_libpng.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkImageEncoder.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkImageEncoder_Factory.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkImageRef.cpp" />
@@ -663,27 +684,23 @@
     <ClCompile Include="..\third_party\skia\src\images\SkImages.cpp" />
     <ClCompile Include="..\third_party\skia\src\image\SkDataPixelRef.cpp" />
     <ClCompile Include="..\third_party\skia\src\images\SkScaledBitmapSampler.cpp" />
-    <ClCompile Include="..\third_party\skia\src\opts\opts_check_SSE2.cpp" />
-    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapFilter_opts_SSE2.cpp" />
-    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_SSE2.cpp" />
-    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_SSSE3.cpp" />
-    <ClCompile Include="..\third_party\skia\src\opts\SkBlitRect_opts_SSE2.cpp" />
-    <ClCompile Include="..\third_party\skia\src\opts\SkBlitRow_opts_SSE2.cpp" />
-    <ClCompile Include="..\third_party\skia\src\opts\SkBlurImage_opts_SSE2.cpp" />
-    <ClCompile Include="..\third_party\skia\src\opts\SkMorphology_opts_SSE2.cpp" />
-    <ClCompile Include="..\third_party\skia\src\opts\SkUtils_opts_SSE2.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_none.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkBlitMask_opts_none.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkBlitRow_opts_none.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkBlurImage_opts_none.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkMorphology_opts_none.cpp" />
+    <ClCompile Include="..\third_party\skia\src\opts\SkUtils_opts_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\opts\SkXfermode_opts_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkDiscardableMemory_none.cpp" />
-    <ClCompile Include="..\third_party\skia\src\ports\SkImageDecoder_WIC.cpp" />
-    <ClCompile Include="..\third_party\skia\src\ports\SkPurgeableMemoryBlock_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win_dw.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkFontMgr_default_gdi.cpp" />
-    <ClCompile Include="..\third_party\skia\src\ports\SkGlobalInitialization_chromium.cpp" />
+    <ClCompile Include="..\third_party\skia\src\ports\SkGlobalInitialization_default.cpp" />
+    <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_none.cpp" />
+    <ClCompile Include="..\third_party\skia\src\ports\SkPurgeableMemoryBlock_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_stdio.cpp" />
-    <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_win.cpp" />
     <ClCompile Include="..\third_party\skia\src\ports\SkTime_win.cpp" />
-    <ClCompile Include="..\third_party\skia\src\ports\SkTLS_win.cpp" />
+    <ClCompile Include="..\third_party\skia\src\ports\SkTLS_none.cpp" />
     <ClCompile Include="..\third_party\skia\src\sfnt\SkOTTable_name.cpp" />
     <ClCompile Include="..\third_party\skia\src\sfnt\SkOTUtils.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\debugger\SkDebugCanvas.cpp" />
@@ -693,7 +710,6 @@
     <ClCompile Include="..\third_party\skia\src\utils\SkBitSet.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkCanvasStack.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkCanvasStateUtils.cpp" />
-    <ClCompile Include="..\third_party\skia\src\utils\SkDeferredCanvas.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkInterpolator.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkMatrix44.cpp" />
     <ClCompile Include="..\third_party\skia\src\utils\SkNullCanvas.cpp" />
@@ -834,7 +850,6 @@
     <ClCompile Include="..\third_party\skia\src\core\SkValidatingReadBuffer.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkWriter32.cpp" />
     <ClCompile Include="..\third_party\skia\src\core\SkXfermode.cpp" />
-    <ClCompile Include="..\third_party\skia\src\doc\SkDocument.cpp" />
     <ClCompile Include="..\third_party\skia\src\image\SkImage.cpp" />
     <ClCompile Include="..\third_party\skia\src\image\SkImagePriv.cpp" />
     <ClCompile Include="..\third_party\skia\src\image\SkImage_Codec.cpp" />
@@ -843,8 +858,6 @@
     <ClCompile Include="..\third_party\skia\src\image\SkSurface.cpp" />
     <ClCompile Include="..\third_party\skia\src\image\SkSurface_Picture.cpp" />
     <ClCompile Include="..\third_party\skia\src\image\SkSurface_Raster.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pipe\SkGPipeRead.cpp" />
-    <ClCompile Include="..\third_party\skia\src\pipe\SkGPipeWrite.cpp" />
     <ClCompile Include="..\third_party\skia\src\lazy\SkCachingPixelRef.cpp" />
     <ClCompile Include="..\third_party\skia\src\pathops\SkAddIntersections.cpp" />
     <ClCompile Include="..\third_party\skia\src\pathops\SkDCubicIntersection.cpp" />
@@ -997,7 +1010,6 @@
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLCaps.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLContext.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLIndexBuffer.cpp" />
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLPath.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLProgram.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLProgramDesc.cpp" />
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLProgramEffects.cpp" />
@@ -1022,9 +1034,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\third_party\icu\icuuc.vcxproj">
-      <Project>{539ced2c-dcac-e5e9-3b83-311f2d981aab}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\third_party\zlib\zlib.vcxproj">
       <Project>{33b2758b-efd1-beb1-80bb-b999b3f1b0d8}</Project>
     </ProjectReference>

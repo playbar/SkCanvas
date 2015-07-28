@@ -53,7 +53,6 @@ void ThreadSafeDataTransport::setData(SharedBuffer* buffer, bool allDataReceived
         newBufferQueue.append(SharedBuffer::create(segment, length));
     }
 
-    MutexLocker locker(m_mutex);
     m_newBufferQueue.appendVector(newBufferQueue);
     m_allDataReceived = allDataReceived;
 }
@@ -62,7 +61,6 @@ void ThreadSafeDataTransport::data(SharedBuffer** buffer, bool* allDataReceived)
 {
     Vector<RefPtr<SharedBuffer> > newBufferQueue;
     {
-        MutexLocker lock(m_mutex);
         m_newBufferQueue.swap(newBufferQueue);
     }
     for (size_t i = 0; i < newBufferQueue.size(); ++i)
@@ -75,7 +73,6 @@ void ThreadSafeDataTransport::data(SharedBuffer** buffer, bool* allDataReceived)
 
 bool ThreadSafeDataTransport::hasNewData()
 {
-    MutexLocker lock(m_mutex);
     return !m_newBufferQueue.isEmpty();
 }
 

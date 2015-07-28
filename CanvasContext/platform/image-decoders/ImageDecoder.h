@@ -34,7 +34,6 @@
 #include "platform/image-decoders/ImageFrame.h"
 #include "wtf/Assertions.h"
 #include "wtf/RefPtr.h"
-#include "wtf/Threading.h"
 #include "wtf/text/WTFString.h"
 #include "wtf/Vector.h"
 

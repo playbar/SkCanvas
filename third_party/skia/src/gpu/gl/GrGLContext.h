@@ -10,7 +10,8 @@
 #define GrGLContext_DEFINED
 
 #include "GrGLCaps.h"
-#include "gl/glew.h"
+//#include "gl/glew.h"
+#include "eggl.h"
 #include "GrGLSL.h"
 #include "GrGLUtil.h"
 

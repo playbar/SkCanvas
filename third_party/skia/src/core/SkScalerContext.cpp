@@ -23,9 +23,9 @@
 #include "SkStroke.h"
 #include "SkThread.h"
 
-#ifdef SK_BUILD_FOR_ANDROID
-    #include "SkTypeface_android.h"
-#endif
+//#ifdef SK_BUILD_FOR_ANDROID
+//    #include "SkTypeface_android.h"
+//#endif
 
 #define ComputeBWRowBytes(width)        (((unsigned)(width) + 7) >> 3)
 
@@ -112,14 +112,14 @@ SkScalerContext::SkScalerContext(SkTypeface* typeface, const SkDescriptor* desc)
              desc->findEntry(kPathEffect_SkDescriptorTag, NULL),
         desc->findEntry(kMaskFilter_SkDescriptorTag, NULL));
 #endif
-#ifdef SK_BUILD_FOR_ANDROID
-    uint32_t len;
-    const void* data = desc->findEntry(kAndroidOpts_SkDescriptorTag, &len);
-    if (data) {
-        SkOrderedReadBuffer buffer(data, len);
-        fPaintOptionsAndroid.unflatten(buffer);
-    }
-#endif
+//#ifdef SK_BUILD_FOR_ANDROID
+//    uint32_t len;
+//    const void* data = desc->findEntry(kAndroidOpts_SkDescriptorTag, &len);
+//    if (data) {
+//        SkOrderedReadBuffer buffer(data, len);
+//        fPaintOptionsAndroid.unflatten(buffer);
+//    }
+//#endif
 }
 
 SkScalerContext::~SkScalerContext() {
@@ -134,33 +134,34 @@ SkScalerContext::~SkScalerContext() {
 // there are no more entries in the fallback chain.
 SkScalerContext* SkScalerContext::allocNextContext() const {
 #ifdef SK_BUILD_FOR_ANDROID
-    SkTypeface* newFace = SkAndroidNextLogicalTypeface(fRec.fFontID,
-                                                       fRec.fOrigFontID,
-                                                       fPaintOptionsAndroid);
-    if (0 == newFace) {
-        return NULL;
-    }
-
-    SkAutoTUnref<SkTypeface> aur(newFace);
-    uint32_t newFontID = newFace->uniqueID();
-
-    SkOrderedWriteBuffer androidBuffer(128);
-    fPaintOptionsAndroid.flatten(androidBuffer);
-
-    SkAutoDescriptor    ad(sizeof(fRec) + androidBuffer.size() + SkDescriptor::ComputeOverhead(2));
-    SkDescriptor*       desc = ad.getDesc();
-
-    desc->init();
-    SkScalerContext::Rec* newRec =
-    (SkScalerContext::Rec*)desc->addEntry(kRec_SkDescriptorTag,
-                                          sizeof(fRec), &fRec);
-    androidBuffer.writeToMemory(desc->addEntry(kAndroidOpts_SkDescriptorTag,
-                                               androidBuffer.size(), NULL));
-
-    newRec->fFontID = newFontID;
-    desc->computeChecksum();
-
-    return newFace->createScalerContext(desc);
+//    SkTypeface* newFace = SkAndroidNextLogicalTypeface(fRec.fFontID,
+//                                                       fRec.fOrigFontID,
+//                                                       fPaintOptionsAndroid);
+//    if (0 == newFace) {
+//        return NULL;
+//    }
+//
+//    SkAutoTUnref<SkTypeface> aur(newFace);
+//    uint32_t newFontID = newFace->uniqueID();
+//
+//    SkOrderedWriteBuffer androidBuffer(128);
+//    fPaintOptionsAndroid.flatten(androidBuffer);
+//
+//    SkAutoDescriptor    ad(sizeof(fRec) + androidBuffer.size() + SkDescriptor::ComputeOverhead(2));
+//    SkDescriptor*       desc = ad.getDesc();
+//
+//    desc->init();
+//    SkScalerContext::Rec* newRec =
+//    (SkScalerContext::Rec*)desc->addEntry(kRec_SkDescriptorTag,
+//                                          sizeof(fRec), &fRec);
+//    androidBuffer.writeToMemory(desc->addEntry(kAndroidOpts_SkDescriptorTag,
+//                                               androidBuffer.size(), NULL));
+//
+//    newRec->fFontID = newFontID;
+//    desc->computeChecksum();
+//
+//    return newFace->createScalerContext(desc);
+    return NULL;
 #else
     return NULL;
 #endif

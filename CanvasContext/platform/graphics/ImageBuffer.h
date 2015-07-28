@@ -126,7 +126,8 @@ private:
     OwnPtr<GraphicsContext> m_context;
 };
 
-struct ImageDataBuffer {
+struct ImageDataBuffer 
+{
     ImageDataBuffer(const IntSize& size, PassRefPtr<Uint8ClampedArray> data) : m_size(size), m_data(data) { }
     IntSize size() const { return m_size; }
     unsigned char* data() const { return m_data->data(); }

@@ -44,8 +44,17 @@ namespace WebCore {
 
 class PLATFORM_EXPORT FontDescription {
 public:
-    enum GenericFamilyType { NoFamily, StandardFamily, SerifFamily, SansSerifFamily,
-                             MonospaceFamily, CursiveFamily, FantasyFamily, PictographFamily };
+    enum GenericFamilyType 
+	{
+		NoFamily, 
+		StandardFamily, 
+		SerifFamily, 
+		SansSerifFamily, 
+		MonospaceFamily, 
+		CursiveFamily, 
+		FantasyFamily, 
+		PictographFamily
+	};
 
     enum Kerning { AutoKerning, NormalKerning, NoneKerning };
 

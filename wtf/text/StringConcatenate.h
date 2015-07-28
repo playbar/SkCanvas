@@ -44,28 +44,6 @@ template<typename StringType>
 class StringTypeAdapter {
 };
 
-template<>
-class StringTypeAdapter<char> {
-public:
-    StringTypeAdapter<char>(char buffer)
-        : m_buffer(buffer)
-    {
-    }
-
-    unsigned length() { return 1; }
-
-    bool is8Bit() { return true; }
-
-    void writeTo(LChar* destination)
-    {
-        *destination = m_buffer;
-    }
-
-    void writeTo(UChar* destination) { *destination = m_buffer; }
-
-private:
-    unsigned char m_buffer;
-};
 
 template<>
 class StringTypeAdapter<LChar> {
@@ -112,38 +90,6 @@ public:
 
 private:
     UChar m_buffer;
-};
-
-template<>
-class StringTypeAdapter<char*> {
-public:
-    StringTypeAdapter<char*>(char* buffer)
-        : m_buffer(buffer)
-        , m_length(strlen(buffer))
-    {
-    }
-
-    unsigned length() { return m_length; }
-
-    bool is8Bit() { return true; }
-
-    void writeTo(LChar* destination)
-    {
-        for (unsigned i = 0; i < m_length; ++i)
-            destination[i] = static_cast<LChar>(m_buffer[i]);
-    }
-
-    void writeTo(UChar* destination)
-    {
-        for (unsigned i = 0; i < m_length; ++i) {
-            unsigned char c = m_buffer[i];
-            destination[i] = c;
-        }
-    }
-
-private:
-    const char* m_buffer;
-    unsigned m_length;
 };
 
 template<>
@@ -209,37 +155,6 @@ private:
 };
 
 template<>
-class StringTypeAdapter<const char*> {
-public:
-    StringTypeAdapter<const char*>(const char* buffer)
-        : m_buffer(buffer)
-        , m_length(strlen(buffer))
-    {
-    }
-
-    unsigned length() { return m_length; }
-
-    bool is8Bit() { return true; }
-
-    void writeTo(LChar* destination)
-    {
-        memcpy(destination, m_buffer, static_cast<size_t>(m_length) * sizeof(LChar));
-    }
-
-    void writeTo(UChar* destination)
-    {
-        for (unsigned i = 0; i < m_length; ++i) {
-            unsigned char c = m_buffer[i];
-            destination[i] = c;
-        }
-    }
-
-private:
-    const char* m_buffer;
-    unsigned m_length;
-};
-
-template<>
 class StringTypeAdapter<const LChar*> {
 public:
     StringTypeAdapter<const LChar*>(const LChar* buffer)
@@ -267,33 +182,6 @@ private:
     unsigned m_length;
 };
 
-template<>
-class StringTypeAdapter<Vector<char> > {
-public:
-    StringTypeAdapter<Vector<char> >(const Vector<char>& buffer)
-        : m_buffer(buffer)
-    {
-    }
-
-    size_t length() { return m_buffer.size(); }
-
-    bool is8Bit() { return true; }
-
-    void writeTo(LChar* destination)
-    {
-        for (size_t i = 0; i < m_buffer.size(); ++i)
-            destination[i] = static_cast<unsigned char>(m_buffer[i]);
-    }
-
-    void writeTo(UChar* destination)
-    {
-        for (size_t i = 0; i < m_buffer.size(); ++i)
-            destination[i] = static_cast<unsigned char>(m_buffer[i]);
-    }
-
-private:
-    const Vector<char>& m_buffer;
-};
 
 template<>
 class StringTypeAdapter<Vector<LChar> > {

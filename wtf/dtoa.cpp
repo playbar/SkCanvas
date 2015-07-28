@@ -37,7 +37,7 @@
 
 #include "wtf/CPU.h"
 #include "wtf/MathExtras.h"
-#include "wtf/ThreadingPrimitives.h"
+//#include "wtf/ThreadingPrimitives.h"
 #include "wtf/Vector.h"
 
 #if COMPILER(MSVC)
@@ -54,8 +54,6 @@
 #endif
 
 namespace WTF {
-
-Mutex* s_dtoaP5Mutex;
 
 typedef union {
     double d;
@@ -381,7 +379,6 @@ static ALWAYS_INLINE void pow5mult(BigInt& b, int k)
     if (!(k >>= 2))
         return;
 
-    s_dtoaP5Mutex->lock();
     P5Node* p5 = p5s;
 
     if (!p5) {
@@ -394,7 +391,6 @@ static ALWAYS_INLINE void pow5mult(BigInt& b, int k)
     }
 
     int p5sCountLocal = p5sCount;
-    s_dtoaP5Mutex->unlock();
     int p5sUsed = 0;
 
     for (;;) {
@@ -405,7 +401,6 @@ static ALWAYS_INLINE void pow5mult(BigInt& b, int k)
             break;
 
         if (++p5sUsed == p5sCountLocal) {
-            s_dtoaP5Mutex->lock();
             if (p5sUsed == p5sCount) {
                 ASSERT(!p5->next);
                 p5->next = new P5Node;
@@ -416,7 +411,6 @@ static ALWAYS_INLINE void pow5mult(BigInt& b, int k)
             }
 
             p5sCountLocal = p5sCount;
-            s_dtoaP5Mutex->unlock();
         }
         p5 = p5->next;
     }

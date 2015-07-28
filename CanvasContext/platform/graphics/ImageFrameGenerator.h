@@ -35,8 +35,6 @@
 #include "wtf/PassRefPtr.h"
 #include "wtf/RefCounted.h"
 #include "wtf/RefPtr.h"
-#include "wtf/ThreadingPrimitives.h"
-#include "wtf/ThreadSafeRefCounted.h"
 #include "wtf/Vector.h"
 
 namespace WebCore {
@@ -53,7 +51,7 @@ public:
     virtual PassOwnPtr<ImageDecoder> create() = 0;
 };
 
-class PLATFORM_EXPORT ImageFrameGenerator : public ThreadSafeRefCounted<ImageFrameGenerator> {
+class PLATFORM_EXPORT ImageFrameGenerator : public RefCounted<ImageFrameGenerator> {
     WTF_MAKE_NONCOPYABLE(ImageFrameGenerator);
 public:
     static PassRefPtr<ImageFrameGenerator> create(const SkISize& fullSize, PassRefPtr<SharedBuffer> data, bool allDataReceived, bool isMultiFrame = false)
@@ -119,10 +117,8 @@ private:
     OwnPtr<ImageDecoderFactory> m_imageDecoderFactory;
 
     // Prevents multiple decode operations on the same data.
-    Mutex m_decodeMutex;
 
     // Protect concurrent access to m_hasAlpha.
-    Mutex m_alphaMutex;
 };
 
 } // namespace WebCore

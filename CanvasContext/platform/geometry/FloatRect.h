@@ -164,15 +164,6 @@ public:
     void fitToPoints(const FloatPoint& p0, const FloatPoint& p1, const FloatPoint& p2);
     void fitToPoints(const FloatPoint& p0, const FloatPoint& p1, const FloatPoint& p2, const FloatPoint& p3);
 
-#if OS(MACOSX)
-    FloatRect(const CGRect&);
-    operator CGRect() const;
-#if !defined(NSGEOMETRY_TYPES_SAME_AS_CGGEOMETRY_TYPES)
-    FloatRect(const NSRect&);
-    operator NSRect() const;
-#endif
-#endif
-
     operator SkRect() const;
 
 private:

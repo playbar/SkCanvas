@@ -180,11 +180,6 @@ bool SkPathRef::operator== (const SkPathRef& ref) const {
         return false;
     }
 
-#ifdef SK_RELEASE
-    if (genIDMatch) {
-        return true;
-    }
-#endif
     if (fPointCnt != ref.fPointCnt ||
         fVerbCnt != ref.fVerbCnt) {
         return false;

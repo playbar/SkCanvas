@@ -34,13 +34,7 @@
 #include "wtf/DefaultAllocator.h"
 #include "wtf/FastMalloc.h"
 
-#ifndef NDEBUG
-#include "wtf/MainThread.h"
-#endif
-
 namespace WTF {
-
-extern void initializeThreading();
 
 bool s_initialized;
 bool s_shutdown;
@@ -57,7 +51,6 @@ void initialize(TimeFunction currentTimeFunction, TimeFunction monotonicallyIncr
     Partitions::initialize();
     setCurrentTimeFunction(currentTimeFunction);
     setMonotonicallyIncreasingTimeFunction(monotonicallyIncreasingTimeFunction);
-    initializeThreading();
 }
 
 void shutdown()
@@ -77,12 +70,10 @@ void Partitions::initialize()
 {
     static int lock = 0;
     // Guard against two threads hitting here in parallel.
-    spinLockLock(&lock);
     if (!s_initialized) {
         s_initialized = true;
         m_bufferAllocator.init();
     }
-    spinLockUnlock(&lock);
 }
 
 void Partitions::shutdown()

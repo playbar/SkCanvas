@@ -196,9 +196,6 @@
     <Filter Include="text">
       <UniqueIdentifier>{A03EF847-0682-89DE-DB5E-F3ADE72FEA2E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="text\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
     <Filter Include="text">
       <UniqueIdentifier>{A03EF847-0682-89DE-DB5E-F3ADE72FEA2E}</UniqueIdentifier>
     </Filter>
@@ -220,7 +217,6 @@
     <ClInclude Include="ArrayBufferView.h" />
     <ClCompile Include="Assertions.cpp" />
     <ClInclude Include="Assertions.h" />
-    <ClInclude Include="Atomics.h" />
     <ClInclude Include="BitArray.h" />
     <ClCompile Include="BitVector.cpp" />
     <ClInclude Include="BitVector.h" />
@@ -279,8 +275,6 @@
     <ClInclude Include="LinkedStack.h" />
     <ClInclude Include="ListHashSet.h" />
     <ClInclude Include="Locker.h" />
-    <ClCompile Include="MainThread.cpp" />
-    <ClInclude Include="MainThread.h" />
     <ClInclude Include="MallocZoneSupport.h" />
     <ClInclude Include="MathExtras.h" />
     <ClInclude Include="MessageQueue.h" />
@@ -302,29 +296,19 @@
     <ClInclude Include="PrintStream.h" />
     <ClInclude Include="ProcessID.h" />
     <ClInclude Include="RefCounted.h" />
-    <ClCompile Include="RefCountedLeakCounter.cpp" />
-    <ClInclude Include="RefCountedLeakCounter.h" />
     <ClInclude Include="RefPtr.h" />
     <ClInclude Include="RetainPtr.h" />
     <ClCompile Include="SHA1.cpp" />
     <ClInclude Include="SHA1.h" />
     <ClInclude Include="SaturatedArithmetic.h" />
     <ClCompile Include="SizeLimits.cpp" />
-    <ClInclude Include="SpinLock.h" />
     <ClInclude Include="StaticConstructors.h" />
     <ClInclude Include="StdLibExtras.h" />
     <ClInclude Include="StringExtras.h" />
     <ClInclude Include="StringHasher.h" />
     <ClInclude Include="TemporaryChange.h" />
-    <ClInclude Include="ThreadFunctionInvocation.h" />
-    <ClInclude Include="ThreadRestrictionVerifier.h" />
-    <ClInclude Include="ThreadSafeRefCounted.h" />
     <ClInclude Include="ThreadSpecific.h" />
     <ClCompile Include="ThreadSpecificWin.cpp" />
-    <ClCompile Include="Threading.cpp" />
-    <ClInclude Include="Threading.h" />
-    <ClInclude Include="ThreadingPrimitives.h" />
-    <ClCompile Include="ThreadingWin.cpp" />
     <ClInclude Include="TreeNode.h" />
     <ClCompile Include="TypeTraits.cpp" />
     <ClInclude Include="TypeTraits.h" />

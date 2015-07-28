@@ -9,7 +9,8 @@
 
 #if defined(SK_BUILD_FOR_WIN)
 
-#include "gl/glew.h"
+//#include "gl/glew.h"
+#include "eggl.h"
 #include <GL/gl.h>
 #include <WindowsX.h>
 #include "SkWGL.h"

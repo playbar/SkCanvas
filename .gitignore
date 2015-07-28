@@ -2,7 +2,6 @@
 *.gypcmd
 *.bat
 *.patch
-*.xml
 *.obj
 *.tlog
 *.dll
@@ -43,7 +42,6 @@ third_party/sfntly/OWNERS
 *.ipch
 wtf/wtf/dtoa/COPYING
 wtf/wtf/OWNERS
-*.mk
 *.icu
 *.json
 *.bin

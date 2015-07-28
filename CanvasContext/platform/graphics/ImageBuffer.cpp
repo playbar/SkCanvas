@@ -40,7 +40,6 @@
 #include "platform/graphics/UnacceleratedImageBufferSurface.h"
 #include "platform/graphics/skia/NativeImageSkia.h"
 #include "platform/graphics/skia/SkiaUtils.h"
-#include "platform/image-encoders/skia/PNGImageEncoder.h"
 #include "third_party/skia/include/effects/SkTableColorFilter.h"
 #include "wtf/MathExtras.h"
 #include "wtf/text/Base64.h"
@@ -334,8 +333,8 @@ void ImageBuffer::putByteArray(Multiply multiplied, Uint8ClampedArray* source, c
 template <typename T>
 static bool encodeImage(T& source, const String& mimeType, const double* quality, Vector<char>* output)
 {
-    Vector<unsigned char>* encodedImage = reinterpret_cast<Vector<unsigned char>*>(output);
-
+    //Vector<unsigned char>* encodedImage = reinterpret_cast<Vector<unsigned char>*>(output);
+	ASSERT(false);
     //if (mimeType == "image/jpeg") {
     //    int compressionQuality = JPEGImageEncoder::DefaultCompressionQuality;
     //    if (quality && *quality >= 0.0 && *quality <= 1.0)
@@ -352,11 +351,11 @@ static bool encodeImage(T& source, const String& mimeType, const double* quality
  //           return false;
  //   }
 	//else
-	{
-        if (!PNGImageEncoder::encode(source, encodedImage))
-            return false;
-        ASSERT(mimeType == "image/png");
-    }
+	//{
+ //       if (!PNGImageEncoder::encode(source, encodedImage))
+ //           return false;
+ //       ASSERT(mimeType == "image/png");
+ //   }
 
     return true;
 }

@@ -99,7 +99,7 @@ void* fastRealloc(void* p, size_t n)
 #else // USE(SYSTEM_MALLOC)
 
 #include "wtf/PartitionAlloc.h"
-#include "wtf/SpinLock.h"
+//#include "wtf/SpinLock.h"
 
 namespace WTF {
 
@@ -115,12 +115,10 @@ void fastMallocShutdown()
 void* fastMalloc(size_t n)
 {
     if (UNLIKELY(!gInitialized)) {
-        spinLockLock(&gLock);
         if (!gInitialized) {
             gInitialized = true;
             gPartition.init();
         }
-        spinLockUnlock(&gLock);
     }
     return partitionAllocGeneric(gPartition.root(), n);
 }

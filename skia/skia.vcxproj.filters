@@ -3781,9 +3781,6 @@
     <Filter Include="..\third_party\skia\src">
       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\third_party\skia\src\doc">
-      <UniqueIdentifier>{8C0618A2-4120-3539-46C9-8A0A073ADAD5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
     </Filter>
@@ -3916,9 +3913,6 @@
     <Filter Include="..\third_party\skia\src">
       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\third_party\skia\src\pipe">
-      <UniqueIdentifier>{08EDB58E-8F07-E4B0-2D91-C07C8860878A}</UniqueIdentifier>
-    </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
     </Filter>
@@ -3930,9 +3924,6 @@
     </Filter>
     <Filter Include="..\third_party\skia\src">
       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party\skia\src\pipe">
-      <UniqueIdentifier>{08EDB58E-8F07-E4B0-2D91-C07C8860878A}</UniqueIdentifier>
     </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
@@ -7804,9 +7795,6 @@
     <Filter Include="..\third_party\skia\include">
       <UniqueIdentifier>{57CA55B8-BCC5-4000-CE3A-58972F82E9CB}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\third_party\skia\include\pdf">
-      <UniqueIdentifier>{56480206-DE3F-C823-DE52-8906D4B76BB3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
     </Filter>
@@ -7855,8 +7843,17 @@
     <Filter Include="..\third_party\skia\src">
       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\third_party\skia\src\pdf">
-      <UniqueIdentifier>{56480206-DE3F-C823-DE52-8906D4B76BB3}</UniqueIdentifier>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\third_party">
+      <UniqueIdentifier>{D6C6CEA7-AAD0-03AD-2394-AC6FCBF8A498}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\third_party\skia">
+      <UniqueIdentifier>{426FFB3D-87DA-BE1E-9819-8EDBC6A5D70A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\third_party\skia\src">
+      <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
     </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
@@ -7870,9 +7867,6 @@
     <Filter Include="..\third_party\skia\src">
       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\third_party\skia\src\pdf">
-      <UniqueIdentifier>{56480206-DE3F-C823-DE52-8906D4B76BB3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
     </Filter>
@@ -7884,24 +7878,6 @@
     </Filter>
     <Filter Include="..\third_party\skia\src">
       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party\skia\src\pdf">
-      <UniqueIdentifier>{56480206-DE3F-C823-DE52-8906D4B76BB3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..">
-      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party">
-      <UniqueIdentifier>{D6C6CEA7-AAD0-03AD-2394-AC6FCBF8A498}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party\skia">
-      <UniqueIdentifier>{426FFB3D-87DA-BE1E-9819-8EDBC6A5D70A}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party\skia\src">
-      <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party\skia\src\pdf">
-      <UniqueIdentifier>{56480206-DE3F-C823-DE52-8906D4B76BB3}</UniqueIdentifier>
     </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
@@ -11806,8 +11782,20 @@
     <Filter Include="..\third_party\skia\src\ports">
       <UniqueIdentifier>{5BCFDFF2-7BF8-4B41-9D0B-3B13CB48CE9B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\third_party\skia\src\ports\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
+    <Filter Include="..">
+      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\third_party">
+      <UniqueIdentifier>{D6C6CEA7-AAD0-03AD-2394-AC6FCBF8A498}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\third_party\skia">
+      <UniqueIdentifier>{426FFB3D-87DA-BE1E-9819-8EDBC6A5D70A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\third_party\skia\src">
+      <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\third_party\skia\src\ports">
+      <UniqueIdentifier>{5BCFDFF2-7BF8-4B41-9D0B-3B13CB48CE9B}</UniqueIdentifier>
     </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
@@ -11824,9 +11812,6 @@
     <Filter Include="..\third_party\skia\src\ports">
       <UniqueIdentifier>{5BCFDFF2-7BF8-4B41-9D0B-3B13CB48CE9B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\third_party\skia\src\ports\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
     </Filter>
@@ -11841,27 +11826,6 @@
     </Filter>
     <Filter Include="..\third_party\skia\src\ports">
       <UniqueIdentifier>{5BCFDFF2-7BF8-4B41-9D0B-3B13CB48CE9B}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party\skia\src\ports\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..">
-      <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party">
-      <UniqueIdentifier>{D6C6CEA7-AAD0-03AD-2394-AC6FCBF8A498}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party\skia">
-      <UniqueIdentifier>{426FFB3D-87DA-BE1E-9819-8EDBC6A5D70A}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party\skia\src">
-      <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party\skia\src\ports">
-      <UniqueIdentifier>{5BCFDFF2-7BF8-4B41-9D0B-3B13CB48CE9B}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="..\third_party\skia\src\ports\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
     </Filter>
     <Filter Include="..">
       <UniqueIdentifier>{739DB09A-CC57-A953-A6CF-F64FA08E4FA7}</UniqueIdentifier>
@@ -12004,6 +11968,9 @@
     <Filter Include="ext\_excluded_files">
       <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
     </Filter>
+    <Filter Include="..\third_party\png">
+      <UniqueIdentifier>{375c3e04-7532-456f-8b13-e122e33bb5c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third_party\skia\src\core\SkFlate.cpp">
@@ -12018,34 +11985,13 @@
     <ClInclude Include="..\third_party\skia\src\images\SkScaledBitmapSampler.h">
       <Filter>..\third_party\skia\src\images</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\opts\opts_check_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\ports\SkPurgeableMemoryBlock_none.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
     <ClInclude Include="..\third_party\skia\src\ports\SkFontHost_FreeType_common.h">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win_dw.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontMgr_default_gdi.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkGlobalInitialization_chromium.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_stdio.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_win.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkTLS_win.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\sfnt\SkOTTable_name.cpp">
@@ -12100,9 +12046,6 @@
       <Filter>..\third_party\skia\src\utils</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\utils\SkCanvasStateUtils.cpp">
-      <Filter>..\third_party\skia\src\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\utils\SkDeferredCanvas.cpp">
       <Filter>..\third_party\skia\src\utils</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\utils\SkMatrix44.cpp">
@@ -12705,9 +12648,6 @@
     <ClCompile Include="..\third_party\skia\src\core\SkXfermode.cpp">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\doc\SkDocument.cpp">
-      <Filter>..\third_party\skia\src\doc</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\image\SkImage.cpp">
       <Filter>..\third_party\skia\src\image</Filter>
     </ClCompile>
@@ -12731,12 +12671,6 @@
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\image\SkSurface_Raster.cpp">
       <Filter>..\third_party\skia\src\image</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\pipe\SkGPipeRead.cpp">
-      <Filter>..\third_party\skia\src\pipe</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\pipe\SkGPipeWrite.cpp">
-      <Filter>..\third_party\skia\src\pipe</Filter>
     </ClCompile>
     <ClInclude Include="..\third_party\skia\include\core\SkAdvancedTypefaceMetrics.h">
       <Filter>..\third_party\skia\include\core</Filter>
@@ -13965,12 +13899,6 @@
     <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLIRect.h">
       <Filter>..\third_party\skia\src\gpu\gl</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLPath.cpp">
-      <Filter>..\third_party\skia\src\gpu\gl</Filter>
-    </ClCompile>
-    <ClInclude Include="..\third_party\skia\src\gpu\gl\GrGLPath.h">
-      <Filter>..\third_party\skia\src\gpu\gl</Filter>
-    </ClInclude>
     <ClCompile Include="..\third_party\skia\src\gpu\gl\GrGLProgram.cpp">
       <Filter>..\third_party\skia\src\gpu\gl</Filter>
     </ClCompile>
@@ -14139,9 +14067,6 @@
     <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_FactoryRegistrar.cpp">
       <Filter>..\third_party\skia\src\images</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkImageDecoder_WIC.cpp">
-      <Filter>..\third_party\skia\src\images</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\images\SkImageEncoder_Factory.cpp">
       <Filter>..\third_party\skia\src\images</Filter>
     </ClCompile>
@@ -14169,33 +14094,6 @@
     <ClCompile Include="..\third_party\skia\src\utils\SkParseColor.cpp">
       <Filter>..\third_party\skia\src\utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_SSSE3.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkXfermode_opts_none.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapFilter_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkBlitRect_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkBlitRow_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkBlurImage_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkMorphology_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\opts\SkUtils_opts_SSE2.cpp">
-      <Filter>..\third_party\skia\src\opts</Filter>
-    </ClCompile>
     <ClCompile Include="ext\convolver_SSE2.cc">
       <Filter>ext</Filter>
     </ClCompile>
@@ -14214,6 +14112,102 @@
     <ClCompile Include="ext\convolver.cc">
       <Filter>ext</Filter>
     </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_libpng.cpp">
+      <Filter>..\third_party\skia\src\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\png.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngerror.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pnggccrd.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngget.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngmem.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngpread.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngread.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngrio.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngrtran.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngrutil.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngset.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngtrans.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngvcrd.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngwio.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngwrite.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngwtran.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\libpng\pngwutil.c">
+      <Filter>..\third_party\png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_FactoryDefault.cpp">
+      <Filter>..\third_party\skia\src\images</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkFontMgr_default_gdi.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win_dw.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_none.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkTLS_none.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\ports\SkGlobalInitialization_default.cpp">
+      <Filter>..\third_party\skia\src\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkBlitMask_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkBlitRow_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkUtils_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkXfermode_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkBlurImage_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\opts\SkMorphology_opts_none.cpp">
+      <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\third_party\skia\src\core\SkOrderedWriteBuffer.h">
@@ -14224,9 +14218,6 @@
     </ClInclude>
     <ClInclude Include="..\third_party\skia\src\core\SkOrderedReadBuffer.h">
       <Filter>..\third_party\skia\src\core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\third_party\skia\src\opts\SkBitmapProcState_opts_SSSE3.h">
-      <Filter>..\third_party\skia\src\opts</Filter>
     </ClInclude>
     <ClInclude Include="ext\convolver_SSE2.h">
       <Filter>ext</Filter>
@@ -14239,6 +14230,18 @@
     </ClInclude>
     <ClInclude Include="ext\convolver.h">
       <Filter>ext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\libpng\png.h">
+      <Filter>..\third_party\png</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\libpng\pngconf.h">
+      <Filter>..\third_party\png</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\libpng\pngusr.h">
+      <Filter>..\third_party\png</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third_party\skia\include\gpu\eggl.h">
+      <Filter>..\third_party\skia\include\gpu</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

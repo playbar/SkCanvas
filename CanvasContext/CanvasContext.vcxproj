@@ -15,23 +15,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\third_party\libpng\png.c" />
-    <ClCompile Include="..\third_party\libpng\pngerror.c" />
-    <ClCompile Include="..\third_party\libpng\pnggccrd.c" />
-    <ClCompile Include="..\third_party\libpng\pngget.c" />
-    <ClCompile Include="..\third_party\libpng\pngmem.c" />
-    <ClCompile Include="..\third_party\libpng\pngpread.c" />
-    <ClCompile Include="..\third_party\libpng\pngread.c" />
-    <ClCompile Include="..\third_party\libpng\pngrio.c" />
-    <ClCompile Include="..\third_party\libpng\pngrtran.c" />
-    <ClCompile Include="..\third_party\libpng\pngrutil.c" />
-    <ClCompile Include="..\third_party\libpng\pngset.c" />
-    <ClCompile Include="..\third_party\libpng\pngtrans.c" />
-    <ClCompile Include="..\third_party\libpng\pngvcrd.c" />
-    <ClCompile Include="..\third_party\libpng\pngwio.c" />
-    <ClCompile Include="..\third_party\libpng\pngwrite.c" />
-    <ClCompile Include="..\third_party\libpng\pngwtran.c" />
-    <ClCompile Include="..\third_party\libpng\pngwutil.c" />
     <ClCompile Include="blink\ColorData.cpp" />
     <ClCompile Include="blink\CSSGrammar.cpp" />
     <ClCompile Include="blink\CSSTokenizer.cpp" />
@@ -169,12 +152,8 @@
     <ClCompile Include="platform\graphics\StrokeData.cpp" />
     <ClCompile Include="platform\graphics\ThreadSafeDataTransport.cpp" />
     <ClCompile Include="platform\graphics\UnacceleratedImageBufferSurface.cpp" />
-    <ClCompile Include="platform\image-decoders\bmp\BMPImageDecoder.cpp" />
-    <ClCompile Include="platform\image-decoders\bmp\BMPImageReader.cpp" />
     <ClCompile Include="platform\image-decoders\ImageDecoder.cpp" />
     <ClCompile Include="platform\image-decoders\ImageFrame.cpp" />
-    <ClCompile Include="platform\image-decoders\png\PNGImageDecoder.cpp" />
-    <ClCompile Include="platform\image-encoders\skia\PNGImageEncoder.cpp" />
     <ClCompile Include="platform\Length.cpp" />
     <ClCompile Include="platform\LengthBox.cpp" />
     <ClCompile Include="platform\LengthFunctions.cpp" />
@@ -196,9 +175,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Chrome35\src\third_party\WebKit\Source\platform\TraceLocation.h" />
-    <ClInclude Include="..\third_party\libpng\png.h" />
-    <ClInclude Include="..\third_party\libpng\pngconf.h" />
-    <ClInclude Include="..\third_party\libpng\pngusr.h" />
     <ClInclude Include="blink\CSSGrammar.h" />
     <ClInclude Include="blink\FontFamilyNames.h" />
     <ClInclude Include="blink\HTMLNames.h" />
@@ -334,12 +310,8 @@
     <ClInclude Include="platform\graphics\StrokeData.h" />
     <ClInclude Include="platform\graphics\ThreadSafeDataTransport.h" />
     <ClInclude Include="platform\graphics\UnacceleratedImageBufferSurface.h" />
-    <ClInclude Include="platform\image-decoders\bmp\BMPImageDecoder.h" />
-    <ClInclude Include="platform\image-decoders\bmp\BMPImageReader.h" />
     <ClInclude Include="platform\image-decoders\ImageDecoder.h" />
     <ClInclude Include="platform\image-decoders\ImageFrame.h" />
-    <ClInclude Include="platform\image-decoders\png\PNGImageDecoder.h" />
-    <ClInclude Include="platform\image-encoders\skia\PNGImageEncoder.h" />
     <ClInclude Include="platform\Length.h" />
     <ClInclude Include="platform\LengthBox.h" />
     <ClInclude Include="platform\LengthFunctions.h" />

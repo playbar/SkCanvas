@@ -29,16 +29,16 @@ public:
      * Additional blend coefficients for dual source blending, not exposed
      * through GrPaint/GrContext.
      */
-    enum ExtendedBlendCoeffs {
-        // source 2 refers to second output color when
-        // using dual source blending.
-        kS2C_GrBlendCoeff = kPublicGrBlendCoeffCount,
-        kIS2C_GrBlendCoeff,
-        kS2A_GrBlendCoeff,
-        kIS2A_GrBlendCoeff,
+    //enum ExtendedBlendCoeffs {
+    //    // source 2 refers to second output color when
+    //    // using dual source blending.
+    //    kS2C_GrBlendCoeff = kPublicGrBlendCoeffCount,
+    //    kIS2C_GrBlendCoeff,
+    //    kS2A_GrBlendCoeff,
+    //    kIS2A_GrBlendCoeff,
 
-        kTotalGrBlendCoeffCount
-    };
+    //    kTotalGrBlendCoeffCount
+    //};
 
     /**
      * Create an instance of GrGpu that matches the specified backend. If the requested backend is
@@ -125,7 +125,7 @@ public:
      * Creates a path object that can be stenciled using stencilPath(). It is
      * only legal to call this if the caps report support for path stenciling.
      */
-    GrPath* createPath(const SkPath& path, const SkStrokeRec& stroke);
+    //GrPath* createPath(const SkPath& path, const SkStrokeRec& stroke);
 
     /**
      * Returns an index buffer that can be used to render quads.
@@ -425,7 +425,7 @@ private:
     virtual GrRenderTarget* onWrapBackendRenderTarget(const GrBackendRenderTargetDesc&) = 0;
     virtual GrVertexBuffer* onCreateVertexBuffer(size_t size, bool dynamic) = 0;
     virtual GrIndexBuffer* onCreateIndexBuffer(size_t size, bool dynamic) = 0;
-    virtual GrPath* onCreatePath(const SkPath& path, const SkStrokeRec&) = 0;
+    //virtual GrPath* onCreatePath(const SkPath& path, const SkStrokeRec&) = 0;
 
     // overridden by backend-specific derived class to perform the clear and
     // clearRect. NULL rect means clear whole target. If canIgnoreRect is

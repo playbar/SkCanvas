@@ -10,7 +10,8 @@
 
 #include "GrVertexBuffer.h"
 #include "GrGLBufferImpl.h"
-#include "gl/glew.h"
+//#include "gl/glew.h"
+#include "eggl.h"
 
 class GrGpuGL;
 

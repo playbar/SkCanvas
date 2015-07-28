@@ -33,7 +33,6 @@
 
 #include "wtf/Assertions.h"
 #include "wtf/ProcessID.h"
-#include "wtf/SpinLock.h"
 
 #include <limits.h>
 
@@ -129,7 +128,6 @@ uint32_t ranvalInternal(ranctx* x)
 
 uint32_t ranval(ranctx* x)
 {
-    spinLockLock(&x->lock);
     if (UNLIKELY(!x->initialized)) {
         x->initialized = true;
         char c;
@@ -142,7 +140,6 @@ uint32_t ranval(ranctx* x)
         }
     }
     uint32_t ret = ranvalInternal(x);
-    spinLockUnlock(&x->lock);
     return ret;
 }
 

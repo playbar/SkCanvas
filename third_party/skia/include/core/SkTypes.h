@@ -24,7 +24,8 @@
 #define SKIA_VERSION_MINOR  0
 #define SKIA_VERSION_PATCH  0
 
-enum {
+enum 
+{
     SK_MALLOC_TEMP  = 0x01, //!< hint to sk_malloc that the requested memory will be freed in the scope of the stack frame
     SK_MALLOC_THROW = 0x02  //!< instructs sk_malloc to call sk_throw if the memory cannot be allocated.
 };

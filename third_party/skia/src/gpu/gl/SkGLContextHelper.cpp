@@ -43,7 +43,7 @@ bool SkGLContextHelper::init(int width, int height)
 	if (kES_GrGLBinding == bindingInUse)
 	{
 		glRenderbufferStorage(GL_RENDERBUFFER,
-			GL_RGBA8,
+			GL_RGBA,
 			width, height);
 	}
 	else {

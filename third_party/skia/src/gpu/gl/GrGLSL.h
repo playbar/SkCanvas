@@ -8,7 +8,8 @@
 #ifndef GrGLSL_DEFINED
 #define GrGLSL_DEFINED
 
-#include "gl/glew.h"
+//#include "gl/glew.h"
+#include "eggl.h"
 #include "GrColor.h"
 #include "GrTypesPriv.h"
 #include "SkString.h"

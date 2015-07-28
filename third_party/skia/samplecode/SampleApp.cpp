@@ -24,7 +24,8 @@
 
 #if SK_SUPPORT_GPU
 #include "gl/GrGLUtil.h"
-#include "gl/glew.h"
+//#include "gl/glew.h"
+#include "eggl.h"
 #include "GrRenderTarget.h"
 #include "GrContext.h"
 #include "SkGpuDevice.h"
@@ -35,8 +36,6 @@ class GrContext;
 #include "SkOSFile.h"
 #include "SkStream.h"
 
-#include "SkGPipe.h"
-#include "SamplePipeControllers.h"
 #include "OverView.h"
 #include "TransitionView.h"
 
@@ -1911,11 +1910,6 @@ void SampleWindow::onSizeChange() {
     fZoomCenterX = SkScalarHalf(this->width());
     fZoomCenterY = SkScalarHalf(this->height());
 
-#ifdef SK_BUILD_FOR_ANDROID
-    // FIXME: The first draw after a size change does not work on Android, so
-    // we post an invalidate.
-    this->postInvalDelay();
-#endif
     this->updateTitle();    // to refresh our config
     fDevManager->windowSizeChanged(this);
 
@@ -1978,80 +1972,9 @@ bool SampleView::onQuery(SkEvent* evt) {
 }
 
 
-class SimplePC : public SkGPipeController {
-public:
-    SimplePC(SkCanvas* target);
-    ~SimplePC();
 
-    virtual void* requestBlock(size_t minRequest, size_t* actual);
-    virtual void notifyWritten(size_t bytes);
-
-private:
-    SkGPipeReader   fReader;
-    void*           fBlock;
-    size_t          fBlockSize;
-    size_t          fBytesWritten;
-    int             fAtomsWritten;
-    SkGPipeReader::Status   fStatus;
-
-    size_t        fTotalWritten;
-};
-
-SimplePC::SimplePC(SkCanvas* target) : fReader(target) {
-    fBlock = NULL;
-    fBlockSize = fBytesWritten = 0;
-    fStatus = SkGPipeReader::kDone_Status;
-    fTotalWritten = 0;
-    fAtomsWritten = 0;
-    fReader.setBitmapDecoder(&SkImageDecoder::DecodeMemory);
-}
-
-SimplePC::~SimplePC() {
-    sk_free(fBlock);
-}
-
-void* SimplePC::requestBlock(size_t minRequest, size_t* actual) {
-    sk_free(fBlock);
-
-    fBlockSize = minRequest * 4;
-    fBlock = sk_malloc_throw(fBlockSize);
-    fBytesWritten = 0;
-    *actual = fBlockSize;
-    return fBlock;
-}
-
-void SimplePC::notifyWritten(size_t bytes) {
-    fStatus = fReader.playback((const char*)fBlock + fBytesWritten, bytes);
-    fBytesWritten += bytes;
-    fTotalWritten += bytes;
-
-    fAtomsWritten += 1;
-}
-
-void SampleView::draw(SkCanvas* canvas) {
-    if (SkOSMenu::kOffState == fPipeState) {
-        this->INHERITED::draw(canvas);
-    } else {
-        SkGPipeWriter writer;
-        SimplePC controller(canvas);
-        TiledPipeController tc(canvas->getDevice()->accessBitmap(false),
-                               &SkImageDecoder::DecodeMemory,
-                               &canvas->getTotalMatrix());
-        SkGPipeController* pc;
-        if (SkOSMenu::kMixedState == fPipeState) {
-            pc = &tc;
-        } else {
-            pc = &controller;
-        }
-        uint32_t flags = SkGPipeWriter::kCrossProcess_Flag;
-
-        canvas = writer.startRecording(pc, flags);
-        //Must draw before controller goes out of scope and sends data
-        this->INHERITED::draw(canvas);
-        //explicitly end recording to ensure writer is flushed before the memory
-        //is freed in the deconstructor of the controller
-        writer.endRecording();
-    }
+void SampleView::draw(SkCanvas* canvas) {  
+	this->INHERITED::draw(canvas);
 }
 
 #include "SkBounder.h"

@@ -37,8 +37,6 @@ namespace WebCore {
 
 // Represents an individual computed border image width or outset.
 //
-// http://www.w3.org/TR/css3-background/#border-image-width
-// http://www.w3.org/TR/css3-background/#border-image-outset
 class BorderImageLength {
 public:
     BorderImageLength(double number)

@@ -28,20 +28,8 @@
     <Filter Include="platform\font">
       <UniqueIdentifier>{292a6cca-bf9f-4ffb-879c-9e8119eeaee8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="platform\image-encoders">
-      <UniqueIdentifier>{e5bf348e-e7df-49d5-9ff2-cfa8ac934b82}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="platform\image-encoders\skia">
-      <UniqueIdentifier>{b77f6acc-dbc6-4e61-bd8f-8f26a1c1d837}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="png">
-      <UniqueIdentifier>{d9d02376-d1ef-481e-932b-889df895ad87}</UniqueIdentifier>
-    </Filter>
     <Filter Include="platform\image-decoders">
       <UniqueIdentifier>{18cd579a-8f61-43a5-8ce5-3fe5a4e6b9cc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="platform\image-decoders\bmp">
-      <UniqueIdentifier>{c1bdedd0-caea-4a80-a45d-8a12ff0dfefc}</UniqueIdentifier>
     </Filter>
     <Filter Include="platform\font\harfbuzz">
       <UniqueIdentifier>{667aba75-efae-4585-8400-22a258534e7a}</UniqueIdentifier>
@@ -60,9 +48,6 @@
     </Filter>
     <Filter Include="css\resolver">
       <UniqueIdentifier>{32006688-f8bb-45df-9ad2-654f8c1a84e4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="platform\image-decoders\png">
-      <UniqueIdentifier>{f060a19a-9a9f-479b-a8dc-cd0e1cae29ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -147,60 +132,6 @@
     <ClCompile Include="platform\graphics\ImageBuffer.cpp">
       <Filter>platform\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="platform\image-encoders\skia\PNGImageEncoder.cpp">
-      <Filter>platform\image-encoders\skia</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngwutil.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\png.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngerror.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pnggccrd.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngget.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngmem.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngpread.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngread.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngrio.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngrtran.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngrutil.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngset.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngtrans.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngvcrd.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngwio.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngwrite.c">
-      <Filter>png</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\libpng\pngwtran.c">
-      <Filter>png</Filter>
-    </ClCompile>
     <ClCompile Include="platform\graphics\UnacceleratedImageBufferSurface.cpp">
       <Filter>platform\graphics</Filter>
     </ClCompile>
@@ -272,12 +203,6 @@
     </ClCompile>
     <ClCompile Include="platform\image-decoders\ImageFrame.cpp">
       <Filter>platform\image-decoders</Filter>
-    </ClCompile>
-    <ClCompile Include="platform\image-decoders\bmp\BMPImageReader.cpp">
-      <Filter>platform\image-decoders\bmp</Filter>
-    </ClCompile>
-    <ClCompile Include="platform\image-decoders\bmp\BMPImageDecoder.cpp">
-      <Filter>platform\image-decoders\bmp</Filter>
     </ClCompile>
     <ClCompile Include="blink\ColorData.cpp">
       <Filter>blink</Filter>
@@ -597,9 +522,6 @@
     <ClCompile Include="blink\CSSTokenizer.cpp">
       <Filter>blink</Filter>
     </ClCompile>
-    <ClCompile Include="platform\image-decoders\png\PNGImageDecoder.cpp">
-      <Filter>platform\image-decoders\png</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -683,18 +605,6 @@
     <ClInclude Include="platform\graphics\ImageBuffer.h">
       <Filter>platform\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="platform\image-encoders\skia\PNGImageEncoder.h">
-      <Filter>platform\image-encoders\skia</Filter>
-    </ClInclude>
-    <ClInclude Include="..\third_party\libpng\png.h">
-      <Filter>png</Filter>
-    </ClInclude>
-    <ClInclude Include="..\third_party\libpng\pngconf.h">
-      <Filter>png</Filter>
-    </ClInclude>
-    <ClInclude Include="..\third_party\libpng\pngusr.h">
-      <Filter>png</Filter>
-    </ClInclude>
     <ClInclude Include="platform\graphics\UnacceleratedImageBufferSurface.h">
       <Filter>platform\graphics</Filter>
     </ClInclude>
@@ -772,12 +682,6 @@
     </ClInclude>
     <ClInclude Include="platform\image-decoders\ImageFrame.h">
       <Filter>platform\image-decoders</Filter>
-    </ClInclude>
-    <ClInclude Include="platform\image-decoders\bmp\BMPImageDecoder.h">
-      <Filter>platform\image-decoders\bmp</Filter>
-    </ClInclude>
-    <ClInclude Include="platform\image-decoders\bmp\BMPImageReader.h">
-      <Filter>platform\image-decoders\bmp</Filter>
     </ClInclude>
     <ClInclude Include="platform\graphics\ImageObserver.h">
       <Filter>platform\graphics</Filter>
@@ -1117,9 +1021,6 @@
     </ClInclude>
     <ClInclude Include="css\CSSTokenizer.h">
       <Filter>css</Filter>
-    </ClInclude>
-    <ClInclude Include="platform\image-decoders\png\PNGImageDecoder.h">
-      <Filter>platform\image-decoders\png</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -103,22 +103,6 @@ void GrGLCaps::init(const GrGLContextInfo& ctxInfo)
      * Caps specific to GrGLCaps
      **************************************************************************/
 
-	GLint max;
-	glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &max);
-	fMaxFragmentUniformVectors = max / 4;
-	if (version >= GL_VER(3, 2)) 
-	{
-		GLint profileMask;
-		glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profileMask);
-		fIsCoreProfile = SkToBool(profileMask & GL_CONTEXT_CORE_PROFILE_BIT);
-	}
-	if (!fIsCoreProfile) 
-	{
-		fFixedFunctionSupport = true;
-		glGetIntegerv(GL_MAX_TEXTURE_COORDS, &fMaxFixedFunctionTextureCoords);
-		// Sanity check
-	}
-   
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &fMaxVertexAttributes);
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &fMaxFragmentTextureUnits);
 
@@ -211,8 +195,6 @@ void GrGLCaps::init(const GrGLContextInfo& ctxInfo)
 
     if (GrGLCaps::kES_IMG_MsToTexture_MSFBOType == fMSFBOType) {
 		glGetIntegerv(GL_MAX_SAMPLES_IMG, &fMaxSampleCount);
-    } else if (GrGLCaps::kNone_MSFBOType != fMSFBOType) {
-		glGetIntegerv(GL_MAX_SAMPLES, &fMaxSampleCount);
     }
 
     this->initConfigRenderableTable(ctxInfo);
@@ -342,7 +324,7 @@ void GrGLCaps::initStencilFormats(const GrGLContextInfo& ctxInfo) {
     static const StencilFormat
                   // internal Format      stencil bits      total bits        packed?
         gS8    = {GL_STENCIL_INDEX8,   8,                8,                false},
-        gS16   = {GL_STENCIL_INDEX16,  16,               16,               false},
+        //gS16   = {GL_STENCIL_INDEX16_OES,  16,               16,               false},
         gD24S8 = {GL_DEPTH24_STENCIL8, 8,                32,               true },
         gS4    = {GL_STENCIL_INDEX4,   4,                4,                false},
         gDS    = {GL_DEPTH_STENCIL,    kUnknownBitCount, kUnknownBitCount, true };
@@ -353,7 +335,7 @@ void GrGLCaps::initStencilFormats(const GrGLContextInfo& ctxInfo) {
         // require FBO support we can expect these are legal formats and don't
         // check. These also all support the unsized GL_STENCIL_INDEX.
         fStencilFormats.push_back() = gS8;
-        fStencilFormats.push_back() = gS16;
+        //fStencilFormats.push_back() = gS16;
         if (supportsPackedDS) {
             fStencilFormats.push_back() = gD24S8;
         }

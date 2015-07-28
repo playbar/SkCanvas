@@ -107,7 +107,6 @@ const ScaledImageFragment* ImageFrameGenerator::decodeAndScale(const SkISize& sc
 {
     // Prevents concurrent decode or scale operations on the same image data.
     // Multiple LazyDecodingPixelRefs can call this method at the same time.
-    MutexLocker lock(m_decodeMutex);
     if (m_decodeFailedAndEmpty)
         return 0;
 
@@ -128,7 +127,6 @@ bool ImageFrameGenerator::decodeAndScale(const SkImageInfo& info, size_t index, 
     // This method is called to populate a discardable memory owned by Skia.
 
     // Prevents concurrent decode or scale operations on the same image data.
-    MutexLocker lock(m_decodeMutex);
 
     // This implementation does not support scaling so check the requested size.
     SkISize scaledSize = SkISize::Make(info.fWidth, info.fHeight);
@@ -281,7 +279,6 @@ PassOwnPtr<ScaledImageFragment> ImageFrameGenerator::decode(size_t index, ImageD
         return nullptr;
 
     {
-        MutexLocker lock(m_alphaMutex);
         if (index >= m_hasAlpha.size()) {
             const size_t oldSize = m_hasAlpha.size();
             m_hasAlpha.resize(index + 1);
@@ -316,7 +313,6 @@ PassOwnPtr<ScaledImageFragment> ImageFrameGenerator::decode(size_t index, ImageD
 
 bool ImageFrameGenerator::hasAlpha(size_t index)
 {
-    MutexLocker lock(m_alphaMutex);
     if (index < m_hasAlpha.size())
         return m_hasAlpha[index];
     return true;

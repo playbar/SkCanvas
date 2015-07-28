@@ -137,7 +137,6 @@
     <ClInclude Include="..\..\samplecode\OverView.h" />
     <ClInclude Include="..\..\samplecode\SampleApp.h" />
     <ClInclude Include="..\..\samplecode\SampleCode.h" />
-    <ClInclude Include="..\..\src\pipe\utils\SamplePipeControllers.h" />
     <ClInclude Include="..\..\samplecode\GMSampleView.h" />
     <ClInclude Include="..\..\samplecode\TransitionView.h" />
     <ClInclude Include="..\..\src\views\SkTagList.h" />
@@ -183,7 +182,6 @@
     <ClCompile Include="..\..\samplecode\TextBaseline .cpp" />
     <ClCompile Include="..\..\samplecode\Transform.cpp" />
     <ClCompile Include="..\..\samplecode\Translate.cpp" />
-    <ClCompile Include="..\..\src\pipe\utils\SamplePipeControllers.cpp" />
     <ClCompile Include="..\..\samplecode\QuadraticCurveTo.cpp" />
     <ClCompile Include="..\..\samplecode\SampleApp.cpp" />
     <ClCompile Include="..\..\samplecode\TransitionView.cpp" />

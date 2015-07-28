@@ -45,19 +45,11 @@ typedef const SkGlyph& (*SkMeasureCacheProc)(SkGlyphCache*, const char**);
 
 #define kBicubicFilterBitmap_Flag kHighQualityFilterBitmap_Flag
 
-/** \class SkPaint
-
-    The SkPaint class holds the style and color information about how to draw
-    geometries, text and bitmaps.
-*/
-
-class SK_API SkPaint {
+class SK_API SkPaint
+{
     enum {
-        // DEPRECATED -- use setFilterLevel instead
         kFilterBitmap_Flag    = 0x02, // temporary flag
-        // DEPRECATED -- use setFilterLevel instead
         kHighQualityFilterBitmap_Flag = 0x4000, // temporary flag
-        // DEPRECATED -- use setFilterLevel instead
         kHighQualityDownsampleBitmap_Flag = 0x8000, // temporary flag
     };
 public:
@@ -89,7 +81,8 @@ public:
                               subpixel glyphs, in which case TARGET_LCD or
                               TARGET_LCD_V is used>
     */
-    enum Hinting {
+    enum Hinting
+	{
         kNo_Hinting            = 0,
         kSlight_Hinting        = 1,
         kNormal_Hinting        = 2,     //!< this is the default
@@ -104,7 +97,8 @@ public:
 
     /** Specifies the bit values that are stored in the paint's flags.
     */
-    enum Flags {
+    enum Flags 
+	{
         kAntiAlias_Flag       = 0x01,   //!< mask to enable antialiasing
         kDither_Flag          = 0x04,   //!< mask to enable dithering
         kUnderlineText_Flag   = 0x08,   //!< mask to enable underline text

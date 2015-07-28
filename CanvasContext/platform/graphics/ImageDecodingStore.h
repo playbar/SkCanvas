@@ -38,7 +38,7 @@
 #include "wtf/HashSet.h"
 #include "wtf/OwnPtr.h"
 #include "wtf/PassOwnPtr.h"
-#include "wtf/ThreadingPrimitives.h"
+//#include "wtf/ThreadingPrimitives.h"
 #include "wtf/Vector.h"
 
 namespace WebCore {
@@ -84,6 +84,7 @@ class SharedBuffer;
 // All public methods can be used on any thread.
 
 class PLATFORM_EXPORT ImageDecodingStore {
+	WTF_MAKE_NONCOPYABLE(ImageDecodingStore);
 public:
     static PassOwnPtr<ImageDecodingStore> create() { return adoptPtr(new ImageDecodingStore); }
     ~ImageDecodingStore();
@@ -287,8 +288,7 @@ private:
     // This is used for eviction of old entries.
     // Head of this list is the least recently used cache entry.
     // Tail of this list is the most recently used cache entry.
-    DoublyLinkedList<CacheEntry> m_orderedCacheList;
-
+    
     // A lookup table for all image cache objects. Owns all image cache objects.
     typedef HashMap<ImageCacheKey, OwnPtr<ImageCacheEntry> > ImageCacheMap;
     ImageCacheMap m_imageCacheMap;
@@ -313,6 +313,9 @@ private:
     size_t m_heapMemoryUsageInBytes;
     size_t m_discardableMemoryUsageInBytes;
 
+	DoublyLinkedList<CacheEntry> m_orderedCacheList;
+
+
     // Protect concurrent access to these members:
     //   m_orderedCacheList
     //   m_imageCacheMap, m_decoderCacheMap and all CacheEntrys stored in it
@@ -323,7 +326,8 @@ private:
     //   m_discardableMemoryUsageInBytes
     // This mutex also protects calls to underlying skBitmap's
     // lockPixels()/unlockPixels() as they are not threadsafe.
-    Mutex m_mutex;
+    
+	//String m_image;
 };
 
 } // namespace WebCore

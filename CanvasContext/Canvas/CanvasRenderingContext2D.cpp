@@ -1,27 +1,11 @@
 #include "config.h"
 #include "CanvasRenderingContext2D.h"
 
-//#include "core/accessibility/AXObjectCache.h"
-//#include "core/css/CSSFontSelector.h"
 #include "css/BisonCSSParser.h"
-//#include "core/css/StylePropertySet.h"
-//#include "core/css/resolver/StyleResolver.h"
-//#include "core/dom/ExceptionCode.h"
-//#include "core/fetch/ImageResource.h"
-//#include "core/frame/ImageBitmap.h"
-//#include "core/html/HTMLCanvasElement.h"
-//#include "core/html/HTMLImageElement.h"
-//#include "core/html/HTMLMediaElement.h"
-//#include "core/html/HTMLVideoElement.h"
-//#include "core/html/ImageData.h"
-//#include "core/html/TextMetrics.h"
 #include "CanvasGradient.h"
 #include "CanvasPattern.h"
 #include "CanvasStyle.h"
 #include "Path2D.h"
-//#include "core/rendering/RenderImage.h"
-//#include "core/rendering/RenderLayer.h"
-//#include "core/rendering/RenderTheme.h"
 #include "platform/fonts/FontCache.h"
 #include "platform/geometry/FloatQuad.h"
 #include "platform/graphics/GraphicsContextStateSaver.h"
@@ -147,9 +131,6 @@ CanvasRenderingContext2D::State& CanvasRenderingContext2D::State::operator=(cons
     if (this == &other)
         return *this;
 
-    //if (m_realizedFont)
-    //    static_cast<CSSFontSelector*>(m_font.fontSelector())->unregisterForInvalidationCallbacks(this);
-
     m_unrealizedSaveCount = other.m_unrealizedSaveCount;
     m_unparsedStrokeColor = other.m_unparsedStrokeColor;
     m_unparsedFillColor = other.m_unparsedFillColor;
@@ -174,16 +155,11 @@ CanvasRenderingContext2D::State& CanvasRenderingContext2D::State::operator=(cons
     m_font = other.m_font;
     m_realizedFont = other.m_realizedFont;
 
-    //if (m_realizedFont)
-    //    static_cast<CSSFontSelector*>(m_font.fontSelector())->registerForInvalidationCallbacks(this);
-
     return *this;
 }
 
 CanvasRenderingContext2D::State::~State()
 {
-    //if (m_realizedFont)
-    //    static_cast<CSSFontSelector*>(m_font.fontSelector())->unregisterForInvalidationCallbacks(this);
 }
 
 void CanvasRenderingContext2D::State::fontsNeedUpdate(FontSelector* fontSelector)
@@ -1891,8 +1867,6 @@ const Font& CanvasRenderingContext2D::accessFont()
 {
     // This needs style to be up to date, but can't assert so because drawTextInternal
     // can invalidate style before this is called (e.g. drawingContext invalidates style).
-    //if (!state().m_realizedFont)
-    //    setFont(state().m_unparsedFont);
     return state().m_font;
 }
 

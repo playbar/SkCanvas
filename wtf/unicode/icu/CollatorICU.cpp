@@ -31,8 +31,7 @@
 
 #include "wtf/Assertions.h"
 #include "wtf/StringExtras.h"
-#include "wtf/Threading.h"
-#include "wtf/ThreadingPrimitives.h"
+//#include "wtf/ThreadingPrimitives.h"
 #include <stdlib.h>
 #include <string.h>
 #include <unicode/ucol.h>
@@ -45,11 +44,6 @@
 namespace WTF {
 
 static UCollator* cachedCollator;
-static Mutex& cachedCollatorMutex()
-{
-    AtomicallyInitializedStatic(Mutex&, mutex = *new Mutex);
-    return mutex;
-}
 
 Collator::Collator(const char* locale)
     : m_collator(0)
@@ -99,7 +93,6 @@ void Collator::createCollator() const
     UErrorCode status = U_ZERO_ERROR;
 
     {
-        Locker<Mutex> lock(cachedCollatorMutex());
         if (cachedCollator) {
             const char* cachedCollatorLocale = ucol_getLocaleByType(cachedCollator, ULOC_REQUESTED_LOCALE, &status);
             ASSERT(U_SUCCESS(status));
@@ -135,7 +128,6 @@ void Collator::createCollator() const
 void Collator::releaseCollator()
 {
     {
-        Locker<Mutex> lock(cachedCollatorMutex());
         if (cachedCollator)
             ucol_close(cachedCollator);
         cachedCollator = m_collator;

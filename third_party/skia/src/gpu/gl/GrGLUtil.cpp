@@ -8,7 +8,8 @@
 
 #include "GrGLUtil.h"
 #include "SkMatrix.h"
-#include "gl/glew.h"
+//#include "gl/glew.h"
+#include "eggl.h"
 #include "GrConfig.h"
 #include <stdio.h>
 
@@ -30,7 +31,7 @@ const char *get_error_string(uint32_t err) {
         return "Invalid Operation";
     case GL_OUT_OF_MEMORY:
         return "Out of Memory";
-    case GL_CONTEXT_LOST:
+    default:
         return "Context Lost";
     }
     return "Unknown";

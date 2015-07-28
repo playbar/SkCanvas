@@ -10,10 +10,6 @@
 #include "wtf/text/StringImpl.h"
 #include "wtf/text/StringView.h"
 
-#ifdef __OBJC__
-#include <objc/objc.h>
-#endif
-
 namespace WTF {
 
 class CString;
@@ -83,11 +79,9 @@ public:
 
     // Construct a string with latin1 data.
     String(const LChar* characters, unsigned length);
-    String(const char* characters, unsigned length);
 
     // Construct a string with latin1 data, from a null-terminated source.
     String(const LChar* characters);
-    String(const char* characters);
 
     // Construct a string referencing an existing StringImpl.
     String(StringImpl* impl) : m_impl(impl) { }
@@ -247,7 +241,6 @@ public:
 
     void append(const String&);
     void append(LChar);
-    void append(char c) { append(static_cast<LChar>(c)); };
     void append(UChar);
     void append(const LChar*, unsigned length);
     void append(const UChar*, unsigned length);
@@ -356,13 +349,10 @@ public:
     // the input data contains invalid UTF-8 sequences.
     static String fromUTF8(const LChar*, size_t);
     static String fromUTF8(const LChar*);
-    static String fromUTF8(const char* s, size_t length) { return fromUTF8(reinterpret_cast<const LChar*>(s), length); };
-    static String fromUTF8(const char* s) { return fromUTF8(reinterpret_cast<const LChar*>(s)); };
     static String fromUTF8(const CString&);
 
     // Tries to convert the passed in string to UTF-8, but will fall back to Latin-1 if the string is not valid UTF-8.
     static String fromUTF8WithLatin1Fallback(const LChar*, size_t);
-    static String fromUTF8WithLatin1Fallback(const char* s, size_t length) { return fromUTF8WithLatin1Fallback(reinterpret_cast<const LChar*>(s), length); };
 
     bool containsOnlyASCII() const;
     bool containsOnlyLatin1() const;
@@ -399,9 +389,7 @@ private:
 
 inline bool operator==(const String& a, const String& b) { return equal(a.impl(), b.impl()); }
 inline bool operator==(const String& a, const LChar* b) { return equal(a.impl(), b); }
-inline bool operator==(const String& a, const char* b) { return equal(a.impl(), reinterpret_cast<const LChar*>(b)); }
 inline bool operator==(const LChar* a, const String& b) { return equal(a, b.impl()); }
-inline bool operator==(const char* a, const String& b) { return equal(reinterpret_cast<const LChar*>(a), b.impl()); }
 template<size_t inlineCapacity>
 inline bool operator==(const Vector<char, inlineCapacity>& a, const String& b) { return equal(b.impl(), a.data(), a.size()); }
 template<size_t inlineCapacity>
@@ -410,9 +398,7 @@ inline bool operator==(const String& a, const Vector<char, inlineCapacity>& b) {
 
 inline bool operator!=(const String& a, const String& b) { return !equal(a.impl(), b.impl()); }
 inline bool operator!=(const String& a, const LChar* b) { return !equal(a.impl(), b); }
-inline bool operator!=(const String& a, const char* b) { return !equal(a.impl(), reinterpret_cast<const LChar*>(b)); }
 inline bool operator!=(const LChar* a, const String& b) { return !equal(a, b.impl()); }
-inline bool operator!=(const char* a, const String& b) { return !equal(reinterpret_cast<const LChar*>(a), b.impl()); }
 template<size_t inlineCapacity>
 inline bool operator!=(const Vector<char, inlineCapacity>& a, const String& b) { return !(a == b); }
 template<size_t inlineCapacity>
@@ -420,9 +406,7 @@ inline bool operator!=(const String& a, const Vector<char, inlineCapacity>& b) {
 
 inline bool equalIgnoringCase(const String& a, const String& b) { return equalIgnoringCase(a.impl(), b.impl()); }
 inline bool equalIgnoringCase(const String& a, const LChar* b) { return equalIgnoringCase(a.impl(), b); }
-inline bool equalIgnoringCase(const String& a, const char* b) { return equalIgnoringCase(a.impl(), reinterpret_cast<const LChar*>(b)); }
 inline bool equalIgnoringCase(const LChar* a, const String& b) { return equalIgnoringCase(a, b.impl()); }
-inline bool equalIgnoringCase(const char* a, const String& b) { return equalIgnoringCase(reinterpret_cast<const LChar*>(a), b.impl()); }
 
 inline bool equalPossiblyIgnoringCase(const String& a, const String& b, bool ignoreCase)
 {

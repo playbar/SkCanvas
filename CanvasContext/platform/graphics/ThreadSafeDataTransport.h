@@ -30,7 +30,7 @@
 #include "wtf/OwnPtr.h"
 #include "wtf/PassOwnPtr.h"
 #include "wtf/RefPtr.h"
-#include "wtf/ThreadingPrimitives.h"
+//#include "wtf/ThreadingPrimitives.h"
 #include "wtf/Vector.h"
 
 namespace WebCore {
@@ -60,8 +60,6 @@ public:
     bool hasNewData();
 
 private:
-    Mutex m_mutex;
-
     Vector<RefPtr<SharedBuffer> > m_newBufferQueue;
     RefPtr<SharedBuffer> m_readBuffer;
     bool m_allDataReceived;
