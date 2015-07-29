@@ -29,7 +29,7 @@
 #include "platform/geometry/IntSize.h"
 #include "platform/graphics/GeneratedImage.h"
 #include "platform/graphics/Gradient.h"
-#include "platform/graphics/Image.h"
+#include "platform/graphics/image.h"
 #include "platform/graphics/ImageBuffer.h"
 #include "wtf/RefPtr.h"
 

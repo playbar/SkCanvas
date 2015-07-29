@@ -27,7 +27,7 @@
 #include "css/CSSImageGeneratorValue.h"
 
 #include "css/CSSGradientValue.h"
-#include "platform/graphics/Image.h"
+#include "platform/graphics/image.h"
 
 namespace WebCore {
 

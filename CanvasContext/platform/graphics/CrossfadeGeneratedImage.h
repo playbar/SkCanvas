@@ -28,7 +28,7 @@
 
 #include "platform/geometry/IntSize.h"
 #include "platform/graphics/GeneratedImage.h"
-#include "platform/graphics/Image.h"
+#include "platform/graphics/image.h"
 #include "platform/graphics/ImageObserver.h"
 #include "wtf/RefPtr.h"
 

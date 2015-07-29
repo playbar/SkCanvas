@@ -24,7 +24,7 @@
  */
 
 #include "config.h"
-#include "platform/graphics/Color.h"
+#include "platform/graphics/color.h"
 
 #include "wtf/Assertions.h"
 #include "wtf/DecimalNumber.h"

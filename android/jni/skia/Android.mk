@@ -29,7 +29,7 @@ LOCAL_C_INCLUDES := $../../third_party/libpng \
 					$../../third_party/skia/src/opts \
 					$../../third_party/skia/src/sfnt \
 					$../../third_party/skia/include/images \
-					$../../third_party/freetype2/include/android/freeType2 \
+					$../../third_party/freetype2/include/android/freetype2 \
 					$../../third_party/freetype2/include/android \
 					$../../ \
 					$../../skia/config \

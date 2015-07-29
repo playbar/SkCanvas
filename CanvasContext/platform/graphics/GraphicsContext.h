@@ -6,7 +6,7 @@
 #include "platform/geometry/FloatRect.h"
 #include "platform/graphics/DashArray.h"
 #include "platform/graphics/DrawLooper.h"
-#include "platform/graphics/ImageBufferSurface.h"
+#include "platform/graphics/imagebuffersurface.h"
 #include "platform/graphics/ImageOrientation.h"
 #include "platform/graphics/GraphicsContextAnnotation.h"
 #include "platform/graphics/GraphicsContextState.h"

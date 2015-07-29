@@ -34,7 +34,7 @@
 #include "css/CSSProperty.h"
 #include "css/CSSPropertySourceData.h"
 #include "css/CSSSelector.h"
-#include "platform/graphics/Color.h"
+#include "platform/graphics/color.h"
 #include "wtf/OwnPtr.h"
 #include "wtf/Vector.h"
 

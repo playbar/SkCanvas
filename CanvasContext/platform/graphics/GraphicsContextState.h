@@ -31,7 +31,7 @@
 
 #include "platform/graphics/DrawLooper.h"
 #include "platform/graphics/Gradient.h"
-#include "platform/graphics/GraphicsTypes.h"
+#include "platform/graphics/graphicstypes.h"
 #include "platform/graphics/Path.h"
 #include "platform/graphics/Pattern.h"
 #include "platform/graphics/StrokeData.h"

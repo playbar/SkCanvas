@@ -29,9 +29,9 @@
 #define BitmapImage_h
 
 #include "platform/geometry/IntSize.h"
-#include "platform/graphics/Color.h"
+#include "platform/graphics/color.h"
 #include "platform/graphics/FrameData.h"
-#include "platform/graphics/Image.h"
+#include "platform/graphics/image.h"
 #include "platform/graphics/ImageOrientation.h"
 #include "platform/graphics/ImageSource.h"
 #include "wtf/Forward.h"

@@ -35,7 +35,7 @@
 #include "platform/geometry/FloatRect.h"
 #include "platform/geometry/FloatSize.h"
 #include "platform/graphics/GraphicsContext.h"
-#include "platform/graphics/Image.h"
+#include "platform/graphics/image.h"
 #include "platform/graphics/DeferredImageDecoder.h"
 #include "platform/graphics/skia/SkiaUtils.h"
 //#include "skia/ext/image_operations.h"
