@@ -95,7 +95,7 @@ bool SkGLContextHelper::init(int width, int height)
 		GL_RENDERBUFFER,
 		fDepthStencilBufferID);
 #ifdef __ANDROID__
-	LOGD("%s:dddddddddd",__func__);
+//	LOGD("%s:dddddddddd",__func__);
 #endif
 	glViewport(0, 0, width, height);
 	glClearStencil(0);

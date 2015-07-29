@@ -32,7 +32,7 @@
 #define LayoutRect_h
 
 #include "platform/geometry/IntRect.h"
-#include "platform/geometry/LayoutBoxExtent.h"
+//#include "platform/geometry/LayoutBoxExtent.h"
 #include "platform/geometry/LayoutPoint.h"
 #include "wtf/Vector.h"
 
@@ -92,18 +92,8 @@ public:
     void move(LayoutUnit dx, LayoutUnit dy) { m_location.move(dx, dy); }
 
     void expand(const LayoutSize& size) { m_size += size; }
-    void expand(const LayoutBoxExtent& box)
-    {
-        m_location.move(-box.left(), -box.top());
-        m_size.expand(box.left() + box.right(), box.top() + box.bottom());
-    }
     void expand(LayoutUnit dw, LayoutUnit dh) { m_size.expand(dw, dh); }
     void contract(const LayoutSize& size) { m_size -= size; }
-    void contract(const LayoutBoxExtent& box)
-    {
-        m_location.move(box.left(), box.top());
-        m_size.shrink(box.left() + box.right(), box.top() + box.bottom());
-    }
     void contract(LayoutUnit dw, LayoutUnit dh) { m_size.expand(-dw, -dh); }
 
     void shiftXEdgeTo(LayoutUnit edge)

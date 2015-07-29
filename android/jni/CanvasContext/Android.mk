@@ -28,6 +28,8 @@ LOCAL_C_INCLUDES :=  \
 					$../../third_party/skia/include/config \
 					$../../third_party/skia/include/utils \
 					$../../third_party/skia/include/effects \
+					$../../third_party/skia/include/pathops \
+					$../../third_party/skia/src/core \
 					$../../ \
 	
 
@@ -69,6 +71,11 @@ LOCAL_SRC_FILES += $(MY_FILES)
 
 #platform-geometry	
 MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/geometry/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
+
+#platform-graphics	
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/graphics/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
 

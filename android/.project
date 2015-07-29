@@ -2376,21 +2376,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/FloatPoint3D.h</locationURI>
 		</link>
 		<link>
-			<name>jni/CanvasContext/platform/geometry/FloatPolygon.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/FloatPolygon.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/geometry/FloatPolygon.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/FloatPolygon.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/geometry/FloatPolygonTest.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/FloatPolygonTest.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/CanvasContext/platform/geometry/FloatQuad.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/FloatQuad.cpp</locationURI>
@@ -2409,21 +2394,6 @@
 			<name>jni/CanvasContext/platform/geometry/FloatRect.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/FloatRect.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/geometry/FloatRoundedRect.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/FloatRoundedRect.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/geometry/FloatRoundedRect.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/FloatRoundedRect.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/geometry/FloatRoundedRectTest.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/FloatRoundedRectTest.cpp</locationURI>
 		</link>
 		<link>
 			<name>jni/CanvasContext/platform/geometry/FloatSize.cpp</name>
@@ -2466,16 +2436,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/IntSizeHash.h</locationURI>
 		</link>
 		<link>
-			<name>jni/CanvasContext/platform/geometry/LayoutBoxExtent.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/LayoutBoxExtent.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/geometry/LayoutBoxExtent.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/LayoutBoxExtent.h</locationURI>
-		</link>
-		<link>
 			<name>jni/CanvasContext/platform/geometry/LayoutPoint.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/LayoutPoint.h</locationURI>
@@ -2496,21 +2456,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/LayoutSize.h</locationURI>
 		</link>
 		<link>
-			<name>jni/CanvasContext/platform/geometry/Region.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/Region.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/geometry/Region.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/Region.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/geometry/RegionTest.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/RegionTest.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/CanvasContext/platform/geometry/RoundedRect.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/RoundedRect.cpp</locationURI>
@@ -2519,21 +2464,6 @@
 			<name>jni/CanvasContext/platform/geometry/RoundedRect.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/RoundedRect.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/geometry/RoundedRectTest.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/RoundedRectTest.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/geometry/TransformState.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/TransformState.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/geometry/TransformState.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/geometry/TransformState.h</locationURI>
 		</link>
 		<link>
 			<name>jni/CanvasContext/platform/graphics/BitmapImage.cpp</name>
