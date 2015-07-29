@@ -21,6 +21,7 @@
 #include "GrGpu.h"
 #include "GrTHashTable.h"
 #include "SkTypes.h"
+#include "eggl.h"
 
 #ifdef SK_DEVELOPER
 #define PROGRAM_CACHE_STATS
@@ -330,9 +331,9 @@ private:
             }
             if (!fBoundVertexArrayIDIsValid || arrayID != fBoundVertexArrayID)
 			{
-                glBindVertexArray(arrayID);
-                fBoundVertexArrayIDIsValid = true;
-                fBoundVertexArrayID = arrayID;
+					glBindVertexArray(arrayID);
+					fBoundVertexArrayIDIsValid = true;
+					fBoundVertexArrayID = arrayID;
             }
         }
 
