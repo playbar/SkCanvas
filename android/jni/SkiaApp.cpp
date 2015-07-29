@@ -41,7 +41,7 @@ SkiaApp * SkiaApp::getSkiaApp(){
 void SkiaApp::windowChanged(int width,int height){
 	LOGD("%s:(%d,%d)",__func__,width,height);
 
-	glViewport(0,0,width,height);
+	//glViewport(0,0,width,height);
 		fCurContext = GrContext::Create();
 			GrBackendRenderTargetDesc desc;
 			desc.fWidth = SkScalarRoundToInt(width);
@@ -81,12 +81,17 @@ void SkiaApp::resumeApp(){
 }
 
 void SkiaApp::mainLoop(){
+	//canvas = createCanvas();
 	if(canvas){
 		//LOGD("%s:",__func__);
-		canvas->drawColor(0xff00ff00,SkXfermode::Mode::kColor_Mode);
-		SkPaint paint;
-		paint.setColor(0xffff0000);
-		canvas->drawLine(0,0,500,800,paint);
+		//canvas->drawColor(0xff00ff00,SkXfermode::Mode::kColor_Mode);
+		//SkPaint paint;
+		//paint.setColor(0xffff0000);
+		//canvas->drawLine(0,0,100,300,paint);
+		canvas->drawColor( 0xff00ffff);
+		//glClearColor( 1.0f, 0.0f, 0.0f, 1.0f );
+		//glClear( GL_COLOR_BUFFER_BIT );
+		fCurContext->flush();
 	}
 }
 
