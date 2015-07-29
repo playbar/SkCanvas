@@ -15,8 +15,8 @@ LOCAL_SRC_FILES := gl_code.cpp \
 				   EGTLog.cpp \
 				   StdC.cpp
 				  
-
-LOCAL_STATIC_LIBRARIES := skia
+LOCAL_STATIC_LIBRARIES :=canvascontext
+LOCAL_STATIC_LIBRARIES += skia
 #LOCAL_STATIC_LIBRARIES := wtf
 #LOCAL_STATIC_LIBRARIES := harfbuzz
 #LOCAL_STATIC_LIBRARIES += icu

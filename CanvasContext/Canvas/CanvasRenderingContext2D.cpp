@@ -1320,13 +1320,13 @@ static void drawImageToContext(Image* image, GraphicsContext* context, const Flo
     context->drawImage(image, dest, src, op);
 }
 
-template<class T> void  CanvasRenderingContext2D::fullCanvasCompositedDrawImage(T* image, const FloatRect& dest, const FloatRect& src, CompositeOperator op)
-{
-    ASSERT(isFullCanvasCompositeMode(op));
-    drawingContext()->beginLayer(1, op);
-    drawImageToContext(image, drawingContext(), dest, src, CompositeSourceOver);
-    drawingContext()->endLayer();
-}
+//template<class T> void  CanvasRenderingContext2D::fullCanvasCompositedDrawImage(T* image, const FloatRect& dest, const FloatRect& src, CompositeOperator op)
+//{
+//    ASSERT(isFullCanvasCompositeMode(op));
+//    drawingContext()->beginLayer(1, op);
+//    drawImageToContext(image, drawingContext(), dest, src, CompositeSourceOver);
+//    drawingContext()->endLayer();
+//}
 
 static void fillPrimitive(const FloatRect& rect, GraphicsContext* context)
 {
