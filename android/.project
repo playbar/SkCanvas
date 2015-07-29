@@ -2896,11 +2896,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/BidiResolver.h</locationURI>
 		</link>
 		<link>
-			<name>jni/CanvasContext/platform/text/BidiResolverTest.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/BidiResolverTest.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/CanvasContext/platform/text/BidiRunList.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/BidiRunList.h</locationURI>
@@ -2911,144 +2906,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/BidiTestHarness.h</locationURI>
 		</link>
 		<link>
-			<name>jni/CanvasContext/platform/text/BidiTextRun.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/BidiTextRun.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/BidiTextRun.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/BidiTextRun.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/DateTimeFormat.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/DateTimeFormat.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/DateTimeFormat.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/DateTimeFormat.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/DateTimeFormatTest.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/DateTimeFormatTest.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/DecodeEscapeSequences.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/DecodeEscapeSequences.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/LineEnding.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/LineEnding.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/LineEnding.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/LineEnding.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/LocaleICU.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/LocaleICU.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/LocaleICU.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/LocaleICU.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/LocaleMac.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/LocaleMac.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/LocaleMac.mm</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/LocaleMac.mm</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/LocaleToScriptMapping.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/LocaleToScriptMapping.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/LocaleToScriptMapping.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/LocaleToScriptMapping.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/LocaleWin.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/LocaleWin.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/LocaleWin.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/LocaleWin.h</locationURI>
-		</link>
-		<link>
 			<name>jni/CanvasContext/platform/text/NonCJKGlyphOrientation.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/NonCJKGlyphOrientation.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/ParserUtilities.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/ParserUtilities.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/PlatformLocale.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/PlatformLocale.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/PlatformLocale.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/PlatformLocale.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/QuotedPrintable.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/QuotedPrintable.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/QuotedPrintable.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/QuotedPrintable.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/SegmentedString.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/SegmentedString.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/SegmentedString.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/SegmentedString.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/SegmentedStringTest.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/SegmentedStringTest.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/StringTruncator.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/StringTruncator.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/StringTruncator.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/StringTruncator.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/SuffixTree.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/SuffixTree.h</locationURI>
 		</link>
 		<link>
 			<name>jni/CanvasContext/platform/text/SurrogatePairAwareTextIterator.cpp</name>
@@ -3059,16 +2919,6 @@
 			<name>jni/CanvasContext/platform/text/SurrogatePairAwareTextIterator.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/SurrogatePairAwareTextIterator.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/TextBoundaries.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/TextBoundaries.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/TextBoundaries.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/TextBoundaries.h</locationURI>
 		</link>
 		<link>
 			<name>jni/CanvasContext/platform/text/TextBreakIterator.cpp</name>
@@ -3116,16 +2966,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/TextDirection.h</locationURI>
 		</link>
 		<link>
-			<name>jni/CanvasContext/platform/text/TextEncodingDetector.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/TextEncodingDetector.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/TextEncodingDetector.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/TextEncodingDetector.h</locationURI>
-		</link>
-		<link>
 			<name>jni/CanvasContext/platform/text/TextPath.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/TextPath.h</locationURI>
@@ -3146,44 +2986,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/TextRunIterator.h</locationURI>
 		</link>
 		<link>
-			<name>jni/CanvasContext/platform/text/TextStream.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/TextStream.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/TextStream.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/TextStream.h</locationURI>
-		</link>
-		<link>
 			<name>jni/CanvasContext/platform/text/UnicodeBidi.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/UnicodeBidi.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/UnicodeRange.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/UnicodeRange.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/UnicodeRange.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/UnicodeRange.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/UnicodeUtilities.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/UnicodeUtilities.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/UnicodeUtilities.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/UnicodeUtilities.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/text/UnicodeUtilitiesTest.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/text/UnicodeUtilitiesTest.cpp</locationURI>
 		</link>
 		<link>
 			<name>jni/CanvasContext/platform/text/WritingMode.h</name>

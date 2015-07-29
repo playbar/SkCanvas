@@ -45,19 +45,19 @@ MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
 
 ##css		
-#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/css/*.cpp)
-#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-#LOCAL_SRC_FILES += $(MY_FILES)	
-#
-##css/resolver		
-#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/css/resolver/*.cpp)
-#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-#LOCAL_SRC_FILES += $(MY_FILES)	
-#
-##dom	
-#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/dom/*.cpp)
-#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
-#LOCAL_SRC_FILES += $(MY_FILES)	
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/css/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
+
+#css/resolver		
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/css/resolver/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
+
+#dom	
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/dom/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
 
 #platform	
 MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/*.cpp)
@@ -91,6 +91,16 @@ LOCAL_SRC_FILES += $(MY_FILES)
 
 #platform-text
 MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/text/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
+
+#platform-transforms
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/transforms/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
+
+#style
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/style/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
 
