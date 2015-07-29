@@ -7,7 +7,9 @@
 */
 #include "gl/SkGLContextHelper.h"
 #include "GrGLUtil.h"
+#ifdef __ANROID__
 #include "EGTLog.h"
+#endif 
 #define LOG_TAG "SkGLContextHelper"
 SkGLContextHelper::SkGLContextHelper()
 	: fFBO(0)
@@ -92,7 +94,9 @@ bool SkGLContextHelper::init(int width, int height)
 		GL_STENCIL_ATTACHMENT,
 		GL_RENDERBUFFER,
 		fDepthStencilBufferID);
+#ifdef __ANDROID__
 	LOGD("%s:dddddddddd",__func__);
+#endif
 	glViewport(0, 0, width, height);
 	glClearStencil(0);
 	glClear(GL_STENCIL_BUFFER_BIT);
