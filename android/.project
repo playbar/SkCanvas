@@ -2536,11 +2536,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/DeferredImageDecoder.h</locationURI>
 		</link>
 		<link>
-			<name>jni/CanvasContext/platform/graphics/DeferredImageDecoderTest.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/DeferredImageDecoderTest.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/CanvasContext/platform/graphics/DiscardablePixelRef.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/DiscardablePixelRef.cpp</locationURI>
@@ -2656,29 +2651,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/GraphicsContextStateSaver.h</locationURI>
 		</link>
 		<link>
-			<name>jni/CanvasContext/platform/graphics/GraphicsLayer.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/GraphicsLayer.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/graphics/GraphicsLayer.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/GraphicsLayer.h</locationURI>
-		</link>
-		<link>
 			<name>jni/CanvasContext/platform/graphics/GraphicsLayerClient.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/GraphicsLayerClient.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/graphics/GraphicsLayerDebugInfo.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/GraphicsLayerDebugInfo.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/graphics/GraphicsLayerDebugInfo.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/GraphicsLayerDebugInfo.h</locationURI>
 		</link>
 		<link>
 			<name>jni/CanvasContext/platform/graphics/GraphicsLayerFactory.h</name>
@@ -2726,11 +2701,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/ImageDecodingStore.h</locationURI>
 		</link>
 		<link>
-			<name>jni/CanvasContext/platform/graphics/ImageDecodingStoreTest.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/ImageDecodingStoreTest.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/CanvasContext/platform/graphics/ImageFrameGenerator.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/ImageFrameGenerator.cpp</locationURI>
@@ -2739,11 +2709,6 @@
 			<name>jni/CanvasContext/platform/graphics/ImageFrameGenerator.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/ImageFrameGenerator.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/graphics/ImageFrameGeneratorTest.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/ImageFrameGeneratorTest.cpp</locationURI>
 		</link>
 		<link>
 			<name>jni/CanvasContext/platform/graphics/ImageObserver.cpp</name>
@@ -2784,16 +2749,6 @@
 			<name>jni/CanvasContext/platform/graphics/LazyDecodingPixelRef.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/LazyDecodingPixelRef.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/graphics/OpaqueRectTrackingContentLayerDelegate.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/OpaqueRectTrackingContentLayerDelegate.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/graphics/OpaqueRectTrackingContentLayerDelegate.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/OpaqueRectTrackingContentLayerDelegate.h</locationURI>
 		</link>
 		<link>
 			<name>jni/CanvasContext/platform/graphics/Path.cpp</name>
@@ -2854,11 +2809,6 @@
 			<name>jni/CanvasContext/platform/graphics/ThreadSafeDataTransport.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/ThreadSafeDataTransport.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/graphics/ThreadSafeDataTransportTest.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/ThreadSafeDataTransportTest.cpp</locationURI>
 		</link>
 		<link>
 			<name>jni/CanvasContext/platform/graphics/UnacceleratedImageBufferSurface.cpp</name>
@@ -8384,16 +8334,6 @@
 			<name>jni/CanvasContext/platform/fonts/win/SkiaFontWin.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/fonts/win/SkiaFontWin.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/graphics/skia/GaneshUtils.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/skia/GaneshUtils.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/platform/graphics/skia/GaneshUtils.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/platform/graphics/skia/GaneshUtils.h</locationURI>
 		</link>
 		<link>
 			<name>jni/CanvasContext/platform/graphics/skia/NativeImageSkia.cpp</name>

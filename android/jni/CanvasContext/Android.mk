@@ -79,6 +79,20 @@ MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/graphics/*.
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
 
+#platform-graphics-skia	
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/graphics/skia/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
+
+#platform-image-decoders
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/image-decoders/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
+
+#platform-text
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/text/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
 
 #LOCAL_LDLIBS := $(MY_LIBRARY)
 
