@@ -10,6 +10,8 @@ public class JniShell {
 	static {
         System.loadLibrary("runtimecanvas");
     }
+	
+	public native static void setFilesDir(String fileDir);
 	public native static void initApp(int width,int height);
 	public native static void pauseApp();
 	public native static void resumeApp();

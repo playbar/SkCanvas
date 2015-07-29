@@ -1016,6 +1016,7 @@ void SampleWindow::draw(SkCanvas* canvas) {
     }
 	else
 	{
+		
         SkSize tile = this->tileSize();
 
         for (float y = 0; y < height(); y += tile.height())

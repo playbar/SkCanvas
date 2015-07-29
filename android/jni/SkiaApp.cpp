@@ -12,9 +12,17 @@
 #include "SkRefCnt.h"
 #include "SkGpuDevice.h"
 #include "EGTLog.h"
+#include "SkStream.h"
+#include "SkImageDecoder.h"
+#include "SkBitmap.h"
+#include <string>
 #define LOG_TAG "SkiaApp"
 namespace egret {
+
+#define IMG_NAME "egret_icon.png"
+
 SkiaApp * SkiaApp::_instance = NULL;
+std::string SkiaApp::filesDir;
 SkiaApp::SkiaApp():
 		fCurContext(NULL),
 		fCurRenderTarget(NULL){
@@ -59,6 +67,30 @@ void SkiaApp::windowChanged(int width,int height){
 
 }
 
+void SkiaApp::setFilesDir(const std::string &filesDir){
+
+	SkiaApp::filesDir = filesDir+"/";
+	LOGD("%s:filesDir = %s",__func__,SkiaApp::filesDir.c_str());
+}
+
+bool SkiaApp::createBitmap(const std::string &src){
+	LOGD("%s:src = %s",__func__,src.c_str());
+	SkFILEStream stream(src.c_str());
+	//SkImageDecoder::DecodeFile(src, &bitmap, SkBitmap::kARGB_8888_Config, SkImageDecoder::kDecodePixels_Mode);
+
+	SkImageDecoder *coder =CreatePNGImageDecoder();
+	delete coder;
+	coder = NULL;
+	coder = SkImageDecoder::Factory(&stream);
+	if(!coder){
+		LOGE("%s:coder is null",__func__);
+		return false;
+	}
+	bool ret = coder->decode(&stream, &bitmap, SkBitmap::kARGB_8888_Config,SkImageDecoder::kDecodePixels_Mode);
+	LOGD("%s:ret = %d",__func__,ret);
+	return ret;
+}
+
 SkCanvas* SkiaApp::createCanvas()
 {
 	LOGD("%s:fCurContext=%d, fCurRenderTarget=%d",__func__,fCurContext, fCurRenderTarget);
@@ -69,6 +101,7 @@ SkCanvas* SkiaApp::createCanvas()
 
 void SkiaApp::initApp(int width , int height){
 	windowChanged(width,height);
+	createBitmap(filesDir+IMG_NAME);
 	canvas = createCanvas();
 }
 
@@ -82,11 +115,13 @@ void SkiaApp::resumeApp(){
 
 void SkiaApp::mainLoop(){
 	if(canvas){
+
 		//LOGD("%s:",__func__);
-		canvas->drawColor(0xff00ff00,SkXfermode::Mode::kColor_Mode);
-		SkPaint paint;
-		paint.setColor(0xffff0000);
-		canvas->drawLine(0,0,500,800,paint);
+		canvas->drawColor(0xff00ff00);
+//		if(!bitmap.isNull()){
+//			canvas->drawBitmap(bitmap,0,0,NULL);
+//		}
+		fCurContext->flush();
 	}
 }
 

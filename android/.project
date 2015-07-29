@@ -4721,6 +4721,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/include/gpu/gl/wglew.h</locationURI>
 		</link>
 		<link>
+			<name>jni/skia/include/utils/android/ashmem.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/include/utils/android/ashmem.h</locationURI>
+		</link>
+		<link>
 			<name>jni/skia/include/utils/ios/SkStream_NSData.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/include/utils/ios/SkStream_NSData.h</locationURI>

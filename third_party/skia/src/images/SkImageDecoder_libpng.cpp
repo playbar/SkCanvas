@@ -19,6 +19,10 @@
 #include "SkTemplates.h"
 #include "SkUtils.h"
 #include "transform_scanline.h"
+
+#include "EGTLog.h"
+#define LOG_TAG "SkImageDecoder_libpng"
+
 extern "C" {
 #include "png.h"
 }
@@ -88,10 +92,10 @@ public:
     }
 
 protected:
-#ifdef SK_BUILD_FOR_ANDROID
-    virtual bool onBuildTileIndex(SkStreamRewindable *stream, int *width, int *height) SK_OVERRIDE;
-    virtual bool onDecodeSubset(SkBitmap* bitmap, const SkIRect& region) SK_OVERRIDE;
-#endif
+//#ifdef SK_BUILD_FOR_ANDROID
+//    virtual bool onBuildTileIndex(SkStreamRewindable *stream, int *width, int *height) SK_OVERRIDE;
+//    virtual bool onDecodeSubset(SkBitmap* bitmap, const SkIRect& region) SK_OVERRIDE;
+//#endif
     virtual bool onDecode(SkStream* stream, SkBitmap* bm, Mode) SK_OVERRIDE;
 
 private:
@@ -153,6 +157,7 @@ static int sk_read_user_chunk(png_structp png_ptr, png_unknown_chunkp chunk) {
 
 static void sk_error_fn(png_structp png_ptr, png_const_charp msg) {
     SkDEBUGF(("------ png error %s\n", msg));
+	LOGE("------ png error: %s", msg);
     longjmp(png_jmpbuf(png_ptr), 1);
 }
 
@@ -235,6 +240,7 @@ bool SkPNGImageDecoder::onDecodeInit(SkStream* sk_stream, png_structp *png_ptrp,
         NULL, sk_error_fn, user_warning_fn);
     //   png_voidp user_error_ptr, user_error_fn, user_warning_fn);
     if (png_ptr == NULL) {
+		LOGE("SkPNGImageDecoder::onDecodeInit png_ptr == null");
         return false;
     }
 
@@ -244,6 +250,7 @@ bool SkPNGImageDecoder::onDecodeInit(SkStream* sk_stream, png_structp *png_ptrp,
     png_infop info_ptr = png_create_info_struct(png_ptr);
     if (info_ptr == NULL) {
         png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
+		LOGE("SkPNGImageDecoder::onDecodeInit : info_ptr == null");
         return false;
     }
     *info_ptrp = info_ptr;
@@ -254,6 +261,7 @@ bool SkPNGImageDecoder::onDecodeInit(SkStream* sk_stream, png_structp *png_ptrp,
     */
     if (setjmp(png_jmpbuf(png_ptr))) {
         png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
+		LOGE("SkPNGImageDecoder::onDecodeInit setjmp false");
         return false;
     }
 
@@ -305,12 +313,14 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
     png_infop info_ptr;
 
     if (!onDecodeInit(sk_stream, &png_ptr, &info_ptr)) {
+		LOGE("SkPNGImageDecoder::onDecode onDecodeInit false");
         return false;
     }
 
     PNGAutoClean autoClean(png_ptr, info_ptr);
 
     if (setjmp(png_jmpbuf(png_ptr))) {
+		LOGE("SkPNGImageDecoder::onDecode setjmp false");
         return false;
     }
 
@@ -324,7 +334,8 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
     SkPMColor           theTranspColor = 0; // 0 tells us not to try to match
 
     if (!this->getBitmapConfig(png_ptr, info_ptr, &config, &hasAlpha, &theTranspColor)) {
-        return false;
+		LOGE("SkPNGImageDecoder::onDecode getBitmapConfig false");
+		return false;
     }
 
     const int sampleSize = this->getSampleSize();
@@ -351,7 +362,8 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
 
     if (!this->allocPixelRef(decodedBitmap,
                              SkBitmap::kIndex8_Config == config ? colorTable : NULL)) {
-        return false;
+		LOGE("SkPNGImageDecoder::onDecode allocPixelRef false");
+		return false;
     }
 
     SkAutoLockPixels alp(*decodedBitmap);
@@ -407,6 +419,7 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
          */
         SkAutoLockColors ctLock(colorTable);
         if (!sampler.begin(decodedBitmap, sc, *this, ctLock.colors())) {
+			LOGE("SkPNGImageDecoder::onDecode ampler.begin false");
             return false;
         }
         const int height = decodedBitmap->height();
@@ -463,6 +476,7 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
                 // Fall through.
             case SkBitmap::kARGB_4444_Config:
                 // We have chosen not to support unpremul for these configs.
+				LOGE("SkPNGImageDecoder::onDecode SkBitmap::kARGB_4444_Config false");
                 return false;
             default: {
                 // Fall through to finish the decode. This config either
@@ -1107,6 +1121,8 @@ static inline int pack_palette(SkColorTable* ctable,
 
 class SkPNGImageEncoder : public SkImageEncoder {
 protected:
+	~SkPNGImageEncoder(){
+	}
     virtual bool onEncode(SkWStream* stream, const SkBitmap& bm, int quality) SK_OVERRIDE;
 private:
     bool doEncode(SkWStream* stream, const SkBitmap& bm,
@@ -1291,6 +1307,6 @@ SkImageEncoder* sk_libpng_efactory(SkImageEncoder::Type t) {
     return (SkImageEncoder::kPNG_Type == t) ? SkNEW(SkPNGImageEncoder) : NULL;
 }
 
-static SkImageDecoder_DecodeReg gDReg(sk_libpng_dfactory);
+SkImageDecoder_DecodeReg gDReg(sk_libpng_dfactory);
 static SkImageDecoder_FormatReg gFormatReg(get_format_png);
 static SkImageEncoder_EncodeReg gEReg(sk_libpng_efactory);
