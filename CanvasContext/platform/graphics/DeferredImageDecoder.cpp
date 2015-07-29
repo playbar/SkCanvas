@@ -28,7 +28,7 @@
 
 #include "platform/graphics/DecodingImageGenerator.h"
 #include "platform/graphics/ImageDecodingStore.h"
-#include "platform/graphics/LazyDecodingPixelRef.h"
+//#include "platform/graphics/LazyDecodingPixelRef.h"
 #include "third_party/skia/include/core/SkImageInfo.h"
 #include "wtf/PassOwnPtr.h"
 
@@ -303,7 +303,8 @@ SkBitmap DeferredImageDecoder::createLazyDecodingBitmap(size_t index)
     // Creates a lazily decoded SkPixelRef that references the entire image without scaling.
     SkBitmap bitmap;
     bitmap.setConfig(info);
-    bitmap.setPixelRef(new LazyDecodingPixelRef(info, m_frameGenerator, index))->unref();
+	ASSERT(false);
+    //bitmap.setPixelRef(new LazyDecodingPixelRef(info, m_frameGenerator, index))->unref();
 
     // Use the URI to identify this as a lazily decoded SkPixelRef of type LazyDecodingPixelRef.
     // FIXME: It would be more useful to give the actual image URI.

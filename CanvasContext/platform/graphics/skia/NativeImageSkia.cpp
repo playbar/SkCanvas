@@ -38,7 +38,7 @@
 #include "platform/graphics/Image.h"
 #include "platform/graphics/DeferredImageDecoder.h"
 #include "platform/graphics/skia/SkiaUtils.h"
-#include "skia/ext/image_operations.h"
+//#include "skia/ext/image_operations.h"
 #include "third_party/skia/include/core/SkMatrix.h"
 #include "third_party/skia/include/core/SkPaint.h"
 #include "third_party/skia/include/core/SkScalar.h"
@@ -289,21 +289,21 @@ SkBitmap NativeImageSkia::resizedBitmap(const SkISize& scaledImageSize, const Sk
 {
     ASSERT(!DeferredImageDecoder::isLazyDecoded(m_image));
 
-    if (!hasResizedBitmap(scaledImageSize, scaledImageSubset)) {
-        bool shouldCache = isDataComplete()
-            && shouldCacheResampling(scaledImageSize, scaledImageSubset);
+  //  if (!hasResizedBitmap(scaledImageSize, scaledImageSubset)) {
+  //      bool shouldCache = isDataComplete()
+  //          && shouldCacheResampling(scaledImageSize, scaledImageSubset);
 
-		ASSERT(false);
-        //PlatformInstrumentation::willResizeImage(shouldCache);
-        SkBitmap resizedImage = skia::ImageOperations::Resize(m_image, skia::ImageOperations::RESIZE_LANCZOS3, scaledImageSize.width(), scaledImageSize.height(), scaledImageSubset);
-        resizedImage.setImmutable();
-        //PlatformInstrumentation::didResizeImage();
+		//ASSERT(false);
+  //      //PlatformInstrumentation::willResizeImage(shouldCache);
+  //      SkBitmap resizedImage = skia::ImageOperations::Resize(m_image, skia::ImageOperations::RESIZE_LANCZOS3, scaledImageSize.width(), scaledImageSize.height(), scaledImageSubset);
+  //      resizedImage.setImmutable();
+  //      //PlatformInstrumentation::didResizeImage();
 
-        if (!shouldCache)
-            return resizedImage;
+  //      if (!shouldCache)
+  //          return resizedImage;
 
-        m_resizedImage = resizedImage;
-    }
+  //      m_resizedImage = resizedImage;
+  //  }
 
     SkBitmap resizedSubset;
     SkIRect resizedSubsetRect = m_cachedImageInfo.rectInSubset(scaledImageSubset);

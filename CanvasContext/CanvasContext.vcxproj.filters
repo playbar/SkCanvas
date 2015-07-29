@@ -177,9 +177,6 @@
     <ClCompile Include="platform\graphics\Color.cpp">
       <Filter>platform\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="platform\graphics\LazyDecodingPixelRef.cpp">
-      <Filter>platform\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="platform\graphics\ImageFrameGenerator.cpp">
       <Filter>platform\graphics</Filter>
     </ClCompile>
@@ -657,9 +654,6 @@
       <Filter>platform\font</Filter>
     </ClInclude>
     <ClInclude Include="platform\graphics\color.h">
-      <Filter>platform\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="platform\graphics\LazyDecodingPixelRef.h">
       <Filter>platform\graphics</Filter>
     </ClInclude>
     <ClInclude Include="platform\graphics\ImageFrameGenerator.h">

@@ -33,7 +33,7 @@
 #include "platform/graphics/ScaledImageFragment.h"
 #include "platform/image-decoders/ImageDecoder.h"
 
-#include "skia/ext/image_operations.h"
+//#include "skia/ext/image_operations.h"
 #include "third_party/skia/include/core/SkMallocPixelRef.h"
 
 namespace WebCore {
