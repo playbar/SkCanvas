@@ -111,11 +111,6 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>jni/CanvasContext/core</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>jni/CanvasContext/css</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -299,11 +294,6 @@
 			<name>jni/CanvasContext/blink/StylePropertyShorthand.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/blink/StylePropertyShorthand.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/core/dom</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>jni/CanvasContext/css/BasicShapeFunctions.cpp</name>
@@ -2014,11 +2004,6 @@
 			<name>jni/CanvasContext/bindings/v8/npruntime_priv.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/bindings/v8/npruntime_priv.h</locationURI>
-		</link>
-		<link>
-			<name>jni/CanvasContext/core/dom/ExceptionCode.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/core/dom/ExceptionCode.h</locationURI>
 		</link>
 		<link>
 			<name>jni/CanvasContext/css/resolver/ElementStyleResources.cpp</name>

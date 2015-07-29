@@ -42,6 +42,37 @@ MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/Canvas/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
 
+##css		
+#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/css/*.cpp)
+#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+#LOCAL_SRC_FILES += $(MY_FILES)	
+#
+##css/resolver		
+#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/css/resolver/*.cpp)
+#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+#LOCAL_SRC_FILES += $(MY_FILES)	
+#
+##dom	
+#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/dom/*.cpp)
+#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+#LOCAL_SRC_FILES += $(MY_FILES)	
+
+#platform	
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
+
+#platform-font	
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/font/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
+
+#platform-geometry	
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/geometry/*.cpp)
+MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+LOCAL_SRC_FILES += $(MY_FILES)	
+
+
 #LOCAL_LDLIBS := $(MY_LIBRARY)
 
 include $(BUILD_STATIC_LIBRARY)
