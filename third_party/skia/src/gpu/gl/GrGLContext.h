@@ -44,7 +44,6 @@ public:
     bool initialize();
 
     uint32_t version() const { return fGLVersion; }
-    GrGLSLGeneration glslGeneration() const { return fGLSLGeneration; }
     /** Is this a mesa-based driver. Does not mean it is the osmesa software rasterizer. */
     bool isMesa() const { return fIsMesa; }
     /** Are we running inside Chromium (using the command buffer)? We make some different tradeoffs
@@ -63,7 +62,6 @@ private:
 
 	bool					bBindingInUse;
     uint32_t             fGLVersion;
-    GrGLSLGeneration        fGLSLGeneration;
     bool                    fIsMesa;
     bool                    fIsChromium;
     SkAutoTUnref<GrGLCaps>  fGLCaps;

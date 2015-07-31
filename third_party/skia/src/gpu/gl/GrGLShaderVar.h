@@ -257,8 +257,7 @@ public:
             out->append("layout(origin_upper_left) ");
         }
         if (this->getTypeModifier() != kNone_TypeModifier) {
-           out->append(TypeModifierString(this->getTypeModifier(),
-                                          ctxInfo.glslGeneration()));
+           out->append(TypeModifierString(this->getTypeModifier()));
            out->append(" ");
         }
         out->append(PrecisionString(fPrecision));
@@ -316,7 +315,7 @@ public:
     }
 
 private:
-    static const char* TypeModifierString(TypeModifier t, GrGLSLGeneration gen) {
+    static const char* TypeModifierString(TypeModifier t) {
         switch (t) {
             case kNone_TypeModifier:
                 return "";

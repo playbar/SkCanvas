@@ -11,7 +11,6 @@
 GrGLContextInfo& GrGLContextInfo::operator= (const GrGLContextInfo& ctxInfo)
 {
     fGLVersion = ctxInfo.fGLVersion;
-    fGLSLGeneration = ctxInfo.fGLSLGeneration;
     fIsMesa = ctxInfo.fIsMesa;
     fIsChromium = ctxInfo.fIsChromium;
     *fGLCaps = *ctxInfo.fGLCaps.get();
@@ -47,7 +46,6 @@ void GrGLContextInfo::reset()
 {
 	bBindingInUse = false;
     fGLVersion = GL_VER(0, 0);
-    fGLSLGeneration = static_cast<GrGLSLGeneration>(0);
     fIsMesa = false;
     fIsChromium = false;
     fGLCaps->reset();

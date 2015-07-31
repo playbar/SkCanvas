@@ -37,7 +37,6 @@ public:
 
     const GrGLContextInfo& ctxInfo() const { return fGLContext.info(); }
     uint32_t glVersion() const { return fGLContext.info().version(); }
-    GrGLSLGeneration glslGeneration() const { return fGLContext.info().glslGeneration(); }
 
     // Used by GrGLProgram and GrGLTexGenProgramEffects to configure OpenGL state.
     void bindTexture(int unitIdx, const GrTextureParams& params, GrGLTexture* texture);

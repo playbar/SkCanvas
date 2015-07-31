@@ -21,25 +21,6 @@ class GrGLShaderVar;
 // Limited set of GLSL versions we build shaders for. Caller should round
 // down the GLSL version to one of these enums.
 
-enum GrGLSLGeneration 
-{
-    /**
-     * Desktop GLSL 1.10 and ES2 shading language (based on desktop GLSL 1.20)
-     */
-    k110_GrGLSLGeneration,
-    /**
-     * Desktop GLSL 1.30
-     */
-    k130_GrGLSLGeneration,
-    /**
-     * Desktop GLSL 1.40
-     */
-    k140_GrGLSLGeneration,
-    /**
-     * Desktop GLSL 1.50
-     */
-    k150_GrGLSLGeneration,
-};
 
 /**
  * Gets the most recent GLSL Generation compatible with the OpenGL context.

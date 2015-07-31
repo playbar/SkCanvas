@@ -180,11 +180,6 @@ void GrGLCaps::init(const GrGLContextInfo& ctxInfo)
 	fDualSourceBlendingSupport = true; 
 	fShaderDerivativeSupport = true;
 
-        // we don't support GL_ARB_geometry_shader4, just GL 3.2+ GS
-        fGeometryShaderSupport = ctxInfo.version() >= GL_VER(3,2) &&
-                                 ctxInfo.glslGeneration() >= k150_GrGLSLGeneration;
-
-
     if (GrGLCaps::kES_IMG_MsToTexture_MSFBOType == fMSFBOType) {
 		glGetIntegerv(GL_MAX_SAMPLES_IMG, &fMaxSampleCount);
     }
