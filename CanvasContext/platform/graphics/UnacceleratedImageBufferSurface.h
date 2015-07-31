@@ -31,7 +31,7 @@
 #ifndef UnacceleratedImageBufferSurface_h
 #define UnacceleratedImageBufferSurface_h
 
-#include "platform/graphics/ImageBufferSurface.h"
+#include "platform/graphics/imagebuffersurface.h"
 #include "wtf/OwnPtr.h"
 
 namespace WebCore {
