@@ -42,9 +42,7 @@ public:
      * bound OpenGL context accessible by the GLinterface.
      */
     bool initialize();
-    bool isInitialized() const;
 
-    GrGLBinding binding() const { return fBindingInUse; }
     uint32_t version() const { return fGLVersion; }
     GrGLSLGeneration glslGeneration() const { return fGLSLGeneration; }
     /** Is this a mesa-based driver. Does not mean it is the osmesa software rasterizer. */
@@ -63,7 +61,6 @@ public:
 
 private:
 
-    GrGLBinding             fBindingInUse;
 	bool					bBindingInUse;
     uint32_t             fGLVersion;
     GrGLSLGeneration        fGLSLGeneration;
@@ -101,7 +98,6 @@ public:
      * bound OpenGL context accessible by the GLinterface.
      */
     bool initialize();
-    bool isInitialized() const { return fInfo.isInitialized(); }
 
     const GrGLContextInfo& info() const { return fInfo; }
     GrGLContextInfo& info() { return fInfo; }

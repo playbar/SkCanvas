@@ -92,11 +92,6 @@ GrGLCaps& GrGLCaps::operator = (const GrGLCaps& caps) {
 void GrGLCaps::init(const GrGLContextInfo& ctxInfo)
 {
     this->reset();
-    if (!ctxInfo.isInitialized()) {
-        return;
-    }
-
-    GrGLBinding binding = ctxInfo.binding();
     uint32_t version = ctxInfo.version();
 
     /**************************************************************************
@@ -125,7 +120,6 @@ void GrGLCaps::init(const GrGLContextInfo& ctxInfo)
 	// ES 2 only guarantees RGBA/uchar + one other format/type combo for
     // ReadPixels. The other format has to checked at run-time since it
     // can change based on which render target is bound
-    fTwoFormatLimit = kES_GrGLBinding == binding;
 
 	fFragCoordsConventionSupport = true;
     // Known issue on at least some Intel platforms:
@@ -168,8 +162,6 @@ void GrGLCaps::init(const GrGLContextInfo& ctxInfo)
 	fBufferLockSupport = true;
 	fNPOTTextureTileSupport = true;
 	fMipMapSupport = true;
-
-	fHWAALineSupport = (kDesktop_GrGLBinding == binding);
 
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &fMaxTextureSize);
 	glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &fMaxRenderTargetSize);
@@ -296,17 +288,13 @@ bool GrGLCaps::readPixelsSupported( GLenum format,
 void GrGLCaps::initFSAASupport(const GrGLContextInfo& ctxInfo) 
 {
     fMSFBOType = kNone_MSFBOType;
-    if (kDesktop_GrGLBinding != ctxInfo.binding())
 	{
         // We prefer the EXT/IMG extension over ES3 MSAA because we've observed
         // ES3 driver bugs on at least one device with a tiled GPU (N10).
 		fMSFBOType = kES_EXT_MsToTexture_MSFBOType;
 
     } 
-	else
-	{
-		fMSFBOType = GrGLCaps::kDesktop_ARB_MSFBOType;
-	}
+
 }
 
 namespace {

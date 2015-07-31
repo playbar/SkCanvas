@@ -9,22 +9,10 @@
 #include "GrGLShaderVar.h"
 #include "SkString.h"
 
-GrGLSLGeneration GrGetGLSLGeneration(GrGLBinding binding) 
-{
-    switch (binding) {
-        case kDesktop_GrGLBinding:
-			return k150_GrGLSLGeneration;
-        case kES_GrGLBinding:
-            // version 1.00 of ES GLSL based on ver 1.20 of desktop GLSL
-            return k110_GrGLSLGeneration;
-        default:
-            GrCrash("Unknown GL Binding");
-            return k110_GrGLSLGeneration; // suppress warning
-    }
-}
 
 const char* GrGetGLSLVersionDecl(const GrGLContextInfo& info) {
-	return "#version 150 compatibility\n";
+	return "";
+	//return "#version 150 compatibility\n";
 }
 
 namespace {

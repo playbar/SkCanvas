@@ -162,7 +162,7 @@ bool GrGpuGL::canWriteTexturePixels(const GrTexture* texture, GrPixelConfig srcC
     if (kIndex_8_GrPixelConfig == srcConfig || kIndex_8_GrPixelConfig == texture->config()) {
         return false;
     }
-    if (srcConfig != texture->config() && kES_GrGLBinding == this->glBinding()) {
+    if (srcConfig != texture->config() ) {
         // In general ES2 requires the internal format of the texture and the format of the src
         // pixels to match. However, It may or may not be possible to upload BGRA data to a RGBA
         // texture. It depends upon which extension added BGRA. The Apple extension allows it
@@ -504,7 +504,7 @@ bool GrGpuGL::uploadTexData(const GrGLTexture::Desc& desc,
 		desc.fConfig != kIndex_8_GrPixelConfig &&
 		this->glCaps().texStorageSupport();
 
-	if (useTexStorage && kDesktop_GrGLBinding == this->glBinding()) {
+	if (useTexStorage ) {
 		// 565 is not a sized internal format on desktop GL. So on desktop with
 		// 565 we always use an unsized internal format to let the system pick
 		// the best sized format to convert the 565 data to. Since TexStorage
@@ -693,7 +693,7 @@ bool GrGpuGL::createRenderTargetObjects(int width, int height,
             !desc->fMSColorRenderbufferID ||
             !this->configToGLFormats(desc->fConfig,
                                      // ES2 and ES3 require sized internal formats for rb storage.
-                                     kES_GrGLBinding == this->glBinding(),
+                                     true,
                                      &msColorFormat,
                                      NULL,
                                      NULL))
@@ -2157,9 +2157,7 @@ bool GrGpuGL::configToGLFormats(GrPixelConfig config,
             *internalFormat = GL_RGB;
             *externalFormat = GL_RGB;
             if (getSizedInternalFormat) {
-                if (this->glBinding() == kDesktop_GrGLBinding) {
-                    return false;
-                } else {
+             {
                     *internalFormat = GL_RGB565;
                 }
             } else {
@@ -2267,7 +2265,7 @@ inline bool can_copy_texsubimage(const GrSurface* dst,
     // Table 3.9 of the ES2 spec indicates the supported formats with CopyTexSubImage
     // and BGRA isn't in the spec. There doesn't appear to be any extension that adds it. Perhaps
     // many drivers would allow it to work, but ANGLE does not.
-    if (kES_GrGLBinding == gpu->glBinding() && gpu->glCaps().bgraIsInternalFormat() &&
+    if ( gpu->glCaps().bgraIsInternalFormat() &&
         (kBGRA_8888_GrPixelConfig == dst->config() || kBGRA_8888_GrPixelConfig == src->config())) {
         return false;
     }
@@ -2329,7 +2327,7 @@ inline GLuint bind_surface_as_fbo(
 
 void GrGpuGL::initCopySurfaceDstDesc(const GrSurface* src, GrTextureDesc* desc) {
     // Check for format issues with glCopyTexSubImage2D
-    if (kES_GrGLBinding == this->glBinding() && this->glCaps().bgraIsInternalFormat() &&
+    if ( this->glCaps().bgraIsInternalFormat() &&
         kBGRA_8888_GrPixelConfig == src->config()) {
         // glCopyTexSubImage2D doesn't work with this config. We'll want to make it a render target
         // in order to call glBlitFramebuffer or to copy to it by rendering.
