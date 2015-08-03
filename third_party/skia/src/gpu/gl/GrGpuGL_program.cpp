@@ -11,7 +11,7 @@
 #include "GrGLEffect.h"
 #include "SkRTConf.h"
 #include "SkTSearch.h"
-#include "EGTLog.h"
+//#include "EGTLog.h"
 #define LOG_TAG "GrGpuGL_program"
 
 #ifdef PROGRAM_CACHE_STATS

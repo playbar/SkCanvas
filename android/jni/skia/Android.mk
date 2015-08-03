@@ -19,8 +19,7 @@ LOCAL_LDLIBS    := -llog -lGLESv2 -ljnigraphics -lEGL -lz
 LOCAL_EXPORT_LDLIBS :=-lz
 
 				
-LOCAL_C_INCLUDES := $../../third_party/libpng \
-					$../../third_party/skia/include/core \
+LOCAL_C_INCLUDES := $../../third_party/skia/include/core \
 					$../../third_party/skia/src/core \
 					$../../third_party/skia/src/image \
 					$../../third_party/skia/include/utils \

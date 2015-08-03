@@ -10,7 +10,7 @@
 #ifndef SkTRegistry_DEFINED
 #define SkTRegistry_DEFINED
 
-#include <android/log.h>
+//#include <android/log.h>
 
 #include "SkTypes.h"
 
@@ -36,13 +36,13 @@ public:
             }
         }
 #endif
-        __android_log_print(ANDROID_LOG_ERROR,"SkTRegistry","fact");
+        //__android_log_print(ANDROID_LOG_ERROR,"SkTRegistry","fact");
         fChain = gHead;
         gHead  = this;
     }
 
     static const SkTRegistry* Head() {
-    	__android_log_print(ANDROID_LOG_ERROR,"SkTRegistry"," Head()");
+    	//__android_log_print(ANDROID_LOG_ERROR,"SkTRegistry"," Head()");
     	return gHead; }
 
     const SkTRegistry* next() const { return fChain; }

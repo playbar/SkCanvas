@@ -87,7 +87,7 @@ bool SkiaApp::createBitmap(const std::string &src){
 		return false;
 	}
 	bool ret = coder->decode(&stream, &bitmap, SkBitmap::kARGB_8888_Config,SkImageDecoder::kDecodePixels_Mode);
-	LOGD("%s:ret = %d",__func__,ret);
+	LOGD("%s:ret = %d,config=%d",__func__,ret,bitmap.getConfig());
 	return ret;
 }
 
@@ -126,6 +126,9 @@ void SkiaApp::mainLoop(){
 		paint.setStrokeWidth( 10);
 		canvas->drawColor( 0xff00ffff);
 		canvas->drawLine(0,0,100,100,paint);
+
+		SkPaint bitmappaint;
+		canvas->drawBitmap(bitmap,200,400,&bitmappaint);
 		//canvas->drawArc()
 		//canvas->drawColor( 0xff00ffff);
 		//glClearColor( 1.0f, 0.0f, 0.0f, 1.0f );

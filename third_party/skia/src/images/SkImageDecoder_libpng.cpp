@@ -20,7 +20,7 @@
 #include "SkUtils.h"
 #include "transform_scanline.h"
 
-#include "EGTLog.h"
+//#include "EGTLog.h"
 #define LOG_TAG "SkImageDecoder_libpng"
 
 extern "C" {
@@ -157,7 +157,7 @@ static int sk_read_user_chunk(png_structp png_ptr, png_unknown_chunkp chunk) {
 
 static void sk_error_fn(png_structp png_ptr, png_const_charp msg) {
     SkDEBUGF(("------ png error %s\n", msg));
-	LOGE("------ png error: %s", msg);
+	//LOGE("------ png error: %s", msg);
     longjmp(png_jmpbuf(png_ptr), 1);
 }
 
@@ -240,7 +240,7 @@ bool SkPNGImageDecoder::onDecodeInit(SkStream* sk_stream, png_structp *png_ptrp,
         NULL, sk_error_fn, user_warning_fn);
     //   png_voidp user_error_ptr, user_error_fn, user_warning_fn);
     if (png_ptr == NULL) {
-		LOGE("SkPNGImageDecoder::onDecodeInit png_ptr == null");
+		SkDebugf("SkPNGImageDecoder::onDecodeInit png_ptr == null");
         return false;
     }
 
@@ -250,7 +250,8 @@ bool SkPNGImageDecoder::onDecodeInit(SkStream* sk_stream, png_structp *png_ptrp,
     png_infop info_ptr = png_create_info_struct(png_ptr);
     if (info_ptr == NULL) {
         png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
-		LOGE("SkPNGImageDecoder::onDecodeInit : info_ptr == null");
+		//LOGE("SkPNGImageDecoder::onDecodeInit : info_ptr == null");
+		SkDebugf("SkPNGImageDecoder::onDecodeInit : info_ptr == null");
         return false;
     }
     *info_ptrp = info_ptr;
@@ -261,7 +262,7 @@ bool SkPNGImageDecoder::onDecodeInit(SkStream* sk_stream, png_structp *png_ptrp,
     */
     if (setjmp(png_jmpbuf(png_ptr))) {
         png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
-		LOGE("SkPNGImageDecoder::onDecodeInit setjmp false");
+		SkDebugf("SkPNGImageDecoder::onDecodeInit setjmp false");
         return false;
     }
 
@@ -313,14 +314,14 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
     png_infop info_ptr;
 
     if (!onDecodeInit(sk_stream, &png_ptr, &info_ptr)) {
-		LOGE("SkPNGImageDecoder::onDecode onDecodeInit false");
+		SkDebugf("SkPNGImageDecoder::onDecode onDecodeInit false");
         return false;
     }
 
     PNGAutoClean autoClean(png_ptr, info_ptr);
 
     if (setjmp(png_jmpbuf(png_ptr))) {
-		LOGE("SkPNGImageDecoder::onDecode setjmp false");
+		SkDebugf("SkPNGImageDecoder::onDecode setjmp false");
         return false;
     }
 
@@ -334,7 +335,7 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
     SkPMColor           theTranspColor = 0; // 0 tells us not to try to match
 
     if (!this->getBitmapConfig(png_ptr, info_ptr, &config, &hasAlpha, &theTranspColor)) {
-		LOGE("SkPNGImageDecoder::onDecode getBitmapConfig false");
+		SkDebugf("SkPNGImageDecoder::onDecode getBitmapConfig false");
 		return false;
     }
 
@@ -362,7 +363,7 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
 
     if (!this->allocPixelRef(decodedBitmap,
                              SkBitmap::kIndex8_Config == config ? colorTable : NULL)) {
-		LOGE("SkPNGImageDecoder::onDecode allocPixelRef false");
+		SkDebugf("SkPNGImageDecoder::onDecode allocPixelRef false");
 		return false;
     }
 
@@ -419,7 +420,7 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
          */
         SkAutoLockColors ctLock(colorTable);
         if (!sampler.begin(decodedBitmap, sc, *this, ctLock.colors())) {
-			LOGE("SkPNGImageDecoder::onDecode ampler.begin false");
+			SkDebugf("SkPNGImageDecoder::onDecode ampler.begin false");
             return false;
         }
         const int height = decodedBitmap->height();
@@ -476,7 +477,7 @@ bool SkPNGImageDecoder::onDecode(SkStream* sk_stream, SkBitmap* decodedBitmap,
                 // Fall through.
             case SkBitmap::kARGB_4444_Config:
                 // We have chosen not to support unpremul for these configs.
-				LOGE("SkPNGImageDecoder::onDecode SkBitmap::kARGB_4444_Config false");
+				SkDebugf("SkPNGImageDecoder::onDecode SkBitmap::kARGB_4444_Config false");
                 return false;
             default: {
                 // Fall through to finish the decode. This config either

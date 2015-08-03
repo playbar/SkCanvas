@@ -30,5 +30,7 @@ LOCAL_LDLIBS    := -llog -lGLESv2 -lEGL
 
 include $(BUILD_SHARED_LIBRARY)
 
+
 include $(call all-makefiles-under,$(LOCAL_PATH))
 
+$(call import-add-path,$(LOCAL_PATH))
