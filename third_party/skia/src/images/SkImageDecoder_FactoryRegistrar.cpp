@@ -17,10 +17,12 @@
 template SkImageDecoder_DecodeReg* SkImageDecoder_DecodeReg::gHead;
 
 SkImageDecoder* image_decoder_from_stream(SkStreamRewindable*);
-
+//#include "EGTLog.h"
+//#define LOG_TAG "SkImageDecoder"
 SkImageDecoder* image_decoder_from_stream(SkStreamRewindable* stream) {
     SkImageDecoder* codec = NULL;
     const SkImageDecoder_DecodeReg* curr = SkImageDecoder_DecodeReg::Head();
+   // LOGE("%s:curr=%d",__func__,curr);
     while (curr) {
         codec = curr->factory()(stream);
         // we rewind here, because we promise later when we call "decode", that
@@ -40,6 +42,7 @@ SkImageDecoder* image_decoder_from_stream(SkStreamRewindable* stream) {
         }
         curr = curr->next();
     }
+    SkDEBUGF(("SkImageDecoder_DecodeReg is null"));
     return NULL;
 }
 

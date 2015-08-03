@@ -10,6 +10,8 @@
 #ifndef SkTRegistry_DEFINED
 #define SkTRegistry_DEFINED
 
+//#include <android/log.h>
+
 #include "SkTypes.h"
 
 /** Template class that registers itself (in the constructor) into a linked-list
@@ -21,6 +23,7 @@ public:
     typedef T Factory;
 
     explicit SkTRegistry(T fact) : fFact(fact) {
+
 #ifdef SK_BUILD_FOR_ANDROID
         // work-around for double-initialization bug
         {
@@ -33,11 +36,14 @@ public:
             }
         }
 #endif
+        //__android_log_print(ANDROID_LOG_ERROR,"SkTRegistry","fact");
         fChain = gHead;
         gHead  = this;
     }
 
-    static const SkTRegistry* Head() { return gHead; }
+    static const SkTRegistry* Head() {
+    	//__android_log_print(ANDROID_LOG_ERROR,"SkTRegistry"," Head()");
+    	return gHead; }
 
     const SkTRegistry* next() const { return fChain; }
     const Factory& factory() const { return fFact; }

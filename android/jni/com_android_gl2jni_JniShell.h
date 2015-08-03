@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     com_android_gl2jni_JniShell
+ * Method:    setFilesDir
+ * Signature: (Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_android_gl2jni_JniShell_setFilesDir
+  (JNIEnv *, jclass, jstring);
+
+/*
+ * Class:     com_android_gl2jni_JniShell
  * Method:    initApp
  * Signature: (II)V
  */
