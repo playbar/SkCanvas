@@ -9,6 +9,7 @@ LOCAL_MODULE := skia
 
 LOCAL_CFLAGS += -DSK_BUILD_FOR_ANDROID_FRAMEWORK\
 				-D_ARGB_PIXEL_  \
+				-DSK_SUPPORT_GPU \
 				-fexceptions
 #				-fshort-wchar	
 #				-DGL_GLEXT_PROTOTYPES
