@@ -23,7 +23,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildArguments</key>
-					<value></value>
+					<value>-j8</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildCommand</key>
@@ -55,7 +55,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.useDefaultBuildCmd</key>
-					<value>true</value>
+					<value>false</value>
 				</dictionary>
 			</arguments>
 		</buildCommand>
@@ -9624,6 +9624,11 @@
 			<name>jni/skia/include/gpu/gl/wglew.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/include/gpu/gl/wglew.h</locationURI>
+		</link>
+		<link>
+			<name>jni/skia/include/utils/android/ashmem.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/third_party/skia/include/utils/android/ashmem.h</locationURI>
 		</link>
 		<link>
 			<name>jni/skia/include/utils/ios/SkStream_NSData.h</name>

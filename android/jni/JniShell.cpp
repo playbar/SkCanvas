@@ -34,7 +34,10 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_JniShell_initApp
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_android_gl2jni_JniShell_pauseApp
-  (JNIEnv * env, jclass obj){}
+  (JNIEnv * env, jclass obj){
+
+	DELETE_LOCAL_CLASS_REF();
+}
 
 /*
  * Class:     com_android_gl2jni_JniShell
@@ -42,7 +45,10 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_JniShell_pauseApp
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_android_gl2jni_JniShell_resumeApp
-  (JNIEnv * env, jclass obj){}
+  (JNIEnv * env, jclass obj){
+
+	DELETE_LOCAL_CLASS_REF();
+}
 
 /*
  * Class:     com_android_gl2jni_JniShell
@@ -54,6 +60,23 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_JniShell_mainLoop
 	if(SkiaApp::getSkiaApp()){
 		SkiaApp::getSkiaApp()->mainLoop();
 	}
+	DELETE_LOCAL_CLASS_REF();
+}
+
+
+/*
+ * Class:     com_android_gl2jni_JniShell
+ * Method:    setFilesDir
+ * Signature: (Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_android_gl2jni_JniShell_setFilesDir
+  (JNIEnv * env, jclass obj, jstring jstr){
+
+	const char * fileDir = env->GetStringUTFChars(jstr , NULL);
+	const std::string dir(fileDir);
+	SkiaApp::setFilesDir(dir);
+	env->ReleaseStringUTFChars(jstr,fileDir);
+	DELETE_LOCAL_CLASS_REF();
 }
 
 #ifdef __cplusplus

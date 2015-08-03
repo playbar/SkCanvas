@@ -17,11 +17,15 @@
 package com.android.gl2jni;
 
 import android.app.Activity;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 public class GL2JNIActivity extends Activity {
@@ -30,6 +34,8 @@ public class GL2JNIActivity extends Activity {
 
     @Override protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        movePng();
+        JniShell.setFilesDir(getFilesDir().getAbsolutePath());
         mView = new GL2JNIView(getApplication());
 	setContentView(mView);
     }
@@ -42,5 +48,35 @@ public class GL2JNIActivity extends Activity {
     @Override protected void onResume() {
         super.onResume();
         mView.onResume();
+    }
+    String imgName = "egret_icon.png";
+    boolean movePng(){
+    	AssetManager asmanager = this.getAssets();
+    	try {
+			InputStream is = asmanager.open(imgName);
+			FileOutputStream fout = openFileOutput(imgName, MODE_PRIVATE);
+			byte buffer[] = new byte[1024*10];
+			int size = 0;
+			while(true){
+				size = is.read(buffer,0,buffer.length);
+				if(size < 1){
+					break;
+				}
+				fout.write(buffer, 0, size);
+			}
+			fout.flush();
+			fout.close();
+			is.close();
+			
+			File file = new File(getFilesDir()+"/"+imgName);
+			
+			boolean isFileExists = file.exists();
+			is = null;
+			return isFileExists;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return false;
     }
 }

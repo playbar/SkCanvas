@@ -22,6 +22,8 @@ class ArcView : public SampleView
 public:
 	ArcView() 
 	{
+		int i = 0;
+		i++;
     }
 
 protected:
@@ -36,13 +38,29 @@ protected:
         return this->INHERITED::onQuery(evt);
     }
 
-    virtual void onDrawContent(SkCanvas* canvas)
+	void TestArc(SkCanvas *canvas)
 	{
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
 		ctx->beginPath();
 		ctx->setLineWidth(5);
 		ctx->arc(100, 75, 50, 0, 2 * M_PI, false);
 		ctx->stroke();
+	}
+
+	void TestLine(SkCanvas *canvas)
+	{
+		SkPaint paint;
+		paint.setColor(0xffff0000);
+		paint.setStrokeWidth(10);
+		canvas->drawLine(0, 0, 100, 100, paint);
+		//canvas->drawColor(0xff00ff00);
+		
+
+	}
+
+    virtual void onDrawContent(SkCanvas* canvas)
+	{
+		TestLine(canvas);
 	}
 
 private:

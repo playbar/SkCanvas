@@ -678,7 +678,7 @@ SampleWindow::SampleWindow(void* hwnd, int argc, char** argv, DeviceManager* dev
     }
 
 	fCurrIndex = fSamples.count() - 1;
-	fCurrIndex = 23;
+	fCurrIndex = 36;
     gSampleWindow = this;
 
 #ifdef  PIPE_FILE
@@ -1016,6 +1016,7 @@ void SampleWindow::draw(SkCanvas* canvas) {
     }
 	else
 	{
+		
         SkSize tile = this->tileSize();
 
         for (float y = 0; y < height(); y += tile.height())

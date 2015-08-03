@@ -8,16 +8,18 @@ LOCAL_ARM_MODE := arm
 LOCAL_MODULE := skia
 
 LOCAL_CFLAGS += -DSK_BUILD_FOR_ANDROID_FRAMEWORK\
+				-DSK_BUILD_FOR_ANDROID \
 				-D_ARGB_PIXEL_  \
 				-DSK_SUPPORT_GPU \
 				-fexceptions
 #				-fshort-wchar	
 #				-DGL_GLEXT_PROTOTYPES
 				
-LOCAL_LDLIBS    := -llog -lGLESv2 -ljnigraphics -lEGL
+LOCAL_LDLIBS    := -llog -lGLESv2 -ljnigraphics -lEGL -lz
+LOCAL_EXPORT_LDLIBS :=-lz
+
 				
-LOCAL_C_INCLUDES := $../../third_party/libpng \
-					$../../third_party/skia/include/core   \
+LOCAL_C_INCLUDES := $../../third_party/skia/include/core \
 					$../../third_party/skia/src/core \
 					$../../third_party/skia/src/image \
 					$../../third_party/skia/include/utils \
@@ -34,7 +36,11 @@ LOCAL_C_INCLUDES := $../../third_party/libpng \
 					$../../third_party/freetype2/include/android \
 					$../../ \
 					$../../skia/config \
-					$../../android/jni
+					$../../android/jni \
+#					$../../third_party\libpng \
+#					$../../../third_party/zlib \
+#					$../../../third_party/zlib/google \
+#					$../../../third_party/zlib/contrib/minizip
 					
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
 
@@ -135,10 +141,17 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/utils/SkBase64.cpp \
 					../../../third_party/skia/src/utils/SkRTConf.cpp\
 					../../../third_party/skia/src/utils/android/ashmem.cpp
 
+#png
+#MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/libpng/*.c)
+#MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
+#LOCAL_SRC_FILES += $(MY_FILES)	
+
+LOCAL_STATIC_LIBRARIES := png_static
 
 
 #LOCAL_LDLIBS := $(MY_LIBRARY)
 
 include $(BUILD_STATIC_LIBRARY)
-
+$(call import-add-path,$(LOCAL_PATH)/..)
+$(call import-module,../../android/jni/png/prebuilt/android)
 
