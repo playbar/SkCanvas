@@ -177,9 +177,6 @@
     <ClCompile Include="platform\graphics\Color.cpp">
       <Filter>platform\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="platform\graphics\LazyDecodingPixelRef.cpp">
-      <Filter>platform\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="platform\graphics\ImageFrameGenerator.cpp">
       <Filter>platform\graphics</Filter>
     </ClCompile>
@@ -522,6 +519,9 @@
     <ClCompile Include="blink\CSSTokenizer.cpp">
       <Filter>blink</Filter>
     </ClCompile>
+    <ClCompile Include="platform\geometry\FloatPoint3D.cpp">
+      <Filter>platform\geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Canvas\CanvasPathMethods.h">
@@ -654,9 +654,6 @@
       <Filter>platform\font</Filter>
     </ClInclude>
     <ClInclude Include="platform\graphics\color.h">
-      <Filter>platform\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="platform\graphics\LazyDecodingPixelRef.h">
       <Filter>platform\graphics</Filter>
     </ClInclude>
     <ClInclude Include="platform\graphics\ImageFrameGenerator.h">

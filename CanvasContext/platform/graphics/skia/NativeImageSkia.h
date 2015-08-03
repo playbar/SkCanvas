@@ -7,7 +7,7 @@
 #include "SkXfermode.h"
 #include "platform/PlatformExport.h"
 #include "platform/geometry/IntSize.h"
-#include "platform/graphics/GraphicsTypes.h"
+#include "platform/graphics/graphicstypes.h"
 #include "wtf/Forward.h"
 #include "wtf/PassRefPtr.h"
 #include "wtf/RefCounted.h"

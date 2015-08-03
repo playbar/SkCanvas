@@ -25,7 +25,7 @@
 #include "CSSPropertyNames.h"
 #include "CSSValueKeywords.h"
 #include "CSSValue.h"
-#include "platform/graphics/Color.h"
+#include "platform/graphics/color.h"
 #include "wtf/Forward.h"
 #include "wtf/MathExtras.h"
 #include "wtf/PassRefPtr.h"

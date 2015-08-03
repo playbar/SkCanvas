@@ -31,7 +31,7 @@
 
 #include "platform/PlatformExport.h"
 #include "platform/geometry/FloatPoint.h"
-#include "platform/graphics/GraphicsTypes.h"
+#include "platform/graphics/graphicstypes.h"
 #include "platform/transforms/AffineTransform.h"
 #include "wtf/PassRefPtr.h"
 #include "wtf/RefCounted.h"

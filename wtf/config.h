@@ -146,8 +146,6 @@
 #undef delete
 #include "wtf/FastMalloc.h"
 
-#include <ciso646>
-
 #endif
 
 #if COMPILER(MSVC)

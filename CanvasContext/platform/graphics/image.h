@@ -29,8 +29,8 @@
 
 #include "platform/PlatformExport.h"
 #include "platform/geometry/IntRect.h"
-#include "platform/graphics/Color.h"
-#include "platform/graphics/GraphicsTypes.h"
+#include "platform/graphics/color.h"
+#include "platform/graphics/graphicstypes.h"
 #include "platform/graphics/ImageOrientation.h"
 #include "platform/graphics/skia/NativeImageSkia.h"
 #include "SkXfermode.h"

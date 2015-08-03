@@ -32,6 +32,7 @@
 #include "hb-ot-layout-common-private.hh"
 
 #include "hb-font-private.hh"
+#include "hb-ot.h"
 
 
 namespace OT {

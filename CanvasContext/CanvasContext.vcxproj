@@ -112,6 +112,7 @@
     <ClCompile Include="platform\fonts\win\FontFallbackWin.cpp" />
     <ClCompile Include="platform\fonts\win\FontPlatformDataWin.cpp" />
     <ClCompile Include="platform\geometry\FloatPoint.cpp" />
+    <ClCompile Include="platform\geometry\FloatPoint3D.cpp" />
     <ClCompile Include="platform\geometry\FloatQuad.cpp" />
     <ClCompile Include="platform\geometry\FloatRect.cpp" />
     <ClCompile Include="platform\geometry\FloatSize.cpp" />
@@ -142,7 +143,6 @@
     <ClCompile Include="platform\graphics\ImageObserver.cpp" />
     <ClCompile Include="platform\graphics\ImageOrientation.cpp" />
     <ClCompile Include="platform\graphics\ImageSource.cpp" />
-    <ClCompile Include="platform\graphics\LazyDecodingPixelRef.cpp" />
     <ClCompile Include="platform\graphics\Path.cpp" />
     <ClCompile Include="platform\graphics\Pattern.cpp" />
     <ClCompile Include="platform\graphics\ScaledImageFragment.cpp" />
@@ -300,7 +300,6 @@
     <ClInclude Include="platform\graphics\ImageObserver.h" />
     <ClInclude Include="platform\graphics\ImageOrientation.h" />
     <ClInclude Include="platform\graphics\ImageSource.h" />
-    <ClInclude Include="platform\graphics\LazyDecodingPixelRef.h" />
     <ClInclude Include="platform\graphics\Path.h" />
     <ClInclude Include="platform\graphics\Pattern.h" />
     <ClInclude Include="platform\graphics\ScaledImageFragment.h" />

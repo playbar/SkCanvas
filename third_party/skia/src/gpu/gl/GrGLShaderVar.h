@@ -257,11 +257,10 @@ public:
             out->append("layout(origin_upper_left) ");
         }
         if (this->getTypeModifier() != kNone_TypeModifier) {
-           out->append(TypeModifierString(this->getTypeModifier(),
-                                          ctxInfo.glslGeneration()));
+           out->append(TypeModifierString(this->getTypeModifier()));
            out->append(" ");
         }
-        out->append(PrecisionString(fPrecision, ctxInfo.binding()));
+        out->append(PrecisionString(fPrecision));
         GrSLType effectiveType = this->getType();
         if (this->isArray()) {
             if (this->isUnsizedArray()) {
@@ -295,9 +294,10 @@ public:
                      fUseUniformFloatArrays ? "" : ".x");
     }
 
-    static const char* PrecisionString(Precision p, GrGLBinding binding) {
+    static const char* PrecisionString(Precision p ) {
         // Desktop GLSL has added precision qualifiers but they don't do anything.
-        if (kES_GrGLBinding == binding) {
+       
+		{
             switch (p) {
                 case kLow_Precision:
                     return "lowp ";
@@ -315,7 +315,7 @@ public:
     }
 
 private:
-    static const char* TypeModifierString(TypeModifier t, GrGLSLGeneration gen) {
+    static const char* TypeModifierString(TypeModifier t) {
         switch (t) {
             case kNone_TypeModifier:
                 return "";
@@ -324,15 +324,15 @@ private:
             case kInOut_TypeModifier:
                 return "inout";
             case kOut_TypeModifier:
-                return "out";
+                return "attribute";
             case kUniform_TypeModifier:
                 return "uniform";
             case kAttribute_TypeModifier:
-                return k110_GrGLSLGeneration == gen ? "attribute" : "in";
+                return "attribute";
             case kVaryingIn_TypeModifier:
-                return k110_GrGLSLGeneration == gen ? "varying" : "in";
+                return "varying";
             case kVaryingOut_TypeModifier:
-                return k110_GrGLSLGeneration == gen ? "varying" : "out";
+                return "varying";
             default:
                 GrCrash("Unknown shader variable type modifier.");
                 return ""; // suppress warning

@@ -32,6 +32,7 @@
 #include "hb-buffer-private.hh"
 #include "hb-ot-layout-gdef-table.hh"
 #include "hb-set-private.hh"
+#include "hb-ot.h"
 
 
 namespace OT {

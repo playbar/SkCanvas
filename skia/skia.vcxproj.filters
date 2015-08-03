@@ -11959,14 +11959,8 @@
     <Filter Include="ext">
       <UniqueIdentifier>{3EE5B703-384C-67C2-8DE0-73108365DC85}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ext\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ext">
       <UniqueIdentifier>{3EE5B703-384C-67C2-8DE0-73108365DC85}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ext\_excluded_files">
-      <UniqueIdentifier>{158E591E-B6EA-0C85-8F5A-18EAFA09B4CE}</UniqueIdentifier>
     </Filter>
     <Filter Include="..\third_party\png">
       <UniqueIdentifier>{375c3e04-7532-456f-8b13-e122e33bb5c8}</UniqueIdentifier>
@@ -13425,39 +13419,9 @@
     <ClInclude Include="..\third_party\skia\include\effects\SkMagnifierImageFilter.h">
       <Filter>..\third_party\skia\include\effects</Filter>
     </ClInclude>
-    <ClCompile Include="ext\lazy_pixel_ref.cc">
-      <Filter>ext</Filter>
-    </ClCompile>
-    <ClInclude Include="ext\lazy_pixel_ref.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClCompile Include="ext\opacity_draw_filter.cc">
-      <Filter>ext</Filter>
-    </ClCompile>
-    <ClInclude Include="ext\opacity_draw_filter.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClCompile Include="ext\paint_simplifier.cc">
-      <Filter>ext</Filter>
-    </ClCompile>
-    <ClInclude Include="ext\paint_simplifier.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\refptr.h">
-      <Filter>ext</Filter>
-    </ClInclude>
     <ClCompile Include="ext\SkMemory_new_handler.cpp">
       <Filter>ext</Filter>
     </ClCompile>
-    <ClInclude Include="ext\skia_trace_shim.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClCompile Include="ext\skia_utils_win.cc">
-      <Filter>ext</Filter>
-    </ClCompile>
-    <ClInclude Include="ext\skia_utils_win.h">
-      <Filter>ext</Filter>
-    </ClInclude>
     <ClInclude Include="..\third_party\skia\include\gpu\gl\SkNullGLContext.h">
       <Filter>..\third_party\skia\include\gpu\gl</Filter>
     </ClInclude>
@@ -14094,9 +14058,6 @@
     <ClCompile Include="..\third_party\skia\src\utils\SkParseColor.cpp">
       <Filter>..\third_party\skia\src\utils</Filter>
     </ClCompile>
-    <ClCompile Include="ext\convolver_SSE2.cc">
-      <Filter>ext</Filter>
-    </ClCompile>
     <ClCompile Include="ext\google_logging.cc">
       <Filter>ext</Filter>
     </ClCompile>
@@ -14105,12 +14066,6 @@
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\ports\SkDiscardableMemory_none.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
-    <ClCompile Include="ext\image_operations.cc">
-      <Filter>ext</Filter>
-    </ClCompile>
-    <ClCompile Include="ext\convolver.cc">
-      <Filter>ext</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\images\SkImageDecoder_libpng.cpp">
       <Filter>..\third_party\skia\src\images</Filter>
@@ -14219,17 +14174,8 @@
     <ClInclude Include="..\third_party\skia\src\core\SkOrderedReadBuffer.h">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClInclude>
-    <ClInclude Include="ext\convolver_SSE2.h">
-      <Filter>ext</Filter>
-    </ClInclude>
     <ClInclude Include="..\third_party\skia\src\core\SkScaledImageCache.h">
       <Filter>..\third_party\skia\src\core</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\image_operations.h">
-      <Filter>ext</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\convolver.h">
-      <Filter>ext</Filter>
     </ClInclude>
     <ClInclude Include="..\third_party\libpng\png.h">
       <Filter>..\third_party\png</Filter>

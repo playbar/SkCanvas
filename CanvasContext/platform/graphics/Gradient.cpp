@@ -29,7 +29,7 @@
 #include "platform/graphics/Gradient.h"
 
 #include "platform/geometry/FloatRect.h"
-#include "platform/graphics/Color.h"
+#include "platform/graphics/color.h"
 #include "platform/graphics/GraphicsContext.h"
 #include "platform/graphics/skia/SkiaUtils.h"
 #include "third_party/skia/include/core/SkColorShader.h"

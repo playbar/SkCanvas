@@ -7,7 +7,9 @@
 */
 #include "gl/SkGLContextHelper.h"
 #include "GrGLUtil.h"
+#ifdef __ANROID__
 #include "EGTLog.h"
+#endif 
 #define LOG_TAG "SkGLContextHelper"
 SkGLContextHelper::SkGLContextHelper()
 	: fFBO(0)
@@ -29,8 +31,6 @@ bool SkGLContextHelper::init(int width, int height)
 {
 	destroyGLContext();
 	createGLContext();
-	GrGLBinding bindingInUse = GrGLGetBindingInUse();
-
 	// clear any existing GL erorrs
 	GLenum error;
 	do {
@@ -41,13 +41,8 @@ bool SkGLContextHelper::init(int width, int height)
 	glBindFramebuffer(GL_FRAMEBUFFER, fFBO);
 	glGenRenderbuffers(1, &fColorBufferID);
 	glBindRenderbuffer(GL_RENDERBUFFER, fColorBufferID);
-	if (kES_GrGLBinding == bindingInUse)
+
 	{
-		glRenderbufferStorage(GL_RENDERBUFFER,
-			GL_RGBA,
-			width, height);
-	}
-	else {
 		glRenderbufferStorage(GL_RENDERBUFFER,
 			GL_RGBA,
 			width, height);
@@ -69,9 +64,7 @@ bool SkGLContextHelper::init(int width, int height)
 	{
 		// ES2 requires sized internal formats for RenderbufferStorage
 		// On Desktop we let the driver decide.
-		GLenum format = kES_GrGLBinding == bindingInUse ?
-		GL_DEPTH24_STENCIL8 :
-							GL_DEPTH_STENCIL;
+		GLenum format = GL_DEPTH_STENCIL;
 		glRenderbufferStorage(GL_RENDERBUFFER,
 			format,
 			width, height);
@@ -81,9 +74,7 @@ bool SkGLContextHelper::init(int width, int height)
 			fDepthStencilBufferID);
 	}
 	else {
-		GLenum format = kES_GrGLBinding == bindingInUse ?
-		GL_STENCIL_INDEX8 :
-						  GL_STENCIL_INDEX;
+		GLenum format =  GL_STENCIL_INDEX;
 		glRenderbufferStorage(GL_RENDERBUFFER,
 			format,
 			width, height);
@@ -92,7 +83,9 @@ bool SkGLContextHelper::init(int width, int height)
 		GL_STENCIL_ATTACHMENT,
 		GL_RENDERBUFFER,
 		fDepthStencilBufferID);
-	LOGD("%s:dddddddddd",__func__);
+#ifdef __ANDROID__
+//	LOGD("%s:dddddddddd",__func__);
+#endif
 	glViewport(0, 0, width, height);
 	glClearStencil(0);
 	glClear(GL_STENCIL_BUFFER_BIT);

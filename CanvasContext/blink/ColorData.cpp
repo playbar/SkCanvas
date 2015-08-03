@@ -1,5 +1,5 @@
 #include "config.h"
-#include "platform/graphics/Color.h"
+#include "platform/graphics/color.h"
 #include <string.h>
 
 namespace WebCore {

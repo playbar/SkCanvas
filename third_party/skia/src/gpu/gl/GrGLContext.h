@@ -42,11 +42,8 @@ public:
      * bound OpenGL context accessible by the GLinterface.
      */
     bool initialize();
-    bool isInitialized() const;
 
-    GrGLBinding binding() const { return fBindingInUse; }
     uint32_t version() const { return fGLVersion; }
-    GrGLSLGeneration glslGeneration() const { return fGLSLGeneration; }
     /** Is this a mesa-based driver. Does not mean it is the osmesa software rasterizer. */
     bool isMesa() const { return fIsMesa; }
     /** Are we running inside Chromium (using the command buffer)? We make some different tradeoffs
@@ -63,10 +60,8 @@ public:
 
 private:
 
-    GrGLBinding             fBindingInUse;
 	bool					bBindingInUse;
     uint32_t             fGLVersion;
-    GrGLSLGeneration        fGLSLGeneration;
     bool                    fIsMesa;
     bool                    fIsChromium;
     SkAutoTUnref<GrGLCaps>  fGLCaps;
@@ -101,7 +96,6 @@ public:
      * bound OpenGL context accessible by the GLinterface.
      */
     bool initialize();
-    bool isInitialized() const { return fInfo.isInitialized(); }
 
     const GrGLContextInfo& info() const { return fInfo; }
     GrGLContextInfo& info() { return fInfo; }

@@ -10,7 +10,8 @@ LOCAL_MODULE := skia
 LOCAL_CFLAGS += -DSK_BUILD_FOR_ANDROID_FRAMEWORK\
 				-DSK_BUILD_FOR_ANDROID \
 				-D_ARGB_PIXEL_  \
-				-fexceptions 
+				-DSK_SUPPORT_GPU \
+				-fexceptions
 #				-fshort-wchar	
 #				-DGL_GLEXT_PROTOTYPES
 				
@@ -18,7 +19,8 @@ LOCAL_LDLIBS    := -llog -lGLESv2 -ljnigraphics -lEGL -lz
 LOCAL_EXPORT_LDLIBS :=-lz
 
 				
-LOCAL_C_INCLUDES := $../../third_party/skia/include/core   \
+LOCAL_C_INCLUDES := $../../third_party/libpng \
+					$../../third_party/skia/include/core \
 					$../../third_party/skia/src/core \
 					$../../third_party/skia/src/image \
 					$../../third_party/skia/include/utils \
@@ -31,7 +33,7 @@ LOCAL_C_INCLUDES := $../../third_party/skia/include/core   \
 					$../../third_party/skia/src/opts \
 					$../../third_party/skia/src/sfnt \
 					$../../third_party/skia/include/images \
-					$../../third_party/freetype2/include/android/freeType2 \
+					$../../third_party/freetype2/include/android/freetype2 \
 					$../../third_party/freetype2/include/android \
 					$../../ \
 					$../../skia/config \

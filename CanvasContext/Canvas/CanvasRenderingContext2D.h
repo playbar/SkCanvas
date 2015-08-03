@@ -4,9 +4,9 @@
 #include "Canvas2DContextAttributes.h"
 #include "CanvasPathMethods.h"
 #include "platform/fonts/Font.h"
-#include "platform/graphics/Color.h"
+#include "platform/graphics/color.h"
 #include "platform/geometry/FloatSize.h"
-#include "platform/graphics/GraphicsTypes.h"
+#include "platform/graphics/graphicstypes.h"
 #include "platform/graphics/ImageBuffer.h"
 #include "platform/graphics/Path.h"
 #include "platform/transforms/AffineTransform.h"
@@ -285,7 +285,7 @@ private:
     void inflateStrokeRect(FloatRect&) const;
 
     template<class T> void fullCanvasCompositedFill(const T&);
-    template<class T> void fullCanvasCompositedDrawImage(T*, const FloatRect&, const FloatRect&, CompositeOperator);
+    //template<class T> void fullCanvasCompositedDrawImage(T*, const FloatRect&, const FloatRect&, CompositeOperator);
 
     bool focusRingCallIsValid(const Path&, Element*);
     void updateFocusRingAccessibility(const Path&, Element*);

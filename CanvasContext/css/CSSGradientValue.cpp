@@ -34,7 +34,7 @@
 #include "platform/geometry/IntSize.h"
 #include "platform/graphics/Gradient.h"
 #include "platform/graphics/GradientGeneratedImage.h"
-#include "platform/graphics/Image.h"
+#include "platform/graphics/image.h"
 #include "wtf/text/StringBuilder.h"
 #include "wtf/text/WTFString.h"
 

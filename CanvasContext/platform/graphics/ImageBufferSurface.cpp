@@ -30,7 +30,7 @@
 
 #include "config.h"
 
-#include "platform/graphics/ImageBufferSurface.h"
+#include "platform/graphics/imagebuffersurface.h"
 
 #include "third_party/skia/include/core/SkCanvas.h"
 #include "third_party/skia/include/core/SkDevice.h"
