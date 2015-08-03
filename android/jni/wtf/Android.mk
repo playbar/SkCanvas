@@ -15,19 +15,15 @@ LOCAL_CFLAGS += -DHAVE_OT \
 				-fexceptions
 				
 LOCAL_C_INCLUDES :=  \
-					$(JNI_H_INCLUDE)  \
-					$(MY_ANDROID_SOURCE)/frameworks/base/include \
-					$(MY_ANDROID_SOURCE)/system/core/include \
-					$(MY_ANDROID_SOURCE)/external/astl/include \
-					$(MY_ANDROID_SOURCE)/hardware/libhardware/include \
-					$(LOCAL_PATH)      \
 					$../../third_party/libpng \
 					$../../third_party/icu/source/common \
 					$../../third_party/icu/source/i18n \
 					$../../third_party/stlport \
 					$../../wtf/dtoa \
 					$../../wtf \
-					$../../ \		
+					$../../ \	
+						
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
 
 #dtoa
 LOCAL_SRC_FILES	+=  ../../../wtf/dtoa/bignum.cc \

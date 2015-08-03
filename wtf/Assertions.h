@@ -3,6 +3,7 @@
 
 #include "wtf/Compiler.h"
 #include "wtf/WTFExport.h"
+#include "config.h"
 #include "assert.h"
 
 #ifdef NDEBUG

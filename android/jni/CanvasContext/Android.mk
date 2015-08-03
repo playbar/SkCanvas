@@ -11,15 +11,12 @@ LOCAL_CFLAGS += -DHAVE_OT \
 				-DGL_GLEXT_PROTOTYPES \
 				-DHB_NO_UNICODE_FUNCS  \
 				-DHB_NO_MT \
-				-fshort-wchar	\
 				-fexceptions
 				
-LOCAL_C_INCLUDES :=  \
-					$(JNI_H_INCLUDE)  \
-					$(LOCAL_PATH)      \
-					$../../CanvasContext/blink \
+LOCAL_C_INCLUDES := $../../CanvasContext/blink \
 					$../../CanvasContext/css \
 					$../../CanvasContext/dom \
+					$../../CanvasContext/Canvas\
 					$../../CanvasContext \
 					$../../wtf/ \
 					$../../wtf/unicode/ \
@@ -30,8 +27,9 @@ LOCAL_C_INCLUDES :=  \
 					$../../third_party/skia/include/effects \
 					$../../third_party/skia/include/pathops \
 					$../../third_party/skia/src/core \
-					$../../ \
-	
+					$../../
+
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
 
 #blink				
 MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/blink/*.cpp)

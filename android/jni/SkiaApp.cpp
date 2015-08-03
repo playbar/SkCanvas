@@ -11,8 +11,12 @@
 #include <GLES2/gl2.h>
 #include "SkRefCnt.h"
 #include "SkGpuDevice.h"
+#include "CanvasRenderingContext2D.h"
 #include "EGTLog.h"
+using namespace WebCore;
+using namespace WTF;
 #define LOG_TAG "SkiaApp"
+
 namespace egret {
 SkiaApp * SkiaApp::_instance = NULL;
 SkiaApp::SkiaApp():
@@ -80,25 +84,32 @@ void SkiaApp::resumeApp(){
 
 }
 
+void TestArc(SkCanvas *canvas )
+{
+	PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create( canvas, NULL, false );
+
+}
+
 void SkiaApp::mainLoop(){
 	//canvas = createCanvas();
-	SkMatrix mat;
-	mat.setAll( 1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0 );
-	canvas->concat( mat );
-	if(canvas){
-		//LOGD("%s:",__func__);
-		//canvas->drawColor(0xff00ff00,SkXfermode::Mode::kColor_Mode);
-		SkPaint paint;
-		paint.setColor(0xffff0000);
-		paint.setStrokeWidth( 10);
-		canvas->drawColor( 0xff00ffff);
-		canvas->drawLine(0,0,100,100,paint);
-		//canvas->drawArc()
-		//canvas->drawColor( 0xff00ffff);
-		//glClearColor( 1.0f, 0.0f, 0.0f, 1.0f );
-		//glClear( GL_COLOR_BUFFER_BIT );
-		fCurContext->flush();
-	}
+
+//	SkMatrix mat;
+//	mat.setAll( 1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0 );
+//	canvas->concat( mat );
+//	if(canvas){
+//		//LOGD("%s:",__func__);
+//		//canvas->drawColor(0xff00ff00,SkXfermode::Mode::kColor_Mode);
+//		SkPaint paint;
+//		paint.setColor(0xffff0000);
+//		paint.setStrokeWidth( 10);
+//		canvas->drawColor( 0xff00ffff);
+//		canvas->drawLine(0,0,100,100,paint);
+//		//canvas->drawArc()
+//		//canvas->drawColor( 0xff00ffff);
+//		//glClearColor( 1.0f, 0.0f, 0.0f, 1.0f );
+//		//glClear( GL_COLOR_BUFFER_BIT );
+//		fCurContext->flush();
+//	}
 }
 
 } /* namespace egret */

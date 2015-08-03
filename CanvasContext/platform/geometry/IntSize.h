@@ -27,6 +27,7 @@
 #ifndef IntSize_h
 #define IntSize_h
 
+#include "config.h"
 #include "platform/PlatformExport.h"
 
 #if OS(MACOSX)

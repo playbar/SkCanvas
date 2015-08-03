@@ -15,14 +15,14 @@ LOCAL_SRC_FILES := gl_code.cpp \
 				   EGTLog.cpp \
 				   StdC.cpp
 				  
-LOCAL_STATIC_LIBRARIES :=canvascontext
-LOCAL_STATIC_LIBRARIES += skia
+
+LOCAL_STATIC_LIBRARIES := skia
+LOCAL_STATIC_LIBRARIES += canvascontext
 LOCAL_STATIC_LIBRARIES += wtf
 LOCAL_STATIC_LIBRARIES += harfbuzz
 LOCAL_STATIC_LIBRARIES += icu
 LOCAL_STATIC_LIBRARIES += stlport
 
-#LOCAL_STATIC_LIBRARIES += GGDom
 
 LOCAL_LDLIBS    := -llog -lGLESv2 -lEGL
 
