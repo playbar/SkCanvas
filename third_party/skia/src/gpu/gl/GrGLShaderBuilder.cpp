@@ -619,9 +619,11 @@ static bool attach_shader(const GrGLContext& glCtx,
     const GLchar* sourceStr = shaderSrc.c_str();
     GLint sourceLength = static_cast<GLint>(shaderSrc.size());
     glShaderSource(shaderId, 1, &sourceStr, &sourceLength);
+#ifdef _WIN32
 	FILE *pfile = fopen("c://shader.txt", "wb");
 	fwrite(sourceStr, sourceLength, 1, pfile);
 	fclose(pfile);
+#endif
     glCompileShader(shaderId);
 
     // Calling GetShaderiv in Chromium is quite expensive. Assume success in release builds.
