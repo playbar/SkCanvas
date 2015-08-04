@@ -225,7 +225,7 @@ hb_face_t* HarfBuzzFace::createFace()
 hb_font_t* HarfBuzzFace::createFont()
 {
     HarfBuzzFontData* hbFontData = new HarfBuzzFontData(m_glyphCacheForFaceCacheEntry);
-    m_platformData->setupPaint(&hbFontData->m_paint);
+    //m_platformData->setupPaint(&hbFontData->m_paint);
     hb_font_t* font = hb_font_create(m_face);
     hb_font_set_funcs(font, harfBuzzSkiaGetFontFuncs(), hbFontData, destroyHarfBuzzFontData);
     float size = m_platformData->size();

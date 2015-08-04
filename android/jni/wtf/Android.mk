@@ -11,7 +11,6 @@ LOCAL_CFLAGS += -DHAVE_OT \
 				-DGL_GLEXT_PROTOTYPES \
 				-DHB_NO_UNICODE_FUNCS  \
 				-DHB_NO_MT \
-				-fshort-wchar	\
 				-fexceptions
 				
 LOCAL_C_INCLUDES :=  \

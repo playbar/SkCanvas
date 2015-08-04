@@ -270,7 +270,6 @@ SkFontConfigInterfaceAndroid::SkFontConfigInterfaceAndroid(SkTDArray<FontFamily*
             } else if (familyRec->fPaintOptions != family->fFontFiles[j]->fPaintOptions) {
                 SkDebugf("Every font file within a family must have identical"
                          "language and variant attributes");
-                sk_throw();
             }
 
             // add this font to the current familyRec

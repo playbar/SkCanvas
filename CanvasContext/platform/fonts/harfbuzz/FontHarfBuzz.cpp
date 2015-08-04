@@ -67,7 +67,7 @@ static void paintGlyphs(GraphicsContext* gc, const SimpleFontData* font,
     if (textMode & TextModeFill) {
         SkPaint paint;
         gc->setupPaintForFilling(&paint);
-        font->platformData().setupPaint(&paint, gc);
+        //font->platformData().setupPaint(&paint, gc);
         gc->adjustTextRenderMode(&paint);
         paint.setTextEncoding(SkPaint::kGlyphID_TextEncoding);
 
@@ -78,7 +78,7 @@ static void paintGlyphs(GraphicsContext* gc, const SimpleFontData* font,
 
         SkPaint paint;
         gc->setupPaintForStroking(&paint);
-        font->platformData().setupPaint(&paint, gc);
+        //font->platformData().setupPaint(&paint, gc);
         gc->adjustTextRenderMode(&paint);
         paint.setTextEncoding(SkPaint::kGlyphID_TextEncoding);
 
@@ -103,8 +103,10 @@ void Font::drawGlyphs(GraphicsContext* gc, const SimpleFontData* font,
     SkAutoSTMalloc<32, SkPoint> storage(numGlyphs);
     SkPoint* pos = storage.get();
 
-    const OpenTypeVerticalData* verticalData = font->verticalData();
-    if (font->platformData().orientation() == Vertical && verticalData) {
+    //const OpenTypeVerticalData* verticalData = font->verticalData();
+    //if (font->platformData().orientation() == Vertical && verticalData)
+    if( true )
+    {
         AffineTransform savedMatrix = gc->getCTM();
         gc->concatCTM(AffineTransform(0, -1, 1, 0, point.x(), point.y()));
         gc->concatCTM(AffineTransform(1, 0, 0, 1, -point.x(), -point.y()));

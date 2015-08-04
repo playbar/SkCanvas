@@ -106,7 +106,7 @@ SkCanvas* SkiaApp::createCanvas()
 
 void SkiaApp::initApp(int width , int height){
 	windowChanged(width,height);
-	createBitmap(filesDir+IMG_NAME);
+	//createBitmap(filesDir+IMG_NAME);
 	canvas = createCanvas();
 }
 
@@ -131,18 +131,27 @@ void SkiaApp::DrawTest(SkCanvas *canvas )
 		paint.setStrokeWidth( 10);
 		canvas->drawColor( 0xff00ffff);
 		canvas->drawLine(0,0,100,100,paint);
+		canvas->drawText("test", 4, 200, 100, paint );
 		//canvas->drawArc()
 		//canvas->drawColor( 0xff00ffff);
 		//glClearColor( 1.0f, 0.0f, 0.0f, 1.0f );
 		//glClear( GL_COLOR_BUFFER_BIT );
-		fCurContext->flush();
+
 	}
 }
 
 void SkiaApp::TestArc(SkCanvas *canvas )
 {
-	//PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create( canvas, NULL, false );
-
+	PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create( canvas, NULL, false );
+	ctx->beginPath();
+	ctx->setLineWidth( 5);
+	ctx->setStrokeColor("#ff00ff");
+	//ctx->arc( 100, 75, 50, 0, 2 * M_PI, false );
+	ctx->moveTo( 100, 100);
+	ctx->bezierCurveTo( 20, 100, 200, 100, 200, 20);
+	//ctx->lineTo( 200, 100);
+	//ctx->rect( 50, 50, 150, 80);
+	ctx->fill();
 }
 
 void SkiaApp::TestDrawImage(SkCanvas *canvas )
@@ -171,7 +180,9 @@ void SkiaApp::TestDrawImage(SkCanvas *canvas )
 
 void SkiaApp::mainLoop(){
 	//canvas = createCanvas();
-	DrawTest( canvas );
+	canvas->drawColor(0xff000000);
+	TestArc( canvas );
+	fCurContext->flush();
 }
 
 } /* namespace egret */
