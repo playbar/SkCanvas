@@ -16,16 +16,18 @@ LOCAL_CFLAGS += -DHAVE_OT \
 LOCAL_C_INCLUDES := $../../CanvasContext/blink \
 					$../../CanvasContext/css \
 					$../../CanvasContext/dom \
-					$../../CanvasContext/Canvas\
+					$../../CanvasContext/Canvas \
 					$../../CanvasContext \
 					$../../wtf/ \
 					$../../wtf/unicode/ \
+					$../../third_party/harfbuzz-ng/src \
 					$../../third_party/icu/source/common \
 					$../../third_party/skia/include/core \
 					$../../third_party/skia/include/config \
 					$../../third_party/skia/include/utils \
 					$../../third_party/skia/include/effects \
 					$../../third_party/skia/include/pathops \
+					$../../third_party/skia/include/ports \
 					$../../third_party/skia/src/core \
 					$../../
 
@@ -63,9 +65,17 @@ MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
 
 #platform-font	
-MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/font/*.cpp)
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/fonts/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
+
+LOCAL_SRC_FILES	+=  ../../../CanvasContext/platform/fonts/skia/FontCacheSkia.cpp \
+					../../../CanvasContext/platform/fonts/skia/SimpleFontDataSkia.cpp \
+					../../../CanvasContext/platform/fonts/skia/GlyphPageTreeNodeSkia.cpp \
+					../../../CanvasContext/platform/fonts/harfbuzz/FontHarfBuzz.cpp \
+					../../../CanvasContext/platform/fonts/harfbuzz/HarfBuzzFace.cpp \
+					../../../CanvasContext/platform/fonts/harfbuzz/HarfBuzzFaceSkia.cpp \
+					../../../CanvasContext/platform/fonts/harfbuzz/HarfBuzzShaper.cpp \
 
 #platform-geometry	
 MY_FILES := $(wildcard $(LOCAL_PATH)/../../../CanvasContext/platform/geometry/*.cpp)

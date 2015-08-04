@@ -8,7 +8,6 @@ LOCAL_ARM_MODE := arm
 LOCAL_MODULE := icu
 
 LOCAL_CFLAGS += -DU_COMMON_IMPLEMENTATION \
-				-fshort-wchar	\
 				-fexceptions
 				
 LOCAL_C_INCLUDES :=  \
@@ -83,6 +82,7 @@ LOCAL_SRC_FILES	+=  ../../../third_party/icu/source/common/bmpset.cpp  \
 					../../../third_party/icu/source/common/servlk.cpp \
 					../../../third_party/icu/source/common/servls.cpp \
 					../../../third_party/icu/source/common/servnotf.cpp \
+					../../../third_party/icu/source/common/servlkf.cpp \
 					../../../third_party/icu/source/common/servrbf.cpp \
 					../../../third_party/icu/source/common/servslkf.cpp \
 					../../../third_party/icu/source/common/stringpiece.cpp \

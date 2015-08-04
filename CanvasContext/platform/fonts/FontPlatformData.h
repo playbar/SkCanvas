@@ -25,9 +25,6 @@
 // FIXME: This is temporary until all ports switch to using this file.
 #if OS(WIN)
 #include "platform/fonts/win/FontPlatformDataWin.h"
-#elif !OS(MACOSX)
-#include "platform/fonts/harfbuzz/FontPlatformDataHarfBuzz.h"
-
 #else
 
 #ifndef FontPlatformData_h
@@ -53,10 +50,10 @@ typedef const struct __CTFont* CTFontRef;
 #include "wtf/RefCounted.h"
 #include "wtf/RetainPtr.h"
 #include "wtf/text/StringImpl.h"
+#include "third_party/skia/include/core/SkTypeface.h"
 
 #if OS(MACOSX)
 #include "platform/fonts/mac/MemoryActivatedFont.h"
-#include "third_party/skia/include/core/SkTypeface.h"
 #endif
 
 #if OS(MACOSX)
@@ -94,7 +91,7 @@ public:
     FontPlatformData(CGFontRef, float size, bool syntheticBold, bool syntheticOblique, FontOrientation, FontWidthVariant);
 #endif
 
-    ~FontPlatformData();
+    ~FontPlatformData(){};
 
 #if OS(MACOSX)
     NSFont* font() const { return m_font; }
@@ -104,12 +101,13 @@ public:
 #if OS(MACOSX)
     CGFontRef cgFont() const { return m_cgFont.get(); }
     CTFontRef ctFont() const;
-    SkTypeface* typeface() const;
+
 
     bool roundsGlyphAdvances() const;
     bool allowsLigatures() const;
 #endif
 
+    SkTypeface* typeface() const {return m_typeface;};
     String fontFamilyName() const;
     bool isFixedPitch() const;
     float size() const { return m_size; }
@@ -168,9 +166,9 @@ public:
 #endif
 
 private:
-    bool platformIsEqual(const FontPlatformData&) const;
-    void platformDataInit(const FontPlatformData&);
-    const FontPlatformData& platformDataAssign(const FontPlatformData&);
+    bool platformIsEqual(const FontPlatformData&) const{return true;};
+    void platformDataInit(const FontPlatformData&){};
+    const FontPlatformData& platformDataAssign(const FontPlatformData& aa) { return aa;};
 #if OS(MACOSX)
     // Load various data about the font specified by |nsFont| with the size fontSize into the following output paramters:
     // Note: Callers should always take into account that for the Chromium port, |outNSFont| isn't necessarily the same
@@ -200,9 +198,10 @@ private:
 
     RefPtr<MemoryActivatedFont> m_inMemoryFont;
     RefPtr<HarfBuzzFace> m_harfBuzzFace;
-    mutable RefPtr<SkTypeface> m_typeface;
+
 #endif
 
+    SkTypeface * m_typeface;
     bool m_isColorBitmapFont;
     bool m_isCompositeFontReference;
 #if OS(MACOSX)

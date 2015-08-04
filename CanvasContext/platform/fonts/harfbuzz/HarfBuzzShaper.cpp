@@ -789,9 +789,9 @@ bool HarfBuzzShaper::shapeHarfBuzzRuns()
             return false;
 
         FontPlatformData* platformData = const_cast<FontPlatformData*>(&currentFontData->platformData());
-        HarfBuzzFace* face = platformData->harfBuzzFace();
-        if (!face)
-            return false;
+        //HarfBuzzFace* face = platformData->harfBuzzFace();
+        //if (!face)
+        //    return false;
 
         hb_buffer_set_script(harfBuzzBuffer.get(), currentRun->script());
         hb_buffer_set_direction(harfBuzzBuffer.get(), currentRun->rtl() ? HB_DIRECTION_RTL : HB_DIRECTION_LTR);
@@ -832,19 +832,19 @@ bool HarfBuzzShaper::shapeHarfBuzzRuns()
             hb_buffer_add_utf16(harfBuzzBuffer.get(), toUint16(m_normalizedBuffer.get() + currentRun->startIndex()), currentRun->numCharacters(), 0, currentRun->numCharacters());
         }
 
-        if (m_font->fontDescription().orientation() == Vertical)
-            face->setScriptForVerticalGlyphSubstitution(harfBuzzBuffer.get());
+        //if (m_font->fontDescription().orientation() == Vertical)
+        //    face->setScriptForVerticalGlyphSubstitution(harfBuzzBuffer.get());
 
-        HarfBuzzScopedPtr<hb_font_t> harfBuzzFont(face->createFont(), hb_font_destroy);
-
-        hb_shape(harfBuzzFont.get(), harfBuzzBuffer.get(), m_features.isEmpty() ? 0 : m_features.data(), m_features.size());
-        currentRun->applyShapeResult(harfBuzzBuffer.get());
-        setGlyphPositionsForHarfBuzzRun(currentRun, harfBuzzBuffer.get());
-
-        runCache.insert(key, new CachedShapingResults(harfBuzzBuffer.get(), m_font, props.direction));
-
-        harfBuzzBuffer.set(hb_buffer_create());
-        hb_buffer_set_unicode_funcs(harfBuzzBuffer.get(), hb_icu_get_unicode_funcs());
+//        HarfBuzzScopedPtr<hb_font_t> harfBuzzFont(face->createFont(), hb_font_destroy);
+//
+//        hb_shape(harfBuzzFont.get(), harfBuzzBuffer.get(), m_features.isEmpty() ? 0 : m_features.data(), m_features.size());
+//        currentRun->applyShapeResult(harfBuzzBuffer.get());
+//        setGlyphPositionsForHarfBuzzRun(currentRun, harfBuzzBuffer.get());
+//
+//        runCache.insert(key, new CachedShapingResults(harfBuzzBuffer.get(), m_font, props.direction));
+//
+//        harfBuzzBuffer.set(hb_buffer_create());
+//        hb_buffer_set_unicode_funcs(harfBuzzBuffer.get(), hb_icu_get_unicode_funcs());
     }
 
     return true;

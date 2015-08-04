@@ -7,7 +7,7 @@ LOCAL_ARM_MODE := arm
 
 LOCAL_MODULE := skia
 
-LOCAL_CFLAGS += -DSK_BUILD_FOR_ANDROID_FRAMEWORK\
+LOCAL_CFLAGS += \
 				-DSK_BUILD_FOR_ANDROID \
 				-D_ARGB_PIXEL_  \
 				-DSK_SUPPORT_GPU \
@@ -95,7 +95,8 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/images/SkImageDecoder.cpp \
 					
 #lazy
 LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/lazy/SkCachingPixelRef.cpp \
-					../../../third_party/skia/src/lazy/SkDiscardableMemoryPool.cpp \					
+					../../../third_party/skia/src/lazy/SkDiscardableMemoryPool.cpp \
+					../../../third_party/skia/src/lazy/SkDiscardablePixelRef.cpp \
 
 #opts 
 LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/opts/SkBitmapProcState_opts_none.cpp \
@@ -117,6 +118,9 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/ports/SkFontHost_none.cpp \
 					../../../third_party/skia/src/ports/SkOSFile_none.cpp \
 					../../../third_party/skia/src/ports/SkOSFile_stdio.cpp \
 					../../../third_party/skia/src/ports/SkFontHost_FreeType.cpp \
+					../../../third_party/skia/src/ports/SkFontHost_FreeType_common.cpp \
+					../../../third_party/skia/src/ports/SkFontHost_fontconfig.cpp \
+					../../../third_party/skia/src/ports/SkFontConfigInterface_android.cpp \
 					../../../third_party/skia/src/ports/SkTLS_none.cpp \
 					../../../third_party/skia/src/ports/SkGlobalInitialization_default.cpp
 

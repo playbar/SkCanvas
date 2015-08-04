@@ -58,7 +58,7 @@ void SimpleFontData::platformInit()
     SkPaint paint;
     SkPaint::FontMetrics metrics;
 
-    m_platformData.setupPaint(&paint);
+    //m_platformData.setupPaint(&paint);
     paint.getFontMetrics(&metrics);
     SkTypeface* face = paint.getTypeface();
     ASSERT(face);
@@ -100,16 +100,7 @@ void SimpleFontData::platformInit()
     } else {
         ascent = SkScalarRoundToInt(-metrics.fAscent);
         descent = SkScalarRoundToInt(metrics.fDescent);
-#if OS(LINUX) || OS(ANDROID)
-        // When subpixel positioning is enabled, if the descent is rounded down, the descent part
-        // of the glyph may be truncated when displayed in a 'overflow: hidden' container.
-        // To avoid that, borrow 1 unit from the ascent when possible.
-        // FIXME: This can be removed if sub-pixel ascent/descent is supported.
-        if (platformData().fontRenderStyle().useSubpixelPositioning && descent < SkScalarToFloat(metrics.fDescent) && ascent >= 1) {
-            ++descent;
-            --ascent;
-        }
-#endif
+
     }
 
     m_fontMetrics.setAscent(ascent);
@@ -193,13 +184,15 @@ void SimpleFontData::platformDestroy()
 
 PassRefPtr<SimpleFontData> SimpleFontData::platformCreateScaledFontData(const FontDescription& fontDescription, float scaleFactor) const
 {
-    const float scaledSize = lroundf(fontDescription.computedSize() * scaleFactor);
-    return SimpleFontData::create(FontPlatformData(m_platformData, scaledSize), isCustomFont() ? CustomFontData::create() : nullptr);
+    //const float scaledSize = lroundf(fontDescription.computedSize() * scaleFactor);
+    //return SimpleFontData::create(FontPlatformData(m_platformData, scaledSize), isCustomFont() ? CustomFontData::create() : nullptr);
+	RefPtr<SimpleFontData> simple;
+	return simple;
 }
 
 void SimpleFontData::determinePitch()
 {
-    m_treatAsFixedPitch = platformData().isFixedPitch();
+    //m_treatAsFixedPitch = platformData().isFixedPitch();
 }
 
 static inline void getSkiaBoundsForGlyph(SkPaint& paint, Glyph glyph, SkRect& bounds)
@@ -222,11 +215,11 @@ FloatRect SimpleFontData::platformBoundsForGlyph(Glyph glyph) const
     if (!m_platformData.size())
         return FloatRect();
 
-    SkPaint paint;
-    m_platformData.setupPaint(&paint);
+    //SkPaint paint;
+    //m_platformData.setupPaint(&paint);
 
     SkRect bounds;
-    getSkiaBoundsForGlyph(paint, glyph, bounds);
+    //getSkiaBoundsForGlyph(paint, glyph, bounds);
     return FloatRect(bounds);
 }
 
@@ -237,9 +230,9 @@ float SimpleFontData::platformWidthForGlyph(Glyph glyph) const
 
     SkPaint paint;
 
-    m_platformData.setupPaint(&paint);
+    //m_platformData.setupPaint(&paint);
 
-    paint.setTextEncoding(SkPaint::kGlyphID_TextEncoding);
+    //paint.setTextEncoding(SkPaint::kGlyphID_TextEncoding);
     SkScalar width = paint.measureText(&glyph, 2);
     if (!paint.isSubpixelText())
         width = SkScalarRoundToInt(width);
@@ -264,7 +257,7 @@ bool SimpleFontData::canRenderCombiningCharacterSequence(const UChar* characters
         return false;
 
     SkPaint paint;
-    m_platformData.setupPaint(&paint);
+    //m_platformData.setupPaint(&paint);
     paint.setTextEncoding(SkPaint::kUTF16_TextEncoding);
     if (paint.textToGlyphs(&normalizedCharacters[0], normalizedLength * 2, 0)) {
         addResult.storedValue->value = true;
