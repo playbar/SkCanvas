@@ -10,7 +10,8 @@
 #define GATHER_STATSx
 
 static inline void small_memcpy(void* SK_RESTRICT dst,
-                                const void* SK_RESTRICT src, int n) {
+                                const void* SK_RESTRICT src, size_t n) {
+    SkASSERT(n > 0 && n <= 15);
     uint8_t* d = (uint8_t*)dst;
     const uint8_t* s = (const uint8_t*)src;
     switch (n) {
@@ -33,7 +34,8 @@ static inline void small_memcpy(void* SK_RESTRICT dst,
     }
 }
 
-static inline void small_memset(void* dst, uint8_t value, int n) {
+static inline void small_memset(void* dst, uint8_t value, size_t n) {
+    SkASSERT(n > 0 && n <= 15);
     uint8_t* d = (uint8_t*)dst;
     switch (n) {
         case 15: *d++ = value;
@@ -77,8 +79,43 @@ do {                                    \
 
 ///////////////////////////////////////////////////////////////////////////////
 
-//#define register_memset_count(n)
-//#define register_memcpy_count(n)
+#ifdef GATHER_STATS
+    static int gMemSetBuckets[129];
+    static int gMemCpyBuckets[129];
+    static int gCounter;
+
+static void register_memset_count(int n) {
+    SkASSERT((unsigned)n <= 128);
+    gMemSetBuckets[n] += 1;
+    gCounter += 1;
+
+    if ((gCounter & 0xFF) == 0) {
+        SkDebugf("----- packbits memset stats: ");
+        for (size_t i = 0; i < SK_ARRAY_COUNT(gMemSetBuckets); i++) {
+            if (gMemSetBuckets[i]) {
+                SkDebugf(" %d:%d", i, gMemSetBuckets[i]);
+            }
+        }
+    }
+}
+static void register_memcpy_count(int n) {
+    SkASSERT((unsigned)n <= 128);
+    gMemCpyBuckets[n] += 1;
+    gCounter += 1;
+
+    if ((gCounter & 0x1FF) == 0) {
+        SkDebugf("----- packbits memcpy stats: ");
+        for (size_t i = 0; i < SK_ARRAY_COUNT(gMemCpyBuckets); i++) {
+            if (gMemCpyBuckets[i]) {
+                SkDebugf(" %d:%d", i, gMemCpyBuckets[i]);
+            }
+        }
+    }
+}
+#else
+#define register_memset_count(n)
+#define register_memcpy_count(n)
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -159,7 +196,8 @@ size_t SkPackBits::Pack16(const uint16_t* SK_RESTRICT src, int count,
     const uint16_t* stop = src + count;
 
     for (;;) {
-        count = stop - src;
+        count = SkToInt(stop - src);
+        SkASSERT(count >= 0);
         if (count == 0) {
             return dst - origDst;
         }
@@ -180,7 +218,7 @@ size_t SkPackBits::Pack16(const uint16_t* SK_RESTRICT src, int count,
                     break;
                 }
             } while (*s == value);
-            dst = flush_same16(dst, value, s - src);
+            dst = flush_same16(dst, value, SkToInt(s - src));
         } else {    // accumulate diff values...
             do {
                 if (++s == stop) {
@@ -189,7 +227,7 @@ size_t SkPackBits::Pack16(const uint16_t* SK_RESTRICT src, int count,
             } while (*s != s[-1]);
             s -= 1; // back up so we don't grab one of the "same" values that follow
         FLUSH_DIFF:
-            dst = flush_diff16(dst, src, s - src);
+            dst = flush_diff16(dst, src, SkToInt(s - src));
         }
         src = s;
     }
@@ -201,7 +239,8 @@ size_t SkPackBits::Pack8(const uint8_t* SK_RESTRICT src, int count,
     const uint8_t* stop = src + count;
 
     for (;;) {
-        count = stop - src;
+        count = SkToInt(stop - src);
+        SkASSERT(count >= 0);
         if (count == 0) {
             return dst - origDst;
         }
@@ -221,7 +260,7 @@ size_t SkPackBits::Pack8(const uint8_t* SK_RESTRICT src, int count,
                     break;
                 }
             } while (*s == value);
-            dst = flush_same8(dst, value, s - src);
+            dst = flush_same8(dst, value, SkToInt(s - src));
         } else {    // accumulate diff values...
             do {
                 if (++s == stop) {
@@ -232,7 +271,7 @@ size_t SkPackBits::Pack8(const uint8_t* SK_RESTRICT src, int count,
             } while (*s != s[-1] || s[-1] != s[-2]);
             s -= 2; // back up so we don't grab the "same" values that follow
         FLUSH_DIFF:
-            dst = flush_diff8(dst, src, s - src);
+            dst = flush_diff8(dst, src, SkToInt(s - src));
         }
         src = s;
     }
@@ -258,7 +297,8 @@ int SkPackBits::Unpack16(const uint8_t* SK_RESTRICT src, size_t srcSize,
         }
         dst += n;
     }
-    return dst - origDst;
+    SkASSERT(src == stop);
+    return SkToInt(dst - origDst);
 }
 
 int SkPackBits::Unpack8(const uint8_t* SK_RESTRICT src, size_t srcSize,
@@ -278,7 +318,8 @@ int SkPackBits::Unpack8(const uint8_t* SK_RESTRICT src, size_t srcSize,
         }
         dst += n;
     }
-    return dst - origDst;
+    SkASSERT(src == stop);
+    return SkToInt(dst - origDst);
 }
 
 enum UnpackState {
@@ -298,7 +339,7 @@ void SkPackBits::Unpack8(uint8_t* SK_RESTRICT dst, size_t dstSkip,
 
     // state 1: do the skip-loop
     while (dstSkip > 0) {
-        unsigned n = *src++;
+        size_t n = *src++;
         if (n <= 127) {   // repeat count (n + 1)
             n += 1;
             if (n > dstSkip) {
@@ -327,13 +368,18 @@ void SkPackBits::Unpack8(uint8_t* SK_RESTRICT dst, size_t dstSkip,
     }
     switch (state) {
         case REPEAT_BYTE_STATE:
+            SkASSERT(stateCount > 0);
+            register_memset_count(stateCount);
             PB_MEMSET(dst, *src++, stateCount);
             break;
         case COPY_SRC_STATE:
+            SkASSERT(stateCount > 0);
+            register_memcpy_count(stateCount);
             PB_MEMCPY(dst, src, stateCount);
             src += stateCount;
             break;
         default:
+            SkASSERT(stateCount == 0);
             break;
     }
     dst += stateCount;
@@ -341,22 +387,25 @@ void SkPackBits::Unpack8(uint8_t* SK_RESTRICT dst, size_t dstSkip,
 
     // copy at most dstWrite bytes into dst[]
     while (dstWrite > 0) {
-        unsigned n = *src++;
+        size_t n = *src++;
         if (n <= 127) {   // repeat count (n + 1)
             n += 1;
             if (n > dstWrite) {
                 n = dstWrite;
             }
+            register_memset_count(n);
             PB_MEMSET(dst, *src++, n);
         } else {    // same count (n - 127)
             n -= 127;
             if (n > dstWrite) {
                 n = dstWrite;
             }
+            register_memcpy_count(n);
             PB_MEMCPY(dst, src, n);
             src += n;
         }
         dst += n;
         dstWrite -= n;
     }
+    SkASSERT(0 == dstWrite);
 }

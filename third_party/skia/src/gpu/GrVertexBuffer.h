@@ -13,11 +13,10 @@
 
 #include "GrGeometryBuffer.h"
 
-class GrVertexBuffer : public GrGeometryBuffer
-{
+class GrVertexBuffer : public GrGeometryBuffer {
 protected:
-    GrVertexBuffer(GrGpu* gpu, bool isWrapped, size_t sizeInBytes, bool dynamic, bool cpuBacked)
-        : INHERITED(gpu, isWrapped, sizeInBytes, dynamic, cpuBacked) {}
+    GrVertexBuffer(GrGpu* gpu, bool isWrapped, size_t gpuMemorySize, bool dynamic, bool cpuBacked)
+        : INHERITED(gpu, isWrapped, gpuMemorySize, dynamic, cpuBacked) {}
 private:
     typedef GrGeometryBuffer INHERITED;
 };

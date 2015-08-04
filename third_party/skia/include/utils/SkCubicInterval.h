@@ -10,11 +10,11 @@
 
 #include "SkPoint.h"
 
-float SkEvalCubicInterval(float x1, float y1,
-                             float x2, float y2,
-                             float unitX);
+SkScalar SkEvalCubicInterval(SkScalar x1, SkScalar y1,
+                             SkScalar x2, SkScalar y2,
+                             SkScalar unitX);
 
-static inline float SkEvalCubicInterval(const SkPoint pts[2], float x) {
+static inline SkScalar SkEvalCubicInterval(const SkPoint pts[2], SkScalar x) {
     return SkEvalCubicInterval(pts[0].fX, pts[0].fY,
                                pts[1].fX, pts[1].fY, x);
 }

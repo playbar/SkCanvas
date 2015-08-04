@@ -26,6 +26,7 @@ protected:
      * immutable.
      */
     void addVertexAttrib(GrSLType type) {
+        SkASSERT(fVertexAttribTypes.count() < kMaxVertexAttribs);
         fVertexAttribTypes.push_back(type);
     }
 

@@ -13,14 +13,18 @@
 
 class SK_API SkColorMatrixFilter : public SkColorFilter {
 public:
-    explicit SkColorMatrixFilter(const SkColorMatrix&);
-    SkColorMatrixFilter(const float array[20]);
+    static SkColorMatrixFilter* Create(const SkColorMatrix& cm) {
+        return SkNEW_ARGS(SkColorMatrixFilter, (cm));
+    }
+    static SkColorMatrixFilter* Create(const SkScalar array[20]) {
+        return SkNEW_ARGS(SkColorMatrixFilter, (array));
+    }
 
     // overrides from SkColorFilter
     virtual void filterSpan(const SkPMColor src[], int count, SkPMColor[]) const SK_OVERRIDE;
     virtual void filterSpan16(const uint16_t src[], int count, uint16_t[]) const SK_OVERRIDE;
     virtual uint32_t getFlags() const SK_OVERRIDE;
-    virtual bool asColorMatrix(float matrix[20]) const SK_OVERRIDE;
+    virtual bool asColorMatrix(SkScalar matrix[20]) const SK_OVERRIDE;
 #if SK_SUPPORT_GPU
     virtual GrEffectRef* asNewEffect(GrContext*) const SK_OVERRIDE;
 #endif
@@ -30,13 +34,15 @@ public:
         int     fShift;
     };
 
-    SkDEVCODE(virtual void toString(SkString* str) const SK_OVERRIDE;)
+    SK_TO_STRING_OVERRIDE()
 
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkColorMatrixFilter)
 
 protected:
-    SkColorMatrixFilter(SkFlattenableReadBuffer& buffer);
-    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
+    explicit SkColorMatrixFilter(const SkColorMatrix&);
+    explicit SkColorMatrixFilter(const SkScalar array[20]);
+    explicit SkColorMatrixFilter(SkReadBuffer& buffer);
+    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
 
 private:
     SkColorMatrix fMatrix;
@@ -48,7 +54,7 @@ private:
     State       fState;
     uint32_t    fFlags;
 
-    void initState(const float array[20]);
+    void initState(const SkScalar array[20]);
 
     typedef SkColorFilter INHERITED;
 };

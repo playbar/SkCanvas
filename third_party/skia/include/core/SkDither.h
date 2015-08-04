@@ -31,17 +31,26 @@
 #ifdef SK_DEBUG
     inline unsigned SkDITHER_R32_FOR_565(unsigned r, unsigned d)
     {
+        SkASSERT(d <= SK_DitherValueMax565);
+        SkA32Assert(r);
         r = SkDITHER_R32_FOR_565_MACRO(r, d);
+        SkA32Assert(r);
         return r;
     }
     inline unsigned SkDITHER_G32_FOR_565(unsigned g, unsigned d)
     {
+        SkASSERT(d <= SK_DitherValueMax565);
+        SkG32Assert(g);
         g = SkDITHER_G32_FOR_565_MACRO(g, d);
+        SkG32Assert(g);
         return g;
     }
     inline unsigned SkDITHER_B32_FOR_565(unsigned b, unsigned d)
     {
+        SkASSERT(d <= SK_DitherValueMax565);
+        SkB32Assert(b);
         b = SkDITHER_B32_FOR_565_MACRO(b, d);
+        SkB32Assert(b);
         return b;
     }
 #else
@@ -61,6 +70,7 @@
 
 static inline SkPMColor SkDitherARGB32For565(SkPMColor c, unsigned dither)
 {
+    SkASSERT(dither <= SK_DitherValueMax565);
 
     unsigned sa = SkGetPackedA32(c);
     dither = SkAlphaMul(dither, SkAlpha255To256(sa));
@@ -77,6 +87,8 @@ static inline SkPMColor SkDitherARGB32For565(SkPMColor c, unsigned dither)
 
 static inline SkPMColor SkDitherRGB32For565(SkPMColor c, unsigned dither)
 {
+    SkASSERT(dither <= SK_DitherValueMax565);
+
     unsigned sr = SkGetPackedR32(c);
     unsigned sg = SkGetPackedG32(c);
     unsigned sb = SkGetPackedB32(c);
@@ -90,6 +102,7 @@ static inline SkPMColor SkDitherRGB32For565(SkPMColor c, unsigned dither)
 static inline uint16_t SkDitherRGBTo565(U8CPU r, U8CPU g, U8CPU b,
                                               unsigned dither)
 {
+    SkASSERT(dither <= SK_DitherValueMax565);
     r = SkDITHER_R32To565(r, dither);
     g = SkDITHER_G32To565(g, dither);
     b = SkDITHER_B32To565(b, dither);
@@ -98,6 +111,7 @@ static inline uint16_t SkDitherRGBTo565(U8CPU r, U8CPU g, U8CPU b,
 
 static inline uint16_t SkDitherRGB32To565(SkPMColor c, unsigned dither)
 {
+    SkASSERT(dither <= SK_DitherValueMax565);
 
     unsigned sr = SkGetPackedR32(c);
     unsigned sg = SkGetPackedG32(c);
@@ -111,6 +125,7 @@ static inline uint16_t SkDitherRGB32To565(SkPMColor c, unsigned dither)
 
 static inline uint16_t SkDitherARGB32To565(U8CPU sa, SkPMColor c, unsigned dither)
 {
+    SkASSERT(dither <= SK_DitherValueMax565);
     dither = SkAlphaMul(dither, SkAlpha255To256(sa));
 
     unsigned sr = SkGetPackedR32(c);

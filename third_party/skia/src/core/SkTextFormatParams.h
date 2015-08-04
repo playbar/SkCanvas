@@ -24,11 +24,11 @@
 // At 9 points or below, the stroke width is increased by text size / 24.
 // At 36 points and above, it is increased by text size / 32.  In between,
 // it is interpolated between those values.
-static const float kStdFakeBoldInterpKeys[] = {
+static const SkScalar kStdFakeBoldInterpKeys[] = {
     SK_Scalar1*9,
     SK_Scalar1*36,
 };
-static const float kStdFakeBoldInterpValues[] = {
+static const SkScalar kStdFakeBoldInterpValues[] = {
     SK_Scalar1/24,
     SK_Scalar1/32
 };

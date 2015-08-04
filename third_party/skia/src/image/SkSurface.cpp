@@ -16,6 +16,11 @@ SkSurface_Base::SkSurface_Base(int width, int height) : INHERITED(width, height)
     fCachedImage = NULL;
 }
 
+SkSurface_Base::SkSurface_Base(const SkImageInfo& info) : INHERITED(info) {
+    fCachedCanvas = NULL;
+    fCachedImage = NULL;
+}
+
 SkSurface_Base::~SkSurface_Base() {
     // in case the canvas outsurvives us, we null the callback
     if (fCachedCanvas) {
@@ -26,7 +31,7 @@ SkSurface_Base::~SkSurface_Base() {
     SkSafeUnref(fCachedCanvas);
 }
 
-void SkSurface_Base::onDraw(SkCanvas* canvas, float x, float y,
+void SkSurface_Base::onDraw(SkCanvas* canvas, SkScalar x, SkScalar y,
                             const SkPaint* paint) {
     SkImage* image = this->newImageSnapshot();
     if (image) {
@@ -38,9 +43,7 @@ void SkSurface_Base::onDraw(SkCanvas* canvas, float x, float y,
 void SkSurface_Base::aboutToDraw(ContentChangeMode mode) {
     this->dirtyGenerationID();
 
-    if (NULL != fCachedCanvas) {
-        fCachedCanvas->setSurfaceBase(NULL);
-    }
+    SkASSERT(!fCachedCanvas || fCachedCanvas->getSurfaceBase() == this);
 
     if (NULL != fCachedImage) {
         // the surface may need to fork its backend, if its sharing it with
@@ -54,12 +57,13 @@ void SkSurface_Base::aboutToDraw(ContentChangeMode mode) {
         // that the next request will get our new contents.
         fCachedImage->unref();
         fCachedImage = NULL;
+    } else if (kDiscard_ContentChangeMode == mode) {
+        this->onDiscard();
     }
 }
 
 uint32_t SkSurface_Base::newGenerationID() {
-    this->installIntoCanvasForDirtyNotification();
-
+    SkASSERT(!fCachedCanvas || fCachedCanvas->getSurfaceBase() == this);
     static int32_t gID;
     return sk_atomic_inc(&gID) + 1;
 }
@@ -71,6 +75,17 @@ static SkSurface_Base* asSB(SkSurface* surface) {
 ///////////////////////////////////////////////////////////////////////////////
 
 SkSurface::SkSurface(int width, int height) : fWidth(width), fHeight(height) {
+    SkASSERT(fWidth >= 0);
+    SkASSERT(fHeight >= 0);
+    fGenerationID = 0;
+}
+
+SkSurface::SkSurface(const SkImageInfo& info)
+    : fWidth(info.fWidth)
+    , fHeight(info.fHeight)
+{
+    SkASSERT(fWidth >= 0);
+    SkASSERT(fHeight >= 0);
     fGenerationID = 0;
 }
 
@@ -99,7 +114,11 @@ SkSurface* SkSurface::newSurface(const SkImageInfo& info) {
     return asSB(this)->onNewSurface(info);
 }
 
-void SkSurface::draw(SkCanvas* canvas, float x, float y,
+void SkSurface::draw(SkCanvas* canvas, SkScalar x, SkScalar y,
                      const SkPaint* paint) {
     return asSB(this)->onDraw(canvas, x, y, paint);
+}
+
+const void* SkSurface::peekPixels(SkImageInfo* info, size_t* rowBytes) {
+    return this->getCanvas()->peekPixels(info, rowBytes);
 }

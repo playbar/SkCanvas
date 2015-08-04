@@ -47,8 +47,7 @@ void SkNativeGLContext::destroyGLContext() {
     }
 }
 
-void SkNativeGLContext::createGLContext() 
-{
+const GrGLInterface* SkNativeGLContext::createGLContext() {
     HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
 
     if (!gWC) {
@@ -65,10 +64,9 @@ void SkNativeGLContext::createGLContext()
         wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 
         gWC = RegisterClass(&wc);
-        if (!gWC)
-		{
+        if (!gWC) {
             SkDebugf("Could not register window class.\n");
-            return;
+            return NULL;
         }
     }
 
@@ -79,28 +77,35 @@ void SkNativeGLContext::createGLContext()
                                  NULL, NULL,
                                  hInstance, NULL))) {
         SkDebugf("Could not create window.\n");
-        return;
+        return NULL;
     }
 
     if (!(fDeviceContext = GetDC(fWindow))) {
         SkDebugf("Could not get device context.\n");
         this->destroyGLContext();
-        return;
+        return NULL;
     }
 
-    if (!(fGlRenderContext = SkCreateWGLContext(fDeviceContext, 0, true))) {
+    // Requesting a Core profile would bar us from using NVPR. So we pass false.
+    if (!(fGlRenderContext = SkCreateWGLContext(fDeviceContext, 0, false))) {
         SkDebugf("Could not create rendering context.\n");
         this->destroyGLContext();
-        return;
+        return NULL;
     }
 
     if (!(wglMakeCurrent(fDeviceContext, fGlRenderContext))) {
         SkDebugf("Could not set the context.\n");
         this->destroyGLContext();
-        return;
+        return NULL;
     }
-	return;
- 
+    const GrGLInterface* interface = GrGLCreateNativeInterface();
+    if (NULL == interface) {
+        SkDebugf("Could not create GL interface.\n");
+        this->destroyGLContext();
+        return NULL;
+    }
+
+    return interface;
 }
 
 void SkNativeGLContext::makeCurrent() const {

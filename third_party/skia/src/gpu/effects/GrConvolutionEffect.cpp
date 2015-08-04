@@ -107,6 +107,7 @@ void GrGLConvolutionEffect::setData(const GrGLUniformManager& uman,
     const GrConvolutionEffect& conv = drawEffect.castEffect<GrConvolutionEffect>();
     GrTexture& texture = *conv.texture(0);
     // the code we generated was for a specific kernel radius
+    SkASSERT(conv.radius() == fRadius);
     float imageIncrement[2] = { 0 };
     float ySign = texture.origin() != kTopLeft_GrSurfaceOrigin ? 1.0f : -1.0f;
     switch (conv.direction()) {
@@ -117,7 +118,7 @@ void GrGLConvolutionEffect::setData(const GrGLUniformManager& uman,
             imageIncrement[1] = ySign / texture.height();
             break;
         default:
-            GrCrash("Unknown filter direction.");
+            SkFAIL("Unknown filter direction.");
     }
     uman.set2fv(fImageIncrementUni, 1, imageIncrement);
     if (conv.useBounds()) {
@@ -153,6 +154,8 @@ GrConvolutionEffect::GrConvolutionEffect(GrTexture* texture,
                                          bool useBounds,
                                          float bounds[2])
     : Gr1DKernelEffect(texture, direction, radius), fUseBounds(useBounds) {
+    SkASSERT(radius <= kMaxKernelRadius);
+    SkASSERT(NULL != kernel);
     int width = this->width();
     for (int i = 0; i < width; i++) {
         fKernel[i] = kernel[i];
@@ -167,6 +170,7 @@ GrConvolutionEffect::GrConvolutionEffect(GrTexture* texture,
                                          bool useBounds,
                                          float bounds[2])
     : Gr1DKernelEffect(texture, direction, radius), fUseBounds(useBounds) {
+    SkASSERT(radius <= kMaxKernelRadius);
     int width = this->width();
 
     float sum = 0.0f;

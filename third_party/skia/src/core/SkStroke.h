@@ -22,7 +22,7 @@ class SkStroke {
 public:
     SkStroke();
     SkStroke(const SkPaint&);
-    SkStroke(const SkPaint&, float width);   // width overrides paint.getStrokeWidth()
+    SkStroke(const SkPaint&, SkScalar width);   // width overrides paint.getStrokeWidth()
 
     SkPaint::Cap    getCap() const { return (SkPaint::Cap)fCap; }
     void        setCap(SkPaint::Cap);
@@ -30,8 +30,8 @@ public:
     SkPaint::Join   getJoin() const { return (SkPaint::Join)fJoin; }
     void        setJoin(SkPaint::Join);
 
-    void    setMiterLimit(float);
-    void    setWidth(float);
+    void    setMiterLimit(SkScalar);
+    void    setWidth(SkScalar);
 
     bool    getDoFill() const { return SkToBool(fDoFill); }
     void    setDoFill(bool doFill) { fDoFill = SkToU8(doFill); }
@@ -46,7 +46,7 @@ public:
     ////////////////////////////////////////////////////////////////
 
 private:
-    float    fWidth, fMiterLimit;
+    SkScalar    fWidth, fMiterLimit;
     uint8_t     fCap, fJoin;
     SkBool8     fDoFill;
 

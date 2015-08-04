@@ -9,8 +9,7 @@
 #include "GrPathRenderer.h"
 
 
-class GrAAConvexPathRenderer : public GrPathRenderer 
-{
+class GrAAConvexPathRenderer : public GrPathRenderer {
 public:
     GrAAConvexPathRenderer();
 

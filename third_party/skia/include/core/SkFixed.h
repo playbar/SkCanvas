@@ -1,11 +1,9 @@
-
 /*
  * Copyright 2006 The Android Open Source Project
  *
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 
 #ifndef SkFixed_DEFINED
 #define SkFixed_DEFINED
@@ -45,6 +43,7 @@ typedef int32_t             SkFixed;
     static inline SkFixed SkFloatToFixed_Check(float x) {
         int64_t n64 = (int64_t)(x * SK_Fixed1);
         SkFixed n32 = (SkFixed)n64;
+        SkASSERT(n64 == n32);
         return n32;
     }
 #else
@@ -60,6 +59,7 @@ typedef int32_t             SkFixed;
 #ifdef SK_DEBUG
     inline SkFixed SkIntToFixed(int n)
     {
+        SkASSERT(n >= -32768 && n <= 32767);
         return n << 16;
     }
 #else
@@ -74,11 +74,6 @@ typedef int32_t             SkFixed;
 #define SkFixedRoundToFixed(x)  (((x) + SK_FixedHalf) & 0xFFFF0000)
 #define SkFixedCeilToFixed(x)   (((x) + SK_Fixed1 - 1) & 0xFFFF0000)
 #define SkFixedFloorToFixed(x)  ((x) & 0xFFFF0000)
-
-// DEPRECATED
-#define SkFixedFloor(x)     SkFixedFloorToInt(x)
-#define SkFixedCeil(x)      SkFixedCeilToInt(x)
-#define SkFixedRound(x)     SkFixedRoundToInt(x)
 
 #define SkFixedAbs(x)       SkAbs32(x)
 #define SkFixedAve(a, b)    (((a) + (b)) >> 1)
@@ -110,11 +105,12 @@ static inline SkFixed SkFixedCos(SkFixed radians) {
     #define SkFixedMul(a,b)     SkFixedMul_longlong(a,b)
 #endif
 
-#if defined(SK_CPU_ARM)
+#if defined(SK_CPU_ARM32)
     /* This guy does not handle NaN or other obscurities, but is faster than
-       than (int)(x*65536)
+       than (int)(x*65536).  When built on Android with -Os, needs forcing
+       to inline or we lose the speed benefit.
     */
-    inline SkFixed SkFloatToFixed_arm(float x)
+    SK_ALWAYS_INLINE SkFixed SkFloatToFixed_arm(float x)
     {
         int32_t y, z;
         asm("movs    %1, %3, lsl #1         \n"

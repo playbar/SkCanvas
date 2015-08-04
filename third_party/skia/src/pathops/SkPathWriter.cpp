@@ -145,10 +145,10 @@ bool SkPathWriter::changedSlopes(const SkPoint& pt) const {
     if (fDefer[0] == fDefer[1]) {
         return false;
     }
-    float deferDx = fDefer[1].fX - fDefer[0].fX;
-    float deferDy = fDefer[1].fY - fDefer[0].fY;
-    float lineDx = pt.fX - fDefer[1].fX;
-    float lineDy = pt.fY - fDefer[1].fY;
+    SkScalar deferDx = fDefer[1].fX - fDefer[0].fX;
+    SkScalar deferDy = fDefer[1].fY - fDefer[0].fY;
+    SkScalar lineDx = pt.fX - fDefer[1].fX;
+    SkScalar lineDy = pt.fY - fDefer[1].fY;
     return deferDx * lineDy != deferDy * lineDx;
 }
 

@@ -11,15 +11,16 @@
 #include "GrGLEffect.h"
 #include "GrDrawState.h"
 #include "GrGLShaderBuilder.h"
+#include "GrGpu.h"
 
 class GrGpuGL;
 
 #ifdef SK_DEBUG
   // Optionally compile the experimental GS code. Set to SK_DEBUG so that debug build bots will
   // execute the code.
-  #define GL_EXPERIMENTAL_GS 1
+  #define GR_GL_EXPERIMENTAL_GS 1
 #else
-  #define GL_EXPERIMENTAL_GS 0
+  #define GR_GL_EXPERIMENTAL_GS 0
 #endif
 
 
@@ -27,14 +28,14 @@ class GrGpuGL;
     of this is GL-specific. There is the generation of GrGLEffect::EffectKeys and the dst-read part
     of the key set by GrGLShaderBuilder. If the interfaces that set those portions were abstracted
     to be API-neutral then so could this class. */
-class GrGLProgramDesc 
-{
+class GrGLProgramDesc {
 public:
     GrGLProgramDesc() : fInitialized(false) {}
     GrGLProgramDesc(const GrGLProgramDesc& desc) { *this = desc; }
 
     // Returns this as a uint32_t array to be used as a key in the program cache.
     const uint32_t* asKey() const {
+        SkASSERT(fInitialized);
         return reinterpret_cast<const uint32_t*>(fKey.get());
     }
 
@@ -64,7 +65,7 @@ public:
      * be treated as color stages in the output.
      */
     static void Build(const GrDrawState&,
-                      bool isPoints,
+                      GrGpu::DrawType drawType,
                       GrDrawState::BlendOptFlags,
                       GrBlendCoeff srcCoeff,
                       GrBlendCoeff dstCoeff,
@@ -74,12 +75,13 @@ public:
                       SkTArray<const GrEffectStage*, true>* outCoverageStages,
                       GrGLProgramDesc* outDesc);
 
-    int numColorEffects() const 
-	{
+    int numColorEffects() const {
+        SkASSERT(fInitialized);
         return this->getHeader().fColorEffectCnt;
     }
 
     int numCoverageEffects() const {
+        SkASSERT(fInitialized);
         return this->getHeader().fCoverageEffectCnt;
     }
 
@@ -87,14 +89,13 @@ public:
 
     GrGLProgramDesc& operator= (const GrGLProgramDesc& other);
 
-    bool operator== (const GrGLProgramDesc& other) const
-	{
+    bool operator== (const GrGLProgramDesc& other) const {
+        SkASSERT(fInitialized && other.fInitialized);
         // The length is masked as a hint to the compiler that the address will be 4 byte aligned.
         return 0 == memcmp(this->asKey(), other.asKey(), this->keyLength() & ~0x3);
     }
 
-    bool operator!= (const GrGLProgramDesc& other) const
-	{
+    bool operator!= (const GrGLProgramDesc& other) const {
         return !(*this == other);
     }
 
@@ -104,8 +105,7 @@ public:
 
 private:
     // Specifies where the initial color comes from before the stages are applied.
-    enum ColorInput 
-	{
+    enum ColorInput {
         kSolidWhite_ColorInput,
         kTransBlack_ColorInput,
         kAttribute_ColorInput,
@@ -114,8 +114,7 @@ private:
         kColorInputCnt
     };
 
-    enum CoverageOutput 
-	{
+    enum CoverageOutput {
         // modulate color and coverage, write result as the color output.
         kModulate_CoverageOutput,
         // Writes color*coverage as the primary color output and also writes coverage as the
@@ -134,10 +133,8 @@ private:
         kCoverageOutputCnt
     };
 
-    static bool CoverageOutputUsesSecondaryOutput(CoverageOutput co)
-	{
-        switch (co) 
-		{
+    static bool CoverageOutputUsesSecondaryOutput(CoverageOutput co) {
+        switch (co) {
             case kSecondaryCoverage_CoverageOutput: //  fallthru
             case kSecondaryCoverageISA_CoverageOutput:
             case kSecondaryCoverageISC_CoverageOutput:
@@ -147,17 +144,13 @@ private:
         }
     }
 
-    struct KeyHeader
-	{
+    struct KeyHeader {
         GrGLShaderBuilder::DstReadKey fDstReadKey;      // set by GrGLShaderBuilder if there
                                                         // are effects that must read the dst.
                                                         // Otherwise, 0.
         GrGLShaderBuilder::FragPosKey fFragPosKey;      // set by GrGLShaderBuilder if there are
                                                         // effects that read the fragment position.
                                                         // Otherwise, 0.
-
-        // should the FS discard if the coverage is zero (to avoid stencil manipulation)
-        SkBool8                     fDiscardIfZeroCoverage;
 
         ColorInput                  fColorInput : 8;
         ColorInput                  fCoverageInput : 8;
@@ -168,7 +161,7 @@ private:
 
         // To enable experimental geometry shader code (not for use in
         // production)
-#if GL_EXPERIMENTAL_GS
+#if GR_GL_EXPERIMENTAL_GS
         SkBool8                     fExperimentalGS;
 #endif
 

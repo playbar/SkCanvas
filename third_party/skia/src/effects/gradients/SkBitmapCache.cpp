@@ -36,9 +36,12 @@ struct SkBitmapCache::Entry {
 SkBitmapCache::SkBitmapCache(int max) : fMaxEntries(max) {
     fEntryCount = 0;
     fHead = fTail = NULL;
+
+    this->validate();
 }
 
 SkBitmapCache::~SkBitmapCache() {
+    this->validate();
 
     Entry* entry = fHead;
     while (entry) {
@@ -50,13 +53,17 @@ SkBitmapCache::~SkBitmapCache() {
 
 SkBitmapCache::Entry* SkBitmapCache::detach(Entry* entry) const {
     if (entry->fPrev) {
+        SkASSERT(fHead != entry);
         entry->fPrev->fNext = entry->fNext;
     } else {
+        SkASSERT(fHead == entry);
         fHead = entry->fNext;
     }
     if (entry->fNext) {
+        SkASSERT(fTail != entry);
         entry->fNext->fPrev = entry->fPrev;
     } else {
+        SkASSERT(fTail == entry);
         fTail = entry->fPrev;
     }
     return entry;
@@ -96,6 +103,7 @@ void SkBitmapCache::add(const void* buffer, size_t len, const SkBitmap& bm) {
     AutoValidate av(this);
 
     if (fEntryCount == fMaxEntries) {
+        SkASSERT(fTail);
         delete this->detach(fTail);
         fEntryCount -= 1;
     }
@@ -105,4 +113,41 @@ void SkBitmapCache::add(const void* buffer, size_t len, const SkBitmap& bm) {
     fEntryCount += 1;
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
+#ifdef SK_DEBUG
+
+void SkBitmapCache::validate() const {
+    SkASSERT(fEntryCount >= 0 && fEntryCount <= fMaxEntries);
+
+    if (fEntryCount > 0) {
+        SkASSERT(NULL == fHead->fPrev);
+        SkASSERT(NULL == fTail->fNext);
+
+        if (fEntryCount == 1) {
+            SkASSERT(fHead == fTail);
+        } else {
+            SkASSERT(fHead != fTail);
+        }
+
+        Entry* entry = fHead;
+        int count = 0;
+        while (entry) {
+            count += 1;
+            entry = entry->fNext;
+        }
+        SkASSERT(count == fEntryCount);
+
+        entry = fTail;
+        while (entry) {
+            count -= 1;
+            entry = entry->fPrev;
+        }
+        SkASSERT(0 == count);
+    } else {
+        SkASSERT(NULL == fHead);
+        SkASSERT(NULL == fTail);
+    }
+}
+
+#endif

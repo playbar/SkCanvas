@@ -75,6 +75,16 @@ public:
     }
 
     /**
+     * Destroy the lazy object (if it was created via init() or set())
+     */
+    void reset() {
+        if (this->isValid()) {
+            fPtr->~T();
+            fPtr = NULL;
+        }
+    }
+
+    /**
      *  Returns true if a valid object has been initialized in the SkTLazy,
      *  false otherwise.
      */
@@ -84,7 +94,7 @@ public:
      * Returns the object. This version should only be called when the caller
      * knows that the object has been initialized.
      */
-    T* get() const { return fPtr; }
+    T* get() const { SkASSERT(this->isValid()); return fPtr; }
 
     /**
      * Like above but doesn't assert if object isn't initialized (in which case
@@ -101,6 +111,7 @@ private:
 
 // Use the below macro (SkNEW_IN_TLAZY) rather than calling this directly
 template <typename T> void* operator new(size_t, SkTLazy<T>* lazy) {
+    SkASSERT(!lazy->isValid());
     lazy->fPtr = reinterpret_cast<T*>(lazy->fStorage);
     return lazy->fPtr;
 }
@@ -146,6 +157,8 @@ public:
 
     // Should only be called once, and only if the default constructor was used.
     void init(const T& initial) {
+        SkASSERT(NULL == fObj);
+        SkASSERT(!fLazy.isValid());
         fObj = &initial;
     }
 
@@ -153,6 +166,7 @@ public:
      * Returns a writable T*. The first time this is called the initial object is cloned.
      */
     T* writable() {
+        SkASSERT(NULL != fObj);
         if (!fLazy.isValid()) {
             fLazy.set(*fObj);
             fObj = fLazy.get();

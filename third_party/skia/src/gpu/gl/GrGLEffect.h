@@ -43,8 +43,7 @@ public:
     typedef GrGLProgramEffects::TextureSampler TextureSampler;
     typedef GrGLProgramEffects::TextureSamplerArray TextureSamplerArray;
 
-    enum 
-	{
+    enum {
         kNoEffectKey = GrBackendEffectFactory::kNoEffectKey,
         // the number of bits in EffectKey available to GenKey
         kEffectKeyBits = GrBackendEffectFactory::kEffectKeyBits,
@@ -52,8 +51,7 @@ public:
 
     GrGLEffect(const GrBackendEffectFactory& factory)
         : fFactory(factory)
-        , fIsVertexEffect(false) 
-	{
+        , fIsVertexEffect(false) {
     }
 
     virtual ~GrGLEffect() {}

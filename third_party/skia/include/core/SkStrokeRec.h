@@ -21,6 +21,7 @@ public:
     SkStrokeRec(InitStyle style);
 
     SkStrokeRec(const SkStrokeRec&);
+    SkStrokeRec(const SkPaint&, SkPaint::Style);
     explicit SkStrokeRec(const SkPaint&);
 
     enum Style {
@@ -31,8 +32,8 @@ public:
     };
 
     Style getStyle() const;
-    float getWidth() const { return fWidth; }
-    float getMiter() const { return fMiterLimit; }
+    SkScalar getWidth() const { return fWidth; }
+    SkScalar getMiter() const { return fMiterLimit; }
     SkPaint::Cap getCap() const { return fCap; }
     SkPaint::Join getJoin() const { return fJoin; }
 
@@ -52,9 +53,9 @@ public:
      *      strokeAndFill==true -> new style will be Fill
      *      strokeAndFill==false -> new style will be Hairline
      */
-    void setStrokeStyle(float width, bool strokeAndFill = false);
+    void setStrokeStyle(SkScalar width, bool strokeAndFill = false);
 
-    void setStrokeParams(SkPaint::Cap cap, SkPaint::Join join, float miterLimit) {
+    void setStrokeParams(SkPaint::Cap cap, SkPaint::Join join, SkScalar miterLimit) {
         fCap = cap;
         fJoin = join;
         fMiterLimit = miterLimit;
@@ -90,8 +91,11 @@ public:
     }
 
 private:
-    float        fWidth;
-    float        fMiterLimit;
+    void init(const SkPaint& paint, SkPaint::Style style);
+
+
+    SkScalar        fWidth;
+    SkScalar        fMiterLimit;
     SkPaint::Cap    fCap;
     SkPaint::Join   fJoin;
     bool            fStrokeAndFill;

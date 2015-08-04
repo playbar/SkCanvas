@@ -22,12 +22,12 @@ static void RoundCapper(SkPath* path, const SkPoint& pivot,
                         const SkVector& normal, const SkPoint& stop,
                         SkPath*)
 {
-    float    px = pivot.fX;
-    float    py = pivot.fY;
-    float    nx = normal.fX;
-    float    ny = normal.fY;
-    float    sx = SkScalarMul(nx, CUBIC_ARC_FACTOR);
-    float    sy = SkScalarMul(ny, CUBIC_ARC_FACTOR);
+    SkScalar    px = pivot.fX;
+    SkScalar    py = pivot.fY;
+    SkScalar    nx = normal.fX;
+    SkScalar    ny = normal.fY;
+    SkScalar    sx = SkScalarMul(nx, CUBIC_ARC_FACTOR);
+    SkScalar    sy = SkScalarMul(ny, CUBIC_ARC_FACTOR);
 
     path->cubicTo(px + nx + CWX(sx, sy), py + ny + CWY(sx, sy),
                   px + CWX(nx, ny) + sx, py + CWY(nx, ny) + sy,
@@ -71,9 +71,10 @@ enum AngleType {
     kNearlyLine_AngleType
 };
 
-static AngleType Dot2AngleType(float dot)
+static AngleType Dot2AngleType(SkScalar dot)
 {
 // need more precise fixed normalization
+//  SkASSERT(SkScalarAbs(dot) <= SK_Scalar1 + SK_ScalarNearlyZero);
 
     if (dot >= 0)   // shallow or line
         return SkScalarNearlyZero(SK_Scalar1 - dot) ? kNearlyLine_AngleType : kShallow_AngleType;
@@ -98,7 +99,7 @@ static void HandleInnerJoin(SkPath* inner, const SkPoint& pivot, const SkVector&
 
 static void BluntJoiner(SkPath* outer, SkPath* inner, const SkVector& beforeUnitNormal,
                         const SkPoint& pivot, const SkVector& afterUnitNormal,
-                        float radius, float invMiterLimit, bool, bool)
+                        SkScalar radius, SkScalar invMiterLimit, bool, bool)
 {
     SkVector    after;
     afterUnitNormal.scale(radius, &after);
@@ -115,9 +116,9 @@ static void BluntJoiner(SkPath* outer, SkPath* inner, const SkVector& beforeUnit
 
 static void RoundJoiner(SkPath* outer, SkPath* inner, const SkVector& beforeUnitNormal,
                         const SkPoint& pivot, const SkVector& afterUnitNormal,
-                        float radius, float invMiterLimit, bool, bool)
+                        SkScalar radius, SkScalar invMiterLimit, bool, bool)
 {
-    float    dotProd = SkPoint::DotProduct(beforeUnitNormal, afterUnitNormal);
+    SkScalar    dotProd = SkPoint::DotProduct(beforeUnitNormal, afterUnitNormal);
     AngleType   angleType = Dot2AngleType(dotProd);
 
     if (angleType == kNearlyLine_AngleType)
@@ -140,6 +141,7 @@ static void RoundJoiner(SkPath* outer, SkPath* inner, const SkVector& beforeUnit
     matrix.setScale(radius, radius);
     matrix.postTranslate(pivot.fX, pivot.fY);
     int count = SkBuildQuadArc(before, after, dir, &matrix, pts);
+    SkASSERT((count & 1) == 1);
 
     if (count > 1)
     {
@@ -155,16 +157,16 @@ static void RoundJoiner(SkPath* outer, SkPath* inner, const SkVector& beforeUnit
 
 static void MiterJoiner(SkPath* outer, SkPath* inner, const SkVector& beforeUnitNormal,
                         const SkPoint& pivot, const SkVector& afterUnitNormal,
-                        float radius, float invMiterLimit,
+                        SkScalar radius, SkScalar invMiterLimit,
                         bool prevIsLine, bool currIsLine)
 {
     // negate the dot since we're using normals instead of tangents
-    float    dotProd = SkPoint::DotProduct(beforeUnitNormal, afterUnitNormal);
+    SkScalar    dotProd = SkPoint::DotProduct(beforeUnitNormal, afterUnitNormal);
     AngleType   angleType = Dot2AngleType(dotProd);
     SkVector    before = beforeUnitNormal;
     SkVector    after = afterUnitNormal;
     SkVector    mid;
-    float    sinHalfAngle;
+    SkScalar    sinHalfAngle;
     bool        ccw;
 
     if (angleType == kNearlyLine_AngleType)
@@ -243,6 +245,7 @@ SkStrokerPriv::CapProc SkStrokerPriv::CapFactory(SkPaint::Cap cap)
         ButtCapper, RoundCapper, SquareCapper
     };
 
+    SkASSERT((unsigned)cap < SkPaint::kCapCount);
     return gCappers[cap];
 }
 
@@ -252,5 +255,6 @@ SkStrokerPriv::JoinProc SkStrokerPriv::JoinFactory(SkPaint::Join join)
         MiterJoiner, RoundJoiner, BluntJoiner
     };
 
+    SkASSERT((unsigned)join < SkPaint::kJoinCount);
     return gJoiners[join];
 }

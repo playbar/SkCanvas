@@ -8,17 +8,18 @@
 
 
 #include "Sk1DPathEffect.h"
-#include "SkFlattenableBuffers.h"
+#include "SkReadBuffer.h"
+#include "SkWriteBuffer.h"
 #include "SkPathMeasure.h"
 
 bool Sk1DPathEffect::filterPath(SkPath* dst, const SkPath& src,
                                 SkStrokeRec*, const SkRect*) const {
     SkPathMeasure   meas(src, false);
     do {
-        float    length = meas.getLength();
-        float    distance = this->begin(length);
+        SkScalar    length = meas.getLength();
+        SkScalar    distance = this->begin(length);
         while (distance < length) {
-            float delta = this->next(dst, distance, meas);
+            SkScalar delta = this->next(dst, distance, meas);
             if (delta <= 0) {
                 break;
             }
@@ -30,8 +31,8 @@ bool Sk1DPathEffect::filterPath(SkPath* dst, const SkPath& src,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-SkPath1DPathEffect::SkPath1DPathEffect(const SkPath& path, float advance,
-    float phase, Style style) : fPath(path)
+SkPath1DPathEffect::SkPath1DPathEffect(const SkPath& path, SkScalar advance,
+    SkScalar phase, Style style) : fPath(path)
 {
     if (advance <= 0 || path.isEmpty()) {
         SkDEBUGF(("SkPath1DPathEffect can't use advance <= 0\n"));
@@ -56,6 +57,7 @@ SkPath1DPathEffect::SkPath1DPathEffect(const SkPath& path, float advance,
         if (phase >= advance) {
             phase = 0;
         }
+        SkASSERT(phase >= 0);
 
         fAdvance = advance;
         fInitialOffset = phase;
@@ -77,13 +79,13 @@ bool SkPath1DPathEffect::filterPath(SkPath* dst, const SkPath& src,
 }
 
 static bool morphpoints(SkPoint dst[], const SkPoint src[], int count,
-                        SkPathMeasure& meas, float dist) {
+                        SkPathMeasure& meas, SkScalar dist) {
     for (int i = 0; i < count; i++) {
         SkPoint pos;
         SkVector tangent;
 
-        float sx = src[i].fX;
-        float sy = src[i].fY;
+        SkScalar sx = src[i].fX;
+        SkScalar sy = src[i].fY;
 
         if (!meas.getPosTan(dist + sx, &pos, &tangent)) {
             return false;
@@ -108,7 +110,7 @@ determine that, but we need it. I guess a cheap answer is let the caller tell us
 but that seems like a cop-out. Another answer is to get Rob Johnson to figure it out.
 */
 static void morphpath(SkPath* dst, const SkPath& src, SkPathMeasure& meas,
-                      float dist) {
+                      SkScalar dist) {
     SkPath::Iter    iter(src, false);
     SkPoint         srcP[4], dstP[3];
     SkPath::Verb    verb;
@@ -139,12 +141,13 @@ static void morphpath(SkPath* dst, const SkPath& src, SkPathMeasure& meas,
                 dst->close();
                 break;
             default:
+                SkDEBUGFAIL("unknown verb");
                 break;
         }
     }
 }
 
-SkPath1DPathEffect::SkPath1DPathEffect(SkFlattenableReadBuffer& buffer) {
+SkPath1DPathEffect::SkPath1DPathEffect(SkReadBuffer& buffer) {
     fAdvance = buffer.readScalar();
     if (fAdvance > 0) {
         buffer.readPath(&fPath);
@@ -158,11 +161,11 @@ SkPath1DPathEffect::SkPath1DPathEffect(SkFlattenableReadBuffer& buffer) {
     }
 }
 
-float SkPath1DPathEffect::begin(float contourLength) const {
+SkScalar SkPath1DPathEffect::begin(SkScalar contourLength) const {
     return fInitialOffset;
 }
 
-void SkPath1DPathEffect::flatten(SkFlattenableWriteBuffer& buffer) const {
+void SkPath1DPathEffect::flatten(SkWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
     buffer.writeScalar(fAdvance);
     if (fAdvance > 0) {
@@ -172,7 +175,7 @@ void SkPath1DPathEffect::flatten(SkFlattenableWriteBuffer& buffer) const {
     }
 }
 
-float SkPath1DPathEffect::next(SkPath* dst, float distance,
+SkScalar SkPath1DPathEffect::next(SkPath* dst, SkScalar distance,
                                   SkPathMeasure& meas) const {
     switch (fStyle) {
         case kTranslate_Style: {
@@ -191,6 +194,7 @@ float SkPath1DPathEffect::next(SkPath* dst, float distance,
             morphpath(dst, fPath, meas, distance);
             break;
         default:
+            SkDEBUGFAIL("unknown Style enum");
             break;
     }
     return fAdvance;

@@ -11,12 +11,11 @@
 #define SkMatrix_DEFINED
 
 #include "SkRect.h"
-#include "assert.h"
 
 class SkString;
 
 // TODO: can we remove these 3 (need to check chrome/android)
-typedef float SkPersp;
+typedef SkScalar SkPersp;
 #define SkScalarToPersp(x) (x)
 #define SkPerspToScalar(x) (x)
 
@@ -32,8 +31,7 @@ public:
     /** Enum of bit fields for the mask return by getType().
         Use this to identify the complexity of the matrix.
     */
-    enum TypeMask 
-	{
+    enum TypeMask {
         kIdentity_Mask      = 0,
         kTranslate_Mask     = 0x01,  //!< set if the matrix has translation
         kScale_Mask         = 0x02,  //!< set if the matrix has X or Y scale
@@ -47,8 +45,7 @@ public:
         other bits may be set to true even in the case of a pure perspective
         transform.
    */
-    TypeMask getType() const
-	{
+    TypeMask getType() const {
         if (fTypeMask & kUnknown_Mask) {
             fTypeMask = this->computeTypeMask();
         }
@@ -86,13 +83,13 @@ public:
     /** Returns true if the matrix contains only translation, rotation or uniform scale
         Returns false if other transformation types are included or is degenerate
      */
-    bool isSimilarity(float tol = SK_ScalarNearlyZero) const;
+    bool isSimilarity(SkScalar tol = SK_ScalarNearlyZero) const;
 
     /** Returns true if the matrix contains only translation, rotation or scale
         (non-uniform scale is allowed).
         Returns false if other transformation types are included or is degenerate
      */
-    bool preservesRightAngles(float tol = SK_ScalarNearlyZero) const;
+    bool preservesRightAngles(SkScalar tol = SK_ScalarNearlyZero) const;
 
     enum {
         kMScaleX,
@@ -118,44 +115,48 @@ public:
         kATransY
     };
 
-    float operator[](int index) const {
+    SkScalar operator[](int index) const {
+        SkASSERT((unsigned)index < 9);
         return fMat[index];
     }
 
-    float get(int index) const {
+    SkScalar get(int index) const {
+        SkASSERT((unsigned)index < 9);
         return fMat[index];
     }
 
-    float getScaleX() const { return fMat[kMScaleX]; }
-    float getScaleY() const { return fMat[kMScaleY]; }
-    float getSkewY() const { return fMat[kMSkewY]; }
-    float getSkewX() const { return fMat[kMSkewX]; }
-    float getTranslateX() const { return fMat[kMTransX]; }
-    float getTranslateY() const { return fMat[kMTransY]; }
+    SkScalar getScaleX() const { return fMat[kMScaleX]; }
+    SkScalar getScaleY() const { return fMat[kMScaleY]; }
+    SkScalar getSkewY() const { return fMat[kMSkewY]; }
+    SkScalar getSkewX() const { return fMat[kMSkewX]; }
+    SkScalar getTranslateX() const { return fMat[kMTransX]; }
+    SkScalar getTranslateY() const { return fMat[kMTransY]; }
     SkPersp getPerspX() const { return fMat[kMPersp0]; }
     SkPersp getPerspY() const { return fMat[kMPersp1]; }
 
-    float& operator[](int index) {
+    SkScalar& operator[](int index) {
+        SkASSERT((unsigned)index < 9);
         this->setTypeMask(kUnknown_Mask);
         return fMat[index];
     }
 
-    void set(int index, float value) {
+    void set(int index, SkScalar value) {
+        SkASSERT((unsigned)index < 9);
         fMat[index] = value;
         this->setTypeMask(kUnknown_Mask);
     }
 
-    void setScaleX(float v) { this->set(kMScaleX, v); }
-    void setScaleY(float v) { this->set(kMScaleY, v); }
-    void setSkewY(float v) { this->set(kMSkewY, v); }
-    void setSkewX(float v) { this->set(kMSkewX, v); }
-    void setTranslateX(float v) { this->set(kMTransX, v); }
-    void setTranslateY(float v) { this->set(kMTransY, v); }
+    void setScaleX(SkScalar v) { this->set(kMScaleX, v); }
+    void setScaleY(SkScalar v) { this->set(kMScaleY, v); }
+    void setSkewY(SkScalar v) { this->set(kMSkewY, v); }
+    void setSkewX(SkScalar v) { this->set(kMSkewX, v); }
+    void setTranslateX(SkScalar v) { this->set(kMTransX, v); }
+    void setTranslateY(SkScalar v) { this->set(kMTransY, v); }
     void setPerspX(SkPersp v) { this->set(kMPersp0, v); }
     void setPerspY(SkPersp v) { this->set(kMPersp1, v); }
 
-    void setAll(float scaleX, float skewX, float transX,
-                float skewY, float scaleY, float transY,
+    void setAll(SkScalar scaleX, SkScalar skewX, SkScalar transX,
+                SkScalar skewY, SkScalar scaleY, SkScalar transY,
                 SkPersp persp0, SkPersp persp1, SkPersp persp2) {
         fMat[kMScaleX] = scaleX;
         fMat[kMSkewX]  = skewX;
@@ -177,17 +178,17 @@ public:
 
     /** Set the matrix to translate by (dx, dy).
     */
-    void setTranslate(float dx, float dy);
+    void setTranslate(SkScalar dx, SkScalar dy);
     void setTranslate(const SkVector& v) { this->setTranslate(v.fX, v.fY); }
 
     /** Set the matrix to scale by sx and sy, with a pivot point at (px, py).
         The pivot point is the coordinate that should remain unchanged by the
         specified transformation.
     */
-    void setScale(float sx, float sy, float px, float py);
+    void setScale(SkScalar sx, SkScalar sy, SkScalar px, SkScalar py);
     /** Set the matrix to scale by sx and sy.
     */
-    void setScale(float sx, float sy);
+    void setScale(SkScalar sx, SkScalar sy);
     /** Set the matrix to scale by 1/divx and 1/divy. Returns false and doesn't
         touch the matrix if either divx or divy is zero.
     */
@@ -196,78 +197,78 @@ public:
         pivot point at (px, py). The pivot point is the coordinate that should
         remain unchanged by the specified transformation.
     */
-    void setRotate(float degrees, float px, float py);
+    void setRotate(SkScalar degrees, SkScalar px, SkScalar py);
     /** Set the matrix to rotate about (0,0) by the specified number of degrees.
     */
-    void setRotate(float degrees);
+    void setRotate(SkScalar degrees);
     /** Set the matrix to rotate by the specified sine and cosine values, with
         a pivot point at (px, py). The pivot point is the coordinate that
         should remain unchanged by the specified transformation.
     */
-    void setSinCos(float sinValue, float cosValue,
-                   float px, float py);
+    void setSinCos(SkScalar sinValue, SkScalar cosValue,
+                   SkScalar px, SkScalar py);
     /** Set the matrix to rotate by the specified sine and cosine values.
     */
-    void setSinCos(float sinValue, float cosValue);
+    void setSinCos(SkScalar sinValue, SkScalar cosValue);
     /** Set the matrix to skew by sx and sy, with a pivot point at (px, py).
         The pivot point is the coordinate that should remain unchanged by the
         specified transformation.
     */
-    void setSkew(float kx, float ky, float px, float py);
+    void setSkew(SkScalar kx, SkScalar ky, SkScalar px, SkScalar py);
     /** Set the matrix to skew by sx and sy.
     */
-    void setSkew(float kx, float ky);
-    /** Set the matrix to the concatenation of the two specified matrices,
-        returning true if the the result can be represented. Either of the
-        two matrices may also be the target matrix. *this = a * b;
+    void setSkew(SkScalar kx, SkScalar ky);
+    /** Set the matrix to the concatenation of the two specified matrices.
+        Either of the two matrices may also be the target matrix.
+        *this = a * b;
     */
-    bool setConcat(const SkMatrix& a, const SkMatrix& b);
+    void setConcat(const SkMatrix& a, const SkMatrix& b);
 
     /** Preconcats the matrix with the specified translation.
         M' = M * T(dx, dy)
     */
-    bool preTranslate(float dx, float dy);
+    void preTranslate(SkScalar dx, SkScalar dy);
     /** Preconcats the matrix with the specified scale.
         M' = M * S(sx, sy, px, py)
     */
-    bool preScale(float sx, float sy, float px, float py);
+    void preScale(SkScalar sx, SkScalar sy, SkScalar px, SkScalar py);
     /** Preconcats the matrix with the specified scale.
         M' = M * S(sx, sy)
     */
-    bool preScale(float sx, float sy);
+    void preScale(SkScalar sx, SkScalar sy);
     /** Preconcats the matrix with the specified rotation.
         M' = M * R(degrees, px, py)
     */
-    bool preRotate(float degrees, float px, float py);
+    void preRotate(SkScalar degrees, SkScalar px, SkScalar py);
     /** Preconcats the matrix with the specified rotation.
         M' = M * R(degrees)
     */
-    bool preRotate(float degrees);
+    void preRotate(SkScalar degrees);
     /** Preconcats the matrix with the specified skew.
         M' = M * K(kx, ky, px, py)
     */
-    bool preSkew(float kx, float ky, float px, float py);
+    void preSkew(SkScalar kx, SkScalar ky, SkScalar px, SkScalar py);
     /** Preconcats the matrix with the specified skew.
         M' = M * K(kx, ky)
     */
-    bool preSkew(float kx, float ky);
+    void preSkew(SkScalar kx, SkScalar ky);
     /** Preconcats the matrix with the specified matrix.
         M' = M * other
     */
-    bool preConcat(const SkMatrix& other);
+    void preConcat(const SkMatrix& other);
 
     /** Postconcats the matrix with the specified translation.
         M' = T(dx, dy) * M
     */
-    bool postTranslate(float dx, float dy);
+    void postTranslate(SkScalar dx, SkScalar dy);
     /** Postconcats the matrix with the specified scale.
         M' = S(sx, sy, px, py) * M
     */
-    bool postScale(float sx, float sy, float px, float py);
+    void postScale(SkScalar sx, SkScalar sy, SkScalar px, SkScalar py);
     /** Postconcats the matrix with the specified scale.
         M' = S(sx, sy) * M
     */
-    bool postScale(float sx, float sy);
+    void postScale(SkScalar sx, SkScalar sy);
     /** Postconcats the matrix by dividing it by the specified integers.
         M' = S(1/divx, 1/divy, 0, 0) * M
     */
@@ -275,23 +276,23 @@ public:
     /** Postconcats the matrix with the specified rotation.
         M' = R(degrees, px, py) * M
     */
-    bool postRotate(float degrees, float px, float py);
+    void postRotate(SkScalar degrees, SkScalar px, SkScalar py);
     /** Postconcats the matrix with the specified rotation.
         M' = R(degrees) * M
     */
-    bool postRotate(float degrees);
+    void postRotate(SkScalar degrees);
     /** Postconcats the matrix with the specified skew.
         M' = K(kx, ky, px, py) * M
     */
-    bool postSkew(float kx, float ky, float px, float py);
+    void postSkew(SkScalar kx, SkScalar ky, SkScalar px, SkScalar py);
     /** Postconcats the matrix with the specified skew.
         M' = K(kx, ky) * M
     */
-    bool postSkew(float kx, float ky);
+    void postSkew(SkScalar kx, SkScalar ky);
     /** Postconcats the matrix with the specified matrix.
         M' = other * M
     */
-    bool postConcat(const SkMatrix& other);
+    void postConcat(const SkMatrix& other);
 
     enum ScaleToFit {
         /**
@@ -360,14 +361,14 @@ public:
         @param affine  The array to fill with affine identity values.
         Must not be NULL.
     */
-    static void SetAffineIdentity(float affine[6]);
+    static void SetAffineIdentity(SkScalar affine[6]);
 
     /** Fills the passed array with the affine values in column major order.
         If the matrix is a perspective transform, returns false
         and does not change the passed array.
         @param affine  The array to fill with affine values. Ignored if NULL.
     */
-    bool asAffine(float affine[6]) const;
+    bool asAffine(SkScalar affine[6]) const;
 
     /** Apply this matrix to the array of points specified by src, and write
         the transformed points into the array of points specified by dst.
@@ -396,6 +397,8 @@ public:
      *  should be a multiple of sizeof(SkScalar).
      */
     void mapPointsWithStride(SkPoint pts[], size_t stride, int count) const {
+        SkASSERT(stride >= sizeof(SkPoint));
+        SkASSERT(0 == stride % sizeof(SkScalar));
         for (int i = 0; i < count; ++i) {
             this->mapPoints(pts, pts, 1);
             pts = (SkPoint*)((intptr_t)pts + stride);
@@ -406,6 +409,8 @@ public:
     */
     void mapPointsWithStride(SkPoint dst[], SkPoint src[],
                              size_t stride, int count) const {
+        SkASSERT(stride >= sizeof(SkPoint));
+        SkASSERT(0 == stride % sizeof(SkScalar));
         for (int i = 0; i < count; ++i) {
             this->mapPoints(dst, src, 1);
             src = (SkPoint*)((intptr_t)src + stride);
@@ -424,10 +429,10 @@ public:
         @param count The number of triples (homogeneous points) in src to read,
                      and then transform into dst.
     */
-    void mapHomogeneousPoints(float dst[], const float src[], int count) const;
+    void mapHomogeneousPoints(SkScalar dst[], const SkScalar src[], int count) const;
 
-    void mapXY(float x, float y, SkPoint* result) const {
-		//assert(false);
+    void mapXY(SkScalar x, SkScalar y, SkPoint* result) const {
+        SkASSERT(result);
         this->getMapXYProc()(*this, x, y, result);
     }
 
@@ -489,21 +494,25 @@ public:
         this matrix. NOTE: in perspective this value assumes the circle
         has its center at the origin.
     */
-    float mapRadius(float radius) const;
+    SkScalar mapRadius(SkScalar radius) const;
 
-	typedef void( *MapXYProc)(const SkMatrix& mat, float x, float y,
+    typedef void (*MapXYProc)(const SkMatrix& mat, SkScalar x, SkScalar y,
                                  SkPoint* result);
 
     static MapXYProc GetMapXYProc(TypeMask mask) {
+        SkASSERT((mask & ~kAllMasks) == 0);
         return gMapXYProcs[mask & kAllMasks];
     }
 
-	MapXYProc getMapXYProc() const;
+    MapXYProc getMapXYProc() const {
+        return GetMapXYProc(this->getType());
+    }
 
     typedef void (*MapPtsProc)(const SkMatrix& mat, SkPoint dst[],
                                   const SkPoint src[], int count);
 
     static MapPtsProc GetMapPtsProc(TypeMask mask) {
+        SkASSERT((mask & ~kAllMasks) == 0);
         return gMapPtsProcs[mask & kAllMasks];
     }
 
@@ -515,7 +524,7 @@ public:
         then return true and if step[XY] is not null, return the step[XY] value.
         If it cannot, return false and ignore step.
     */
-    bool fixedStepInX(float y, SkFixed* stepX, SkFixed* stepY) const;
+    bool fixedStepInX(SkScalar y, SkFixed* stepX, SkFixed* stepY) const;
 
     /** Efficient comparison of two matrices. It distinguishes between zero and
      *  negative zero. It will return false when the sign of zero values is the
@@ -529,14 +538,14 @@ public:
         return 0 == memcmp(fMat, m.fMat, sizeof(fMat));
     }
 
-    friend SK_API bool operator==(const SkMatrix& a, const SkMatrix& b);
+    friend bool operator==(const SkMatrix& a, const SkMatrix& b);
     friend bool operator!=(const SkMatrix& a, const SkMatrix& b) {
         return !(a == b);
     }
 
     enum {
         // writeTo/readFromMemory will never return a value larger than this
-        kMaxFlattenSize = 9 * sizeof(float) + sizeof(uint32_t)
+        kMaxFlattenSize = 9 * sizeof(SkScalar) + sizeof(uint32_t)
     };
     // return the number of bytes written, whether or not buffer is null
     size_t writeToMemory(void* buffer) const;
@@ -551,23 +560,30 @@ public:
     size_t readFromMemory(const void* buffer, size_t length);
 
     SkDEVCODE(void dump() const;)
-    SkDEVCODE(void toString(SkString*) const;)
+    SK_TO_STRING_NONVIRT()
 
     /**
-     * Calculates the minimum stretching factor of the matrix. If the matrix has
-     * perspective -1 is returned.
+     * Calculates the minimum scaling factor of the matrix as computed from the SVD of the upper
+     * left 2x2. If the matrix has perspective -1 is returned.
      *
-     * @return minumum strecthing factor
+     * @return minumum scale factor
      */
-    float getMinStretch() const;
+    SkScalar getMinScale() const;
 
     /**
-     * Calculates the maximum stretching factor of the matrix. If the matrix has
-     * perspective -1 is returned.
+     * Calculates the maximum scaling factor of the matrix as computed from the SVD of the upper
+     * left 2x2. If the matrix has perspective -1 is returned.
      *
-     * @return maximum strecthing factor
+     * @return maximum scale factor
      */
-    float getMaxStretch() const;
+    SkScalar getMaxScale() const;
+
+    /**
+     * Gets both the min and max scale factors. The min scale factor is scaleFactors[0] and the max
+     * is scaleFactors[1]. If the matrix has perspective false will be returned and scaleFactors
+     * will be unchanged.
+     */
+    bool getMinMaxScales(SkScalar scaleFactors[2]) const;
 
     /**
      *  Return a reference to a const identity matrix
@@ -579,6 +595,15 @@ public:
      *  never be used.
      */
     static const SkMatrix& InvalidMatrix();
+
+    /**
+     * Return the concatenation of two matrices, a * b.
+     */
+    static SkMatrix Concat(const SkMatrix& a, const SkMatrix& b) {
+        SkMatrix result;
+        result.setConcat(a, b);
+        return result;
+    }
 
     /**
      * Testing routine; the matrix's type cache should never need to be
@@ -617,23 +642,28 @@ private:
                     kRectStaysRect_Mask
     };
 
-    float         fMat[9];
+    SkScalar         fMat[9];
     mutable uint32_t fTypeMask;
 
     uint8_t computeTypeMask() const;
     uint8_t computePerspectiveTypeMask() const;
 
     void setTypeMask(int mask) {
-        // allow kUnknown or a valid mask 
+        // allow kUnknown or a valid mask
+        SkASSERT(kUnknown_Mask == mask || (mask & kAllMasks) == mask ||
+                 ((kUnknown_Mask | kOnlyPerspectiveValid_Mask) & mask)
+                 == (kUnknown_Mask | kOnlyPerspectiveValid_Mask));
         fTypeMask = SkToU8(mask);
     }
 
     void orTypeMask(int mask) {
+        SkASSERT((mask & kORableMasks) == mask);
         fTypeMask = SkToU8(fTypeMask | mask);
     }
 
     void clearTypeMask(int mask) {
         // only allow a valid mask
+        SkASSERT((mask & kAllMasks) == mask);
         fTypeMask &= ~mask;
     }
 
@@ -661,15 +691,15 @@ private:
     static bool Poly3Proc(const SkPoint[], SkMatrix*, const SkPoint& scale);
     static bool Poly4Proc(const SkPoint[], SkMatrix*, const SkPoint& scale);
 
-    static void Identity_xy(const SkMatrix&, float, float, SkPoint*);
-    static void Trans_xy(const SkMatrix&, float, float, SkPoint*);
-    static void Scale_xy(const SkMatrix&, float, float, SkPoint*);
-    static void ScaleTrans_xy(const SkMatrix&, float, float, SkPoint*);
-    static void Rot_xy(const SkMatrix&, float, float, SkPoint*);
-    static void RotTrans_xy(const SkMatrix&, float, float, SkPoint*);
-    static void Persp_xy(const SkMatrix&, float, float, SkPoint*);
+    static void Identity_xy(const SkMatrix&, SkScalar, SkScalar, SkPoint*);
+    static void Trans_xy(const SkMatrix&, SkScalar, SkScalar, SkPoint*);
+    static void Scale_xy(const SkMatrix&, SkScalar, SkScalar, SkPoint*);
+    static void ScaleTrans_xy(const SkMatrix&, SkScalar, SkScalar, SkPoint*);
+    static void Rot_xy(const SkMatrix&, SkScalar, SkScalar, SkPoint*);
+    static void RotTrans_xy(const SkMatrix&, SkScalar, SkScalar, SkPoint*);
+    static void Persp_xy(const SkMatrix&, SkScalar, SkScalar, SkPoint*);
 
-	static const MapXYProc gMapXYProcs[];
+    static const MapXYProc gMapXYProcs[];
 
     static void Identity_pts(const SkMatrix&, SkPoint[], const SkPoint[], int);
     static void Trans_pts(const SkMatrix&, SkPoint dst[], const SkPoint[], int);

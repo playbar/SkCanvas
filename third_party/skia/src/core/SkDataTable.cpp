@@ -23,6 +23,8 @@ SkDataTable::SkDataTable() {
 
 SkDataTable::SkDataTable(const void* array, size_t elemSize, int count,
                          FreeProc proc, void* context) {
+    SkASSERT(count > 0);
+
     fCount = count;
     fElemSize = elemSize;   // non-zero signals we use fElems instead of fDir
     fU.fElems = (const char*)array;
@@ -31,6 +33,7 @@ SkDataTable::SkDataTable(const void* array, size_t elemSize, int count,
 }
 
 SkDataTable::SkDataTable(const Dir* dir, int count, FreeProc proc, void* ctx) {
+    SkASSERT(count > 0);
 
     fCount = count;
     fElemSize = 0;  // 0 signals that we use fDir instead of fElems
@@ -46,6 +49,7 @@ SkDataTable::~SkDataTable() {
 }
 
 size_t SkDataTable::atSize(int index) const {
+    SkASSERT((unsigned)index < (unsigned)fCount);
 
     if (fElemSize) {
         return fElemSize;
@@ -55,6 +59,7 @@ size_t SkDataTable::atSize(int index) const {
 }
 
 const void* SkDataTable::at(int index, size_t* size) const {
+    SkASSERT((unsigned)index < (unsigned)fCount);
 
     if (fElemSize) {
         if (size) {
@@ -74,7 +79,7 @@ const void* SkDataTable::at(int index, size_t* size) const {
 SkDataTable* SkDataTable::NewEmpty() {
     static SkDataTable* gEmpty;
     if (NULL == gEmpty) {
-        gEmpty = new SkDataTable;
+        gEmpty = SkNEW(SkDataTable);
     }
     gEmpty->ref();
     return gEmpty;

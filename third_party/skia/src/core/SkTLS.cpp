@@ -59,6 +59,7 @@ void* SkTLS::Get(CreateProc createProc, DeleteProc deleteProc) {
         const SkTLSRec* rec = (const SkTLSRec*)ptr;
         do {
             if (rec->fCreateProc == createProc) {
+                SkASSERT(rec->fDeleteProc == deleteProc);
                 return rec->fData;
             }
         } while ((rec = rec->fNext) != NULL);

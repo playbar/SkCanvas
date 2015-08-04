@@ -37,7 +37,7 @@ public:
         fCacheCount = 0;
         fCacheCountLimit = SK_DEFAULT_FONT_CACHE_COUNT_LIMIT;
 
-        fMutex = (kYes_UseMutex == um) ? new SkMutex : NULL;
+        fMutex = (kYes_UseMutex == um) ? SkNEW(SkMutex) : NULL;
     }
 
     ~SkGlyphCache_Globals() {
@@ -58,6 +58,12 @@ public:
 
     size_t getTotalMemoryUsed() const { return fTotalMemoryUsed; }
     int getCacheCountUsed() const { return fCacheCount; }
+
+#ifdef SK_DEBUG
+    void validate() const;
+#else
+    void validate() const {}
+#endif
 
     int getCacheCountLimit() const { return fCacheCountLimit; }
     int setCacheCountLimit(int limit);

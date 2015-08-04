@@ -59,6 +59,7 @@ public:
      *  resulting region is non-empty.
      */
     bool set(const SkRegion& src) {
+        SkASSERT(&src);
         *this = src;
         return !this->isEmpty();
     }
@@ -193,6 +194,7 @@ public:
      */
     bool quickContains(int32_t left, int32_t top, int32_t right,
                        int32_t bottom) const {
+        SkASSERT(this->isEmpty() == fBounds.isEmpty()); // valid region
 
         return left < right && top < bottom &&
                fRunHead == SkRegion_gRectRunHeadPtr &&  // this->isRect()
@@ -242,8 +244,12 @@ public:
         kXOR_Op,        //!< exclusive-or the two regions
         /** subtract the first region from the op region */
         kReverseDifference_Op,
-        kReplace_Op     //!< replace the dst region with the op region
+        kReplace_Op,    //!< replace the dst region with the op region
+
+        kLastOp = kReplace_Op
     };
+
+    static const int kOpCnt = kLastOp + 1;
 
     /**
      *  Set this region to the result of applying the Op to this region and the

@@ -11,9 +11,12 @@
 #include "SkDeque.h"
 #include "SkPath.h"
 #include "SkRect.h"
+#include "SkRRect.h"
 #include "SkRegion.h"
 #include "SkTDArray.h"
+#include "SkTLazy.h"
 
+class SkCanvasClipVisitor;
 
 // Because a single save/restore state can have multiple clips, this class
 // stores the stack depth (fSaveCount) and clips (fDeque) separately.
@@ -21,8 +24,7 @@
 // (i.e., the fSaveCount in force when it was added). Restores are thus
 // implemented by removing clips from fDeque that have an fSaveCount larger
 // then the freshly decremented count.
-class SK_API SkClipStack 
-{
+class SK_API SkClipStack {
 public:
     enum BoundsType {
         // The bounding box contains all the pixels that can be written to
@@ -42,57 +44,60 @@ public:
             kEmpty_Type,
             //!< This element combines a rect with the current clip using a set operation
             kRect_Type,
+            //!< This element combines a round-rect with the current clip using a set operation
+            kRRect_Type,
             //!< This element combines a path with the current clip using a set operation
             kPath_Type,
+
+            kLastType = kPath_Type
         };
+        static const int kTypeCnt = kLastType + 1;
 
         Element() {
             this->initCommon(0, SkRegion::kReplace_Op, false);
             this->setEmpty();
         }
 
+        Element(const Element&);
+
         Element(const SkRect& rect, SkRegion::Op op, bool doAA) {
             this->initRect(0, rect, op, doAA);
+        }
+
+        Element(const SkRRect& rrect, SkRegion::Op op, bool doAA) {
+            this->initRRect(0, rrect, op, doAA);
         }
 
         Element(const SkPath& path, SkRegion::Op op, bool doAA) {
             this->initPath(0, path, op, doAA);
         }
 
-        bool operator== (const Element& element) const {
-            if (this == &element) {
-                return true;
-            }
-            if (fOp != element.fOp ||
-                fType != element.fType ||
-                fDoAA != element.fDoAA ||
-                fSaveCount != element.fSaveCount) {
-                return false;
-            }
-            switch (fType) {
-                case kPath_Type:
-                    return fPath == element.fPath;
-                case kRect_Type:
-                    return fRect == element.fRect;
-                case kEmpty_Type:
-                    return true;
-                default:
-                    return false;
-            }
-        }
+        bool operator== (const Element& element) const;
         bool operator!= (const Element& element) const { return !(*this == element); }
 
         //!< Call to get the type of the clip element.
         Type getType() const { return fType; }
 
+        //!< Call to get the save count associated with this clip element.
+        int getSaveCount() const { return fSaveCount; }
+
         //!< Call if getType() is kPath to get the path.
-        const SkPath& getPath() const { return fPath; }
+        const SkPath& getPath() const { SkASSERT(kPath_Type == fType); return *fPath.get(); }
+
+        //!< Call if getType() is kRRect to get the round-rect.
+        const SkRRect& getRRect() const { SkASSERT(kRRect_Type == fType); return fRRect; }
 
         //!< Call if getType() is kRect to get the rect.
-        const SkRect& getRect() const { return fRect; }
+        const SkRect& getRect() const {
+            SkASSERT(kRect_Type == fType && (fRRect.isRect() || fRRect.isEmpty()));
+            return fRRect.getBounds();
+        }
 
         //!< Call if getType() is not kEmpty to get the set operation used to combine this element.
         SkRegion::Op getOp() const { return fOp; }
+
+        //!< Call to get the element as a path, regardless of its type.
+        void asPath(SkPath* path) const;
 
         /** If getType() is not kEmpty this indicates whether the clip shape should be anti-aliased
             when it is rasterized. */
@@ -109,7 +114,7 @@ public:
             stack not to the element itself. That is the same clip path in different stacks will
             have a different ID since the elements produce different clip result in the context of
             their stacks. */
-        int32_t getGenID() const { return fGenID; }
+        int32_t getGenID() const { SkASSERT(kInvalidGenID != fGenID); return fGenID; }
 
         /**
          * Gets the bounds of the clip element, either the rect or path bounds. (Whether the shape
@@ -118,13 +123,15 @@ public:
         const SkRect& getBounds() const {
             static const SkRect kEmpty = { 0, 0, 0, 0 };
             switch (fType) {
-                case kRect_Type:
-                    return fRect;
+                case kRect_Type:  // fallthrough
+                case kRRect_Type:
+                    return fRRect.getBounds();
                 case kPath_Type:
-                    return fPath.getBounds();
+                    return fPath.get()->getBounds();
                 case kEmpty_Type:
                     return kEmpty;
                 default:
+                    SkDEBUGFAIL("Unexpected type.");
                     return kEmpty;
             }
         }
@@ -136,12 +143,15 @@ public:
         bool contains(const SkRect& rect) const {
             switch (fType) {
                 case kRect_Type:
-                    return fRect.contains(rect);
+                    return this->getRect().contains(rect);
+                case kRRect_Type:
+                    return fRRect.contains(rect);
                 case kPath_Type:
-                    return fPath.conservativelyContainsRect(rect);
+                    return fPath.get()->conservativelyContainsRect(rect);
                 case kEmpty_Type:
                     return false;
                 default:
+                    SkDEBUGFAIL("Unexpected type.");
                     return false;
             }
         }
@@ -150,14 +160,27 @@ public:
          * Is the clip shape inverse filled.
          */
         bool isInverseFilled() const {
-            return kPath_Type == fType && fPath.isInverseFillType();
+            return kPath_Type == fType && fPath.get()->isInverseFillType();
         }
+
+        /**
+        * Replay this clip into the visitor.
+        */
+        void replay(SkCanvasClipVisitor*) const;
+
+#ifdef SK_DEVELOPER
+        /**
+         * Dumps the element to SkDebugf. This is intended for Skia development debugging
+         * Don't rely on the existence of this function or the formatting of its output.
+         */
+        void dump() const;
+#endif
 
     private:
         friend class SkClipStack;
 
-        SkPath          fPath;
-        SkRect          fRect;
+        SkTLazy<SkPath> fPath;
+        SkRRect         fRRect;
         int             fSaveCount; // save count of stack when this element was added.
         SkRegion::Op    fOp;
         Type            fType;
@@ -187,6 +210,10 @@ public:
             this->setEmpty();
         }
 
+        Element(int saveCount, const SkRRect& rrect, SkRegion::Op op, bool doAA) {
+            this->initRRect(saveCount, rrect, op, doAA);
+        }
+
         Element(int saveCount, const SkRect& rect, SkRegion::Op op, bool doAA) {
             this->initRect(saveCount, rect, op, doAA);
         }
@@ -208,26 +235,25 @@ public:
         }
 
         void initRect(int saveCount, const SkRect& rect, SkRegion::Op op, bool doAA) {
-            fRect = rect;
+            fRRect.setRect(rect);
             fType = kRect_Type;
             this->initCommon(saveCount, op, doAA);
         }
 
-        void initPath(int saveCount, const SkPath& path, SkRegion::Op op, bool doAA) {
-            fPath = path;
-            fType = kPath_Type;
+        void initRRect(int saveCount, const SkRRect& rrect, SkRegion::Op op, bool doAA) {
+            SkRRect::Type type = rrect.getType();
+            fRRect = rrect;
+            if (SkRRect::kRect_Type == type || SkRRect::kEmpty_Type == type) {
+                fType = kRect_Type;
+            } else {
+                fType = kRRect_Type;
+            }
             this->initCommon(saveCount, op, doAA);
         }
 
-        void setEmpty() {
-            fType = kEmpty_Type;
-            fFiniteBound.setEmpty();
-            fFiniteBoundType = kNormal_BoundsType;
-            fIsIntersectionOfRects = false;
-            fRect.setEmpty();
-            fPath.reset();
-            fGenID = kEmptyGenID;
-        }
+        void initPath(int saveCount, const SkPath& path, SkRegion::Op op, bool doAA);
+
+        void setEmpty();
 
         // All Element methods below are only used within SkClipStack.cpp
         inline void checkEmpty() const;
@@ -303,6 +329,7 @@ public:
         this->clipDevRect(r, op, false);
     }
     void clipDevRect(const SkRect&, SkRegion::Op, bool doAA);
+    void clipDevRRect(const SkRRect&, SkRegion::Op, bool doAA);
     void clipDevPath(const SkPath&, SkRegion::Op, bool doAA);
     // An optimized version of clipDevRect(emptyRect, kIntersect, ...)
     void clipEmpty();
@@ -324,6 +351,14 @@ public:
     static const int32_t kWideOpenGenID = 2;    // all pixels writeable
 
     int32_t getTopmostGenID() const;
+
+#ifdef SK_DEVELOPER
+    /**
+     * Dumps the contents of the clip stack to SkDebugf. This is intended for Skia development
+     * debugging. Don't rely on the existence of this function or the formatting of its output.
+     */
+    void dump() const;
+#endif
 
 public:
     class Iter {
@@ -424,6 +459,11 @@ private:
     // clipDevRect and clipDevPath call. 0 is reserved to indicate an
     // invalid ID.
     static int32_t     gGenID;
+
+    /**
+     * Helper for clipDevPath, etc.
+     */
+    void pushElement(const Element& element);
 
     /**
      * Restore the stack back to the specified save count.

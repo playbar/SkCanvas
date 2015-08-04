@@ -17,6 +17,7 @@
 #include "SkTypes.h"
 #include <limits.h>
 #define DISALLOW_EVIL_CONSTRUCTORS(name)
+#define CHECK(predicate)  SkASSERT(predicate)
 typedef uint8_t uint8;
 typedef uint32_t uint32;
 

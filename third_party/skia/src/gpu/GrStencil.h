@@ -284,6 +284,8 @@ public:
     bool operator == (const GrStencilSettings& s) const {
         static const size_t gCompareSize = sizeof(GrStencilSettings) -
                                            sizeof(fFlags);
+        SkASSERT((const char*)&fFlags + sizeof(fFlags) ==
+                 (const char*)this + sizeof(GrStencilSettings));
         if (this->isDisabled() & s.isDisabled()) { // using & not &&
             return true;
         }

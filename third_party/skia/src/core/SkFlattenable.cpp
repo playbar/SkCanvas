@@ -10,7 +10,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void SkFlattenable::flatten(SkFlattenableWriteBuffer&) const
+void SkFlattenable::flatten(SkWriteBuffer&) const
 {
     /*  we don't write anything at the moment, but this allows our subclasses
         to not know that, since we want them to always call INHERITED::flatten()
@@ -73,12 +73,16 @@ static int gCount;
 static Entry gEntries[MAX_ENTRY_COUNT];
 
 void SkFlattenable::Register(const char name[], Factory factory, SkFlattenable::Type type) {
+    SkASSERT(name);
+    SkASSERT(factory);
+
     static bool gOnce = false;
     if (!gOnce) {
         gCount = 0;
         gOnce = true;
     }
 
+    SkASSERT(gCount < MAX_ENTRY_COUNT);
 
     gEntries[gCount].fName = name;
     gEntries[gCount].fFactory = factory;
@@ -111,6 +115,7 @@ SkFlattenable::Factory SkFlattenable::NameToFactory(const char name[]) {
 }
 
 bool SkFlattenable::NameToType(const char name[], SkFlattenable::Type* type) {
+    SkASSERT(NULL != type);
     InitializeFlattenablesIfNeeded();
 #ifdef SK_DEBUG
     report_no_entries(__FUNCTION__);

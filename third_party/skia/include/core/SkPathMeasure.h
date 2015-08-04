@@ -32,14 +32,14 @@ public:
     /** Return the total length of the current contour, or 0 if no path
         is associated (e.g. resetPath(null))
     */
-    float getLength();
+    SkScalar getLength();
 
     /** Pins distance to 0 <= distance <= getLength(), and then computes
         the corresponding position and tangent.
         Returns false if there is no path, or a zero-length path was specified, in which case
         position and tangent are unchanged.
     */
-    bool SK_WARN_UNUSED_RESULT getPosTan(float distance, SkPoint* position,
+    bool SK_WARN_UNUSED_RESULT getPosTan(SkScalar distance, SkPoint* position,
                                          SkVector* tangent);
 
     enum MatrixFlags {
@@ -53,7 +53,7 @@ public:
         Returns false if there is no path, or a zero-length path was specified, in which case
         matrix is unchanged.
     */
-    bool SK_WARN_UNUSED_RESULT getMatrix(float distance, SkMatrix* matrix,
+    bool SK_WARN_UNUSED_RESULT getMatrix(SkScalar distance, SkMatrix* matrix,
                                   MatrixFlags flags = kGetPosAndTan_MatrixFlag);
 
     /** Given a start and stop distance, return in dst the intervening segment(s).
@@ -62,7 +62,7 @@ public:
         then return false (and leave dst untouched).
         Begin the segment with a moveTo if startWithMoveTo is true
     */
-    bool getSegment(float startD, float stopD, SkPath* dst, bool startWithMoveTo);
+    bool getSegment(SkScalar startD, SkScalar stopD, SkPath* dst, bool startWithMoveTo);
 
     /** Return true if the current contour is closed()
     */
@@ -80,18 +80,18 @@ public:
 private:
     SkPath::Iter    fIter;
     const SkPath*   fPath;
-    float        fLength;            // relative to the current contour
+    SkScalar        fLength;            // relative to the current contour
     int             fFirstPtIndex;      // relative to the current contour
     bool            fIsClosed;          // relative to the current contour
     bool            fForceClosed;
 
     struct Segment {
-        float    fDistance;  // total distance up to this point
+        SkScalar    fDistance;  // total distance up to this point
         unsigned    fPtIndex : 15; // index into the fPts array
         unsigned    fTValue : 15;
         unsigned    fType : 2;
 
-        float getScalarT() const;
+        SkScalar getScalarT() const;
     };
     SkTDArray<Segment>  fSegments;
     SkTDArray<SkPoint>  fPts; // Points used to define the segments
@@ -99,11 +99,11 @@ private:
     static const Segment* NextSegment(const Segment*);
 
     void     buildSegments();
-    float compute_quad_segs(const SkPoint pts[3], float distance,
+    SkScalar compute_quad_segs(const SkPoint pts[3], SkScalar distance,
                                 int mint, int maxt, int ptIndex);
-    float compute_cubic_segs(const SkPoint pts[3], float distance,
+    SkScalar compute_cubic_segs(const SkPoint pts[3], SkScalar distance,
                                 int mint, int maxt, int ptIndex);
-    const Segment* distanceToSegment(float distance, float* t);
+    const Segment* distanceToSegment(SkScalar distance, SkScalar* t);
 };
 
 #endif

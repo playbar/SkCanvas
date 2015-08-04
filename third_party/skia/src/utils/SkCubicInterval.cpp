@@ -7,20 +7,20 @@
  */
 #include "SkCubicInterval.h"
 
-static float eval_cubic(float c1, float c2, float c3,
-                           float t) {
+static SkScalar eval_cubic(SkScalar c1, SkScalar c2, SkScalar c3,
+                           SkScalar t) {
     return SkScalarMul(SkScalarMul(SkScalarMul(c3, t) + c2, t) + c1, t);
 }
 
-static float find_cubic_t(float c1, float c2, float c3,
-                             float targetX) {
-    float minT = 0;
-    float maxT = SK_Scalar1;
-    float t;
+static SkScalar find_cubic_t(SkScalar c1, SkScalar c2, SkScalar c3,
+                             SkScalar targetX) {
+    SkScalar minT = 0;
+    SkScalar maxT = SK_Scalar1;
+    SkScalar t;
 
     for (;;) {
         t = SkScalarAve(minT, maxT);
-        float x = eval_cubic(c1, c2, c3, t);
+        SkScalar x = eval_cubic(c1, c2, c3, t);
         if (SkScalarNearlyZero(x - targetX)) {
             break;
         }
@@ -46,9 +46,9 @@ static float find_cubic_t(float c1, float c2, float c3,
 
     ((C3*t + C2)*t + C1)*t
  */
-float SkEvalCubicInterval(float x1, float y1,
-                             float x2, float y2,
-                             float unitX) {
+SkScalar SkEvalCubicInterval(SkScalar x1, SkScalar y1,
+                             SkScalar x2, SkScalar y2,
+                             SkScalar unitX) {
     x1 = SkScalarPin(x1, 0, SK_Scalar1);
     x2 = SkScalarPin(x2, 0, SK_Scalar1);
     unitX = SkScalarPin(unitX, 0, SK_Scalar1);
@@ -58,7 +58,7 @@ float SkEvalCubicInterval(float x1, float y1,
     x2 *= 3;
 
     // now search for t given unitX
-    float t = find_cubic_t(x1, x2 - 2*x1, x1 - x2 + SK_Scalar1, unitX);
+    SkScalar t = find_cubic_t(x1, x2 - 2*x1, x1 - x2 + SK_Scalar1, unitX);
 
     // now evaluate the cubic in Y
     y1 *= 3;

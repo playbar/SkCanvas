@@ -53,7 +53,7 @@ void SkProgressBarView::changeProgress(int diff)
     }
     if (evt.isType("recommendDim"))
     {
-        float    height;
+        SkScalar    height;
 
         if (evt.findScalar("y", &height))
             this->setHeight(height);

@@ -17,6 +17,10 @@ template <typename T, bool MEM_COPY = false> class SkTArray;
 namespace SkTArrayExt {
 
 template<typename T>
+inline void copy(SkTArray<T, true>* self, int dst, int src) {
+    memcpy(&self->fItemArray[dst], &self->fItemArray[src], sizeof(T));
+}
+template<typename T>
 inline void copy(SkTArray<T, true>* self, const T* array) {
     memcpy(self->fMemArray, array, self->fCount * sizeof(T));
 }
@@ -25,6 +29,10 @@ inline void copyAndDelete(SkTArray<T, true>* self, char* newMemArray) {
     memcpy(newMemArray, self->fMemArray, self->fCount * sizeof(T));
 }
 
+template<typename T>
+inline void copy(SkTArray<T, false>* self, int dst, int src) {
+    SkNEW_PLACEMENT_ARGS(&self->fItemArray[dst], T, (self->fItemArray[src]));
+}
 template<typename T>
 inline void copy(SkTArray<T, false>* self, const T* array) {
     for (int i = 0; i < self->fCount; ++i) {
@@ -45,7 +53,7 @@ template <typename T, bool MEM_COPY> void* operator new(size_t, SkTArray<T, MEM_
 
 /** When MEM_COPY is true T will be bit copied when moved.
     When MEM_COPY is false, T will be copy constructed / destructed.
-    In all cases T's constructor will be called on allocation,
+    In all cases T will be default-initialized on allocation,
     and its destructor will be called from this object's destructor.
 */
 template <typename T, bool MEM_COPY> class SkTArray {
@@ -53,8 +61,7 @@ public:
     /**
      * Creates an empty array with no initial storage
      */
-    SkTArray()
-	{
+    SkTArray() {
         fCount = 0;
         fReserveCount = gMIN_ALLOC_COUNT;
         fAllocCount = 0;
@@ -118,6 +125,7 @@ public:
      * Resets to count() = n newly constructed T objects.
      */
     void reset(int n) {
+        SkASSERT(n >= 0);
         for (int i = 0; i < fCount; ++i) {
             fItemArray[i].~T();
         }
@@ -140,8 +148,17 @@ public:
         int delta = count - fCount;
         this->checkRealloc(delta);
         fCount = count;
-        for (int i = 0; i < count; ++i) {
-            SkTArrayExt::copy(this, array);
+        SkTArrayExt::copy(this, array);
+    }
+
+    void removeShuffle(int n) {
+        SkASSERT(n < fCount);
+        int newCount = fCount - 1;
+        fCount = newCount;
+        fItemArray[n].~T();
+        if (n != newCount) {
+            SkTArrayExt::copy(this, n, newCount);
+            fItemArray[newCount].~T();
         }
     }
 
@@ -156,7 +173,7 @@ public:
     bool empty() const { return !fCount; }
 
     /**
-     * Adds 1 new default-constructed T value and returns in by reference. Note
+     * Adds 1 new default-initialized T value and returns it by reference. Note
      * the reference only remains valid until the next call that adds or removes
      * elements.
      */
@@ -176,11 +193,12 @@ public:
     }
 
     /**
-     * Allocates n more default T values, and returns the address of the start
-     * of that new range. Note: this address is only valid until the next API
-     * call made on the array that might add or remove elements.
+     * Allocates n more default-initialized T values, and returns the address of
+     * the start of that new range. Note: this address is only valid until the
+     * next API call made on the array that might add or remove elements.
      */
     T* push_back_n(int n) {
+        SkASSERT(n >= 0);
         T* newTs = reinterpret_cast<T*>(this->push_back_raw(n));
         for (int i = 0; i < n; ++i) {
             SkNEW_PLACEMENT(newTs + i, T);
@@ -193,6 +211,7 @@ public:
      * to the same T.
      */
     T* push_back_n(int n, const T& t) {
+        SkASSERT(n >= 0);
         T* newTs = reinterpret_cast<T*>(this->push_back_raw(n));
         for (int i = 0; i < n; ++i) {
             SkNEW_PLACEMENT_ARGS(newTs[i], T, (t));
@@ -205,6 +224,7 @@ public:
      * to separate T values.
      */
     T* push_back_n(int n, const T t[]) {
+        SkASSERT(n >= 0);
         this->checkRealloc(n);
         for (int i = 0; i < n; ++i) {
             SkNEW_PLACEMENT_ARGS(fItemArray + fCount + i, T, (t[i]));
@@ -217,6 +237,7 @@ public:
      * Removes the last element. Not safe to call when count() == 0.
      */
     void pop_back() {
+        SkASSERT(fCount > 0);
         --fCount;
         fItemArray[fCount].~T();
         this->checkRealloc(0);
@@ -226,6 +247,8 @@ public:
      * Removes the last n elements. Not safe to call when count() < n.
      */
     void pop_back_n(int n) {
+        SkASSERT(n >= 0);
+        SkASSERT(fCount >= n);
         fCount -= n;
         for (int i = 0; i < n; ++i) {
             fItemArray[fCount + i].~T();
@@ -238,6 +261,8 @@ public:
      * initialized.
      */
     void resize_back(int newCount) {
+        SkASSERT(newCount >= 0);
+
         if (newCount > fCount) {
             this->push_back_n(newCount - fCount);
         } else if (newCount < fCount) {
@@ -262,35 +287,43 @@ public:
      * Get the i^th element.
      */
     T& operator[] (int i) {
+        SkASSERT(i < fCount);
+        SkASSERT(i >= 0);
         return fItemArray[i];
     }
 
     const T& operator[] (int i) const {
+        SkASSERT(i < fCount);
+        SkASSERT(i >= 0);
         return fItemArray[i];
     }
 
     /**
      * equivalent to operator[](0)
      */
-    T& front() { return fItemArray[0];}
+    T& front() { SkASSERT(fCount > 0); return fItemArray[0];}
 
-    const T& front() const { return fItemArray[0];}
+    const T& front() const { SkASSERT(fCount > 0); return fItemArray[0];}
 
     /**
      * equivalent to operator[](count() - 1)
      */
-    T& back() { return fItemArray[fCount - 1];}
+    T& back() { SkASSERT(fCount); return fItemArray[fCount - 1];}
 
-    const T& back() const { return fItemArray[fCount - 1];}
+    const T& back() const { SkASSERT(fCount > 0); return fItemArray[fCount - 1];}
 
     /**
      * equivalent to operator[](count()-1-i)
      */
     T& fromBack(int i) {
+        SkASSERT(i >= 0);
+        SkASSERT(i < fCount);
         return fItemArray[fCount - i - 1];
     }
 
     const T& fromBack(int i) const {
+        SkASSERT(i >= 0);
+        SkASSERT(i < fCount);
         return fItemArray[fCount - i - 1];
     }
 
@@ -343,6 +376,8 @@ protected:
 
     void init(const T* array, int count,
                void* preAllocStorage, int preAllocOrReserveCount) {
+        SkASSERT(count >= 0);
+        SkASSERT(preAllocOrReserveCount >= 0);
         fCount              = count;
         fReserveCount       = (preAllocOrReserveCount > 0) ?
                                     preAllocOrReserveCount :
@@ -374,6 +409,10 @@ private:
     }
 
     inline void checkRealloc(int delta) {
+        SkASSERT(fCount >= 0);
+        SkASSERT(fAllocCount >= 0);
+
+        SkASSERT(-delta <= fCount);
 
         int newCount = fCount + delta;
         int newAllocCount = fAllocCount;
@@ -405,9 +444,11 @@ private:
 
     friend void* operator new<T>(size_t, SkTArray*, int);
 
+    template<typename X> friend void SkTArrayExt::copy(SkTArray<X, true>* that, int dst, int src);
     template<typename X> friend void SkTArrayExt::copy(SkTArray<X, true>* that, const X*);
     template<typename X> friend void SkTArrayExt::copyAndDelete(SkTArray<X, true>* that, char*);
 
+    template<typename X> friend void SkTArrayExt::copy(SkTArray<X, false>* that, int dst, int src);
     template<typename X> friend void SkTArrayExt::copy(SkTArray<X, false>* that, const X*);
     template<typename X> friend void SkTArrayExt::copyAndDelete(SkTArray<X, false>* that, char*);
 
@@ -426,6 +467,8 @@ template <typename T, bool MEM_COPY>
 void* operator new(size_t, SkTArray<T, MEM_COPY>* array, int atIndex) {
     // Currently, we only support adding to the end of the array. When the array class itself
     // supports random insertion then this should be updated.
+    // SkASSERT(atIndex >= 0 && atIndex <= array->count());
+    SkASSERT(atIndex == array->count());
     return array->push_back_raw(1);
 }
 
@@ -446,8 +489,7 @@ void operator delete(void*, SkTArray<T, MEM_COPY>* array, int atIndex) {
  * Subclass of SkTArray that contains a preallocated memory block for the array.
  */
 template <int N, typename T, bool MEM_COPY = false>
-class SkSTArray : public SkTArray<T, MEM_COPY> 
-{
+class SkSTArray : public SkTArray<T, MEM_COPY> {
 private:
     typedef SkTArray<T, MEM_COPY> INHERITED;
 

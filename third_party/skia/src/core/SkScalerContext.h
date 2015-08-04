@@ -31,9 +31,9 @@ class SkRasterizer;
 struct SkScalerContextRec {
     uint32_t    fOrigFontID;
     uint32_t    fFontID;
-    float    fTextSize, fPreScaleX, fPreSkewX;
-    float    fPost2x2[2][2];
-    float    fFrameWidth, fMiterLimit;
+    SkScalar    fTextSize, fPreScaleX, fPreSkewX;
+    SkScalar    fPost2x2[2][2];
+    SkScalar    fFrameWidth, fMiterLimit;
 
     //These describe the parameters to create (uniquely identify) the pre-blend.
     uint32_t    fLumBits;
@@ -42,24 +42,27 @@ struct SkScalerContextRec {
     uint8_t     fContrast;    //0.8+1, [0.0, 1.0] artificial contrast
     uint8_t     fReservedAlign;
 
-    float getDeviceGamma() const {
+    SkScalar getDeviceGamma() const {
         return SkIntToScalar(fDeviceGamma) / (1 << 6);
     }
-    void setDeviceGamma(float dg) {
+    void setDeviceGamma(SkScalar dg) {
+        SkASSERT(0 <= dg && dg < SkIntToScalar(4));
         fDeviceGamma = SkScalarFloorToInt(dg * (1 << 6));
     }
 
-    float getPaintGamma() const {
+    SkScalar getPaintGamma() const {
         return SkIntToScalar(fPaintGamma) / (1 << 6);
     }
-    void setPaintGamma(float pg) {
+    void setPaintGamma(SkScalar pg) {
+        SkASSERT(0 <= pg && pg < SkIntToScalar(4));
         fPaintGamma = SkScalarFloorToInt(pg * (1 << 6));
     }
 
-    float getContrast() const {
+    SkScalar getContrast() const {
         return SkIntToScalar(fContrast) / ((1 << 8) - 1);
     }
-    void setContrast(float c) {
+    void setContrast(SkScalar c) {
+        SkASSERT(0 <= c && c <= SK_Scalar1);
         fContrast = SkScalarRoundToInt(c * ((1 << 8) - 1));
     }
 
@@ -119,7 +122,7 @@ public:
         kEmbeddedBitmapText_Flag  = 0x0004,
         kEmbolden_Flag            = 0x0008,
         kSubpixelPositioning_Flag = 0x0010,
-        kAutohinting_Flag         = 0x0020,
+        kForceAutohinting_Flag    = 0x0020,  // Use auto instead of bytcode hinting if hinting.
         kVertical_Flag            = 0x0040,
 
         // together, these two flags resulting in a two bit value which matches
@@ -181,16 +184,27 @@ public:
     void        getPath(const SkGlyph&, SkPath*);
     void        getFontMetrics(SkPaint::FontMetrics*);
 
-#ifdef SK_BUILD_FOR_ANDROID
+    /** Return the size in bytes of the associated gamma lookup table
+     */
+    static size_t GetGammaLUTSize(SkScalar contrast, SkScalar paintGamma, SkScalar deviceGamma,
+                                  int* width, int* height);
+
+    /** Get the associated gamma lookup table. The 'data' pointer must point to pre-allocated
+        memory, with size in bytes greater than or equal to the return value of getGammaLUTSize().
+     */
+    static void   GetGammaLUTData(SkScalar contrast, SkScalar paintGamma, SkScalar deviceGamma,
+                                  void* data);
+
+//#ifdef SK_BUILD_FOR_ANDROID
     unsigned getBaseGlyphCount(SkUnichar charCode);
 
     // This function must be public for SkTypeface_android.h, but should not be
     // called by other callers
     SkFontID findTypefaceIdForChar(SkUnichar uni);
-#endif
+//#endif
 
-    static inline void MakeRec(const SkPaint&, const SkDeviceProperties* deviceProperties,
-                               const SkMatrix*, Rec* rec);
+    static void MakeRec(const SkPaint&, const SkDeviceProperties* deviceProperties,
+                        const SkMatrix*, Rec* rec);
     static inline void PostMakeRec(const SkPaint&, Rec*);
 
     static SkMaskGamma::PreBlend GetMaskPreBlend(const Rec& rec);

@@ -17,12 +17,14 @@ SkBlitRow::ColorRectProc PlatformColorRectProcFactory();
 static void S32_Opaque_BlitRow32(SkPMColor* SK_RESTRICT dst,
                                  const SkPMColor* SK_RESTRICT src,
                                  int count, U8CPU alpha) {
-    memcpy(dst, src, count * sizeof(SkPMColor));
+    SkASSERT(255 == alpha);
+    sk_memcpy32(dst, src, count);
 }
 
 static void S32_Blend_BlitRow32(SkPMColor* SK_RESTRICT dst,
                                 const SkPMColor* SK_RESTRICT src,
                                 int count, U8CPU alpha) {
+    SkASSERT(alpha <= 255);
     if (count > 0) {
         unsigned src_scale = SkAlpha255To256(alpha);
         unsigned dst_scale = 256 - src_scale;
@@ -54,6 +56,7 @@ static void S32_Blend_BlitRow32(SkPMColor* SK_RESTRICT dst,
 static void S32A_Opaque_BlitRow32(SkPMColor* SK_RESTRICT dst,
                                   const SkPMColor* SK_RESTRICT src,
                                   int count, U8CPU alpha) {
+    SkASSERT(255 == alpha);
     if (count > 0) {
 #ifdef UNROLL
         if (count & 1) {
@@ -82,6 +85,7 @@ static void S32A_Opaque_BlitRow32(SkPMColor* SK_RESTRICT dst,
 static void S32A_Blend_BlitRow32(SkPMColor* SK_RESTRICT dst,
                                  const SkPMColor* SK_RESTRICT src,
                                  int count, U8CPU alpha) {
+    SkASSERT(alpha <= 255);
     if (count > 0) {
 #ifdef UNROLL
         if (count & 1) {
@@ -117,6 +121,7 @@ static const SkBlitRow::Proc32 gDefault_Procs32[] = {
 };
 
 SkBlitRow::Proc32 SkBlitRow::Factory32(unsigned flags) {
+    SkASSERT(flags < SK_ARRAY_COUNT(gDefault_Procs32));
     // just so we don't crash
     flags &= kFlags32_Mask;
 
@@ -124,6 +129,7 @@ SkBlitRow::Proc32 SkBlitRow::Factory32(unsigned flags) {
     if (NULL == proc) {
         proc = gDefault_Procs32[flags];
     }
+    SkASSERT(proc);
     return proc;
 }
 
@@ -132,6 +138,7 @@ SkBlitRow::Proc32 SkBlitRow::ColorProcFactory() {
     if (NULL == proc) {
         proc = Color32;
     }
+    SkASSERT(proc);
     return proc;
 }
 
@@ -237,5 +244,6 @@ SkBlitRow::ColorRectProc SkBlitRow::ColorRectProcFactory() {
     if (NULL == proc) {
         proc = ColorRect32;
     }
+    SkASSERT(proc);
     return proc;
 }

@@ -18,7 +18,7 @@ class GrTexture;
  * The stencil buffer stores the last clip path - providing a single entry
  * "cache". This class provides similar functionality for AA clip paths
  */
-class GrClipMaskCache : public SkNoncopyable {
+class GrClipMaskCache : SkNoncopyable {
 public:
     GrClipMaskCache();
 
@@ -32,6 +32,9 @@ public:
     }
 
     bool canReuse(int32_t clipGenID, const SkIRect& bounds) {
+
+        SkASSERT(clipGenID != SkClipStack::kWideOpenGenID);
+        SkASSERT(clipGenID != SkClipStack::kEmptyGenID);
 
         GrClipStackFrame* back = (GrClipStackFrame*) fStack.back();
 
@@ -48,6 +51,7 @@ public:
 
     void reset() {
         if (fStack.empty()) {
+//            SkASSERT(false);
             return;
         }
 
@@ -65,6 +69,7 @@ public:
     void push();
 
     void pop() {
+        //SkASSERT(!fStack.empty());
 
         if (!fStack.empty()) {
             GrClipStackFrame* back = (GrClipStackFrame*) fStack.back();
@@ -86,6 +91,7 @@ public:
     GrTexture* getLastMask() {
 
         if (fStack.empty()) {
+            SkASSERT(false);
             return NULL;
         }
 
@@ -97,6 +103,7 @@ public:
     const GrTexture* getLastMask() const {
 
         if (fStack.empty()) {
+            SkASSERT(false);
             return NULL;
         }
 
@@ -110,6 +117,7 @@ public:
                      const SkIRect& bound) {
 
         if (fStack.empty()) {
+            SkASSERT(false);
             return;
         }
 
@@ -121,6 +129,7 @@ public:
     int getLastMaskWidth() const {
 
         if (fStack.empty()) {
+            SkASSERT(false);
             return -1;
         }
 
@@ -136,6 +145,7 @@ public:
     int getLastMaskHeight() const {
 
         if (fStack.empty()) {
+            SkASSERT(false);
             return -1;
         }
 
@@ -151,6 +161,7 @@ public:
     void getLastBound(SkIRect* bound) const {
 
         if (fStack.empty()) {
+            SkASSERT(false);
             bound->setEmpty();
             return;
         }

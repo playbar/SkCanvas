@@ -43,8 +43,8 @@ public:
                            int32_t height,
                            SkBitmap* returnedBitmap);
 
-	static ID* FindAndLock(const SkBitmap& original, float scaleX,
-		float scaleY, SkBitmap* returnedBitmap);
+    static ID* FindAndLock(const SkBitmap& original, SkScalar scaleX,
+                           SkScalar scaleY, SkBitmap* returnedBitmap);
     static ID* FindAndLockMip(const SkBitmap& original,
                               SkMipMap const** returnedMipMap);
 
@@ -54,15 +54,18 @@ public:
                           int32_t height,
                           const SkBitmap& bitmap);
 
-	static ID* AddAndLock(const SkBitmap& original, float scaleX,
-		float scaleY, const SkBitmap& bitmap);
+    static ID* AddAndLock(const SkBitmap& original, SkScalar scaleX,
+                          SkScalar scaleY, const SkBitmap& bitmap);
     static ID* AddAndLockMip(const SkBitmap& original, const SkMipMap* mipMap);
 
     static void Unlock(ID*);
 
-    static size_t GetBytesUsed();
-    static size_t GetByteLimit();
-    static size_t SetByteLimit(size_t newLimit);
+    static size_t GetTotalBytesUsed();
+    static size_t GetTotalByteLimit();
+    static size_t SetTotalByteLimit(size_t newLimit);
+
+    static size_t SetSingleAllocationByteLimit(size_t);
+    static size_t GetSingleAllocationByteLimit();
 
     static SkBitmap::Allocator* GetAllocator();
 
@@ -76,9 +79,9 @@ public:
     /**
      *  Construct the cache to call DiscardableFactory when it
      *  allocates memory for the pixels. In this mode, the cache has
-     *  not explicit budget, and so methods like getBytesUsed() and
-     *  getByteLimit() will return 0, and setByteLimit will ignore its argument
-     *  and return 0.
+     *  not explicit budget, and so methods like getTotalBytesUsed()
+     *  and getTotalByteLimit() will return 0, and setTotalByteLimit
+     *  will ignore its argument and return 0.
      */
     SkScaledImageCache(DiscardableFactory);
 
@@ -86,7 +89,7 @@ public:
      *  Construct the cache, allocating memory with malloc, and respect the
      *  byteLimit, purging automatically when a new image is added to the cache
      *  that pushes the total bytesUsed over the limit. Note: The limit can be
-     *  changed at runtime with setByteLimit.
+     *  changed at runtime with setTotalByteLimit.
      */
     SkScaledImageCache(size_t byteLimit);
 
@@ -117,8 +120,8 @@ public:
      *  If a match is not found, returnedBitmap will be unmodifed, and
      *  NULL will be returned.
      */
-	ID* findAndLock(const SkBitmap& original, float scaleX,
-		float scaleY, SkBitmap* returnedBitmap);
+    ID* findAndLock(const SkBitmap& original, SkScalar scaleX,
+                    SkScalar scaleY, SkBitmap* returnedBitmap);
     ID* findAndLockMip(const SkBitmap& original,
                        SkMipMap const** returnedMipMap);
 
@@ -132,8 +135,8 @@ public:
      */
     ID* addAndLock(uint32_t pixelGenerationID, int32_t width, int32_t height,
                    const SkBitmap& bitmap);
-	ID* addAndLock(const SkBitmap& original, float scaleX,
-		float scaleY, const SkBitmap& bitmap);
+    ID* addAndLock(const SkBitmap& original, SkScalar scaleX,
+                   SkScalar scaleY, const SkBitmap& bitmap);
     ID* addAndLockMip(const SkBitmap& original, const SkMipMap* mipMap);
 
     /**
@@ -144,15 +147,22 @@ public:
      */
     void unlock(ID*);
 
-    size_t getBytesUsed() const { return fBytesUsed; }
-    size_t getByteLimit() const { return fByteLimit; }
+    size_t getTotalBytesUsed() const { return fTotalBytesUsed; }
+    size_t getTotalByteLimit() const { return fTotalByteLimit; }
 
+    /**
+     *  This is respected by SkBitmapProcState::possiblyScaleImage.
+     *  0 is no maximum at all; this is the default.
+     *  setSingleAllocationByteLimit() returns the previous value.
+     */
+    size_t setSingleAllocationByteLimit(size_t maximumAllocationSize);
+    size_t getSingleAllocationByteLimit() const;
     /**
      *  Set the maximum number of bytes available to this cache. If the current
      *  cache exceeds this new value, it will be purged to try to fit within
      *  this new limit.
      */
-    size_t setByteLimit(size_t newLimit);
+    size_t setTotalByteLimit(size_t newLimit);
 
     SkBitmap::Allocator* allocator() const { return fAllocator; };
 
@@ -175,11 +185,12 @@ private:
     // the allocator is NULL or one that matches discardables
     SkBitmap::Allocator* fAllocator;
 
-    size_t  fBytesUsed;
-    size_t  fByteLimit;
+    size_t  fTotalBytesUsed;
+    size_t  fTotalByteLimit;
+    size_t  fSingleAllocationByteLimit;
     int     fCount;
 
-	Rec* findAndLock(uint32_t generationID, float sx, float sy,
+    Rec* findAndLock(uint32_t generationID, SkScalar sx, SkScalar sy,
                      const SkIRect& bounds);
     Rec* findAndLock(const Key& key);
     ID* addAndLock(Rec* rec);
@@ -194,5 +205,10 @@ private:
 
     void init();    // called by constructors
 
+#ifdef SK_DEBUG
+    void validate() const;
+#else
+    void validate() const {}
+#endif
 };
 #endif

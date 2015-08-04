@@ -14,13 +14,13 @@ static bool quick_reject(const SkRect& bounds, const SkRect& clip) {
     return bounds.fTop >= clip.fBottom || bounds.fBottom <= clip.fTop;
 }
 
-static inline void clamp_le(float& value, float max) {
+static inline void clamp_le(SkScalar& value, SkScalar max) {
     if (value > max) {
         value = max;
     }
 }
 
-static inline void clamp_ge(float& value, float min) {
+static inline void clamp_ge(SkScalar& value, SkScalar min) {
     if (value < min) {
         value = min;
     }
@@ -45,17 +45,17 @@ static bool sort_increasing_Y(SkPoint dst[], const SkPoint src[], int count) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool chopMonoQuadAt(float c0, float c1, float c2,
-                           float target, float* t) {
+static bool chopMonoQuadAt(SkScalar c0, SkScalar c1, SkScalar c2,
+                           SkScalar target, SkScalar* t) {
     /* Solve F(t) = y where F(t) := [0](1-t)^2 + 2[1]t(1-t) + [2]t^2
      *  We solve for t, using quadratic equation, hence we have to rearrange
      * our cooefficents to look like At^2 + Bt + C
      */
-    float A = c0 - c1 - c1 + c2;
-    float B = 2*(c1 - c0);
-    float C = c0 - target;
+    SkScalar A = c0 - c1 - c1 + c2;
+    SkScalar B = 2*(c1 - c0);
+    SkScalar C = c0 - target;
 
-    float roots[2];  // we only expect one, but make room for 2 for safety
+    SkScalar roots[2];  // we only expect one, but make room for 2 for safety
     int count = SkFindUnitQuadRoots(A, B, C, roots);
     if (count) {
         *t = roots[0];
@@ -64,17 +64,17 @@ static bool chopMonoQuadAt(float c0, float c1, float c2,
     return false;
 }
 
-static bool chopMonoQuadAtY(SkPoint pts[3], float y, float* t) {
+static bool chopMonoQuadAtY(SkPoint pts[3], SkScalar y, SkScalar* t) {
     return chopMonoQuadAt(pts[0].fY, pts[1].fY, pts[2].fY, y, t);
 }
 
-static bool chopMonoQuadAtX(SkPoint pts[3], float x, float* t) {
+static bool chopMonoQuadAtX(SkPoint pts[3], SkScalar x, SkScalar* t) {
     return chopMonoQuadAt(pts[0].fX, pts[1].fX, pts[2].fX, x, t);
 }
 
 // Modify pts[] in place so that it is clipped in Y to the clip rect
 static void chop_quad_in_Y(SkPoint pts[3], const SkRect& clip) {
-    float t;
+    SkScalar t;
     SkPoint tmp[5]; // for SkChopQuadAt
 
     // are we partially above
@@ -138,6 +138,8 @@ void SkEdgeClipper::clipMonoQuad(const SkPoint srcPts[3], const SkRect& clip) {
         SkTSwap<SkPoint>(pts[0], pts[2]);
         reverse = !reverse;
     }
+    SkASSERT(pts[0].fX <= pts[1].fX);
+    SkASSERT(pts[1].fX <= pts[2].fX);
 
     // Now chop in X has needed, and record the segments
 
@@ -150,7 +152,7 @@ void SkEdgeClipper::clipMonoQuad(const SkPoint srcPts[3], const SkRect& clip) {
         return;
     }
 
-    float t;
+    SkScalar t;
     SkPoint tmp[5]; // for SkChopQuadAt
 
     // are we partially to the left
@@ -207,6 +209,8 @@ bool SkEdgeClipper::clipQuad(const SkPoint srcPts[3], const SkRect& clip) {
             int countX = SkChopQuadAtXExtrema(&monoY[y * 2], monoX);
             for (int x = 0; x <= countX; x++) {
                 this->clipMonoQuad(&monoX[x * 2], clip);
+                SkASSERT(fCurrVerb - fVerbs < kMaxVerbs);
+                SkASSERT(fCurrPoint - fPoints <= kMaxPoints);
             }
         }
     }
@@ -219,31 +223,33 @@ bool SkEdgeClipper::clipQuad(const SkPoint srcPts[3], const SkRect& clip) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static float eval_cubic_coeff(float A, float B, float C,
-                                 float D, float t) {
+static SkScalar eval_cubic_coeff(SkScalar A, SkScalar B, SkScalar C,
+                                 SkScalar D, SkScalar t) {
     return SkScalarMulAdd(SkScalarMulAdd(SkScalarMulAdd(A, t, B), t, C), t, D);
 }
 
 /*  Given 4 cubic points (either Xs or Ys), and a target X or Y, compute the
     t value such that cubic(t) = target
  */
-static bool chopMonoCubicAt(float c0, float c1, float c2, float c3,
-                           float target, float* t) {
+static bool chopMonoCubicAt(SkScalar c0, SkScalar c1, SkScalar c2, SkScalar c3,
+                           SkScalar target, SkScalar* t) {
+ //   SkASSERT(c0 <= c1 && c1 <= c2 && c2 <= c3);
+    SkASSERT(c0 < target && target < c3);
 
-    float D = c0 - target;
-    float A = c3 + 3*(c1 - c2) - c0;
-    float B = 3*(c2 - c1 - c1 + c0);
-    float C = 3*(c1 - c0);
+    SkScalar D = c0 - target;
+    SkScalar A = c3 + 3*(c1 - c2) - c0;
+    SkScalar B = 3*(c2 - c1 - c1 + c0);
+    SkScalar C = 3*(c1 - c0);
 
-    const float TOLERANCE = SK_Scalar1 / 4096;
-    float minT = 0;
-    float maxT = SK_Scalar1;
-    float mid;
+    const SkScalar TOLERANCE = SK_Scalar1 / 4096;
+    SkScalar minT = 0;
+    SkScalar maxT = SK_Scalar1;
+    SkScalar mid;
 
     // This is a lot of iterations. Is there a faster way?
     for (int i = 0; i < 24; i++) {
         mid = SkScalarAve(minT, maxT);
-        float delta = eval_cubic_coeff(A, B, C, D, mid);
+        SkScalar delta = eval_cubic_coeff(A, B, C, D, mid);
         if (delta < 0) {
             minT = mid;
             delta = -delta;
@@ -259,11 +265,11 @@ static bool chopMonoCubicAt(float c0, float c1, float c2, float c3,
     return true;
 }
 
-static bool chopMonoCubicAtY(SkPoint pts[4], float y, float* t) {
+static bool chopMonoCubicAtY(SkPoint pts[4], SkScalar y, SkScalar* t) {
     return chopMonoCubicAt(pts[0].fY, pts[1].fY, pts[2].fY, pts[3].fY, y, t);
 }
 
-static bool chopMonoCubicAtX(SkPoint pts[4], float x, float* t) {
+static bool chopMonoCubicAtX(SkPoint pts[4], SkScalar x, SkScalar* t) {
     return chopMonoCubicAt(pts[0].fX, pts[1].fX, pts[2].fX, pts[3].fX, x, t);
 }
 
@@ -272,7 +278,7 @@ static void chop_cubic_in_Y(SkPoint pts[4], const SkRect& clip) {
 
     // are we partially above
     if (pts[0].fY < clip.fTop) {
-        float t;
+        SkScalar t;
         if (chopMonoCubicAtY(pts, clip.fTop, &t)) {
             SkPoint tmp[7];
             SkChopCubicAt(pts, tmp, t);
@@ -298,7 +304,7 @@ static void chop_cubic_in_Y(SkPoint pts[4], const SkRect& clip) {
 
     // are we partially below
     if (pts[3].fY > clip.fBottom) {
-        float t;
+        SkScalar t;
         if (chopMonoCubicAtY(pts, clip.fBottom, &t)) {
             SkPoint tmp[7];
             SkChopCubicAt(pts, tmp, t);
@@ -350,7 +356,7 @@ void SkEdgeClipper::clipMonoCubic(const SkPoint src[4], const SkRect& clip) {
 
     // are we partially to the left
     if (pts[0].fX < clip.fLeft) {
-        float t;
+        SkScalar t;
         if (chopMonoCubicAtX(pts, clip.fLeft, &t)) {
             SkPoint tmp[7];
             SkChopCubicAt(pts, tmp, t);
@@ -376,7 +382,7 @@ void SkEdgeClipper::clipMonoCubic(const SkPoint src[4], const SkRect& clip) {
 
     // are we partially to the right
     if (pts[3].fX > clip.fRight) {
-        float t;
+        SkScalar t;
         if (chopMonoCubicAtX(pts, clip.fRight, &t)) {
             SkPoint tmp[7];
             SkChopCubicAt(pts, tmp, t);
@@ -411,6 +417,8 @@ bool SkEdgeClipper::clipCubic(const SkPoint srcPts[4], const SkRect& clip) {
             int countX = SkChopCubicAtXExtrema(&monoY[y * 3], monoX);
             for (int x = 0; x <= countX; x++) {
                 this->clipMonoCubic(&monoX[x * 3], clip);
+                SkASSERT(fCurrVerb - fVerbs < kMaxVerbs);
+                SkASSERT(fCurrPoint - fPoints <= kMaxPoints);
             }
         }
     }
@@ -423,12 +431,12 @@ bool SkEdgeClipper::clipCubic(const SkPoint srcPts[4], const SkRect& clip) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void SkEdgeClipper::appendVLine(float x, float y0, float y1,
+void SkEdgeClipper::appendVLine(SkScalar x, SkScalar y0, SkScalar y1,
                                 bool reverse) {
     *fCurrVerb++ = SkPath::kLine_Verb;
 
     if (reverse) {
-        SkTSwap<float>(y0, y1);
+        SkTSwap<SkScalar>(y0, y1);
     }
     fCurrPoint[0].set(x, y0);
     fCurrPoint[1].set(x, y1);
@@ -484,9 +492,40 @@ SkPath::Verb SkEdgeClipper::next(SkPoint pts[]) {
         case SkPath::kDone_Verb:
             break;
         default:
+            SkDEBUGFAIL("unexpected verb in quadclippper2 iter");
             break;
     }
     return verb;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+#ifdef SK_DEBUG
+static void assert_monotonic(const SkScalar coord[], int count) {
+    if (coord[0] > coord[(count - 1) * 2]) {
+        for (int i = 1; i < count; i++) {
+            SkASSERT(coord[2 * (i - 1)] >= coord[i * 2]);
+        }
+    } else if (coord[0] < coord[(count - 1) * 2]) {
+        for (int i = 1; i < count; i++) {
+            SkASSERT(coord[2 * (i - 1)] <= coord[i * 2]);
+        }
+    } else {
+        for (int i = 1; i < count; i++) {
+            SkASSERT(coord[2 * (i - 1)] == coord[i * 2]);
+        }
+    }
+}
+
+void sk_assert_monotonic_y(const SkPoint pts[], int count) {
+    if (count > 1) {
+        assert_monotonic(&pts[0].fY, count);
+    }
+}
+
+void sk_assert_monotonic_x(const SkPoint pts[], int count) {
+    if (count > 1) {
+        assert_monotonic(&pts[0].fX, count);
+    }
+}
+#endif

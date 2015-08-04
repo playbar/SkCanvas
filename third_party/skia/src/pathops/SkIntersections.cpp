@@ -13,7 +13,7 @@ void SkIntersections::append(const SkIntersections& i) {
     }
 }
 
-int (SkIntersections::*CurveVertical[])(const SkPoint[], float, float, float, bool) = {
+int (SkIntersections::*CurveVertical[])(const SkPoint[], SkScalar, SkScalar, SkScalar, bool) = {
     NULL,
     &SkIntersections::verticalLine,
     &SkIntersections::verticalQuad,
@@ -29,14 +29,22 @@ int (SkIntersections::*CurveRay[])(const SkPoint[], const SkDLine&) = {
 
 int SkIntersections::coincidentUsed() const {
     if (!fIsCoincident[0]) {
+        SkASSERT(!fIsCoincident[1]);
         return 0;
     }
     int count = 0;
+    SkDEBUGCODE(int count2 = 0;)
     for (int index = 0; index < fUsed; ++index) {
         if (fIsCoincident[0] & (1 << index)) {
             ++count;
         }
+#ifdef SK_DEBUG
+        if (fIsCoincident[1] & (1 << index)) {
+            ++count2;
+        }
+#endif
     }
+    SkASSERT(count == count2);
     return count;
 }
 
@@ -58,6 +66,7 @@ int SkIntersections::insert(double one, double two, const SkDPoint& pt) {
         // For now, don't allow a mix of coincident and non-coincident intersections
         return -1;
     }
+    SkASSERT(fUsed <= 1 || fT[0][0] <= fT[0][1]);
     int index;
     for (index = 0; index < fUsed; ++index) {
         double oldOne = fT[0][index];
@@ -86,6 +95,7 @@ int SkIntersections::insert(double one, double two, const SkDPoint& pt) {
         }
     }
     if (fUsed >= fMax) {
+        SkASSERT(0);  // FIXME : this error, if it is to be handled at runtime in release, must
                       // be propagated all the way back down to the caller, and return failure.
         fUsed = 0;
         return 0;
@@ -93,6 +103,7 @@ int SkIntersections::insert(double one, double two, const SkDPoint& pt) {
     int remaining = fUsed - index;
     if (remaining > 0) {
         memmove(&fPt[index + 1], &fPt[index], sizeof(fPt[0]) * remaining);
+        memmove(&fPt2[index + 1], &fPt2[index], sizeof(fPt2[0]) * remaining);
         memmove(&fT[0][index + 1], &fT[0][index], sizeof(fT[0][0]) * remaining);
         memmove(&fT[1][index + 1], &fT[1][index], sizeof(fT[1][0]) * remaining);
         int clearMask = ~((1 << index) - 1);
@@ -104,6 +115,15 @@ int SkIntersections::insert(double one, double two, const SkDPoint& pt) {
     fT[1][index] = two;
     ++fUsed;
     return index;
+}
+
+void SkIntersections::insertNear(double one, double two, const SkDPoint& pt1, const SkDPoint& pt2) {
+    SkASSERT(one == 0 || one == 1);
+    SkASSERT(two == 0 || two == 1);
+    SkASSERT(pt1 != pt2);
+    SkASSERT(fNearlySame[(int) one]);
+    (void) insert(one, two, pt1);
+    fPt2[one ? fUsed - 1 : 0] = pt2;
 }
 
 void SkIntersections::insertCoincident(double one, double two, const SkDPoint& pt) {
@@ -142,17 +162,19 @@ void SkIntersections::quickRemoveOne(int index, int replace) {
     }
 }
 
-
 void SkIntersections::removeOne(int index) {
     int remaining = --fUsed - index;
     if (remaining <= 0) {
         return;
     }
     memmove(&fPt[index], &fPt[index + 1], sizeof(fPt[0]) * remaining);
+    memmove(&fPt2[index], &fPt2[index + 1], sizeof(fPt2[0]) * remaining);
     memmove(&fT[0][index], &fT[0][index + 1], sizeof(fT[0][0]) * remaining);
     memmove(&fT[1][index], &fT[1][index + 1], sizeof(fT[1][0]) * remaining);
+    SkASSERT(fIsCoincident[0] == 0);
     int coBit = fIsCoincident[0] & (1 << index);
     fIsCoincident[0] -= ((fIsCoincident[0] >> 1) & ~((1 << index) - 1)) + coBit;
+    SkASSERT(!(coBit ^ (fIsCoincident[1] & (1 << index))));
     fIsCoincident[1] -= ((fIsCoincident[1] >> 1) & ~((1 << index) - 1)) + coBit;
 }
 
@@ -163,22 +185,22 @@ void SkIntersections::swapPts() {
     }
 }
 
-int SkIntersections::verticalLine(const SkPoint a[2], float top, float bottom,
-        float x, bool flipped) {
+int SkIntersections::verticalLine(const SkPoint a[2], SkScalar top, SkScalar bottom,
+        SkScalar x, bool flipped) {
     SkDLine line;
     line.set(a);
     return vertical(line, top, bottom, x, flipped);
 }
 
-int SkIntersections::verticalQuad(const SkPoint a[3], float top, float bottom,
-        float x, bool flipped) {
+int SkIntersections::verticalQuad(const SkPoint a[3], SkScalar top, SkScalar bottom,
+        SkScalar x, bool flipped) {
     SkDQuad quad;
     quad.set(a);
     return vertical(quad, top, bottom, x, flipped);
 }
 
-int SkIntersections::verticalCubic(const SkPoint a[4], float top, float bottom,
-        float x, bool flipped) {
+int SkIntersections::verticalCubic(const SkPoint a[4], SkScalar top, SkScalar bottom,
+        SkScalar x, bool flipped) {
     SkDCubic cubic;
     cubic.set(a);
     return vertical(cubic, top, bottom, x, flipped);

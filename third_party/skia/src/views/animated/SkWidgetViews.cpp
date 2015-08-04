@@ -26,6 +26,8 @@ enum SkinEnum {
 
 const char* get_skin_enum_path(SkinEnum se)
 {
+    SkASSERT((unsigned)se < kSkinEnumCount);
+
     static const char* gSkinPaths[] = {
             "common/default/default/skins/border3.xml",
             "common/default/default/skins/button.xml",
@@ -38,15 +40,17 @@ const char* get_skin_enum_path(SkinEnum se)
 }
 
 void init_skin_anim(const char path[], SkAnimator* anim) {
+    SkASSERT(path && anim);
+
     SkAutoTUnref<SkStream> stream(SkStream::NewFromFile(path));
     if (!stream.get()) {
         SkDEBUGF(("init_skin_anim: loading skin failed <%s>\n", path));
-		abort();
+        sk_throw();
     }
 
     if (!anim->decodeStream(stream)) {
         SkDEBUGF(("init_skin_anim: decoding skin failed <%s>\n", path));
-		abort();
+        sk_throw();
     }
 }
 
@@ -57,6 +61,8 @@ void init_skin_anim(SkinEnum se, SkAnimator* anim)
 
 void init_skin_paint(SkinEnum se, SkPaint* paint)
 {
+    SkASSERT(paint);
+
     SkAnimator    anim;
     SkCanvas    canvas;
 
@@ -66,6 +72,8 @@ void init_skin_paint(SkinEnum se, SkPaint* paint)
 
 void inflate_paint(const SkDOM& dom, const SkDOM::Node* node, SkPaint* paint)
 {
+    SkASSERT(paint);
+
     SkAnimator    anim;
     SkCanvas    canvas;
 
@@ -73,7 +81,7 @@ void inflate_paint(const SkDOM& dom, const SkDOM::Node* node, SkPaint* paint)
     {
         SkDEBUGF(("inflate_paint: decoding dom failed\n"));
         SkDEBUGCODE(dom.dump(node);)
-		abort();
+        sk_throw();
     }
     anim.draw(&canvas, paint, 0);
 }
@@ -189,6 +197,8 @@ SkCheckButtonView::SkCheckButtonView() : fCheckState(kOff_CheckState)
 
 void SkCheckButtonView::setCheckState(CheckState state)
 {
+    SkASSERT((unsigned)state <= kUnknown_CheckState);
+
     if (fCheckState != state)
     {
         this->onCheckStateChange(this->getCheckState(), state);
@@ -304,7 +314,7 @@ protected:
         }
         if (evt.isType("recommendDim"))
         {
-            float    height;
+            SkScalar    height;
 
             if (evt.findScalar("y", &height))
                 this->setHeight(height);
@@ -381,6 +391,7 @@ SkView* SkWidgetFactory(SkWidgetEnum sw)
     case kText_WidgetEnum:
         return new SkStaticTextView;
     default:
+        SkDEBUGFAIL("unknown enum passed to SkWidgetFactory");
         break;
     }
     return NULL;

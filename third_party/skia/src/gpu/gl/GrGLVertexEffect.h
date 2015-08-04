@@ -15,8 +15,7 @@
  * from this class. Since paths don't have vertices, this class is only meant to be used internally
  * by skia, for special cases.
  */
-class GrGLVertexEffect : public GrGLEffect 
-{
+class GrGLVertexEffect : public GrGLEffect {
 public:
     GrGLVertexEffect(const GrBackendEffectFactory& factory)
         : INHERITED(factory) { fIsVertexEffect = true; }
@@ -43,7 +42,7 @@ public:
                           const char* inputColor,
                           const TransformedCoordsArray& coords,
                           const TextureSamplerArray& samplers) SK_OVERRIDE {
-        GrCrash("GrGLVertexEffect requires GrGLFullShaderBuilder* overload for emitCode().");
+        SkFAIL("GrGLVertexEffect requires GrGLFullShaderBuilder* overload for emitCode().");
     }
 
 private:

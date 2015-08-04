@@ -23,6 +23,17 @@ class SkPaint;
 
 class SkGlyphCache_Globals;
 
+/** \class SkGlyphCache
+
+    This class represents a strike: a specific combination of typeface, size,
+    matrix, etc., and holds the glyphs for that strike. Calling any of the
+    getUnichar.../getGlyphID... methods will return the requested glyph,
+    either instantly if it is already cached, or by first generating it and then
+    adding it to the strike.
+
+    The strikes are held in a global list, available to all threads. To interact
+    with one, call either VisitCache() or DetachCache().
+*/
 class SkGlyphCache {
 public:
     /** Returns a glyph with valid fAdvance and fDevKern fields.
@@ -65,13 +76,13 @@ public:
     */
     unsigned getGlyphCount();
 
-#ifdef SK_BUILD_FOR_ANDROID
+//#ifdef SK_BUILD_FOR_ANDROID
     /** Returns the base glyph count for this strike.
     */
     unsigned getBaseGlyphCount(SkUnichar charCode) const {
         return fScalerContext->getBaseGlyphCount(charCode);
     }
-#endif
+//#endif
 
     /** Return the image associated with the glyph. If it has not been generated
         this will trigger that.
@@ -81,6 +92,10 @@ public:
         this will trigger that.
     */
     const SkPath* findPath(const SkGlyph&);
+    /** Return the distance field associated with the glyph. If it has not been generated
+     this will trigger that.
+     */
+    const void* findDistanceField(const SkGlyph&);
 
     /** Return the vertical metrics for this strike.
     */
@@ -148,14 +163,22 @@ public:
         return VisitCache(typeface, desc, DetachProc, NULL);
     }
 
+#ifdef SK_DEBUG
+    void validate() const;
+#else
+    void validate() const {}
+#endif
+
     class AutoValidate : SkNoncopyable {
     public:
         AutoValidate(const SkGlyphCache* cache) : fCache(cache) {
             if (fCache) {
+                fCache->validate();
             }
         }
         ~AutoValidate() {
             if (fCache) {
+                fCache->validate();
             }
         }
         void forget() {
@@ -221,23 +244,8 @@ private:
     friend class SkGlyphCache_Globals;
 };
 
-class SkAutoGlyphCache {
+class SkAutoGlyphCacheBase {
 public:
-    SkAutoGlyphCache(SkGlyphCache* cache) : fCache(cache) {}
-    SkAutoGlyphCache(SkTypeface* typeface, const SkDescriptor* desc) {
-        fCache = SkGlyphCache::DetachCache(typeface, desc);
-    }
-    SkAutoGlyphCache(const SkPaint& paint,
-                     const SkDeviceProperties* deviceProperties,
-                     const SkMatrix* matrix) {
-        fCache = paint.detachCache(deviceProperties, matrix);
-    }
-    ~SkAutoGlyphCache() {
-        if (fCache) {
-            SkGlyphCache::AttachCache(fCache);
-        }
-    }
-
     SkGlyphCache* getCache() const { return fCache; }
 
     void release() {
@@ -247,11 +255,63 @@ public:
         }
     }
 
-private:
+protected:
+    // Hide the constructors so we can't create one of these directly.
+    // Create SkAutoGlyphCache or SkAutoGlyphCacheNoCache instead.
+    SkAutoGlyphCacheBase(SkGlyphCache* cache) : fCache(cache) {}
+    SkAutoGlyphCacheBase(SkTypeface* typeface, const SkDescriptor* desc) {
+        fCache = SkGlyphCache::DetachCache(typeface, desc);
+    }
+    SkAutoGlyphCacheBase(const SkPaint& paint,
+                         const SkDeviceProperties* deviceProperties,
+                         const SkMatrix* matrix) {
+        fCache = NULL;
+    }
+    SkAutoGlyphCacheBase() {
+        fCache = NULL;
+    }
+    ~SkAutoGlyphCacheBase() {
+        if (fCache) {
+            SkGlyphCache::AttachCache(fCache);
+        }
+    }
+
     SkGlyphCache*   fCache;
 
+private:
     static bool DetachProc(const SkGlyphCache*, void*);
 };
+
+class SkAutoGlyphCache : public SkAutoGlyphCacheBase {
+public:
+    SkAutoGlyphCache(SkGlyphCache* cache) : SkAutoGlyphCacheBase(cache) {}
+    SkAutoGlyphCache(SkTypeface* typeface, const SkDescriptor* desc) :
+        SkAutoGlyphCacheBase(typeface, desc) {}
+    SkAutoGlyphCache(const SkPaint& paint,
+                     const SkDeviceProperties* deviceProperties,
+                     const SkMatrix* matrix) {
+        fCache = paint.detachCache(deviceProperties, matrix, false);
+    }
+
+private:
+    SkAutoGlyphCache() : SkAutoGlyphCacheBase() {}
+};
 #define SkAutoGlyphCache(...) SK_REQUIRE_LOCAL_VAR(SkAutoGlyphCache)
+
+class SkAutoGlyphCacheNoGamma : public SkAutoGlyphCacheBase {
+public:
+    SkAutoGlyphCacheNoGamma(SkGlyphCache* cache) : SkAutoGlyphCacheBase(cache) {}
+    SkAutoGlyphCacheNoGamma(SkTypeface* typeface, const SkDescriptor* desc) :
+        SkAutoGlyphCacheBase(typeface, desc) {}
+    SkAutoGlyphCacheNoGamma(const SkPaint& paint,
+                            const SkDeviceProperties* deviceProperties,
+                            const SkMatrix* matrix) {
+        fCache = paint.detachCache(deviceProperties, matrix, true);
+    }
+
+private:
+    SkAutoGlyphCacheNoGamma() : SkAutoGlyphCacheBase() {}
+};
+#define SkAutoGlyphCacheNoGamma(...) SK_REQUIRE_LOCAL_VAR(SkAutoGlyphCacheNoGamma)
 
 #endif

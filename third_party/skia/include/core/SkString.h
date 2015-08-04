@@ -19,9 +19,12 @@
 */
 
 static bool SkStrStartsWith(const char string[], const char prefixStr[]) {
+    SkASSERT(string);
+    SkASSERT(prefixStr);
     return !strncmp(string, prefixStr, strlen(prefixStr));
 }
 static bool SkStrStartsWith(const char string[], const char prefixChar) {
+    SkASSERT(string);
     return (prefixChar == *string);
 }
 
@@ -37,9 +40,12 @@ static int SkStrFind(const char string[], const char substring[]) {
 }
 
 static bool SkStrContains(const char string[], const char substring[]) {
+    SkASSERT(string);
+    SkASSERT(substring);
     return (-1 != SkStrFind(string, substring));
 }
 static bool SkStrContains(const char string[], const char subchar) {
+    SkASSERT(string);
     char tmp[2];
     tmp[0] = subchar;
     tmp[1] = '\0';
@@ -91,8 +97,7 @@ char* SkStrAppendFixed(char buffer[], SkFixed);
     counting to make string assignments and copies very fast
     with no extra RAM cost. Assumes UTF8 encoding.
 */
-class SK_API SkString
-{
+class SK_API SkString {
 public:
                 SkString();
     explicit    SkString(size_t len);
@@ -164,7 +169,7 @@ public:
     void insertU32(size_t offset, uint32_t value);
     void insertU64(size_t offset, uint64_t value, int minDigits = 0);
     void insertHex(size_t offset, uint32_t value, int minDigits = 0);
-    void insertScalar(size_t offset, float);
+    void insertScalar(size_t offset, SkScalar);
 
     void append(const SkString& str) { this->insert((size_t)-1, str); }
     void append(const char text[]) { this->insert((size_t)-1, text); }
@@ -175,7 +180,7 @@ public:
     void appendU32(uint32_t value) { this->insertU32((size_t)-1, value); }
     void appendU64(uint64_t value, int minDigits = 0) { this->insertU64((size_t)-1, value, minDigits); }
     void appendHex(uint32_t value, int minDigits = 0) { this->insertHex((size_t)-1, value, minDigits); }
-    void appendScalar(float value) { this->insertScalar((size_t)-1, value); }
+    void appendScalar(SkScalar value) { this->insertScalar((size_t)-1, value); }
 
     void prepend(const SkString& str) { this->insert(0, str); }
     void prepend(const char text[]) { this->insert(0, text); }
@@ -184,7 +189,7 @@ public:
     void prependS32(int32_t value) { this->insertS32(0, value); }
     void prependS64(int32_t value, int minDigits = 0) { this->insertS64(0, value, minDigits); }
     void prependHex(uint32_t value, int minDigits = 0) { this->insertHex(0, value, minDigits); }
-    void prependScalar(float value) { this->insertScalar((size_t)-1, value); }
+    void prependScalar(SkScalar value) { this->insertScalar((size_t)-1, value); }
 
     void printf(const char format[], ...) SK_PRINTF_LIKE(2, 3);
     void appendf(const char format[], ...) SK_PRINTF_LIKE(2, 3);
@@ -204,8 +209,7 @@ public:
     void swap(SkString& other);
 
 private:
-    struct Rec 
-	{
+    struct Rec {
     public:
         uint32_t    fLength; // logically size_t, but we want it to stay 32bits
         int32_t     fRefCnt;
@@ -215,6 +219,13 @@ private:
         const char* data() const { return &fBeginningOfData; }
     };
     Rec* fRec;
+
+#ifdef SK_DEBUG
+    const char* fStr;
+    void validate() const;
+#else
+    void validate() const {}
+#endif
 
     static const Rec gEmptyRec;
     static Rec* AllocRec(const char text[], size_t len);

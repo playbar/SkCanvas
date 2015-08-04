@@ -15,7 +15,6 @@
 #include "SkPaint.h"
 
 class SkBitmap;
-class SkBounder;
 class SkClipStack;
 class SkBaseDevice;
 class SkMatrix;
@@ -56,10 +55,10 @@ public:
 
     void    drawBitmap(const SkBitmap&, const SkMatrix&, const SkPaint&) const;
     void    drawSprite(const SkBitmap&, int x, int y, const SkPaint&) const;
-    void    drawText(const char text[], size_t byteLength, float x,
-                     float y, const SkPaint& paint) const;
+    void    drawText(const char text[], size_t byteLength, SkScalar x,
+                     SkScalar y, const SkPaint& paint) const;
     void    drawPosText(const char text[], size_t byteLength,
-                        const float pos[], float constY,
+                        const SkScalar pos[], SkScalar constY,
                         int scalarsPerPosition, const SkPaint& paint) const;
     void    drawTextOnPath(const char text[], size_t byteLength,
                         const SkPath&, const SkMatrix*, const SkPaint&) const;
@@ -109,9 +108,9 @@ public:
 
     static bool ShouldDrawTextAsPaths(const SkPaint&, const SkMatrix&);
     void        drawText_asPaths(const char text[], size_t byteLength,
-                                 float x, float y, const SkPaint&) const;
+                                 SkScalar x, SkScalar y, const SkPaint&) const;
     void        drawPosText_asPaths(const char text[], size_t byteLength,
-                                    const float pos[], float constY,
+                                    const SkScalar pos[], SkScalar constY,
                                     int scalarsPerPosition, const SkPaint&) const;
 
 private:
@@ -140,9 +139,13 @@ public:
 
     const SkClipStack* fClipStack;  // optional
     SkBaseDevice*   fDevice;        // optional
-    SkBounder*      fBounder;       // optional
     SkDrawProcs*    fProcs;         // optional
 
+#ifdef SK_DEBUG
+    void validate() const;
+#else
+    void validate() const {}
+#endif
 };
 
 #endif

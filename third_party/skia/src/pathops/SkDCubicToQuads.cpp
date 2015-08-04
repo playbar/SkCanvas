@@ -20,7 +20,6 @@ If this is a degree-elevated cubic, then both equations will give the same answe
 
 P1 = -1/4 Q0 + 3/4 Q1 + 3/4 Q2 - 1/4 Q3
 
-
 SkDCubic defined by: P1/2 - anchor points, C1/C2 control points
 |x| is the euclidean norm of x
 mid-point approx of cubic: a quad that shares the same anchors with the cubic and has the
@@ -124,8 +123,10 @@ void SkDCubic::toQuadraticTs(double precision, SkTArray<double, true>* ts) const
     }
     double inflectT[5];
     int inflections = findInflections(inflectT);
+    SkASSERT(inflections <= 2);
     if (!endsAreExtremaInXOrY()) {
         inflections += findMaxCurvature(&inflectT[inflections]);
+        SkASSERT(inflections <= 5);
     }
     SkTQSort<double>(inflectT, &inflectT[inflections - 1]);
     // OPTIMIZATION: is this filtering common enough that it needs to be pulled out into its
@@ -134,17 +135,16 @@ void SkDCubic::toQuadraticTs(double precision, SkTArray<double, true>* ts) const
         memmove(inflectT, &inflectT[1], sizeof(inflectT[0]) * --inflections);
     }
     int start = 0;
-    do {
-        int next = start + 1;
-        if (next >= inflections) {
-            break;
-        }
+    int next = 1;
+    while (next < inflections) {
         if (!approximately_equal(inflectT[start], inflectT[next])) {
             ++start;
+        ++next;
             continue;
         }
         memmove(&inflectT[start], &inflectT[next], sizeof(inflectT[0]) * (--inflections - start));
-    } while (true);
+    }
+
     while (inflections && approximately_greater_than_one(inflectT[inflections - 1])) {
         --inflections;
     }

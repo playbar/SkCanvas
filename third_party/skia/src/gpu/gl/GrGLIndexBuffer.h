@@ -10,13 +10,11 @@
 
 #include "GrIndexBuffer.h"
 #include "GrGLBufferImpl.h"
-//#include "gl/glew.h"
-#include "eggl.h"
+#include "gl/GrGLInterface.h"
 
 class GrGpuGL;
 
-class GrGLIndexBuffer : public GrIndexBuffer 
-{
+class GrGLIndexBuffer : public GrIndexBuffer {
 
 public:
     typedef GrGLBufferImpl::Desc Desc;
@@ -24,29 +22,26 @@ public:
     GrGLIndexBuffer(GrGpuGL* gpu, const Desc& desc);
     virtual ~GrGLIndexBuffer() { this->release(); }
 
-    GLuint bufferID() const { return fImpl.bufferID(); }
+    GrGLuint bufferID() const { return fImpl.bufferID(); }
     size_t baseOffset() const { return fImpl.baseOffset(); }
 
     void bind() const {
-        if (this->isValid()) {
+        if (!this->wasDestroyed()) {
             fImpl.bind(this->getGpuGL());
         }
     }
 
-    // overrides of GrIndexBuffer
-    virtual void* lock();
-    virtual void* lockPtr() const;
-    virtual void unlock();
-    virtual bool isLocked() const;
-    virtual bool updateData(const void* src, size_t srcSizeInBytes);
-
 protected:
-    // overrides of GrResource
     virtual void onAbandon() SK_OVERRIDE;
     virtual void onRelease() SK_OVERRIDE;
 
 private:
+    virtual void* onMap() SK_OVERRIDE;
+    virtual void onUnmap() SK_OVERRIDE;
+    virtual bool onUpdateData(const void* src, size_t srcSizeInBytes) SK_OVERRIDE;
+
     GrGpuGL* getGpuGL() const {
+        SkASSERT(!this->wasDestroyed());
         return (GrGpuGL*)(this->getGpu());
     }
 

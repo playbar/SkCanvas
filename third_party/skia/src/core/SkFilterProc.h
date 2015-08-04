@@ -21,6 +21,8 @@ const SkFilterProc* SkGetBilinearFilterProcTable();
 inline SkFilterProc SkGetBilinearFilterProc(const SkFilterProc* table,
                                             SkFixed x, SkFixed y)
 {
+    SkASSERT(table);
+
     // convert to dot 2
     x = (unsigned)(x << 16) >> 30;
     y = (unsigned)(y << 16) >> 30;
@@ -30,6 +32,8 @@ inline SkFilterProc SkGetBilinearFilterProc(const SkFilterProc* table,
 inline SkFilterProc SkGetBilinearFilterProc22(const SkFilterProc* table,
                                               unsigned x, unsigned y)
 {
+    SkASSERT(table);
+
     // extract low 2 bits
     x = x << 30 >> 30;
     y = y << 30 >> 30;
@@ -39,6 +43,7 @@ inline SkFilterProc SkGetBilinearFilterProc22(const SkFilterProc* table,
 inline const SkFilterProc* SkGetBilinearFilterProc22Row(const SkFilterProc* table,
                                                         unsigned y)
 {
+    SkASSERT(table);
     // extract low 2 bits and shift up 2
     return &table[y << 30 >> 28];
 }
@@ -46,6 +51,7 @@ inline const SkFilterProc* SkGetBilinearFilterProc22Row(const SkFilterProc* tabl
 inline SkFilterProc SkGetBilinearFilterProc22RowProc(const SkFilterProc* row,
                                                      unsigned x)
 {
+    SkASSERT(row);
     // extract low 2 bits
     return row[x << 30 >> 30];
 }
@@ -60,6 +66,8 @@ const SkFilter32Proc* SkGetFilter32ProcTable();
 inline SkFilter32Proc SkGetFilter32Proc22(const SkFilter32Proc* table,
                                           unsigned x, unsigned y)
 {
+    SkASSERT(table);
+
     // extract low 2 bits
     x = x << 30 >> 30;
     y = y << 30 >> 30;
@@ -69,6 +77,7 @@ inline SkFilter32Proc SkGetFilter32Proc22(const SkFilter32Proc* table,
 inline const SkFilter32Proc* SkGetFilter32Proc22Row(const SkFilter32Proc* table,
                                                     unsigned y)
 {
+    SkASSERT(table);
     // extract low 2 bits and shift up 2
     return &table[y << 30 >> 28];
 }
@@ -76,6 +85,7 @@ inline const SkFilter32Proc* SkGetFilter32Proc22Row(const SkFilter32Proc* table,
 inline SkFilter32Proc SkGetFilter32Proc22RowProc(const SkFilter32Proc* row,
                                                  unsigned x)
 {
+    SkASSERT(row);
     // extract low 2 bits
     return row[x << 30 >> 30];
 }
@@ -90,6 +100,8 @@ typedef uint32_t (*SkFilterPtrProc)(const uint32_t*, const uint32_t*, const uint
 const SkFilterPtrProc* SkGetBilinearFilterPtrProcTable();
 inline SkFilterPtrProc SkGetBilinearFilterPtrProc(const SkFilterPtrProc* table, SkFixed x, SkFixed y)
 {
+    SkASSERT(table);
+
     // convert to dot 2
     x = (unsigned)(x << 16) >> 30;
     y = (unsigned)(y << 16) >> 30;
@@ -102,6 +114,8 @@ inline SkFilterPtrProc SkGetBilinearFilterPtrProc(const SkFilterPtrProc* table, 
 */
 inline const SkFilterPtrProc* SkGetBilinearFilterPtrProcYTable(const SkFilterPtrProc* table, SkFixed y)
 {
+    SkASSERT(table);
+
     y = (unsigned)(y << 16) >> 30;
     return table + (y << 2);
 }
@@ -111,6 +125,8 @@ inline const SkFilterPtrProc* SkGetBilinearFilterPtrProcYTable(const SkFilterPtr
 */
 inline SkFilterPtrProc SkGetBilinearFilterPtrXProc(const SkFilterPtrProc* table, SkFixed x)
 {
+    SkASSERT(table);
+
     // convert to dot 2
     x = (unsigned)(x << 16) >> 30;
     return table[x];

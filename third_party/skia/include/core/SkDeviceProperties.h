@@ -1,30 +1,31 @@
 #ifndef SkDeviceProperties_DEFINED
 #define SkDeviceProperties_DEFINED
 
-#ifndef SK_GAMMA_EXPONENT
-    #define SK_GAMMA_EXPONENT (2.2f)
-#endif
-
-#ifdef SK_GAMMA_SRGB
-    #undef SK_GAMMA_EXPONENT
-    #define SK_GAMMA_EXPONENT (0.0f)
-#endif
-
 //TODO: get everyone to stop using SkFontLCDConfig::SetSubpixel* and remove this import.
 #include "SkFontLCDConfig.h"
 
-struct SkDeviceProperties 
-{
+struct SkDeviceProperties {
     struct Geometry {
-        enum Orientation 
-		{
+        /** The orientation of the pixel specifies the interpretation of the
+        *  layout. If the orientation is horizontal, the layout is interpreted as
+        *  left to right. It the orientation is vertical, the layout is
+        *  interpreted top to bottom (rotated 90deg cw from horizontal).
+        */
+        enum Orientation {
             kUnknown_Orientation      = 0x0,
             kKnown_Orientation        = 0x2,
+
             kHorizontal_Orientation   = 0x2,  //!< this is the default
             kVertical_Orientation     = 0x3,
+
             kOrientationMask          = 0x3,
         };
 
+        /** The layout of the pixel specifies its subpixel geometry.
+        *
+        *  kUnknown_Layout means that the subpixel elements are not spatially
+        *  separated in any known or usable fashion.
+        */
         enum Layout {
             kUnknown_Layout   = 0x0,
             kKnown_Layout     = 0x8,
@@ -86,13 +87,17 @@ struct SkDeviceProperties
         return ret;
     }
 
-    static SkDeviceProperties Make(Geometry geometry, float gamma) {
+    static SkDeviceProperties Make(Geometry geometry, SkScalar gamma) {
         SkDeviceProperties ret = { geometry, gamma };
         return ret;
     }
 
+    /** Each pixel of an image will have some number of channels.
+     *  Can the layout of those channels be exploited? */
     Geometry fGeometry;
-    float fGamma;
+
+    /** Represents the color space of the image. This is a woefully inadequate beginning. */
+    SkScalar fGamma;
 };
 
 #endif

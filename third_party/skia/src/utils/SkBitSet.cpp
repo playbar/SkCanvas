@@ -11,6 +11,7 @@
 
 SkBitSet::SkBitSet(int numberOfBits)
     : fBitData(NULL), fDwordCount(0), fBitCount(numberOfBits) {
+    SkASSERT(numberOfBits > 0);
     // Round up size to 32-bit boundary.
     fDwordCount = (numberOfBits + 31) / 32;
     fBitData.set(malloc(fDwordCount * sizeof(uint32_t)));

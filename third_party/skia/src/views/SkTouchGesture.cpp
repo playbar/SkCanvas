@@ -14,9 +14,9 @@
 
 #define DISCRETIZE_TRANSLATE_TO_AVOID_FLICKER   true
 
-static const float MAX_FLING_SPEED = SkIntToScalar(1500);
+static const SkScalar MAX_FLING_SPEED = SkIntToScalar(1500);
 
-static float pin_max_fling(float speed) {
+static SkScalar pin_max_fling(SkScalar speed) {
     if (speed > MAX_FLING_SPEED) {
         speed = MAX_FLING_SPEED;
     }
@@ -29,8 +29,8 @@ static double getseconds() {
 
 // returns +1 or -1, depending on the sign of x
 // returns +1 if z is zero
-static float SkScalarSignNonZero(float x) {
-    float sign = SK_Scalar1;
+static SkScalar SkScalarSignNonZero(SkScalar x) {
+    SkScalar sign = SK_Scalar1;
     if (x < 0) {
         sign = -sign;
     }
@@ -38,7 +38,7 @@ static float SkScalarSignNonZero(float x) {
 }
 
 static void unit_axis_align(SkVector* unit) {
-    const float TOLERANCE = SkDoubleToScalar(0.15);
+    const SkScalar TOLERANCE = SkDoubleToScalar(0.15);
     if (SkScalarAbs(unit->fX) < TOLERANCE) {
         unit->fX = 0;
         unit->fY = SkScalarSignNonZero(unit->fY);
@@ -148,6 +148,7 @@ void SkTouchGesture::touchBegin(void* owner, float x, float y) {
     if (index >= 0) {
         this->flushLocalM();
         fTouches.removeShuffle(index);
+        SkDebugf("---- already exists, removing\n");
     }
 
     if (fTouches.count() == 2) {
@@ -180,7 +181,7 @@ int SkTouchGesture::findRec(void* owner) const {
     return -1;
 }
 
-static float center(float pos0, float pos1) {
+static SkScalar center(float pos0, float pos1) {
     return (pos0 + pos1) * 0.5f;
 }
 
@@ -202,9 +203,12 @@ float SkTouchGesture::limitTotalZoom(float scale) const {
 void SkTouchGesture::touchMoved(void* owner, float x, float y) {
 //    GrPrintf("--- %d touchMoved %p %g %g\n", fTouches.count(), owner, x, y);
 
+    SkASSERT(kEmpty_State != fState);
+
     int index = this->findRec(owner);
     if (index < 0) {
         // not found, so I guess we should add it...
+        SkDebugf("---- add missing begin\n");
         this->appendNewRec(owner, x, y);
         index = fTouches.count() - 1;
     }
@@ -232,6 +236,7 @@ void SkTouchGesture::touchMoved(void* owner, float x, float y) {
             fLocalM.setTranslate(dx, dy);
         } break;
         case 2: {
+            SkASSERT(kZoom_State == fState);
             const Rec& rec0 = fTouches[0];
             const Rec& rec1 = fTouches[1];
 
@@ -254,6 +259,7 @@ void SkTouchGesture::touchEnd(void* owner) {
 
     int index = this->findRec(owner);
     if (index < 0) {
+        SkDebugf("--- not found\n");
         return;
     }
 
@@ -276,9 +282,11 @@ void SkTouchGesture::touchEnd(void* owner) {
         } break;
         case 2:
             this->flushLocalM();
+            SkASSERT(kZoom_State == fState);
             fState = kEmpty_State;
             break;
         default:
+            SkASSERT(kZoom_State == fState);
             break;
     }
 

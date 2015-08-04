@@ -8,9 +8,8 @@
 
 #include "SkTileGrid.h"
 
-SkTileGrid::SkTileGrid(int xTileCount, int yTileCount, const SkTileGridPicture::TileGridInfo& info,
-    SkTileGridNextDatumFunctionPtr nextDatumFunction)
-{
+SkTileGrid::SkTileGrid(int xTileCount, int yTileCount, const SkTileGridFactory::TileGridInfo& info,
+                       SkTileGridNextDatumFunctionPtr nextDatumFunction) {
     fXTileCount = xTileCount;
     fYTileCount = yTileCount;
     fInfo = info;
@@ -39,6 +38,7 @@ SkTDArray<void *>& SkTileGrid::tile(int x, int y) {
 }
 
 void SkTileGrid::insert(void* data, const SkIRect& bounds, bool) {
+    SkASSERT(!bounds.isEmpty());
     SkIRect dilatedBounds = bounds;
     dilatedBounds.outset(fInfo.fMargin.width(), fInfo.fMargin.height());
     dilatedBounds.offset(fInfo.fOffset);
@@ -89,6 +89,7 @@ void SkTileGrid::search(const SkIRect& query, SkTDArray<void*>* results) {
     tileEndY = SkPin32(tileEndY, tileStartY+1, fYTileCount);
 
     int queryTileCount = (tileEndX - tileStartX) * (tileEndY - tileStartY);
+    SkASSERT(queryTileCount);
     if (queryTileCount == 1) {
         *results = this->tile(tileStartX, tileStartY);
     } else {
@@ -122,6 +123,7 @@ int SkTileGrid::getCount() const {
 }
 
 void SkTileGrid::rewindInserts() {
+    SkASSERT(fClient);
     for (int i = 0; i < fTileCount; ++i) {
         while (!fTileData[i].isEmpty() && fClient->shouldRewind(fTileData[i].top())) {
             fTileData[i].pop();

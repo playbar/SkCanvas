@@ -19,12 +19,10 @@ class SkMatrix;
 
 /** Manages a program's uniforms.
 */
-class GrGLUniformManager 
-{
+class GrGLUniformManager : public SkRefCnt {
 public:
     // Opaque handle to a uniform
-    class UniformHandle 
-	{
+    class UniformHandle {
     public:
         static UniformHandle CreateFromUniformIndex(int i);
 
@@ -39,9 +37,10 @@ public:
     private:
         UniformHandle(int value)
             : fValue(~value) {
+            SkASSERT(isValid());
         }
 
-        int toUniformIndex() const { return ~fValue; }
+        int toUniformIndex() const { SkASSERT(isValid()); return ~fValue; }
 
         int fValue;
         friend class GrGLUniformManager; // For accessing toUniformIndex().
@@ -54,21 +53,21 @@ public:
     /** Functions for uploading uniform values. The varities ending in v can be used to upload to an
      *  array of uniforms. arrayCount must be <= the array count of the uniform.
      */
-    void setSampler(UniformHandle, GLint texUnit) const;
-    void set1f(UniformHandle, GLfloat v0) const;
-    void set1fv(UniformHandle, int arrayCount, const GLfloat v[]) const;
-    void set2f(UniformHandle, GLfloat, GLfloat) const;
-    void set2fv(UniformHandle, int arrayCount, const GLfloat v[]) const;
-    void set3f(UniformHandle, GLfloat, GLfloat, GLfloat) const;
-    void set3fv(UniformHandle, int arrayCount, const GLfloat v[]) const;
-    void set4f(UniformHandle, GLfloat, GLfloat, GLfloat, GLfloat) const;
-    void set4fv(UniformHandle, int arrayCount, const GLfloat v[]) const;
+    void setSampler(UniformHandle, GrGLint texUnit) const;
+    void set1f(UniformHandle, GrGLfloat v0) const;
+    void set1fv(UniformHandle, int arrayCount, const GrGLfloat v[]) const;
+    void set2f(UniformHandle, GrGLfloat, GrGLfloat) const;
+    void set2fv(UniformHandle, int arrayCount, const GrGLfloat v[]) const;
+    void set3f(UniformHandle, GrGLfloat, GrGLfloat, GrGLfloat) const;
+    void set3fv(UniformHandle, int arrayCount, const GrGLfloat v[]) const;
+    void set4f(UniformHandle, GrGLfloat, GrGLfloat, GrGLfloat, GrGLfloat) const;
+    void set4fv(UniformHandle, int arrayCount, const GrGLfloat v[]) const;
     // matrices are column-major, the first three upload a single matrix, the latter three upload
     // arrayCount matrices into a uniform array.
-    void setMatrix3f(UniformHandle, const GLfloat matrix[]) const;
-    void setMatrix4f(UniformHandle, const GLfloat matrix[]) const;
-    void setMatrix3fv(UniformHandle, int arrayCount, const GLfloat matrices[]) const;
-    void setMatrix4fv(UniformHandle, int arrayCount, const GLfloat matrices[]) const;
+    void setMatrix3f(UniformHandle, const GrGLfloat matrix[]) const;
+    void setMatrix4f(UniformHandle, const GrGLfloat matrix[]) const;
+    void setMatrix3fv(UniformHandle, int arrayCount, const GrGLfloat matrices[]) const;
+    void setMatrix4fv(UniformHandle, int arrayCount, const GrGLfloat matrices[]) const;
 
     // convenience method for uploading a SkMatrix to a 3x3 matrix uniform
     void setSkMatrix(UniformHandle, const SkMatrix&) const;
@@ -92,7 +91,7 @@ public:
     /**
      * Called by the GrGLShaderBuilder to get GL locations for all uniforms.
      */
-    void getUniformLocations(GLuint programID, const BuilderUniformArray& uniforms);
+    void getUniformLocations(GrGLuint programID, const BuilderUniformArray& uniforms);
 
     /**
      * Called by the GrGLShaderBuilder to access the array by the handle (index).
@@ -100,15 +99,13 @@ public:
     const BuilderUniform& getBuilderUniform(const BuilderUniformArray&, GrGLUniformManager::UniformHandle) const;
 
 private:
-    enum 
-	{
+    enum {
         kUnusedUniform = -1,
     };
 
-    struct Uniform
-	{
-        GLint     fVSLocation;
-        GLint     fFSLocation;
+    struct Uniform {
+        GrGLint     fVSLocation;
+        GrGLint     fFSLocation;
         GrSLType    fType;
         int         fArrayCount;
     };
@@ -116,6 +113,8 @@ private:
     bool fUsingBindUniform;
     SkTArray<Uniform, true> fUniforms;
     GrGpuGL* fGpu;
+
+    typedef SkRefCnt INHERITED;
 };
 
 #endif

@@ -107,7 +107,7 @@ void SkScrollBarView::setTotal(unsigned total)
     }
     if (evt.isType("recommendDim"))
     {
-        float    width;
+        SkScalar    width;
 
         if (evt.findScalar("x", &width))
             this->setWidth(width);

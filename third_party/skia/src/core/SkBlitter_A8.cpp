@@ -26,6 +26,9 @@ const SkBitmap* SkA8_Blitter::justAnOpaqueColor(uint32_t* value) {
 }
 
 void SkA8_Blitter::blitH(int x, int y, int width) {
+    SkASSERT(x >= 0 && y >= 0 &&
+             (unsigned)(x + width) <= (unsigned)fDevice.width());
+
     if (fSrcA == 0) {
         return;
     }
@@ -55,6 +58,7 @@ void SkA8_Blitter::blitAntiH(int x, int y, const SkAlpha antialias[],
 
     for (;;) {
         int count = runs[0];
+        SkASSERT(count >= 0);
         if (count == 0) {
             return;
         }
@@ -194,6 +198,10 @@ void SkA8_Blitter::blitV(int x, int y, int height, SkAlpha alpha) {
 }
 
 void SkA8_Blitter::blitRect(int x, int y, int width, int height) {
+    SkASSERT(x >= 0 && y >= 0 &&
+             (unsigned)(x + width) <= (unsigned)fDevice.width() &&
+             (unsigned)(y + height) <= (unsigned)fDevice.height());
+
     if (fSrcA == 0) {
         return;
     }
@@ -220,10 +228,12 @@ void SkA8_Blitter::blitRect(int x, int y, int width, int height) {
 
 ///////////////////////////////////////////////////////////////////////
 
-SkA8_Shader_Blitter::SkA8_Shader_Blitter(const SkBitmap& device, const SkPaint& paint)
-    : INHERITED(device, paint) {
+SkA8_Shader_Blitter::SkA8_Shader_Blitter(const SkBitmap& device, const SkPaint& paint,
+                                         SkShader::Context* shaderContext)
+    : INHERITED(device, paint, shaderContext) {
     if ((fXfermode = paint.getXfermode()) != NULL) {
         fXfermode->ref();
+        SkASSERT(fShaderContext);
     }
 
     int width = device.width();
@@ -237,14 +247,18 @@ SkA8_Shader_Blitter::~SkA8_Shader_Blitter() {
 }
 
 void SkA8_Shader_Blitter::blitH(int x, int y, int width) {
-    uint8_t* device = fDevice.getAddr8(x, y);
+    SkASSERT(x >= 0 && y >= 0 &&
+             (unsigned)(x + width) <= (unsigned)fDevice.width());
 
-    if ((fShader->getFlags() & SkShader::kOpaqueAlpha_Flag) && !fXfermode) {
+    uint8_t* device = fDevice.getAddr8(x, y);
+    SkShader::Context* shaderContext = fShaderContext;
+
+    if ((shaderContext->getFlags() & SkShader::kOpaqueAlpha_Flag) && !fXfermode) {
         memset(device, 0xFF, width);
     } else {
         SkPMColor*  span = fBuffer;
 
-        fShader->shadeSpan(x, y, span, width);
+        shaderContext->shadeSpan(x, y, span, width);
         if (fXfermode) {
             fXfermode->xferA8(device, span, width, NULL);
         } else {
@@ -259,6 +273,7 @@ void SkA8_Shader_Blitter::blitH(int x, int y, int width) {
 }
 
 static inline uint8_t aa_blend8(SkPMColor src, U8CPU da, int aa) {
+    SkASSERT((unsigned)aa <= 255);
 
     int src_scale = SkAlpha255To256(aa);
     int sa = SkGetPackedA32(src);
@@ -269,12 +284,12 @@ static inline uint8_t aa_blend8(SkPMColor src, U8CPU da, int aa) {
 
 void SkA8_Shader_Blitter::blitAntiH(int x, int y, const SkAlpha antialias[],
                                     const int16_t runs[]) {
-    SkShader*   shader = fShader;
-    SkXfermode* mode = fXfermode;
-    uint8_t*    aaExpand = fAAExpand;
-    SkPMColor*  span = fBuffer;
-    uint8_t*    device = fDevice.getAddr8(x, y);
-    int         opaque = fShader->getFlags() & SkShader::kOpaqueAlpha_Flag;
+    SkShader::Context* shaderContext = fShaderContext;
+    SkXfermode*        mode = fXfermode;
+    uint8_t*           aaExpand = fAAExpand;
+    SkPMColor*         span = fBuffer;
+    uint8_t*           device = fDevice.getAddr8(x, y);
+    int                opaque = shaderContext->getFlags() & SkShader::kOpaqueAlpha_Flag;
 
     for (;;) {
         int count = *runs;
@@ -286,7 +301,7 @@ void SkA8_Shader_Blitter::blitAntiH(int x, int y, const SkAlpha antialias[],
             if (opaque && aa == 255 && mode == NULL) {
                 memset(device, 0xFF, count);
             } else {
-                shader->shadeSpan(x, y, span, count);
+                shaderContext->shadeSpan(x, y, span, count);
                 if (mode) {
                     memset(aaExpand, aa, count);
                     mode->xferA8(device, span, count, aaExpand);
@@ -316,11 +331,12 @@ void SkA8_Shader_Blitter::blitMask(const SkMask& mask, const SkIRect& clip) {
     int height = clip.height();
     uint8_t* device = fDevice.getAddr8(x, y);
     const uint8_t* alpha = mask.getAddr8(x, y);
+    SkShader::Context* shaderContext = fShaderContext;
 
     SkPMColor*  span = fBuffer;
 
     while (--height >= 0) {
-        fShader->shadeSpan(x, y, span, width);
+        shaderContext->shadeSpan(x, y, span, width);
         if (fXfermode) {
             fXfermode->xferA8(device, span, width, alpha);
         } else {
@@ -339,6 +355,9 @@ void SkA8_Shader_Blitter::blitMask(const SkMask& mask, const SkIRect& clip) {
 
 SkA8_Coverage_Blitter::SkA8_Coverage_Blitter(const SkBitmap& device,
                              const SkPaint& paint) : SkRasterBlitter(device) {
+    SkASSERT(NULL == paint.getShader());
+    SkASSERT(NULL == paint.getXfermode());
+    SkASSERT(NULL == paint.getColorFilter());
 }
 
 void SkA8_Coverage_Blitter::blitAntiH(int x, int y, const SkAlpha antialias[],
@@ -348,6 +367,7 @@ void SkA8_Coverage_Blitter::blitAntiH(int x, int y, const SkAlpha antialias[],
 
     for (;;) {
         int count = runs[0];
+        SkASSERT(count >= 0);
         if (count == 0) {
             return;
         }
@@ -360,6 +380,7 @@ void SkA8_Coverage_Blitter::blitAntiH(int x, int y, const SkAlpha antialias[],
 
         SkDEBUGCODE(totalCount += count;)
     }
+    SkASSERT(fDevice.width() == totalCount);
 }
 
 void SkA8_Coverage_Blitter::blitH(int x, int y, int width) {
@@ -389,6 +410,7 @@ void SkA8_Coverage_Blitter::blitRect(int x, int y, int width, int height) {
 }
 
 void SkA8_Coverage_Blitter::blitMask(const SkMask& mask, const SkIRect& clip) {
+    SkASSERT(SkMask::kA8_Format == mask.fFormat);
 
     int x = clip.fLeft;
     int y = clip.fTop;

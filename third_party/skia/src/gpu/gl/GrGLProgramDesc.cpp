@@ -37,7 +37,7 @@ inline GrGLEffect::EffectKey get_key_and_update_stats(const GrEffectStage& stage
 }
 }
 void GrGLProgramDesc::Build(const GrDrawState& drawState,
-                            bool isPoints,
+                            GrGpu::DrawType drawType,
                             GrDrawState::BlendOptFlags blendOpts,
                             GrBlendCoeff srcCoeff,
                             GrBlendCoeff dstCoeff,
@@ -50,6 +50,8 @@ void GrGLProgramDesc::Build(const GrDrawState& drawState,
     coverageStages->reset();
 
     // This should already have been caught
+    SkASSERT(!(GrDrawState::kSkipDraw_BlendOptFlag & blendOpts));
+
     bool skipCoverage = SkToBool(blendOpts & GrDrawState::kEmitTransBlack_BlendOptFlag);
 
     bool skipColor = SkToBool(blendOpts & (GrDrawState::kEmitTransBlack_BlendOptFlag |
@@ -111,7 +113,10 @@ void GrGLProgramDesc::Build(const GrDrawState& drawState,
     int currEffectKey = 0;
     bool readsDst = false;
     bool readFragPosition = false;
-    bool hasVertexCode = false;
+    // We use vertexshader-less shader programs only when drawing paths.
+    bool hasVertexCode = !(GrGpu::kDrawPath_DrawType == drawType ||
+                           GrGpu::kDrawPaths_DrawType == drawType);
+
     if (!skipColor) {
         for (int s = firstEffectiveColorStage; s < drawState.numColorStages(); ++s) {
             effectKeys[currEffectKey++] =
@@ -130,18 +135,18 @@ void GrGLProgramDesc::Build(const GrDrawState& drawState,
     }
 
     header->fHasVertexCode = hasVertexCode || requiresLocalCoordAttrib;
-    header->fEmitsPointSize = isPoints;
+    header->fEmitsPointSize = GrGpu::kDrawPoints_DrawType == drawType;
 
     // Currently the experimental GS will only work with triangle prims (and it doesn't do anything
     // other than pass through values from the VS to the FS anyway).
-#if GL_EXPERIMENTAL_GS
+#if GR_GL_EXPERIMENTAL_GS
 #if 0
     header->fExperimentalGS = gpu->caps().geometryShaderSupport();
 #else
     header->fExperimentalGS = false;
 #endif
 #endif
-    bool defaultToUniformInputs = gpu->caps()->pathRenderingSupport();
+    bool defaultToUniformInputs = GR_GL_NO_CONSTANT_ATTRIBUTES || gpu->caps()->pathRenderingSupport();
 
     if (colorIsTransBlack) {
         header->fColorInput = kTransBlack_ColorInput;
@@ -168,11 +173,13 @@ void GrGLProgramDesc::Build(const GrDrawState& drawState,
     }
 
     if (readsDst) {
+        SkASSERT(NULL != dstCopy || gpu->caps()->dstReadInShaderSupport());
         const GrTexture* dstCopyTexture = NULL;
         if (NULL != dstCopy) {
             dstCopyTexture = dstCopy->texture();
         }
         header->fDstReadKey = GrGLShaderBuilder::KeyForDstRead(dstCopyTexture, gpu->glCaps());
+        SkASSERT(0 != header->fDstReadKey);
     } else {
         header->fDstReadKey = 0;
     }
@@ -193,6 +200,7 @@ void GrGLProgramDesc::Build(const GrDrawState& drawState,
     if (requiresColorAttrib) {
         header->fColorAttributeIndex = drawState.colorVertexAttributeIndex();
     } else if (GrGLProgramDesc::kAttribute_ColorInput == header->fColorInput) {
+        SkASSERT(availableAttributeIndex < GrDrawState::kMaxVertexAttribCnt);
         header->fColorAttributeIndex = availableAttributeIndex;
         availableAttributeIndex++;
     } else {
@@ -202,6 +210,7 @@ void GrGLProgramDesc::Build(const GrDrawState& drawState,
     if (requiresCoverageAttrib) {
         header->fCoverageAttributeIndex = drawState.coverageVertexAttributeIndex();
     } else if (GrGLProgramDesc::kAttribute_ColorInput == header->fCoverageInput) {
+        SkASSERT(availableAttributeIndex < GrDrawState::kMaxVertexAttribCnt);
         header->fCoverageAttributeIndex = availableAttributeIndex;
     } else {
         header->fCoverageAttributeIndex = -1;
@@ -209,20 +218,13 @@ void GrGLProgramDesc::Build(const GrDrawState& drawState,
 
     // Here we deal with whether/how we handle color and coverage separately.
 
-    // Set these defaults and then possibly change our mind if there is coverage.
-    header->fDiscardIfZeroCoverage = false;
+    // Set this default and then possibly change our mind if there is coverage.
     header->fCoverageOutput = kModulate_CoverageOutput;
 
     // If we do have coverage determine whether it matters.
     bool separateCoverageFromColor = false;
     if (!drawState.isCoverageDrawing() && !skipCoverage &&
         (drawState.numCoverageStages() > 0 || requiresCoverageAttrib)) {
-
-        // If we're stenciling then we want to discard samples that have zero coverage
-        if (drawState.getStencil().doesWrite()) {
-            header->fDiscardIfZeroCoverage = true;
-            separateCoverageFromColor = true;
-        }
 
         if (gpu->caps()->dualSourceBlendingSupport() &&
             !(blendOpts & (GrDrawState::kEmitCoverage_BlendOptFlag |

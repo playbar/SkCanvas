@@ -8,10 +8,10 @@
 #ifndef GrGLVertexArray_DEFINED
 #define GrGLVertexArray_DEFINED
 
-#include "GrResource.h"
+#include "GrGpuObject.h"
 #include "GrTypesPriv.h"
-//#include "gl/glew.h"
-#include "eggl.h"
+#include "gl/GrGLDefines.h"
+#include "gl/GrGLFunctions.h"
 
 #include "SkTArray.h"
 
@@ -19,22 +19,20 @@ class GrGLVertexBuffer;
 class GrGLIndexBuffer;
 class GrGpuGL;
 
-struct GrGLAttribLayout
-{
-    GLint     fCount;
-    GLenum    fType;
-    GLboolean fNormalized;
+struct GrGLAttribLayout {
+    GrGLint     fCount;
+    GrGLenum    fType;
+    GrGLboolean fNormalized;
 };
 
-static inline const GrGLAttribLayout& GrGLAttribTypeToLayout(GrVertexAttribType type)
-{
-    static const GrGLAttribLayout kLayouts[kGrVertexAttribTypeCount] = 
-	{
-        {1, GL_FLOAT, false},         // kFloat_GrVertexAttribType
-        {2, GL_FLOAT, false},         // kVec2f_GrVertexAttribType
-        {3, GL_FLOAT, false},         // kVec3f_GrVertexAttribType
-        {4, GL_FLOAT, false},         // kVec4f_GrVertexAttribType
-        {4, GL_UNSIGNED_BYTE, true},  // kVec4ub_GrVertexAttribType
+static inline const GrGLAttribLayout& GrGLAttribTypeToLayout(GrVertexAttribType type) {
+    SkASSERT(type >= 0 && type < kGrVertexAttribTypeCount);
+    static const GrGLAttribLayout kLayouts[kGrVertexAttribTypeCount] = {
+        {1, GR_GL_FLOAT, false},         // kFloat_GrVertexAttribType
+        {2, GR_GL_FLOAT, false},         // kVec2f_GrVertexAttribType
+        {3, GR_GL_FLOAT, false},         // kVec3f_GrVertexAttribType
+        {4, GR_GL_FLOAT, false},         // kVec4f_GrVertexAttribType
+        {4, GR_GL_UNSIGNED_BYTE, true},  // kVec4ub_GrVertexAttribType
     };
     GR_STATIC_ASSERT(0 == kFloat_GrVertexAttribType);
     GR_STATIC_ASSERT(1 == kVec2f_GrVertexAttribType);
@@ -53,9 +51,6 @@ class GrGLAttribArrayState {
 public:
     explicit GrGLAttribArrayState(int arrayCount = 0) {
         this->resize(arrayCount);
-        // glVertexPointer doesn't have a normalization param.
-        fFixedFunctionVertexArray.fNormalized = false;
-        fUnusedFixedFunctionArraysDisabled = false;
     }
 
     void resize(int newCount) {
@@ -73,45 +68,32 @@ public:
     void set(const GrGpuGL*,
              int index,
              GrGLVertexBuffer*,
-             GLint size,
-             GLenum type,
-             GLboolean normalized,
-             GLsizei stride,
-             GLvoid* offset);
-
-    void setFixedFunctionVertexArray(const GrGpuGL*,
-                                     GrGLVertexBuffer*,
-                                     GLint size,
-                                     GLenum type,
-                                     GLsizei stride,
-                                     GLvoid* offset);
+             GrGLint size,
+             GrGLenum type,
+             GrGLboolean normalized,
+             GrGLsizei stride,
+             GrGLvoid* offset);
 
     /**
      * This function disables vertex attribs not present in the mask. It is assumed that the
      * GrGLAttribArrayState is tracking the state of the currently bound vertex array object.
      */
-    void disableUnusedArrays(const GrGpuGL*, uint64_t usedAttribArrayMask, bool usingFFVertexArray);
+    void disableUnusedArrays(const GrGpuGL*, uint64_t usedAttribArrayMask);
 
     void invalidate() {
         int count = fAttribArrayStates.count();
         for (int i = 0; i < count; ++i) {
             fAttribArrayStates[i].invalidate();
         }
-        fFixedFunctionVertexArray.invalidate();
-        fUnusedFixedFunctionArraysDisabled = false;
     }
 
-    void notifyVertexBufferDelete(GLuint id) {
+    void notifyVertexBufferDelete(GrGLuint id) {
         int count = fAttribArrayStates.count();
         for (int i = 0; i < count; ++i) {
             if (fAttribArrayStates[i].fAttribPointerIsValid &&
                 id == fAttribArrayStates[i].fVertexBufferID) {
                 fAttribArrayStates[i].invalidate();
             }
-        }
-        if (fFixedFunctionVertexArray.fAttribPointerIsValid &&
-            id == fFixedFunctionVertexArray.fVertexBufferID) {
-            fFixedFunctionVertexArray.invalidate();
         }
     }
 
@@ -133,31 +115,24 @@ private:
             bool        fEnableIsValid;
             bool        fAttribPointerIsValid;
             bool        fEnabled;
-            GLuint    fVertexBufferID;
-            GLint     fSize;
-            GLenum    fType;
-            GLboolean fNormalized;
-            GLsizei   fStride;
-            GLvoid*   fOffset;
+            GrGLuint    fVertexBufferID;
+            GrGLint     fSize;
+            GrGLenum    fType;
+            GrGLboolean fNormalized;
+            GrGLsizei   fStride;
+            GrGLvoid*   fOffset;
     };
 
     SkSTArray<16, AttribArrayState, true> fAttribArrayStates;
-
-    // Tracks the array specified by glVertexPointer.
-    AttribArrayState fFixedFunctionVertexArray;
-
-    // Tracks whether we've disabled the other fixed function arrays that we don't
-    // use (e.g. glNormalPointer).
-    bool fUnusedFixedFunctionArraysDisabled;
 };
 
 /**
  * This class represents an OpenGL vertex array object. It manages the lifetime of the vertex array
  * and is used to track the state of the vertex array to avoid redundant GL calls.
  */
-class GrGLVertexArray : public GrResource {
+class GrGLVertexArray : public GrGpuObject {
 public:
-    GrGLVertexArray(GrGpuGL* gpu, GLint id, int attribCount);
+    GrGLVertexArray(GrGpuGL* gpu, GrGLint id, int attribCount);
 
     /**
      * Binds this vertex array. If the ID has been deleted or abandoned then NULL is returned.
@@ -172,17 +147,17 @@ public:
      */
     GrGLAttribArrayState* bindWithIndexBuffer(const GrGLIndexBuffer* indexBuffer);
 
-    void notifyIndexBufferDelete(GLuint bufferID);
+    void notifyIndexBufferDelete(GrGLuint bufferID);
 
-    void notifyVertexBufferDelete(GLuint id) {
+    void notifyVertexBufferDelete(GrGLuint id) {
         fAttribArrays.notifyVertexBufferDelete(id);
     }
 
-    GLuint arrayID() const { return fID; }
+    GrGLuint arrayID() const { return fID; }
 
     void invalidateCachedState();
 
-    virtual size_t sizeInBytes() const SK_OVERRIDE { return 0; }
+    virtual size_t gpuMemorySize() const SK_OVERRIDE { return 0; }
 
 protected:
     virtual void onAbandon() SK_OVERRIDE;
@@ -190,12 +165,12 @@ protected:
     virtual void onRelease() SK_OVERRIDE;
 
 private:
-    GLuint                fID;
-    GrGLAttribArrayState  fAttribArrays;
-    GLuint                fIndexBufferID;
-    bool                  fIndexBufferIDIsValid;
+    GrGLuint                fID;
+    GrGLAttribArrayState    fAttribArrays;
+    GrGLuint                fIndexBufferID;
+    bool                    fIndexBufferIDIsValid;
 
-    typedef GrResource INHERITED;
+    typedef GrGpuObject INHERITED;
 };
 
 #endif

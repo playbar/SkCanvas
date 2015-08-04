@@ -15,6 +15,8 @@
 #include "SkStrokeRec.h"
 
 GrPathRenderer* GrStencilAndCoverPathRenderer::Create(GrContext* context) {
+    SkASSERT(NULL != context);
+    SkASSERT(NULL != context->getGpu());
     if (context->getGpu()->caps()->pathRenderingSupport()) {
         return SkNEW_ARGS(GrStencilAndCoverPathRenderer, (context->getGpu()));
     } else {
@@ -23,6 +25,7 @@ GrPathRenderer* GrStencilAndCoverPathRenderer::Create(GrContext* context) {
 }
 
 GrStencilAndCoverPathRenderer::GrStencilAndCoverPathRenderer(GrGpu* gpu) {
+    SkASSERT(gpu->caps()->pathRenderingSupport());
     fGpu = gpu;
     gpu->ref();
 }
@@ -51,6 +54,7 @@ GrPathRenderer::StencilSupport GrStencilAndCoverPathRenderer::onGetStencilSuppor
 void GrStencilAndCoverPathRenderer::onStencilPath(const SkPath& path,
                                                   const SkStrokeRec& stroke,
                                                   GrDrawTarget* target) {
+    SkASSERT(!path.isInverseFillType());
     SkAutoTUnref<GrPath> p(fGpu->getContext()->createPath(path, stroke));
     target->stencilPath(p, path.getFillType());
 }
@@ -59,7 +63,11 @@ bool GrStencilAndCoverPathRenderer::onDrawPath(const SkPath& path,
                                                const SkStrokeRec& stroke,
                                                GrDrawTarget* target,
                                                bool antiAlias) {
+    SkASSERT(!antiAlias);
+    SkASSERT(!stroke.isHairlineStyle());
+
     GrDrawState* drawState = target->drawState();
+    SkASSERT(drawState->getStencil().isDisabled());
 
     SkAutoTUnref<GrPath> p(fGpu->getContext()->createPath(path, stroke));
 

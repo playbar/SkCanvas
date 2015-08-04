@@ -28,8 +28,8 @@ public:
     void        getMargin(SkRect*) const;
     void        setMargin(const SkRect&);
 
-    float    getSpacer() const { return fSpacer; }
-    void        setSpacer(float);
+    SkScalar    getSpacer() const { return fSpacer; }
+    void        setSpacer(SkScalar);
 
     /** Controls the posititioning in the same direction as the orientation
     */
@@ -61,10 +61,11 @@ public:
 
 protected:
     virtual void onLayoutChildren(SkView* parent);
+    virtual void onInflate(const SkDOM&, const SkDOM::Node*);
 
 private:
     SkRect      fMargin;
-    float    fSpacer;
+    SkScalar    fSpacer;
     uint8_t     fOrient, fPack, fAlign, fRound;
 };
 
@@ -77,6 +78,7 @@ public:
 protected:
     // overrides;
     virtual void onLayoutChildren(SkView* parent);
+    virtual void onInflate(const SkDOM& dom, const SkDOM::Node* node);
 
 private:
     SkRect  fMargin;

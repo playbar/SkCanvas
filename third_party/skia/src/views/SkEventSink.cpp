@@ -76,6 +76,7 @@ bool SkEventSink::doEvent(const SkEvent& evt) {
 }
 
 bool SkEventSink::doQuery(SkEvent* evt) {
+    SkASSERT(evt);
     return this->onQuery(evt);
 }
 
@@ -94,6 +95,9 @@ SkTagList* SkEventSink::findTagList(U8CPU tag) const {
 }
 
 void SkEventSink::addTagList(SkTagList* rec) {
+    SkASSERT(rec);
+    SkASSERT(fTagHead == NULL || SkTagList::Find(fTagHead, rec->fTag) == NULL);
+
     rec->fNext = fTagHead;
     fTagHead = rec;
 }
@@ -162,6 +166,7 @@ void SkEventSink::copyListeners(const SkEventSink& sink)
     SkListenersTagList* sinkList = (SkListenersTagList*)sink.findTagList(kListeners_SkTagList);
     if (sinkList == NULL)
         return;
+    SkASSERT(sinkList->countListners() > 0);
     const SkEventSinkID* iter = sinkList->fIDs;
     const SkEventSinkID* stop = iter + sinkList->countListners();
     while (iter < stop)
@@ -182,6 +187,7 @@ void SkEventSink::removeListenerID(SkEventSinkID id)
     if (index >= 0)
     {
         int count = list->countListners();
+        SkASSERT(count > 0);
         if (count == 1)
             this->removeTagList(kListeners_SkTagList);
         else
@@ -201,6 +207,7 @@ bool SkEventSink::hasListeners() const
 void SkEventSink::postToListeners(const SkEvent& evt, SkMSec delay) {
     SkListenersTagList* list = (SkListenersTagList*)this->findTagList(kListeners_SkTagList);
     if (list) {
+        SkASSERT(list->countListners() > 0);
         const SkEventSinkID* iter = list->fIDs;
         const SkEventSinkID* stop = iter + list->countListners();
         while (iter < stop) {

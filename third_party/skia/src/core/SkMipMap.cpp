@@ -109,41 +109,35 @@ static void downsampleby2_proc4444(SkBitmap* dst, int x, int y,
     *dst->getAddr16(x >> 1, y >> 1) = (uint16_t)collaps4444(c >> 2);
 }
 
-static bool isPos32Bits(const Sk64& value) {
-    return !value.isNeg() && value.is32();
-}
-
 SkMipMap::Level* SkMipMap::AllocLevels(int levelCount, size_t pixelSize) {
     if (levelCount < 0) {
         return NULL;
     }
-    Sk64 size;
-    size.setMul(levelCount + 1, sizeof(Level));
-    size.add(SkToS32(pixelSize));
-    if (!isPos32Bits(size)) {
+    int64_t size = sk_64_mul(levelCount + 1, sizeof(Level)) + pixelSize;
+    if (!sk_64_isS32(size)) {
         return NULL;
     }
-    return (Level*)sk_malloc_throw(size.get32());
+    return (Level*)sk_malloc_throw(sk_64_asS32(size));
 }
 
 SkMipMap* SkMipMap::Build(const SkBitmap& src) {
     void (*proc)(SkBitmap* dst, int x, int y, const SkBitmap& src);
 
-    const SkBitmap::Config config = src.config();
-    switch (config) {
-        case SkBitmap::kARGB_8888_Config:
+    const SkColorType ct = src.colorType();
+    const SkAlphaType at = src.alphaType();
+    switch (ct) {
+        case kRGBA_8888_SkColorType:
+        case kBGRA_8888_SkColorType:
             proc = downsampleby2_proc32;
             break;
-        case SkBitmap::kRGB_565_Config:
+        case kRGB_565_SkColorType:
             proc = downsampleby2_proc16;
             break;
-        case SkBitmap::kARGB_4444_Config:
+        case kARGB_4444_SkColorType:
             proc = downsampleby2_proc4444;
             break;
-        case SkBitmap::kIndex8_Config:
-        case SkBitmap::kA8_Config:
         default:
-            return NULL; // don't build mipmaps for these configs
+            return NULL; // don't build mipmaps for any other colortypes (yet)
     }
 
     SkAutoLockPixels alp(src);
@@ -163,7 +157,7 @@ SkMipMap* SkMipMap::Build(const SkBitmap& src) {
             if (0 == width || 0 == height) {
                 break;
             }
-            size += SkBitmap::ComputeRowBytes(config, width) * height;
+            size += SkColorTypeMinRowBytes(ct, width) * height;
             countLevels += 1;
         }
     }
@@ -186,7 +180,7 @@ SkMipMap* SkMipMap::Build(const SkBitmap& src) {
     for (int i = 0; i < countLevels; ++i) {
         width >>= 1;
         height >>= 1;
-        rowBytes = SkToU32(SkBitmap::ComputeRowBytes(config, width));
+        rowBytes = SkToU32(SkColorTypeMinRowBytes(ct, width));
 
         levels[i].fPixels   = addr;
         levels[i].fWidth    = width;
@@ -195,8 +189,7 @@ SkMipMap* SkMipMap::Build(const SkBitmap& src) {
         levels[i].fScale    = (float)width / src.width();
 
         SkBitmap dstBM;
-        dstBM.setConfig(config, width, height, rowBytes);
-        dstBM.setPixels(addr);
+        dstBM.installPixels(SkImageInfo::Make(width, height, ct, at), addr, rowBytes);
 
         srcBM.lockPixels();
         for (int y = 0; y < height; y++) {
@@ -209,6 +202,8 @@ SkMipMap* SkMipMap::Build(const SkBitmap& src) {
         srcBM = dstBM;
         addr += height * rowBytes;
     }
+    SkASSERT(addr == baseAddr + size);
+
     return SkNEW_ARGS(SkMipMap, (levels, countLevels, size));
 }
 
@@ -218,6 +213,8 @@ SkMipMap* SkMipMap::Build(const SkBitmap& src) {
 
 SkMipMap::SkMipMap(Level* levels, int count, size_t size)
     : fSize(size), fLevels(levels), fCount(count) {
+    SkASSERT(levels);
+    SkASSERT(count > 0);
 //    SkDebugf("mips %d\n", ++gCounter);
 }
 
@@ -226,22 +223,24 @@ SkMipMap::~SkMipMap() {
 //    SkDebugf("mips %d\n", --gCounter);
 }
 
-static SkFixed compute_level(float scale) {
+static SkFixed compute_level(SkScalar scale) {
     SkFixed s = SkAbs32(SkScalarToFixed(SkScalarInvert(scale)));
 
     if (s < SK_Fixed1) {
         return 0;
     }
     int clz = SkCLZ(s);
+    SkASSERT(clz >= 1 && clz <= 15);
     return SkIntToFixed(15 - clz) + ((unsigned)(s << (clz + 1)) >> 16);
 }
 
-bool SkMipMap::extractLevel(float scale, Level* levelPtr) const {
+bool SkMipMap::extractLevel(SkScalar scale, Level* levelPtr) const {
     if (scale >= SK_Scalar1) {
         return false;
     }
 
     int level = compute_level(scale) >> 16;
+    SkASSERT(level >= 0);
     if (level <= 0) {
         return false;
     }

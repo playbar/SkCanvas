@@ -11979,9 +11979,6 @@
     <ClInclude Include="..\third_party\skia\src\images\SkScaledBitmapSampler.h">
       <Filter>..\third_party\skia\src\images</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\ports\SkPurgeableMemoryBlock_none.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
     <ClInclude Include="..\third_party\skia\src\ports\SkFontHost_FreeType_common.h">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClInclude>
@@ -12603,9 +12600,6 @@
     <ClInclude Include="..\third_party\skia\src\core\SkTileGrid.h">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\core\SkTileGridPicture.cpp">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClCompile>
     <ClInclude Include="..\third_party\skia\src\core\SkTLList.h">
       <Filter>..\third_party\skia\src\core</Filter>
     </ClInclude>
@@ -12651,16 +12645,10 @@
     <ClCompile Include="..\third_party\skia\src\image\SkImage_Codec.cpp">
       <Filter>..\third_party\skia\src\image</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\image\SkImage_Picture.cpp">
-      <Filter>..\third_party\skia\src\image</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\image\SkImage_Raster.cpp">
       <Filter>..\third_party\skia\src\image</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\image\SkSurface.cpp">
-      <Filter>..\third_party\skia\src\image</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\image\SkSurface_Picture.cpp">
       <Filter>..\third_party\skia\src\image</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\image\SkSurface_Raster.cpp">
@@ -13176,9 +13164,6 @@
     <ClCompile Include="..\third_party\skia\src\effects\SkGpuBlurUtils.cpp">
       <Filter>..\third_party\skia\src\effects</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\effects\SkKernel33MaskFilter.cpp">
-      <Filter>..\third_party\skia\src\effects</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\effects\SkLayerDrawLooper.cpp">
       <Filter>..\third_party\skia\src\effects</Filter>
     </ClCompile>
@@ -13671,9 +13656,6 @@
     <ClInclude Include="..\third_party\skia\src\gpu\GrPlotMgr.h">
       <Filter>..\third_party\skia\src\gpu</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\gpu\GrRectanizer.cpp">
-      <Filter>..\third_party\skia\src\gpu</Filter>
-    </ClCompile>
     <ClInclude Include="..\third_party\skia\src\gpu\GrRectanizer.h">
       <Filter>..\third_party\skia\src\gpu</Filter>
     </ClInclude>
@@ -13692,9 +13674,6 @@
     <ClInclude Include="..\third_party\skia\src\gpu\GrReducedClip.h">
       <Filter>..\third_party\skia\src\gpu</Filter>
     </ClInclude>
-    <ClCompile Include="..\third_party\skia\src\gpu\GrResource.cpp">
-      <Filter>..\third_party\skia\src\gpu</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\gpu\GrResourceCache.cpp">
       <Filter>..\third_party\skia\src\gpu</Filter>
     </ClCompile>
@@ -13989,29 +13968,8 @@
     <ClCompile Include="..\third_party\skia\src\utils\mac\SkCreateCGImageRef.cpp">
       <Filter>..\third_party\skia\src\utils\mac\_excluded_files</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\gpu\glew.c">
-      <Filter>..\third_party\skia\src\gpu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\core\SkFlattenableBuffers.cpp">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\core\Sk64.cpp">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\gpu\GrGpuFactory.cpp">
       <Filter>..\third_party\skia\src\gpu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\core\SkOrderedWriteBuffer.cpp">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\image\SkDataPixelRef.cpp">
-      <Filter>..\third_party\skia\src\image</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\core\SkOrderedReadBuffer.cpp">
-      <Filter>..\third_party\skia\src\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\core\SkImageFilterUtils.cpp">
-      <Filter>..\third_party\skia\src\core</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\utils\SkInterpolator.cpp">
       <Filter>..\third_party\skia\src\utils</Filter>
@@ -14039,18 +13997,6 @@
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\utils\win\SkIStream.cpp">
       <Filter>..\third_party\skia\src\utils\win</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\images\SkImages.cpp">
-      <Filter>..\third_party\skia\src\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\images\SkImageRef_GlobalPool.cpp">
-      <Filter>..\third_party\skia\src\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\images\SkImageRef.cpp">
-      <Filter>..\third_party\skia\src\images</Filter>
-    </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\images\SkImageRefPool.cpp">
-      <Filter>..\third_party\skia\src\images</Filter>
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\ports\SkTime_win.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
@@ -14130,9 +14076,6 @@
     <ClCompile Include="..\third_party\skia\src\ports\SkFontMgr_default_gdi.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
-    <ClCompile Include="..\third_party\skia\src\ports\SkFontHost_win_dw.cpp">
-      <Filter>..\third_party\skia\src\ports</Filter>
-    </ClCompile>
     <ClCompile Include="..\third_party\skia\src\ports\SkOSFile_none.cpp">
       <Filter>..\third_party\skia\src\ports</Filter>
     </ClCompile>
@@ -14162,6 +14105,9 @@
     </ClCompile>
     <ClCompile Include="..\third_party\skia\src\opts\SkMorphology_opts_none.cpp">
       <Filter>..\third_party\skia\src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third_party\skia\src\gpu\effects\GrDitherEffect.cpp">
+      <Filter>..\third_party\skia\src\effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

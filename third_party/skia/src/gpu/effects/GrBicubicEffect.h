@@ -37,7 +37,7 @@ public:
     /**
      * Create a simple filter effect with custom bicubic coefficients and optional domain.
      */
-    static GrEffectRef* Create(GrTexture* tex, const float coefficients[16],
+    static GrEffectRef* Create(GrTexture* tex, const SkScalar coefficients[16],
                                const SkRect* domain = NULL) {
         if (NULL == domain) {
             static const SkShader::TileMode kTileModes[] = { SkShader::kClamp_TileMode,
@@ -63,7 +63,7 @@ public:
      * Create a filter effect with custom bicubic coefficients, the texture matrix, and the x/y
      * tilemodes.
      */
-    static GrEffectRef* Create(GrTexture* tex, const float coefficients[16],
+    static GrEffectRef* Create(GrTexture* tex, const SkScalar coefficients[16],
                                const SkMatrix& matrix, const SkShader::TileMode tileModes[2]) {
         AutoEffectUnref effect(SkNEW_ARGS(GrBicubicEffect, (tex, coefficients, matrix, tileModes)));
         return CreateEffectRef(effect);
@@ -78,10 +78,20 @@ public:
         return CreateEffectRef(effect);
     }
 
+    /**
+     * Determines whether the bicubic effect should be used based on the transformation from the
+     * local coords to the device. Returns true if the bicubic effect should be used. filterMode
+     * is set to appropriate filtering mode to use regardless of the return result (e.g. when this
+     * returns false it may indicate that the best fallback is to use kMipMap, kBilerp, or
+     * kNearest).
+     */
+    static bool ShouldUseBicubic(const SkMatrix& localCoordsToDevice,
+                                 GrTextureParams::FilterMode* filterMode);
+
 private:
-    GrBicubicEffect(GrTexture*, const float coefficients[16],
+    GrBicubicEffect(GrTexture*, const SkScalar coefficients[16],
                     const SkMatrix &matrix, const SkShader::TileMode tileModes[2]);
-    GrBicubicEffect(GrTexture*, const float coefficients[16],
+    GrBicubicEffect(GrTexture*, const SkScalar coefficients[16],
                     const SkMatrix &matrix, const SkRect& domain);
     virtual bool onIsEqual(const GrEffect&) const SK_OVERRIDE;
 
@@ -90,7 +100,7 @@ private:
 
     GR_DECLARE_EFFECT_TEST;
 
-    static const float gMitchellCoefficients[16];
+    static const SkScalar gMitchellCoefficients[16];
 
     typedef GrSingleTextureEffect INHERITED;
 };

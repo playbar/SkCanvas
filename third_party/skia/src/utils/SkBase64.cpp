@@ -85,6 +85,7 @@ handlePad:
             two |= three >> 2;
             three = (uint8_t) (three << 6);
             three |= bytes[3];
+            SkASSERT(one < 256 && two < 256 && three < 256);
             *dst = (unsigned char) one;
         }
         dst++;
@@ -154,28 +155,10 @@ size_t SkBase64::Encode(const void* srcPtr, size_t length, void* dstPtr, const c
 
 SkBase64::Error SkBase64::decode(const char* src, size_t len) {
     Error err = decode(src, len, false);
+    SkASSERT(err == kNoError);
     if (err != kNoError)
         return err;
     fData = new char[fLength];  // should use sk_malloc/sk_free
     decode(src, len, true);
     return kNoError;
 }
-
-#ifdef SK_SUPPORT_UNITTEST
-void SkBase64::UnitTest() {
-    signed char all[256];
-    for (int index = 0; index < 256; index++)
-        all[index] = (signed char) (index + 1);
-    for (int offset = 0; offset < 6; offset++) {
-        size_t length = 256 - offset;
-        size_t encodeLength = Encode(all + offset, length, NULL);
-        char* src = (char*)sk_malloc_throw(encodeLength + 1);
-        Encode(all + offset, length, src);
-        src[encodeLength] = '\0';
-        SkBase64 tryMe;
-        tryMe.decode(src, encodeLength);
-        sk_free(src);
-        delete[] tryMe.fData;
-    }
-}
-#endif

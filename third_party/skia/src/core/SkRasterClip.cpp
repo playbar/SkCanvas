@@ -12,6 +12,7 @@ SkRasterClip::SkRasterClip() {
     fIsBW = true;
     fIsEmpty = true;
     fIsRect = false;
+    SkDEBUGCODE(this->validate();)
 }
 
 SkRasterClip::SkRasterClip(const SkRasterClip& src) {
@@ -26,15 +27,18 @@ SkRasterClip::SkRasterClip(const SkRasterClip& src) {
 
     fIsEmpty = src.isEmpty();
     fIsRect = src.isRect();
+    SkDEBUGCODE(this->validate();)
 }
 
 SkRasterClip::SkRasterClip(const SkIRect& bounds) : fBW(bounds) {
     fIsBW = true;
     fIsEmpty = this->computeIsEmpty();  // bounds might be empty, so compute
     fIsRect = !fIsEmpty;
+    SkDEBUGCODE(this->validate();)
 }
 
 SkRasterClip::~SkRasterClip() {
+    SkDEBUGCODE(this->validate();)
 }
 
 bool SkRasterClip::isComplex() const {
@@ -110,6 +114,7 @@ bool SkRasterClip::op(const SkRegion& rgn, SkRegion::Op op) {
 
 bool SkRasterClip::op(const SkRasterClip& clip, SkRegion::Op op) {
     AUTO_RASTERCLIP_VALIDATE(*this);
+    clip.validate();
 
     if (this->isBW() && clip.isBW()) {
         (void)fBW.op(clip.fBW, op);
@@ -136,9 +141,9 @@ bool SkRasterClip::op(const SkRasterClip& clip, SkRegion::Op op) {
  *  axis. Thus we can treat an axis coordinate as an integer if it differs
  *  from its nearest int by < half of that value (1.8 in this case).
  */
-static bool nearly_integral(float x) {
-    static const float domain = SK_Scalar1 / 4;
-    static const float halfDomain = domain / 2;
+static bool nearly_integral(SkScalar x) {
+    static const SkScalar domain = SK_Scalar1 / 4;
+    static const SkScalar halfDomain = domain / 2;
 
     x += halfDomain;
     return x - SkScalarFloorToScalar(x) < domain;
@@ -214,10 +219,26 @@ const SkRegion& SkRasterClip::forceGetBW() {
 void SkRasterClip::convertToAA() {
     AUTO_RASTERCLIP_VALIDATE(*this);
 
+    SkASSERT(fIsBW);
     fAA.setRegion(fBW);
     fIsBW = false;
     (void)this->updateCacheAndReturnNonEmpty();
 }
+
+#ifdef SK_DEBUG
+void SkRasterClip::validate() const {
+    // can't ever assert that fBW is empty, since we may have called forceGetBW
+    if (fIsBW) {
+        SkASSERT(fAA.isEmpty());
+    }
+
+    fBW.validate();
+    fAA.validate();
+
+    SkASSERT(this->computeIsEmpty() == fIsEmpty);
+    SkASSERT(this->computeIsRect() == fIsRect);
+}
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -233,6 +254,8 @@ SkAAClipBlitterWrapper::SkAAClipBlitterWrapper(const SkRasterClip& clip,
 
 SkAAClipBlitterWrapper::SkAAClipBlitterWrapper(const SkAAClip* aaclip,
                                                SkBlitter* blitter) {
+    SkASSERT(blitter);
+    SkASSERT(aaclip);
     fBWRgn.setRect(aaclip->getBounds());
     fAABlitter.init(blitter, aaclip);
     // now our return values
@@ -241,6 +264,7 @@ SkAAClipBlitterWrapper::SkAAClipBlitterWrapper(const SkAAClip* aaclip,
 }
 
 void SkAAClipBlitterWrapper::init(const SkRasterClip& clip, SkBlitter* blitter) {
+    SkASSERT(blitter);
     if (clip.isBW()) {
         fClipRgn = &clip.bwRgn();
         fBlitter = blitter;

@@ -58,12 +58,15 @@ static bool find_pdmode(SkXfermode::Mode src, SkPorterDuff::Mode* dst) {
 }
 
 SkXfermode::Mode SkPorterDuff::ToXfermodeMode(Mode mode) {
+    SkASSERT((unsigned)mode < SkPorterDuff::kModeCount);
     const Pair& pair = gPairs[mode];
+    SkASSERT(pair.fPD == mode);
     return pair.fXF;
 }
 
 SkXfermode* SkPorterDuff::CreateXfermode(SkPorterDuff::Mode mode) {
     const Pair& pair = gPairs[mode];
+    SkASSERT(pair.fPD == mode);
     return SkXfermode::Create(pair.fXF);
 }
 

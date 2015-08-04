@@ -28,13 +28,18 @@ static void scale_rect(SkRect* rect, float xScale, float yScale) {
     rect->fBottom = SkScalarMul(rect->fBottom, yScale);
 }
 
-static float adjust_sigma(float sigma, int *scaleFactor, int *radius) {
+static float adjust_sigma(float sigma, int maxTextureSize, int *scaleFactor, int *radius) {
     *scaleFactor = 1;
     while (sigma > MAX_BLUR_SIGMA) {
         *scaleFactor *= 2;
         sigma *= 0.5f;
+        if (*scaleFactor > maxTextureSize) {
+            *scaleFactor = maxTextureSize;
+            sigma = MAX_BLUR_SIGMA;
+        }
     }
     *radius = static_cast<int>(ceilf(sigma * 3.0f));
+    SkASSERT(*radius <= GrConvolutionEffect::kMaxKernelRadius);
     return sigma;
 }
 
@@ -73,8 +78,8 @@ static void convolve_gaussian(GrContext* context,
     SkRect lowerSrcRect = srcRect, lowerDstRect = dstRect;
     SkRect middleSrcRect = srcRect, middleDstRect = dstRect;
     SkRect upperSrcRect = srcRect, upperDstRect = dstRect;
-    float size;
-    float rad = SkIntToScalar(radius);
+    SkScalar size;
+    SkScalar rad = SkIntToScalar(radius);
     if (direction == Gr1DKernelEffect::kX_Direction) {
         bounds[0] = SkScalarToFloat(srcRect.left()) / texture->width();
         bounds[1] = SkScalarToFloat(srcRect.right()) / texture->width();
@@ -118,6 +123,7 @@ GrTexture* GaussianBlur(GrContext* context,
                         bool cropToRect,
                         float sigmaX,
                         float sigmaY) {
+    SkASSERT(NULL != context);
 
     GrContext::AutoRenderTarget art(context);
 
@@ -127,8 +133,9 @@ GrTexture* GaussianBlur(GrContext* context,
     SkIRect clearRect;
     int scaleFactorX, radiusX;
     int scaleFactorY, radiusY;
-    sigmaX = adjust_sigma(sigmaX, &scaleFactorX, &radiusX);
-    sigmaY = adjust_sigma(sigmaY, &scaleFactorY, &radiusY);
+    int maxTextureSize = context->getMaxTextureSize();
+    sigmaX = adjust_sigma(sigmaX, maxTextureSize, &scaleFactorX, &radiusX);
+    sigmaY = adjust_sigma(sigmaY, maxTextureSize, &scaleFactorY, &radiusY);
 
     SkRect srcRect(rect);
     scale_rect(&srcRect, 1.0f / scaleFactorX, 1.0f / scaleFactorY);
@@ -137,6 +144,10 @@ GrTexture* GaussianBlur(GrContext* context,
                          static_cast<float>(scaleFactorY));
 
     GrContext::AutoClip acs(context, SkRect::MakeWH(srcRect.width(), srcRect.height()));
+
+    SkASSERT(kBGRA_8888_GrPixelConfig == srcTexture->config() ||
+             kRGBA_8888_GrPixelConfig == srcTexture->config() ||
+             kAlpha_8_GrPixelConfig == srcTexture->config());
 
     GrTextureDesc desc;
     desc.fFlags = kRenderTarget_GrTextureFlagBit | kNoStencil_GrTextureFlagBit;

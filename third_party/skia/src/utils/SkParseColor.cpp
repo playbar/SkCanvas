@@ -217,6 +217,7 @@ static void CreateTable() {
         comment.reset();
     }
     SkDebugf("// original = %d : replacement = %d\n", originalSize, replacement);
+    SkASSERT(0); // always stop after creating table
 }
 #endif
 
@@ -448,6 +449,7 @@ const char* SkParse::FindNamedColor(const char* name, size_t len, SkColor* color
 
 static inline unsigned nib2byte(unsigned n)
 {
+    SkASSERT((n & ~0xF) == 0);
     return (n << 4) | n;
 }
 
@@ -456,6 +458,7 @@ const char* SkParse::FindColor(const char* value, SkColor* colorPtr) {
     if (value[0] == '#') {
         uint32_t    hex;
         const char* end = SkParse::FindHex(value + 1, &hex);
+//      SkASSERT(end);
         if (end == NULL)
             return end;
         size_t len = end - value - 1;
@@ -472,10 +475,65 @@ const char* SkParse::FindColor(const char* value, SkColor* colorPtr) {
             *colorPtr = hex;
             return end;
         } else {
+//          SkASSERT(0);
             return NULL;
         }
+//  } else if (strchr(value, ',')) {
+//      SkScalar array[4];
+//      int count = count_separators(value, ",") + 1; // !!! count commas, add 1
+//      SkASSERT(count == 3 || count == 4);
+//      array[0] = SK_Scalar1 * 255;
+//      const char* end = SkParse::FindScalars(value, &array[4 - count], count);
+//      if (end == NULL)
+//          return NULL;
+        // !!! range check for errors?
+//      *colorPtr = SkColorSetARGB(SkScalarRoundToInt(array[0]), SkScalarRoundToInt(array[1]),
+//          SkScalarRoundToInt(array[2]), SkScalarRoundToInt(array[3]));
+//      return end;
     } else
         return FindNamedColor(value, strlen(value), colorPtr);
 }
 
-
+#ifdef SK_SUPPORT_UNITTEST
+void SkParse::TestColor() {
+    if (false)
+        CreateTable();  // regenerates data table in the output window
+    SkColor result;
+    int index;
+    for (index = 0; index < colorNamesSize; index++) {
+        result = SK_ColorBLACK;
+        SkNameRGB nameRGB = colorNames[index];
+        SkASSERT(FindColor(nameRGB.name, &result) != NULL);
+        SkASSERT(result == (SkColor) (nameRGB.rgb | 0xFF000000));
+    }
+    for (index = 0; index < colorNamesSize; index++) {
+        result = SK_ColorBLACK;
+        SkNameRGB nameRGB = colorNames[index];
+        char bad[24];
+        size_t len = strlen(nameRGB.name);
+        memcpy(bad, nameRGB.name, len);
+        bad[len - 1] -= 1;
+        SkASSERT(FindColor(bad, &result) == NULL);
+        bad[len - 1] += 2;
+        SkASSERT(FindColor(bad, &result) == NULL);
+    }
+    result = SK_ColorBLACK;
+    SkASSERT(FindColor("lightGrey", &result));
+    SkASSERT(result == 0xffd3d3d3);
+//  SkASSERT(FindColor("12,34,56,78", &result));
+//  SkASSERT(result == ((12 << 24) | (34 << 16) | (56 << 8) | (78 << 0)));
+    result = SK_ColorBLACK;
+    SkASSERT(FindColor("#ABCdef", &result));
+    SkASSERT(result == 0XFFABCdef);
+    SkASSERT(FindColor("#12ABCdef", &result));
+    SkASSERT(result == 0X12ABCdef);
+    result = SK_ColorBLACK;
+    SkASSERT(FindColor("#123", &result));
+    SkASSERT(result == 0Xff112233);
+    SkASSERT(FindColor("#abcd", &result));
+    SkASSERT(result == 0Xaabbccdd);
+    result = SK_ColorBLACK;
+//  SkASSERT(FindColor("71,162,253", &result));
+//  SkASSERT(result == ((0xFF << 24) | (71 << 16) | (162 << 8) | (253 << 0)));
+}
+#endif

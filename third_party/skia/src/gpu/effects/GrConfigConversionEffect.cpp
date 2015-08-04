@@ -33,6 +33,7 @@ public:
         builder->fsAppendTextureLookup(samplers[0], coords[0].c_str(), coords[0].type());
         builder->fsCodeAppend(";\n");
         if (GrConfigConversionEffect::kNone_PMConversion == fPMConversion) {
+            SkASSERT(fSwapRedAndBlue);
             builder->fsCodeAppendf("\t%s = %s.bgra;\n", outputColor, outputColor);
         } else {
             const char* swiz = fSwapRedAndBlue ? "bgr" : "rgb";
@@ -60,7 +61,7 @@ public:
                         outputColor, outputColor, outputColor, swiz, outputColor, outputColor);
                     break;
                 default:
-                    GrCrash("Unknown conversion op.");
+                    SkFAIL("Unknown conversion op.");
                     break;
             }
         }
@@ -91,7 +92,10 @@ GrConfigConversionEffect::GrConfigConversionEffect(GrTexture* texture,
     : GrSingleTextureEffect(texture, matrix)
     , fSwapRedAndBlue(swapRedAndBlue)
     , fPMConversion(pmConversion) {
+    SkASSERT(kRGBA_8888_GrPixelConfig == texture->config() ||
+             kBGRA_8888_GrPixelConfig == texture->config());
     // Why did we pollute our texture cache instead of using a GrSingleTextureEffect?
+    SkASSERT(swapRedAndBlue || kNone_PMConversion != pmConversion);
 }
 
 const GrBackendEffectFactory& GrConfigConversionEffect::getFactory() const {
@@ -150,9 +154,9 @@ void GrConfigConversionEffect::TestForPreservingPMConversions(GrContext* context
         for (int x = 0; x < 256; ++x) {
             uint8_t* color = reinterpret_cast<uint8_t*>(&srcData[256*y + x]);
             color[3] = y;
-            color[2] = GrMin(x, y);
-            color[1] = GrMin(x, y);
-            color[0] = GrMin(x, y);
+            color[2] = SkTMin(x, y);
+            color[1] = SkTMin(x, y);
+            color[0] = SkTMin(x, y);
         }
     }
 
@@ -186,7 +190,7 @@ void GrConfigConversionEffect::TestForPreservingPMConversions(GrContext* context
 
     bool failed = true;
 
-    for (size_t i = 0; i < GR_ARRAY_COUNT(kConversionRules) && failed; ++i) {
+    for (size_t i = 0; i < SK_ARRAY_COUNT(kConversionRules) && failed; ++i) {
         *pmToUPMRule = kConversionRules[i][0];
         *upmToPMRule = kConversionRules[i][1];
 

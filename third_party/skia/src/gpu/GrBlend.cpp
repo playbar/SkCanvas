@@ -8,8 +8,7 @@
 
 #include "GrBlend.h"
 
-static inline GrBlendCoeff swap_coeff_src_dst(GrBlendCoeff coeff)
-{
+static inline GrBlendCoeff swap_coeff_src_dst(GrBlendCoeff coeff) {
     switch (coeff) {
         case kDC_GrBlendCoeff:
             return kSC_GrBlendCoeff;
@@ -33,6 +32,8 @@ static inline GrBlendCoeff swap_coeff_src_dst(GrBlendCoeff coeff)
 }
 
 static inline unsigned saturated_add(unsigned a, unsigned b) {
+    SkASSERT(a <= 255);
+    SkASSERT(b <= 255);
     unsigned sum = a + b;
     if (sum > 255) {
         sum = 255;
@@ -40,8 +41,7 @@ static inline unsigned saturated_add(unsigned a, unsigned b) {
     return sum;
 }
 
-static GrColor add_colors(GrColor src, GrColor dst) 
-{
+static GrColor add_colors(GrColor src, GrColor dst) {
     unsigned r = saturated_add(GrColorUnpackR(src), GrColorUnpackR(dst));
     unsigned g = saturated_add(GrColorUnpackG(src), GrColorUnpackG(dst));
     unsigned b = saturated_add(GrColorUnpackB(src), GrColorUnpackB(dst));
@@ -57,6 +57,9 @@ static GrColor simplify_blend_term(GrBlendCoeff* srcCoeff,
                                    GrColor srcColor, uint32_t srcCompFlags,
                                    GrColor dstColor, uint32_t dstCompFlags,
                                    GrColor constantColor) {
+
+    SkASSERT(!GrBlendCoeffRefsSrc(*srcCoeff));
+    SkASSERT(NULL != srcCoeff);
 
     // Check whether srcCoeff can be reduced to kOne or kZero based on known color inputs.
     // We could pick out the coeff r,g,b,a values here and use them to compute the blend term color,

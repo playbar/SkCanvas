@@ -50,9 +50,11 @@ public:
     /// Must be explicitly defined on subclasses.
     virtual void blitAntiH(int x, int y, const SkAlpha antialias[],
                            const int16_t runs[]) SK_OVERRIDE {
+        SkDEBUGFAIL("How did I get here?");
     }
     /// May not be called on BaseSuperBlitter because it blits out of order.
     virtual void blitV(int x, int y, int height, SkAlpha alpha) SK_OVERRIDE {
+        SkDEBUGFAIL("How did I get here?");
     }
 
 protected:
@@ -175,8 +177,11 @@ static inline int coverage_to_exact_alpha(int aa) {
 }
 
 void SuperBlitter::blitH(int x, int y, int width) {
+    SkASSERT(width > 0);
 
     int iy = y >> SHIFT;
+    SkASSERT(iy >= fCurrIY);
+
     x -= fSuperLeft;
     // hack, until I figure out why my cubics (I think) go beyond the bounds
     if (x < 0) {
@@ -184,6 +189,10 @@ void SuperBlitter::blitH(int x, int y, int width) {
         x = 0;
     }
 
+#ifdef SK_DEBUG
+    SkASSERT(y != fCurrY || x >= fCurrX);
+#endif
+    SkASSERT(y >= fCurrY);
     if (fCurrY != y) {
         fOffsetX = 0;
         fCurrY = y;
@@ -197,6 +206,7 @@ void SuperBlitter::blitH(int x, int y, int width) {
     int start = x;
     int stop = x + width;
 
+    SkASSERT(start >= 0 && stop > start);
     // integer-pixel-aligned ends of blit, rounded out
     int fb = start & MASK;
     int fe = stop & MASK;
@@ -219,9 +229,53 @@ void SuperBlitter::blitH(int x, int y, int width) {
                          (1 << (8 - SHIFT)) - (((y & MASK) + 1) >> SHIFT),
                          fOffsetX);
 
+#ifdef SK_DEBUG
+    fRuns.assertValid(y & MASK, (1 << (8 - SHIFT)));
+    fCurrX = x + width;
+#endif
 }
 
+#if 0 // UNUSED
+static void set_left_rite_runs(SkAlphaRuns& runs, int ileft, U8CPU leftA,
+                               int n, U8CPU riteA) {
+    SkASSERT(leftA <= 0xFF);
+    SkASSERT(riteA <= 0xFF);
+
+    int16_t* run = runs.fRuns;
+    uint8_t* aa = runs.fAlpha;
+
+    if (ileft > 0) {
+        run[0] = ileft;
+        aa[0] = 0;
+        run += ileft;
+        aa += ileft;
+    }
+
+    SkASSERT(leftA < 0xFF);
+    if (leftA > 0) {
+        *run++ = 1;
+        *aa++ = leftA;
+    }
+
+    if (n > 0) {
+        run[0] = n;
+        aa[0] = 0xFF;
+        run += n;
+        aa += n;
+    }
+
+    SkASSERT(riteA < 0xFF);
+    if (riteA > 0) {
+        *run++ = 1;
+        *aa++ = riteA;
+    }
+    run[0] = 0;
+}
+#endif
+
 void SuperBlitter::blitRect(int x, int y, int width, int height) {
+    SkASSERT(width > 0);
+    SkASSERT(height > 0);
 
     // blit leading rows
     while ((y & MASK)) {
@@ -230,6 +284,7 @@ void SuperBlitter::blitRect(int x, int y, int width, int height) {
             return;
         }
     }
+    SkASSERT(height > 0);
 
     // Since this is a rect, instead of blitting supersampled rows one at a
     // time and then resolving to the destination canvas, we can blit
@@ -269,6 +324,7 @@ void SuperBlitter::blitRect(int x, int y, int width, int height) {
 
         // Need to call flush() to clean up pending draws before we
         // even consider blitV(), since otherwise it can look nonmonotonic.
+        SkASSERT(start_y > fCurrIY);
         this->flush();
 
         int n = irite - ileft - 1;
@@ -276,6 +332,8 @@ void SuperBlitter::blitRect(int x, int y, int width, int height) {
             // If n < 0, we'll only have a single partially-transparent column
             // of pixels to render.
             xleft = xrite - xleft;
+            SkASSERT(xleft <= SCALE);
+            SkASSERT(xleft > 0);
             xrite = 0;
             fRealBlitter->blitV(ileft + fLeft, start_y, count,
                 coverage_to_exact_alpha(xleft));
@@ -288,6 +346,9 @@ void SuperBlitter::blitRect(int x, int y, int width, int height) {
             // Using coverage_to_exact_alpha is not consistent with blitH()
             const int coverageL = coverage_to_exact_alpha(xleft);
             const int coverageR = coverage_to_exact_alpha(xrite);
+
+            SkASSERT(coverageL > 0 || n > 0 || coverageR > 0);
+            SkASSERT((coverageL != 0) + n + (coverageR != 0) <= fWidth);
 
             fRealBlitter->blitAntiRect(ileft + fLeft, start_y, n, count,
                                        coverageL, coverageR);
@@ -302,6 +363,7 @@ void SuperBlitter::blitRect(int x, int y, int width, int height) {
     }
 
     // catch any remaining few rows
+    SkASSERT(height <= MASK);
     while (--height >= 0) {
         this->blitH(x, y++, width);
     }
@@ -354,6 +416,7 @@ private:
 MaskSuperBlitter::MaskSuperBlitter(SkBlitter* realBlitter, const SkIRect& ir,
                                    const SkRegion& clip)
         : BaseSuperBlitter(realBlitter, ir, clip) {
+    SkASSERT(CanHandleRect(ir));
 
     fMask.fImage    = (uint8_t*)fStorage;
     fMask.fBounds   = ir;
@@ -375,6 +438,7 @@ static void add_aa_span(uint8_t* alpha, U8CPU startAlpha) {
         I might overflow to 256 with this add, hence the funny subtract.
     */
     unsigned tmp = *alpha + startAlpha;
+    SkASSERT(tmp <= 256);
     *alpha = SkToU8(tmp - (tmp >> 8));
 }
 
@@ -390,6 +454,7 @@ static inline uint32_t quadplicate_byte(U8CPU value) {
 //
 static inline void saturated_add(uint8_t* ptr, U8CPU add) {
     unsigned tmp = *ptr + add;
+    SkASSERT(tmp <= 256);
     *ptr = SkToU8(tmp - (tmp >> 8));
 }
 
@@ -398,6 +463,7 @@ static inline void saturated_add(uint8_t* ptr, U8CPU add) {
 
 static void add_aa_span(uint8_t* alpha, U8CPU startAlpha, int middleCount,
                         U8CPU stopAlpha, U8CPU maxValue) {
+    SkASSERT(middleCount >= 0);
 
     saturated_add(alpha, startAlpha);
     alpha += 1;
@@ -437,6 +503,7 @@ static void add_aa_span(uint8_t* alpha, U8CPU startAlpha, int middleCount,
 void MaskSuperBlitter::blitH(int x, int y, int width) {
     int iy = (y >> SHIFT);
 
+    SkASSERT(iy >= fMask.fBounds.fTop && iy < fMask.fBounds.fBottom);
     iy -= fMask.fBounds.fTop;   // make it relative to 0
 
     // This should never happen, but it does.  Until the true cause is
@@ -445,6 +512,13 @@ void MaskSuperBlitter::blitH(int x, int y, int width) {
     if (iy < 0) {
         return;
     }
+
+#ifdef SK_DEBUG
+    {
+        int ix = x >> SHIFT;
+        SkASSERT(ix >= fMask.fBounds.fLeft && ix < fMask.fBounds.fRight);
+    }
+#endif
 
     x -= (fMask.fBounds.fLeft << SHIFT);
 
@@ -459,15 +533,20 @@ void MaskSuperBlitter::blitH(int x, int y, int width) {
     int start = x;
     int stop = x + width;
 
+    SkASSERT(start >= 0 && stop > start);
     int fb = start & MASK;
     int fe = stop & MASK;
     int n = (stop >> SHIFT) - (start >> SHIFT) - 1;
 
 
     if (n < 0) {
+        SkASSERT(row >= fMask.fImage);
+        SkASSERT(row < fMask.fImage + kMAX_STORAGE + 1);
         add_aa_span(row, coverage_to_partial_alpha(fe - fb));
     } else {
         fb = SCALE - fb;
+        SkASSERT(row >= fMask.fImage);
+        SkASSERT(row + n + 1 < fMask.fImage + kMAX_STORAGE + 1);
         add_aa_span(row,  coverage_to_partial_alpha(fb),
                     n, coverage_to_partial_alpha(fe),
                     (1 << (8 - SHIFT)) - (((y & MASK) + 1) >> SHIFT));
@@ -480,8 +559,8 @@ void MaskSuperBlitter::blitH(int x, int y, int width) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool fitsInsideLimit(const SkRect& r, float max) {
-    const float min = -max;
+static bool fitsInsideLimit(const SkRect& r, SkScalar max) {
+    const SkScalar min = -max;
     return  r.fLeft > min && r.fTop > min &&
             r.fRight < max && r.fBottom < max;
 }
@@ -496,6 +575,10 @@ static int overflows_short_shift(int value, int shift) {
   when left-shifted by shift?
 */
 static int rect_overflows_short_shift(SkIRect rect, int shift) {
+    SkASSERT(!overflows_short_shift(8191, SHIFT));
+    SkASSERT(overflows_short_shift(8192, SHIFT));
+    SkASSERT(!overflows_short_shift(32767, 0));
+    SkASSERT(overflows_short_shift(32768, 0));
 
     // Since we expect these to succeed, we bit-or together
     // for a tiny extra bit of speed.
@@ -506,7 +589,7 @@ static int rect_overflows_short_shift(SkIRect rect, int shift) {
 }
 
 static bool safeRoundOut(const SkRect& src, SkIRect* dst, int32_t maxInt) {
-    const float maxScalar = SkIntToScalar(maxInt);
+    const SkScalar maxScalar = SkIntToScalar(maxInt);
 
     if (fitsInsideLimit(src, maxScalar)) {
         src.roundOut(dst);
@@ -599,11 +682,13 @@ void SkScan::AntiFillPath(const SkPath& path, const SkRegion& origClip,
         superClipRect = &superRect;
     }
 
+    SkASSERT(SkIntToScalar(ir.fTop) <= path.getBounds().fTop);
 
     // MaskSuperBlitter can't handle drawing outside of ir, so we can't use it
     // if we're an inverse filltype
     if (!path.isInverseFillType() && MaskSuperBlitter::CanHandleRect(ir) && !forceRLE) {
         MaskSuperBlitter    superBlit(blitter, ir, *clipRgn);
+        SkASSERT(SkIntToScalar(ir.fTop) <= path.getBounds().fTop);
         sk_fill_path(path, superClipRect, &superBlit, ir.fTop, ir.fBottom, SHIFT, *clipRgn);
     } else {
         SuperBlitter    superBlit(blitter, ir, *clipRgn);

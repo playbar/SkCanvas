@@ -31,10 +31,16 @@ private:
     inline Entry* detach(Entry*) const;
     inline void attachToHead(Entry*) const;
 
+#ifdef SK_DEBUG
+    void validate() const;
+#else
+    void validate() const {}
+#endif
+
     class AutoValidate : SkNoncopyable {
     public:
-        AutoValidate(const SkBitmapCache* bc) : fBC(bc) { }
-        ~AutoValidate() { }
+        AutoValidate(const SkBitmapCache* bc) : fBC(bc) { bc->validate(); }
+        ~AutoValidate() { fBC->validate(); }
     private:
         const SkBitmapCache* fBC;
     };

@@ -58,16 +58,19 @@ bool SkInterpolatorBase::getDuration(SkMSec* startTime, SkMSec* endTime) const {
     return true;
 }
 
-float SkInterpolatorBase::ComputeRelativeT(SkMSec time, SkMSec prevTime,
-                                  SkMSec nextTime, const float blend[4]) {
-    float t = SkScalarDiv((float)(time - prevTime),
-                             (float)(nextTime - prevTime));
+SkScalar SkInterpolatorBase::ComputeRelativeT(SkMSec time, SkMSec prevTime,
+                                  SkMSec nextTime, const SkScalar blend[4]) {
+    SkASSERT(time > prevTime && time < nextTime);
+
+    SkScalar t = SkScalarDiv((SkScalar)(time - prevTime),
+                             (SkScalar)(nextTime - prevTime));
     return blend ?
             SkUnitCubicInterp(t, blend[0], blend[1], blend[2], blend[3]) : t;
 }
 
-SkInterpolatorBase::Result SkInterpolatorBase::timeToT(SkMSec time, float* T,
+SkInterpolatorBase::Result SkInterpolatorBase::timeToT(SkMSec time, SkScalar* T,
                                         int* indexPtr, SkBool* exactPtr) const {
+    SkASSERT(fFrameCount > 0);
     Result  result = kNormal_Result;
     if (fRepeat != SK_Scalar1) {
         SkMSec startTime = 0, endTime = 0;  // initialize to avoid warning
@@ -76,7 +79,7 @@ SkInterpolatorBase::Result SkInterpolatorBase::timeToT(SkMSec time, float* T,
         SkMSec offsetTime = time - startTime;
         endTime = SkScalarFloorToInt(fRepeat * totalTime);
         if (offsetTime >= endTime) {
-            float fraction = SkScalarFraction(fRepeat);
+            SkScalar fraction = SkScalarFraction(fRepeat);
             offsetTime = fraction == 0 && fRepeat > 0 ? totalTime :
                 (SkMSec) SkScalarFloorToInt(fraction * totalTime);
             result = kFreezeEnd_Result;
@@ -110,6 +113,7 @@ SkInterpolatorBase::Result SkInterpolatorBase::timeToT(SkMSec time, float* T,
             exact = false;
         }
     }
+    SkASSERT(index < fFrameCount);
     const SkTimeCode* nextTime = &fTimes[index];
     SkMSec   nextT = nextTime[0].fTime;
     if (exact) {
@@ -131,30 +135,32 @@ SkInterpolator::SkInterpolator() {
 }
 
 SkInterpolator::SkInterpolator(int elemCount, int frameCount) {
+    SkASSERT(elemCount > 0);
     this->reset(elemCount, frameCount);
 }
 
 void SkInterpolator::reset(int elemCount, int frameCount) {
     INHERITED::reset(elemCount, frameCount);
-    fStorage = sk_malloc_throw((sizeof(float) * elemCount +
+    fStorage = sk_malloc_throw((sizeof(SkScalar) * elemCount +
                                 sizeof(SkTimeCode)) * frameCount);
     fTimes = (SkTimeCode*) fStorage;
-    fValues = (float*) ((char*) fStorage + sizeof(SkTimeCode) * frameCount);
+    fValues = (SkScalar*) ((char*) fStorage + sizeof(SkTimeCode) * frameCount);
 #ifdef SK_DEBUG
     fTimesArray = (SkTimeCode(*)[10]) fTimes;
-    fScalarsArray = (float(*)[10]) fValues;
+    fScalarsArray = (SkScalar(*)[10]) fValues;
 #endif
 }
 
 #define SK_Fixed1Third      (SK_Fixed1/3)
 #define SK_Fixed2Third      (SK_Fixed1*2/3)
 
-static const float gIdentityBlend[4] = {
+static const SkScalar gIdentityBlend[4] = {
     0.33333333f, 0.33333333f, 0.66666667f, 0.66666667f
 };
 
 bool SkInterpolator::setKeyFrame(int index, SkMSec time,
-                            const float values[], const float blend[4]) {
+                            const SkScalar values[], const SkScalar blend[4]) {
+    SkASSERT(values != NULL);
 
     if (blend == NULL) {
         blend = gIdentityBlend;
@@ -162,29 +168,32 @@ bool SkInterpolator::setKeyFrame(int index, SkMSec time,
 
     bool success = ~index == SkTSearch<SkMSec>(&fTimes->fTime, index, time,
                                                sizeof(SkTimeCode));
+    SkASSERT(success);
     if (success) {
         SkTimeCode* timeCode = &fTimes[index];
         timeCode->fTime = time;
         memcpy(timeCode->fBlend, blend, sizeof(timeCode->fBlend));
-        float* dst = &fValues[fElemCount * index];
-        memcpy(dst, values, fElemCount * sizeof(float));
+        SkScalar* dst = &fValues[fElemCount * index];
+        memcpy(dst, values, fElemCount * sizeof(SkScalar));
     }
     return success;
 }
 
 SkInterpolator::Result SkInterpolator::timeToValues(SkMSec time,
-                                                    float values[]) const {
-    float T;
+                                                    SkScalar values[]) const {
+    SkScalar T;
     int index;
     SkBool exact;
     Result result = timeToT(time, &T, &index, &exact);
     if (values) {
-        const float* nextSrc = &fValues[index * fElemCount];
+        const SkScalar* nextSrc = &fValues[index * fElemCount];
 
         if (exact) {
-            memcpy(values, nextSrc, fElemCount * sizeof(float));
+            memcpy(values, nextSrc, fElemCount * sizeof(SkScalar));
         } else {
-            const float* prevSrc = nextSrc - fElemCount;
+            SkASSERT(index > 0);
+
+            const SkScalar* prevSrc = nextSrc - fElemCount;
 
             for (int i = fElemCount - 1; i >= 0; --i) {
                 values[i] = SkScalarInterp(prevSrc[i], nextSrc[i], T);
@@ -210,7 +219,7 @@ static inline Dot14 eval_cubic(Dot14 t, Dot14 A, Dot14 B, Dot14 C) {
     return Dot14Mul(Dot14Mul(Dot14Mul(C, t) + B, t) + A, t);
 }
 
-static inline Dot14 pin_and_convert(float x) {
+static inline Dot14 pin_and_convert(SkScalar x) {
     if (x <= 0) {
         return 0;
     }
@@ -220,8 +229,8 @@ static inline Dot14 pin_and_convert(float x) {
     return SkScalarToFixed(x) >> 2;
 }
 
-float SkUnitCubicInterp(float value, float bx, float by,
-                           float cx, float cy) {
+SkScalar SkUnitCubicInterp(SkScalar value, SkScalar bx, SkScalar by,
+                           SkScalar cx, SkScalar cy) {
     // pin to the unit-square, and convert to 2.14
     Dot14 x = pin_and_convert(value);
 
@@ -264,3 +273,55 @@ float SkUnitCubicInterp(float value, float bx, float by,
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifdef SK_DEBUG
+
+#ifdef SK_SUPPORT_UNITTEST
+    static SkScalar* iset(SkScalar array[3], int a, int b, int c) {
+        array[0] = SkIntToScalar(a);
+        array[1] = SkIntToScalar(b);
+        array[2] = SkIntToScalar(c);
+        return array;
+    }
+#endif
+
+void SkInterpolator::UnitTest() {
+#ifdef SK_SUPPORT_UNITTEST
+    SkInterpolator  inter(3, 2);
+    SkScalar        v1[3], v2[3], v[3], vv[3];
+    Result          result;
+
+    inter.setKeyFrame(0, 100, iset(v1, 10, 20, 30), 0);
+    inter.setKeyFrame(1, 200, iset(v2, 110, 220, 330));
+
+    result = inter.timeToValues(0, v);
+    SkASSERT(result == kFreezeStart_Result);
+    SkASSERT(memcmp(v, v1, sizeof(v)) == 0);
+
+    result = inter.timeToValues(99, v);
+    SkASSERT(result == kFreezeStart_Result);
+    SkASSERT(memcmp(v, v1, sizeof(v)) == 0);
+
+    result = inter.timeToValues(100, v);
+    SkASSERT(result == kNormal_Result);
+    SkASSERT(memcmp(v, v1, sizeof(v)) == 0);
+
+    result = inter.timeToValues(200, v);
+    SkASSERT(result == kNormal_Result);
+    SkASSERT(memcmp(v, v2, sizeof(v)) == 0);
+
+    result = inter.timeToValues(201, v);
+    SkASSERT(result == kFreezeEnd_Result);
+    SkASSERT(memcmp(v, v2, sizeof(v)) == 0);
+
+    result = inter.timeToValues(150, v);
+    SkASSERT(result == kNormal_Result);
+    SkASSERT(memcmp(v, iset(vv, 60, 120, 180), sizeof(v)) == 0);
+
+    result = inter.timeToValues(125, v);
+    SkASSERT(result == kNormal_Result);
+    result = inter.timeToValues(175, v);
+    SkASSERT(result == kNormal_Result);
+#endif
+}
+
+#endif

@@ -12,7 +12,7 @@
 
 #include "SkScalar.h"
 
-class SK_API SkInterpolatorBase : SkNoncopyable {
+class SkInterpolatorBase : SkNoncopyable {
 public:
     enum Result {
         kNormal_Result,
@@ -49,7 +49,7 @@ public:
     /** Set the repeat count. The repeat count may be fractional.
         @param repeatCount Multiplies the total time by this scalar.
     */
-    void    setRepeatCount(float repeatCount) { fRepeat = repeatCount; }
+    void    setRepeatCount(SkScalar repeatCount) { fRepeat = repeatCount; }
 
     /** Set the whether the repeat is mirrored.
         @param reset If true, the odd repeats interpolate from the last key
@@ -59,7 +59,7 @@ public:
         fFlags = SkToU8((fFlags & ~kReset) | (int)reset);
     }
 
-    Result  timeToT(SkMSec time, float* T, int* index, SkBool* exact) const;
+    Result  timeToT(SkMSec time, SkScalar* T, int* index, SkBool* exact) const;
 
 protected:
     enum Flags {
@@ -67,15 +67,15 @@ protected:
         kReset = 2,
         kHasBlend = 4
     };
-    static float ComputeRelativeT(SkMSec time, SkMSec prevTime,
-                             SkMSec nextTime, const float blend[4] = NULL);
+    static SkScalar ComputeRelativeT(SkMSec time, SkMSec prevTime,
+                             SkMSec nextTime, const SkScalar blend[4] = NULL);
     int16_t fFrameCount;
     uint8_t fElemCount;
     uint8_t fFlags;
-    float fRepeat;
+    SkScalar fRepeat;
     struct SkTimeCode {
         SkMSec  fTime;
-        float fBlend[4];
+        SkScalar fBlend[4];
     };
     SkTimeCode* fTimes;     // pointer into fStorage
     void* fStorage;
@@ -84,7 +84,7 @@ protected:
 #endif
 };
 
-class SK_API SkInterpolator : public SkInterpolatorBase {
+class SkInterpolator : public SkInterpolatorBase {
 public:
     SkInterpolator();
     SkInterpolator(int elemCount, int frameCount);
@@ -101,8 +101,8 @@ public:
                         blend (slow to change at the beginning and end)
                         1 is a linear blend (default)
     */
-    bool setKeyFrame(int index, SkMSec time, const float values[],
-                     const float blend[4] = NULL);
+    bool setKeyFrame(int index, SkMSec time, const SkScalar values[],
+                     const SkScalar blend[4] = NULL);
 
     /** Return the computed values given the specified time. Return whether
         those values are the result of pinning to either the first
@@ -111,13 +111,13 @@ public:
         @param time The time to sample (in milliseconds)
         @param (may be null) where to write the computed values.
     */
-    Result timeToValues(SkMSec time, float values[] = NULL) const;
+    Result timeToValues(SkMSec time, SkScalar values[] = NULL) const;
 
     SkDEBUGCODE(static void UnitTest();)
 private:
-    float* fValues;  // pointer into fStorage
+    SkScalar* fValues;  // pointer into fStorage
 #ifdef SK_DEBUG
-    float(* fScalarsArray)[10];
+    SkScalar(* fScalarsArray)[10];
 #endif
     typedef SkInterpolatorBase INHERITED;
 };
@@ -125,7 +125,7 @@ private:
 /** Given all the parameters are [0...1], apply the cubic specified by (0,0)
     (bx,by) (cx,cy) (1,1) to value, returning the answer, also [0...1].
 */
-float SkUnitCubicInterp(float value, float bx, float by,
-                           float cx, float cy);
+SkScalar SkUnitCubicInterp(SkScalar value, SkScalar bx, SkScalar by,
+                           SkScalar cx, SkScalar cy);
 
 #endif

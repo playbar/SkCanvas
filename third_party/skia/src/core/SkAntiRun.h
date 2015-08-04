@@ -25,6 +25,7 @@ public:
     /// Returns true if the scanline contains only a single run,
     /// of alpha value 0.
     bool empty() const {
+        SkASSERT(fRuns[0] > 0);
         return fAlpha[0] == 0 && fRuns[fRuns[0]] == 0;
     }
 
@@ -46,7 +47,10 @@ public:
      */
     SK_ALWAYS_INLINE int add(int x, U8CPU startAlpha, int middleCount, U8CPU stopAlpha,
                              U8CPU maxValue, int offsetX) {
+        SkASSERT(middleCount >= 0);
+        SkASSERT(x >= 0 && x + (startAlpha != 0) + middleCount + (stopAlpha != 0) <= fWidth);
 
+        SkASSERT(fRuns[offsetX] >= 0);
 
         int16_t*    runs = fRuns + offsetX;
         uint8_t*    alpha = fAlpha + offsetX;
@@ -61,12 +65,14 @@ public:
                 I might overflow to 256 with this add, hence the funny subtract (crud).
             */
             unsigned tmp = alpha[x] + startAlpha;
+            SkASSERT(tmp <= 256);
             alpha[x] = SkToU8(tmp - (tmp >> 8));    // was (tmp >> 7), but that seems wrong if we're trying to catch 256
 
             runs += x + 1;
             alpha += x + 1;
             x = 0;
             lastAlpha += x; // we don't want the +1
+            SkDEBUGCODE(this->validate();)
         }
 
         if (middleCount) {
@@ -77,10 +83,12 @@ public:
             do {
                 alpha[0] = SkToU8(alpha[0] + maxValue);
                 int n = runs[0];
+                SkASSERT(n <= middleCount);
                 alpha += n;
                 runs += n;
                 middleCount -= n;
             } while (middleCount > 0);
+            SkDEBUGCODE(this->validate();)
             lastAlpha = alpha;
         }
 
@@ -88,6 +96,7 @@ public:
             SkAlphaRuns::Break(runs, alpha, x, 1);
             alpha += x;
             alpha[0] = SkToU8(alpha[0] + stopAlpha);
+            SkDEBUGCODE(this->validate();)
             lastAlpha = alpha;
         }
 
@@ -106,6 +115,8 @@ public:
      *   i.e. adding ..CCCCC. would produce AADDEEEB, rle as A2D2E3B1.
      */
     static void Break(int16_t runs[], uint8_t alpha[], int x, int count) {
+        SkASSERT(count > 0 && x >= 0);
+
         //  SkAlphaRuns::BreakAt(runs, alpha, x);
         //  SkAlphaRuns::BreakAt(&runs[x], &alpha[x], count);
 
@@ -114,6 +125,7 @@ public:
 
         while (x > 0) {
             int n = runs[0];
+            SkASSERT(n > 0);
 
             if (x < n) {
                 alpha[x] = alpha[0];
@@ -132,6 +144,7 @@ public:
 
         for (;;) {
             int n = runs[0];
+            SkASSERT(n > 0);
 
             if (x < n) {
                 alpha[x] = alpha[0];
@@ -157,6 +170,7 @@ public:
     static void BreakAt(int16_t runs[], uint8_t alpha[], int x) {
         while (x > 0) {
             int n = runs[0];
+            SkASSERT(n > 0);
 
             if (x < n) {
                 alpha[x] = alpha[0];
@@ -172,6 +186,7 @@ public:
 
 private:
     SkDEBUGCODE(int fWidth;)
+    SkDEBUGCODE(void validate() const;)
 };
 
 #endif

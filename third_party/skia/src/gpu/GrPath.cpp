@@ -9,7 +9,7 @@
 
 GrResourceKey GrPath::ComputeKey(const SkPath& path, const SkStrokeRec& stroke) {
     static const GrResourceKey::ResourceType gPathResourceType = GrResourceKey::GenerateResourceType();
-    static const uint8_t gPathDomain = GrCacheID::GenerateDomain();
+    static const GrCacheID::Domain gPathDomain = GrCacheID::GenerateDomain();
 
     GrCacheID::Key key;
     uint32_t* keyData = key.fData32;

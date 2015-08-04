@@ -46,15 +46,20 @@ public:
         return fContour->addT(fIndex, other.fContour, other.fIndex, pt, newT);
     }
 
-    int addSelfT(const SkIntersectionHelper& other, const SkPoint& pt, double newT) {
-        return fContour->addSelfT(fIndex, other.fContour, other.fIndex, pt, newT);
+    int addSelfT(const SkPoint& pt, double newT) {
+        return fContour->addSelfT(fIndex, pt, newT);
     }
 
     bool advance() {
         return ++fIndex < fLast;
     }
 
-    float bottom() const {
+    void alignTPt(SkIntersectionHelper& other, bool swap, int index,
+            SkIntersections* ts, SkPoint* point) {
+        fContour->alignTPt(fIndex, other.fContour, other.fIndex, swap, index, ts, point);
+    }
+
+    SkScalar bottom() const {
         return bounds().fBottom;
     }
 
@@ -85,7 +90,7 @@ public:
         return midPtByT.approximatelyPEqual(midPtByAvg);
     }
 
-    float left() const {
+    SkScalar left() const {
         return bounds().fLeft;
     }
 
@@ -93,7 +98,7 @@ public:
         return fContour->segments()[fIndex].pts();
     }
 
-    float right() const {
+    SkScalar right() const {
         return bounds().fRight;
     }
 
@@ -117,7 +122,7 @@ public:
         return advance();
     }
 
-    float top() const {
+    SkScalar top() const {
         return bounds().fTop;
     }
 
@@ -125,7 +130,7 @@ public:
         return fContour->segments()[fIndex].verb();
     }
 
-    float x() const {
+    SkScalar x() const {
         return bounds().fLeft;
     }
 
@@ -133,7 +138,7 @@ public:
         return x() != pts()[0].fX;
     }
 
-    float y() const {
+    SkScalar y() const {
         return bounds().fTop;
     }
 
@@ -141,20 +146,10 @@ public:
         return y() != pts()[0].fY;
     }
 
-#ifdef SK_DEBUG
-    void dump() {
-        SkDPoint::dump(pts()[0]);
-        SkDPoint::dump(pts()[1]);
-        if (verb() >= SkPath::kQuad_Verb) {
-            SkDPoint::dump(pts()[2]);
-        }
-        if (verb() >= SkPath::kCubic_Verb) {
-            SkDPoint::dump(pts()[3]);
-        }
-    }
-#endif
-
 private:
+    // utility callable by the user from the debugger when the implementation code is linked in
+    void dump() const;
+
     SkOpContour* fContour;
     int fIndex;
     int fLast;

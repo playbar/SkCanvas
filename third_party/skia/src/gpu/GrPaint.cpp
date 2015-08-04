@@ -73,6 +73,8 @@ bool GrPaint::getOpaqueAndKnownColor(GrColor* solidColor,
         (*fColorStages[i].getEffect())->getConstantColorComponents(&color, &colorComps);
     }
 
+    SkASSERT((NULL == solidColor) == (NULL == solidColorKnownComponents));
+
     GrBlendCoeff srcCoeff = fSrcBlendCoeff;
     GrBlendCoeff dstCoeff = fDstBlendCoeff;
     GrSimplifyBlend(&srcCoeff, &dstCoeff, color, colorComps, 0, 0, 0);
@@ -102,7 +104,7 @@ bool GrPaint::getOpaqueAndKnownColor(GrColor* solidColor,
                 case kDA_GrBlendCoeff:
                 case kIDA_GrBlendCoeff:
                 default:
-                    GrCrash("srcCoeff should not refer to src or dst.");
+                    SkFAIL("srcCoeff should not refer to src or dst.");
                     break;
 
                 // TODO: update this once GrPaint actually has a const color.

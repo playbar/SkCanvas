@@ -89,12 +89,6 @@ struct SkBitmapProcState {
     uint8_t             fTileModeY;         // CONSTRUCTOR
     uint8_t             fFilterLevel;       // chooseProcs
 
-    /** The shader will let us know when we can release some of our resources
-      * like scaled bitmaps.
-      */
-
-    void endContext();
-
     /** Platforms implement this, and can optionally overwrite only the
         following fields:
 
@@ -134,8 +128,11 @@ struct SkBitmapProcState {
 
     SkBitmapFilter* getBitmapFilter() const { return fBitmapFilter; }
 
+#ifdef SK_DEBUG
+    MatrixProc getMatrixProc() const;
+#else
     MatrixProc getMatrixProc() const { return fMatrixProc; }
-
+#endif
     SampleProc32 getSampleProc32() const { return fSampleProc32; }
     SampleProc16 getSampleProc16() const { return fSampleProc16; }
 
@@ -197,6 +194,8 @@ private:
 
 #ifdef SK_DEBUG
     static inline uint32_t pack_two_shorts(U16CPU pri, U16CPU sec) {
+        SkASSERT((uint16_t)pri == pri);
+        SkASSERT((uint16_t)sec == sec);
         return PACK_TWO_SHORTS(pri, sec);
     }
 #else

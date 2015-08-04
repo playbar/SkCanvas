@@ -30,8 +30,8 @@ struct SkDQuad {
         fPts[2] = pts[2];
     }
 
-    const SkDPoint& operator[](int n) const { return fPts[n]; }
-    SkDPoint& operator[](int n) {return fPts[n]; }
+    const SkDPoint& operator[](int n) const { SkASSERT(n >= 0 && n < 3); return fPts[n]; }
+    SkDPoint& operator[](int n) { SkASSERT(n >= 0 && n < 3); return fPts[n]; }
 
     static int AddValidTs(double s[], int realRoots, double* t);
     void align(int endIndex, SkDPoint* dstPt) const;
@@ -62,9 +62,10 @@ struct SkDQuad {
     SkDCubic toCubic() const;
     SkDPoint top(double startT, double endT) const;
 
-#ifdef SK_DEBUG
-    void dump();
-#endif
+    // utilities callable by the user from the debugger when the implementation code is linked in
+    void dump() const;
+    void dumpComma(const char*) const;
+
 private:
 //  static double Tangent(const double* quadratic, double t);  // uncalled
 };

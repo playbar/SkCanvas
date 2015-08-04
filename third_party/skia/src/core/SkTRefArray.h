@@ -65,6 +65,7 @@ public:
     const T* begin() const { return (const T*)(this + 1); }
     const T* end() const { return this->begin() + fCount; }
     const T& at(int index) const {
+        SkASSERT((unsigned)index < (unsigned)fCount);
         return this->begin()[index];
     }
     const T& operator[](int index) const { return this->at(index); }
@@ -73,12 +74,14 @@ public:
     // call these, since other owners are not informed if we change an element.
 
     T* writableBegin() {
+        SkASSERT(this->unique());
         return (T*)(this + 1);
     }
     T* writableEnd() {
         return this->writableBegin() + fCount;
     }
     T& writableAt(int index) {
+        SkASSERT((unsigned)index < (unsigned)fCount);
         return this->writableBegin()[index];
     }
 

@@ -13,7 +13,7 @@
 #include "SkTArray.h"
 #include "SkTypes.h"
 
-class GrAllocator : public SkNoncopyable {
+class GrAllocator : SkNoncopyable {
 public:
     ~GrAllocator() {
         reset();
@@ -33,6 +33,7 @@ public:
             fItemsPerBlock(itemsPerBlock),
             fOwnFirstBlock(NULL == initialBlock),
             fCount(0) {
+        SkASSERT(itemsPerBlock > 0);
         fBlockSize = fItemSize * fItemsPerBlock;
         fBlocks.push_back() = initialBlock;
         SkDEBUGCODE(if (!fOwnFirstBlock) {*((char*)initialBlock+fBlockSize-1)='a';} );
@@ -47,6 +48,9 @@ public:
      *                          Caller is responsible for freeing this memory.
      */
     void setInitialBlock(void* initialBlock) {
+        SkASSERT(0 == fCount);
+        SkASSERT(1 == fBlocks.count());
+        SkASSERT(NULL == fBlocks.back());
         fOwnFirstBlock = false;
         fBlocks.back() = initialBlock;
     }
@@ -76,7 +80,7 @@ public:
      * removes all added items
      */
     void reset() {
-        int blockCount = GrMax((unsigned)1,
+        int blockCount = SkTMax((unsigned)1,
                                GrUIDivRoundUp(fCount, fItemsPerBlock));
         for (int i = 1; i < blockCount; ++i) {
             sk_free(fBlocks[i]);
@@ -105,6 +109,7 @@ public:
      * access last item, only call if count() != 0
      */
     void* back() {
+        SkASSERT(fCount);
         return (*this)[fCount-1];
     }
 
@@ -112,6 +117,7 @@ public:
      * access last item, only call if count() != 0
      */
     const void* back() const {
+        SkASSERT(fCount);
         return (*this)[fCount-1];
     }
 
@@ -119,6 +125,7 @@ public:
      * access item by index.
      */
     void* operator[] (int i) {
+        SkASSERT(i >= 0 && i < fCount);
         return (char*)fBlocks[i / fItemsPerBlock] +
                fItemSize * (i % fItemsPerBlock);
     }
@@ -127,6 +134,7 @@ public:
      * access item by index.
      */
     const void* operator[] (int i) const {
+        SkASSERT(i >= 0 && i < fCount);
         return (const char*)fBlocks[i / fItemsPerBlock] +
                fItemSize * (i % fItemsPerBlock);
     }
@@ -145,7 +153,7 @@ private:
 };
 
 template <typename T>
-class GrTAllocator : public SkNoncopyable {
+class GrTAllocator : SkNoncopyable {
 public:
     virtual ~GrTAllocator() { this->reset(); };
 
@@ -164,12 +172,14 @@ public:
      */
     T& push_back() {
         void* item = fAllocator.push_back();
+        SkASSERT(NULL != item);
         SkNEW_PLACEMENT(item, T);
         return *(T*)item;
     }
 
     T& push_back(const T& t) {
         void* item = fAllocator.push_back();
+        SkASSERT(NULL != item);
         SkNEW_PLACEMENT_ARGS(item, T, (t));
         return *(T*)item;
     }

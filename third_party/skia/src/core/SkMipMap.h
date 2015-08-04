@@ -24,7 +24,7 @@ public:
         float       fScale; // < 1.0
     };
 
-	bool extractLevel(float scale, Level*) const;
+    bool extractLevel(SkScalar scale, Level*) const;
 
     size_t getSize() const { return fSize; }
 

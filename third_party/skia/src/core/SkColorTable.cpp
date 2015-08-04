@@ -8,7 +8,8 @@
 
 
 #include "SkColorTable.h"
-#include "SkFlattenableBuffers.h"
+#include "SkReadBuffer.h"
+#include "SkWriteBuffer.h"
 #include "SkStream.h"
 #include "SkTemplates.h"
 
@@ -30,6 +31,8 @@ SkColorTable::SkColorTable(const SkColorTable& src) : INHERITED() {
 SkColorTable::SkColorTable(const SkPMColor colors[], int count, SkAlphaType at)
     : f16BitCache(NULL), fAlphaType(SkToU8(at))
 {
+    SkASSERT(0 == count || NULL != colors);
+
     if (count < 0) {
         count = 0;
     } else if (count > 256) {
@@ -48,12 +51,15 @@ SkColorTable::SkColorTable(const SkPMColor colors[], int count, SkAlphaType at)
 
 SkColorTable::~SkColorTable()
 {
+    SkASSERT(fColorLockCount == 0);
+    SkASSERT(f16BitCacheLockCount == 0);
 
     sk_free(fColors);
     sk_free(f16BitCache);
 }
 
 void SkColorTable::unlockColors() {
+    SkASSERT(fColorLockCount != 0);
     SkDEBUGCODE(sk_atomic_dec(&fColorLockCount);)
 }
 
@@ -78,7 +84,7 @@ const uint16_t* SkColorTable::lock16BitCache() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-SkColorTable::SkColorTable(SkFlattenableReadBuffer& buffer) {
+SkColorTable::SkColorTable(SkReadBuffer& buffer) {
     f16BitCache = NULL;
     SkDEBUGCODE(fColorLockCount = 0;)
     SkDEBUGCODE(f16BitCacheLockCount = 0;)
@@ -94,10 +100,13 @@ SkColorTable::SkColorTable(SkFlattenableReadBuffer& buffer) {
         fCount = 0;
         fColors = NULL;
     }
-
+#ifdef SK_DEBUG
+    SkASSERT((unsigned)fCount <= 256);
+    SkASSERT(success);
+#endif
 }
 
-void SkColorTable::writeToBuffer(SkFlattenableWriteBuffer& buffer) const {
+void SkColorTable::writeToBuffer(SkWriteBuffer& buffer) const {
     buffer.writeUInt(fAlphaType);
     buffer.writeColorArray(fColors, fCount);
 }

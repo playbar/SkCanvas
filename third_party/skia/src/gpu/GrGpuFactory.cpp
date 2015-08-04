@@ -14,12 +14,30 @@
 #include "GrGpu.h"
 #include "gl/GrGpuGL.h"
 
-GrGpu* GrGpu::Create( GrContext* context)
-{
+GrGpu* GrGpu::Create(GrBackend backend, GrBackendContext backendContext, GrContext* context) {
 
-	GrGLContext ctx;
-	{
-		return new GrGpuGL(ctx, context);
-	}
+    const GrGLInterface* glInterface = NULL;
+    SkAutoTUnref<const GrGLInterface> glInterfaceUnref;
+
+    if (kOpenGL_GrBackend == backend) {
+        glInterface = reinterpret_cast<const GrGLInterface*>(backendContext);
+        if (NULL == glInterface) {
+            glInterface = GrGLDefaultInterface();
+            // By calling GrGLDefaultInterface we've taken a ref on the
+            // returned object. We only want to hold that ref until after
+            // the GrGpu is constructed and has taken ownership.
+            glInterfaceUnref.reset(glInterface);
+        }
+        if (NULL == glInterface) {
+#ifdef SK_DEBUG
+            GrPrintf("No GL interface provided!\n");
+#endif
+            return NULL;
+        }
+        GrGLContext ctx(glInterface);
+        if (ctx.isInitialized()) {
+            return SkNEW_ARGS(GrGpuGL, (ctx, context));
+        }
+    }
     return NULL;
 }

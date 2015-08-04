@@ -11,6 +11,7 @@
 
 #define GPUGL static_cast<GrGpuGL*>(getGpu())
 
+#define GL_CALL(X) GR_GL_CALL(GPUGL->glInterface(), X)
 
 void GrGLRenderTarget::init(const Desc& desc,
                             const GrGLIRect& viewport,
@@ -51,6 +52,16 @@ GrGLRenderTarget::GrGLRenderTarget(GrGpuGL* gpu,
                          viewport.fWidth, viewport.fHeight,
                          desc.fConfig, desc.fSampleCnt,
                          desc.fOrigin)) {
+    SkASSERT(NULL != texID);
+    SkASSERT(NULL != texture);
+    // FBO 0 can't also be a texture, right?
+    SkASSERT(0 != desc.fRTFBOID);
+    SkASSERT(0 != desc.fTexFBOID);
+
+    // we assume this is true, TODO: get rid of viewport as a param.
+    SkASSERT(viewport.fWidth == texture->width());
+    SkASSERT(viewport.fHeight == texture->height());
+
     this->init(desc, viewport, texID);
 }
 
@@ -71,15 +82,13 @@ void GrGLRenderTarget::onRelease() {
     GPUGL->notifyRenderTargetDelete(this);
     if (!this->isWrapped()) {
         if (fTexFBOID) {
-			glDeleteFramebuffers(1, &fTexFBOID);
+            GL_CALL(DeleteFramebuffers(1, &fTexFBOID));
         }
-        if (fRTFBOID && fRTFBOID != fTexFBOID) 
-		{
-            glDeleteFramebuffers(1, &fRTFBOID);
+        if (fRTFBOID && fRTFBOID != fTexFBOID) {
+            GL_CALL(DeleteFramebuffers(1, &fRTFBOID));
         }
-        if (fMSColorRenderbufferID) 
-		{
-            glDeleteRenderbuffers(1, &fMSColorRenderbufferID);
+        if (fMSColorRenderbufferID) {
+            GL_CALL(DeleteRenderbuffers(1, &fMSColorRenderbufferID));
         }
     }
     fRTFBOID                = 0;

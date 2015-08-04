@@ -28,14 +28,44 @@ struct GrPoint;
  *  stages before GrPaint::kTotalStages are reserved for setting up the draw (i.e., textures and
  *  filter masks).
  */
-class SK_API GrPathRenderer : public SkRefCnt
-{
+class SK_API GrPathRenderer : public SkRefCnt {
 public:
     SK_DECLARE_INST_COUNT(GrPathRenderer)
+
+    /**
+     * This is called to install custom path renderers in every GrContext at create time. The
+     * default implementation in GrCreatePathRenderer_none.cpp does not add any additional
+     * renderers. Link against another implementation to install your own. The first added is the
+     * most preferred path renderer, second is second most preferred, etc.
+     *
+     * @param context   the context that will use the path renderer
+     * @param prChain   the chain to add path renderers to.
+     */
     static void AddPathRenderers(GrContext* context, GrPathRendererChain* prChain);
+
+
     GrPathRenderer();
 
-	typedef GrPathRendererChain::StencilSupport StencilSupport;
+    /**
+     * A caller may wish to use a path renderer to draw a path into the stencil buffer. However,
+     * the path renderer itself may require use of the stencil buffer. Also a path renderer may
+     * use a GrEffect coverage stage that sets coverage to zero to eliminate pixels that are covered
+     * by bounding geometry but outside the path. These exterior pixels would still be rendered into
+     * the stencil.
+     *
+     * A GrPathRenderer can provide three levels of support for stenciling paths:
+     * 1) kNoRestriction: This is the most general. The caller sets up the GrDrawState on the target
+     *                    and calls drawPath(). The path is rendered exactly as the draw state
+     *                    indicates including support for simultaneous color and stenciling with
+     *                    arbitrary stenciling rules. Pixels partially covered by AA paths are
+     *                    affected by the stencil settings.
+     * 2) kStencilOnly: The path renderer cannot apply arbitrary stencil rules nor shade and stencil
+     *                  simultaneously. The path renderer does support the stencilPath() function
+     *                  which performs no color writes and writes a non-zero stencil value to pixels
+     *                  covered by the path.
+     * 3) kNoSupport: This path renderer cannot be used to stencil the path.
+     */
+    typedef GrPathRendererChain::StencilSupport StencilSupport;
     static const StencilSupport kNoSupport_StencilSupport =
         GrPathRendererChain::kNoSupport_StencilSupport;
     static const StencilSupport kStencilOnly_StencilSupport =
@@ -54,6 +84,7 @@ public:
     StencilSupport getStencilSupport(const SkPath& path,
                                      const SkStrokeRec& stroke,
                                      const GrDrawTarget* target) const {
+        SkASSERT(!path.isInverseFillType());
         return this->onGetStencilSupport(path, stroke, target);
     }
 
@@ -86,6 +117,10 @@ public:
                   const SkStrokeRec& stroke,
                   GrDrawTarget* target,
                   bool antiAlias) {
+        SkASSERT(!path.isEmpty());
+        SkASSERT(this->canDrawPath(path, stroke, target, antiAlias));
+        SkASSERT(target->drawState()->getStencil().isDisabled() ||
+                 kNoRestriction_StencilSupport == this->getStencilSupport(path, stroke, target));
         return this->onDrawPath(path, stroke, target, antiAlias);
     }
 
@@ -98,13 +133,15 @@ public:
      * @param target                target that the path will be rendered to
      */
     void stencilPath(const SkPath& path, const SkStrokeRec& stroke, GrDrawTarget* target) {
+        SkASSERT(!path.isEmpty());
+        SkASSERT(kNoSupport_StencilSupport != this->getStencilSupport(path, stroke, target));
         this->onStencilPath(path, stroke, target);
     }
 
     // Helper for determining if we can treat a thin stroke as a hairline w/ coverage.
     // If we can, we draw lots faster (raster device does this same test).
     static bool IsStrokeHairlineOrEquivalent(const SkStrokeRec& stroke, const SkMatrix& matrix,
-                                             float* outCoverage) {
+                                             SkScalar* outCoverage) {
         if (stroke.isHairlineStyle()) {
             if (NULL != outCoverage) {
                 *outCoverage = SK_Scalar1;

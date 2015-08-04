@@ -25,8 +25,7 @@
  *  Allows duplicate key entries but on find you may get
  *  any of the duplicate entries returned.
  */
-template <typename T, typename Key, size_t kHashBits> class GrTHashTable
-{
+template <typename T, typename Key, size_t kHashBits> class GrTHashTable {
 public:
     GrTHashTable() { this->clearHash(); }
     ~GrTHashTable() {}
@@ -62,7 +61,12 @@ private:
         kHashCount = 1 << kHashBits,
         kHashMask  = kHashCount - 1
     };
-    static unsigned hash2Index(uint32_t hash) {
+    static unsigned hash2Index(intptr_t hash) {
+#if 0
+        if (sizeof(hash) == 8) {
+            hash ^= hash >> 32;
+        }
+#endif
         hash ^= hash >> 16;
         if (kHashBits <= 8) {
             hash ^= hash >> 8;
@@ -81,8 +85,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 template <typename T, typename Key, size_t kHashBits>
-int GrTHashTable<T, Key, kHashBits>::searchArray(const Key& key) const 
-{
+int GrTHashTable<T, Key, kHashBits>::searchArray(const Key& key) const {
     int count = fSorted.count();
     if (0 == count) {
         // we should insert it at 0
@@ -105,6 +108,7 @@ int GrTHashTable<T, Key, kHashBits>::searchArray(const Key& key) const
     if (Key::Equals(*array[high], key)) {
         // above search should have found the first occurrence if there
         // are multiple.
+        SkASSERT(0 == high || Key::LessThan(*array[high - 1], key));
         return high;
     }
 
@@ -117,8 +121,8 @@ int GrTHashTable<T, Key, kHashBits>::searchArray(const Key& key) const
 
 template <typename T, typename Key, size_t kHashBits>
 template <typename Filter>
-T* GrTHashTable<T, Key, kHashBits>::find(const Key& key, Filter filter) const 
-{
+T* GrTHashTable<T, Key, kHashBits>::find(const Key& key, Filter filter) const {
+
     int hashIndex = hash2Index(key.getHash());
     T* elem = fHash[hashIndex];
 
@@ -136,6 +140,7 @@ T* GrTHashTable<T, Key, kHashBits>::find(const Key& key, Filter filter) const
 
     // above search should have found the first occurrence if there
     // are multiple.
+    SkASSERT(0 == index || Key::LessThan(*array[index - 1], key));
 
     for ( ; index < count() && Key::Equals(*array[index], key); ++index) {
         if (filter(fSorted[index])) {
@@ -149,8 +154,7 @@ T* GrTHashTable<T, Key, kHashBits>::find(const Key& key, Filter filter) const
 }
 
 template <typename T, typename Key, size_t kHashBits>
-bool GrTHashTable<T, Key, kHashBits>::insert(const Key& key, T* elem) 
-{
+bool GrTHashTable<T, Key, kHashBits>::insert(const Key& key, T* elem) {
     int index = this->searchArray(key);
     bool first = index < 0;
     if (first) {
@@ -165,8 +169,7 @@ bool GrTHashTable<T, Key, kHashBits>::insert(const Key& key, T* elem)
 }
 
 template <typename T, typename Key, size_t kHashBits>
-void GrTHashTable<T, Key, kHashBits>::remove(const Key& key, const T* elem)
-{
+void GrTHashTable<T, Key, kHashBits>::remove(const Key& key, const T* elem) {
     int index = hash2Index(key.getHash());
     if (fHash[index] == elem) {
         fHash[index] = NULL;
@@ -174,20 +177,39 @@ void GrTHashTable<T, Key, kHashBits>::remove(const Key& key, const T* elem)
 
     // remove from our sorted array
     index = this->searchArray(key);
+    SkASSERT(index >= 0);
     // if there are multiple matches searchArray will give us the first match
     // march forward until we find elem.
     while (elem != fSorted[index]) {
         ++index;
+        SkASSERT(index < fSorted.count());
     }
+    SkASSERT(elem == fSorted[index]);
     fSorted.remove(index);
 }
 
 template <typename T, typename Key, size_t kHashBits>
-void GrTHashTable<T, Key, kHashBits>::deleteAll() 
-{
+void GrTHashTable<T, Key, kHashBits>::deleteAll() {
     fSorted.deleteAll();
     this->clearHash();
 }
 
+#ifdef SK_DEBUG
+template <typename T, typename Key, size_t kHashBits>
+void GrTHashTable<T, Key, kHashBits>::validate() const {
+    int count = fSorted.count();
+    for (int i = 1; i < count; i++) {
+        SkASSERT(Key::LessThan(*fSorted[i - 1], *fSorted[i]) ||
+                 Key::Equals(*fSorted[i - 1], *fSorted[i]));
+    }
+}
+
+template <typename T, typename Key, size_t kHashBits>
+bool GrTHashTable<T, Key, kHashBits>::contains(T* elem) const {
+    int index = fSorted.find(elem);
+    return index >= 0;
+}
+
+#endif
 
 #endif

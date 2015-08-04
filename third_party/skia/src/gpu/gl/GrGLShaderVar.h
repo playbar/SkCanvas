@@ -69,6 +69,7 @@ public:
 
     GrGLShaderVar(const char* name, GrSLType type, int arrayCount = kNonArray,
                   Precision precision = kDefault_Precision) {
+        SkASSERT(kVoid_GrSLType != type);
         fType = type;
         fTypeModifier = kNone_TypeModifier;
         fCount = arrayCount;
@@ -86,6 +87,7 @@ public:
         , fPrecision(var.fPrecision)
         , fOrigin(var.fOrigin)
         , fUseUniformFloatArrays(var.fUseUniformFloatArrays) {
+        SkASSERT(kVoid_GrSLType != var.fType);
     }
 
     /**
@@ -105,6 +107,7 @@ public:
              Precision precision = kDefault_Precision,
              Origin origin = kDefault_Origin,
              bool useUniformFloatArrays = USE_UNIFORM_FLOAT_ARRAYS) {
+        SkASSERT(kVoid_GrSLType != type);
         fType = type;
         fTypeModifier = typeModifier;
         fName = name;
@@ -123,6 +126,7 @@ public:
              Precision precision = kDefault_Precision,
              Origin origin = kDefault_Origin,
              bool useUniformFloatArrays = USE_UNIFORM_FLOAT_ARRAYS) {
+        SkASSERT(kVoid_GrSLType != type);
         fType = type;
         fTypeModifier = typeModifier;
         fName = name;
@@ -142,6 +146,7 @@ public:
              Precision precision = kDefault_Precision,
              Origin origin = kDefault_Origin,
              bool useUniformFloatArrays = USE_UNIFORM_FLOAT_ARRAYS) {
+        SkASSERT(kVoid_GrSLType != type);
         fType = type;
         fTypeModifier = typeModifier;
         fName = name;
@@ -161,6 +166,7 @@ public:
              Precision precision = kDefault_Precision,
              Origin origin = kDefault_Origin,
              bool useUniformFloatArrays = USE_UNIFORM_FLOAT_ARRAYS) {
+        SkASSERT(kVoid_GrSLType != type);
         fType = type;
         fTypeModifier = typeModifier;
         fName = name;
@@ -257,10 +263,11 @@ public:
             out->append("layout(origin_upper_left) ");
         }
         if (this->getTypeModifier() != kNone_TypeModifier) {
-           out->append(TypeModifierString(this->getTypeModifier()));
+           out->append(TypeModifierString(this->getTypeModifier(),
+                                          ctxInfo.glslGeneration()));
            out->append(" ");
         }
-        out->append(PrecisionString(fPrecision));
+        out->append(PrecisionString(fPrecision, ctxInfo.standard()));
         GrSLType effectiveType = this->getType();
         if (this->isArray()) {
             if (this->isUnsizedArray()) {
@@ -268,6 +275,7 @@ public:
                              GrGLSLTypeString(effectiveType),
                              this->getName().c_str());
             } else {
+                SkASSERT(this->getArrayCount() > 0);
                 out->appendf("%s %s[%d]",
                              GrGLSLTypeString(effectiveType),
                              this->getName().c_str(),
@@ -294,10 +302,9 @@ public:
                      fUseUniformFloatArrays ? "" : ".x");
     }
 
-    static const char* PrecisionString(Precision p ) {
+    static const char* PrecisionString(Precision p, GrGLStandard standard) {
         // Desktop GLSL has added precision qualifiers but they don't do anything.
-       
-		{
+        if (kGLES_GrGLStandard == standard) {
             switch (p) {
                 case kLow_Precision:
                     return "lowp ";
@@ -308,14 +315,14 @@ public:
                 case kDefault_Precision:
                     return "";
                 default:
-                    GrCrash("Unexpected precision type.");
+                    SkFAIL("Unexpected precision type.");
             }
         }
         return "";
     }
 
 private:
-    static const char* TypeModifierString(TypeModifier t) {
+    static const char* TypeModifierString(TypeModifier t, GrGLSLGeneration gen) {
         switch (t) {
             case kNone_TypeModifier:
                 return "";
@@ -324,17 +331,17 @@ private:
             case kInOut_TypeModifier:
                 return "inout";
             case kOut_TypeModifier:
-                return "attribute";
+                return "out";
             case kUniform_TypeModifier:
                 return "uniform";
             case kAttribute_TypeModifier:
-                return "attribute";
+                return k110_GrGLSLGeneration == gen ? "attribute" : "in";
             case kVaryingIn_TypeModifier:
-                return "varying";
+                return k110_GrGLSLGeneration == gen ? "varying" : "in";
             case kVaryingOut_TypeModifier:
-                return "varying";
+                return k110_GrGLSLGeneration == gen ? "varying" : "out";
             default:
-                GrCrash("Unknown shader variable type modifier.");
+                SkFAIL("Unknown shader variable type modifier.");
                 return ""; // suppress warning
         }
     }

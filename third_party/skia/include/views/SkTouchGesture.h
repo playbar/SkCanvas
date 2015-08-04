@@ -22,7 +22,7 @@ struct SkFlingState {
 
 private:
     SkPoint     fDirection;
-    float    fSpeed0;
+    SkScalar    fSpeed0;
     double      fTime0;
     bool        fActive;
 };

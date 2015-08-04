@@ -20,6 +20,7 @@ typedef int32_t SkFDot6;
 
 #ifdef SK_DEBUG
     inline SkFDot6 SkIntToFDot6(S16CPU x) {
+        SkASSERT(SkToS16(x) == x);
         return x << 6;
     }
 #else
@@ -33,6 +34,8 @@ typedef int32_t SkFDot6;
 #define SkFixedToFDot6(x)   ((x) >> 10)
 
 inline SkFixed SkFDot6ToFixed(SkFDot6 x) {
+    SkASSERT((x << 10 >> 10) == x);
+
     return x << 10;
 }
 
@@ -40,6 +43,8 @@ inline SkFixed SkFDot6ToFixed(SkFDot6 x) {
 #define SkFDot6ToScalar(x)  ((SkScalar)(x) * 0.015625f)
 
 inline SkFixed SkFDot6Div(SkFDot6 a, SkFDot6 b) {
+    SkASSERT(b != 0);
+
     if (a == (int16_t)a) {
         return (a << 16) / b;
     } else {

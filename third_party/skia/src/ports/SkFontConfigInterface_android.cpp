@@ -174,7 +174,7 @@ static bool has_font(const SkTArray<FontRec>& array, const SkString& filename) {
     #define SK_FONT_FILE_PREFIX          "/fonts/"
 #endif
 
-static void get_path_for_sys_fonts(SkString* full, const char name[]) {
+static void get_path_for_sys_fonts(SkString* full, const SkString& name) {
     if (gTestFontFilePrefix) {
         full->set(gTestFontFilePrefix);
     } else {
@@ -220,7 +220,7 @@ SkFontConfigInterfaceAndroid::SkFontConfigInterfaceAndroid(SkTDArray<FontFamily*
 
         for (int j = 0; j < family->fFontFiles.count(); ++j) {
             SkString filename;
-            get_path_for_sys_fonts(&filename, family->fFontFiles[j]->fFileName);
+            get_path_for_sys_fonts(&filename, family->fFontFiles[j].fFileName);
 
             if (has_font(fFonts, filename)) {
                 SkDebugf("---- system font and fallback font files specify a duplicate "
@@ -265,11 +265,12 @@ SkFontConfigInterfaceAndroid::SkFontConfigInterfaceAndroid(SkTDArray<FontFamily*
                 fontRec.fFamilyRecID = familyRecID;
 
                 familyRec->fIsFallbackFont = family->fIsFallbackFont;
-                familyRec->fPaintOptions = family->fFontFiles[j]->fPaintOptions;
+                familyRec->fPaintOptions = family->fFontFiles[j].fPaintOptions;
 
-            } else if (familyRec->fPaintOptions != family->fFontFiles[j]->fPaintOptions) {
+            } else if (familyRec->fPaintOptions != family->fFontFiles[j].fPaintOptions) {
                 SkDebugf("Every font file within a family must have identical"
                          "language and variant attributes");
+                sk_throw();
             }
 
             // add this font to the current familyRec
@@ -288,14 +289,14 @@ SkFontConfigInterfaceAndroid::SkFontConfigInterfaceAndroid(SkTDArray<FontFamily*
                 addFallbackFamily(familyRecID);
             } else {
                 // add the names that map to this family to the dictionary for easy lookup
-                const SkTDArray<const char*>& names = family->fNames;
-                if (names.isEmpty()) {
+                const SkTArray<SkString>& names = family->fNames;
+                if (names.empty()) {
                     SkDEBUGFAIL("ERROR: non-fallback font with no name");
                     continue;
                 }
 
                 for (int i = 0; i < names.count(); i++) {
-                    insert_into_name_dict(fFamilyNameDict, names[i], familyRecID);
+                    insert_into_name_dict(fFamilyNameDict, names[i].c_str(), familyRecID);
                 }
             }
         }
@@ -632,7 +633,7 @@ SkTypeface* SkFontConfigInterfaceAndroid::nextLogicalTypeface(SkFontID currFontI
     const SkTypeface* currTypeface = SkTypefaceCache::FindByID(currFontID);
     // non-system fonts are not in the font cache so if we are asked to fallback
     // for a non-system font we will start at the front of the chain.
-    if (NULL != currTypeface && currFontID != origFontID) {
+    if (NULL != currTypeface) {
         currFontRecID = ((FontConfigTypeface*)currTypeface)->getIdentity().fID;
         SkASSERT(INVALID_FONT_REC_ID != currFontRecID);
     }

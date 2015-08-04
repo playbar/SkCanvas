@@ -20,7 +20,7 @@ class SkObjectParser {
 public:
 
     /**
-        Returns a string about a bitmaps bounds and config.
+        Returns a string about a bitmaps bounds and colortype.
         @param bitmap  SkBitmap
     */
     static SkString* BitmapToString(const SkBitmap& bitmap);
@@ -115,7 +115,7 @@ public:
         @param x  SkScalar
         @param text
      */
-    static SkString* ScalarToString(float x, const char* text);
+    static SkString* ScalarToString(SkScalar x, const char* text);
 
     /**
         Returns a string representation of the char pointer passed in.

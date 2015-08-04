@@ -33,6 +33,7 @@ public:
     /** Initialize RBuffer with a data point and length.
     */
     SkRBuffer(const void* data, size_t size) {
+        SkASSERT(data != 0 || size == 0);
         fData = (const char*)data;
         fPos = (const char*)data;
         fStop = (const char*)data + size;
@@ -68,7 +69,7 @@ public:
     size_t  skipToAlign4();
 
     bool readPtr(void** ptr) { return read(ptr, sizeof(void*)); }
-    bool readScalar(float* x) { return read(x, 4); }
+    bool readScalar(SkScalar* x) { return read(x, 4); }
     bool readU32(uint32_t* x) { return read(x, 4); }
     bool readS32(int32_t* x) { return read(x, 4); }
     bool readU16(uint16_t* x) { return read(x, 2); }
@@ -134,6 +135,7 @@ public:
     }
 
     void reset(void* data, size_t size) {
+        SkASSERT(data != 0 || size == 0);
         fData = (char*)data;
         fPos = (char*)data;
         fStop = (char*)data + size;
@@ -151,7 +153,7 @@ public:
     size_t  padToAlign4();
 
     void    writePtr(const void* x) { this->writeNoSizeCheck(&x, sizeof(x)); }
-    void    writeScalar(float x) { this->writeNoSizeCheck(&x, 4); }
+    void    writeScalar(SkScalar x) { this->writeNoSizeCheck(&x, 4); }
     void    write32(int32_t x) { this->writeNoSizeCheck(&x, 4); }
     void    write16(int16_t x) { this->writeNoSizeCheck(&x, 2); }
     void    write8(int8_t x) { this->writeNoSizeCheck(&x, 1); }

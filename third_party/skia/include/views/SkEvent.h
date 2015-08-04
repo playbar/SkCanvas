@@ -8,7 +8,7 @@
 #ifndef SkEvent_DEFINED
 #define SkEvent_DEFINED
 
-//#include "SkDOM.h"
+#include "SkDOM.h"
 #include "SkMetaData.h"
 #include "SkString.h"
 
@@ -123,12 +123,12 @@ public:
         in value (if value is non-null). If there is no matching named field, return false
         and ignore the value parameter.
     */
-    bool findScalar(const char name[], float* value = NULL) const { return fMeta.findScalar(name, value); }
+    bool findScalar(const char name[], SkScalar* value = NULL) const { return fMeta.findScalar(name, value); }
     /** Return true if the event contains the named SkScalar field, and return the fields
         in value[] (if value is non-null), and return the number of SkScalars in count (if count is non-null).
         If there is no matching named field, return false and ignore the value and count parameters.
     */
-    const float* findScalars(const char name[], int* count, float values[] = NULL) const { return fMeta.findScalars(name, count, values); }
+    const SkScalar* findScalars(const char name[], int* count, SkScalar values[] = NULL) const { return fMeta.findScalars(name, count, values); }
     /** Return the value of the named string field, or if no matching named field exists, return null.
     */
     const char* findString(const char name[]) const { return fMeta.findString(name); }
@@ -145,7 +145,7 @@ public:
     /** Returns true if ethe event contains the named 32bit field, and if it equals the specified value */
     bool hasS32(const char name[], int32_t value) const { return fMeta.hasS32(name, value); }
     /** Returns true if ethe event contains the named SkScalar field, and if it equals the specified value */
-    bool hasScalar(const char name[], float value) const { return fMeta.hasScalar(name, value); }
+    bool hasScalar(const char name[], SkScalar value) const { return fMeta.hasScalar(name, value); }
     /** Returns true if ethe event contains the named string field, and if it equals (using strcmp) the specified value */
     bool hasString(const char name[], const char value[]) const { return fMeta.hasString(name, value); }
     /** Returns true if ethe event contains the named pointer field, and if it equals the specified value */
@@ -158,9 +158,9 @@ public:
     /** Add/replace the named 32bit field to the event. In XML use the subelement <data name=... s32=... /> */
     void setS32(const char name[], int32_t value) { fMeta.setS32(name, value); }
     /** Add/replace the named SkScalar field to the event. In XML use the subelement <data name=... scalar=... /> */
-    void setScalar(const char name[], float value) { fMeta.setScalar(name, value); }
+    void setScalar(const char name[], SkScalar value) { fMeta.setScalar(name, value); }
     /** Add/replace the named SkScalar[] field to the event. */
-    float* setScalars(const char name[], int count, const float values[] = NULL) { return fMeta.setScalars(name, count, values); }
+    SkScalar* setScalars(const char name[], int count, const SkScalar values[] = NULL) { return fMeta.setScalars(name, count, values); }
     /** Add/replace the named string field to the event. In XML use the subelement <data name=... string=... */
     void setString(const char name[], const SkString& value) { fMeta.setString(name, value.c_str()); }
     /** Add/replace the named string field to the event. In XML use the subelement <data name=... string=... */
@@ -178,7 +178,7 @@ public:
     const SkMetaData& getMetaData() const { return fMeta; }
 
     /** Call this to initialize the event from the specified XML node */
-    //void inflate(const SkDOM&, const SkDOM::Node*);
+    void inflate(const SkDOM&, const SkDOM::Node*);
 
     SkDEBUGCODE(void dump(const char title[] = NULL);)
 

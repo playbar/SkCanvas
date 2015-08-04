@@ -63,7 +63,7 @@ double SkDLine::exactPoint(const SkDPoint& xy) const {
     return -1;
 }
 
-double SkDLine::nearPoint(const SkDPoint& xy) const {
+double SkDLine::nearPoint(const SkDPoint& xy, bool* unequal) const {
     if (!AlmostBetweenUlps(fPts[0].fX, xy.fX, fPts[1].fX)
             || !AlmostBetweenUlps(fPts[0].fY, xy.fY, fPts[1].fY)) {
         return -1;
@@ -86,7 +86,11 @@ double SkDLine::nearPoint(const SkDPoint& xy) const {
     if (!AlmostEqualUlps(largest, largest + dist)) { // is the dist within ULPS tolerance?
         return -1;
     }
+    if (unequal) {
+        *unequal = (float) largest != (float) (largest + dist);
+    }
     t = SkPinT(t);
+    SkASSERT(between(0, t, 1));
     return t;
 }
 
@@ -140,6 +144,7 @@ double SkDLine::NearPointH(const SkDPoint& xy, double left, double right, double
     }
     double t = (xy.fX - left) / (right - left);
     t = SkPinT(t);
+    SkASSERT(between(0, t, 1));
     double realPtX = (1 - t) * left + t * right;
     SkDVector distU = {xy.fY - y, xy.fX - realPtX};
     double distSq = distU.fX * distU.fX + distU.fY * distU.fY;
@@ -174,6 +179,7 @@ double SkDLine::NearPointV(const SkDPoint& xy, double top, double bottom, double
     }
     double t = (xy.fY - top) / (bottom - top);
     t = SkPinT(t);
+    SkASSERT(between(0, t, 1));
     double realPtY = (1 - t) * top + t * bottom;
     SkDVector distU = {xy.fX - x, xy.fY - realPtY};
     double distSq = distU.fX * distU.fX + distU.fY * distU.fY;
@@ -186,13 +192,3 @@ double SkDLine::NearPointV(const SkDPoint& xy, double top, double bottom, double
     }
     return t;
 }
-
-#ifdef SK_DEBUG
-void SkDLine::dump() {
-    SkDebugf("{{");
-    fPts[0].dump();
-    SkDebugf(", ");
-    fPts[1].dump();
-    SkDebugf("}}\n");
-}
-#endif

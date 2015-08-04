@@ -10,26 +10,27 @@
 
 #include "SkRefCnt.h"
 #include "SkBitmapHeap.h"
-#include "SkFlattenableBuffers.h"
+#include "SkReadBuffer.h"
+#include "SkWriteBuffer.h"
 #include "SkPath.h"
 #include "SkPicture.h"
 #include "SkReader32.h"
 
 class SkBitmap;
 
-class SkValidatingReadBuffer : public SkFlattenableReadBuffer {
+class SkValidatingReadBuffer : public SkReadBuffer {
 public:
     SkValidatingReadBuffer(const void* data, size_t size);
     virtual ~SkValidatingReadBuffer();
 
-    const void* skip(size_t size);
+    virtual const void* skip(size_t size) SK_OVERRIDE;
 
     // primitives
     virtual bool readBool() SK_OVERRIDE;
     virtual SkColor readColor() SK_OVERRIDE;
     virtual SkFixed readFixed() SK_OVERRIDE;
     virtual int32_t readInt() SK_OVERRIDE;
-	virtual float readScalar() SK_OVERRIDE;
+    virtual SkScalar readScalar() SK_OVERRIDE;
     virtual uint32_t readUInt() SK_OVERRIDE;
     virtual int32_t read32() SK_OVERRIDE;
 
@@ -39,6 +40,7 @@ public:
 
     // common data structures
     virtual SkFlattenable* readFlattenable(SkFlattenable::Type type) SK_OVERRIDE;
+    virtual void skipFlattenable() SK_OVERRIDE;
     virtual void readPoint(SkPoint* point) SK_OVERRIDE;
     virtual void readMatrix(SkMatrix* matrix) SK_OVERRIDE;
     virtual void readIRect(SkIRect* rect) SK_OVERRIDE;
@@ -51,12 +53,11 @@ public:
     virtual bool readColorArray(SkColor* colors, size_t size) SK_OVERRIDE;
     virtual bool readIntArray(int32_t* values, size_t size) SK_OVERRIDE;
     virtual bool readPointArray(SkPoint* points, size_t size) SK_OVERRIDE;
-	virtual bool readScalarArray(float* values, size_t size) SK_OVERRIDE;
+    virtual bool readScalarArray(SkScalar* values, size_t size) SK_OVERRIDE;
 
     // helpers to get info about arrays and binary data
     virtual uint32_t getArrayCount() SK_OVERRIDE;
 
-    virtual void readBitmap(SkBitmap* bitmap) SK_OVERRIDE;
     // TODO: Implement this (securely) when needed
     virtual SkTypeface* readTypeface() SK_OVERRIDE;
 
@@ -74,10 +75,9 @@ private:
         return SkIsAlign4((uintptr_t)ptr);
     }
 
-    SkReader32 fReader;
     bool fError;
 
-    typedef SkFlattenableReadBuffer INHERITED;
+    typedef SkReadBuffer INHERITED;
 };
 
 #endif // SkValidatingReadBuffer_DEFINED

@@ -224,11 +224,12 @@ SkWGLExtensions::SkWGLExtensions()
     dummyPFD.iLayerType = PFD_MAIN_PLANE;
     HWND dummyWND = create_dummy_window();
     if (dummyWND) {
-		HDC dummyDC = GetDC(dummyWND);
-		int dummyFormat = ChoosePixelFormat(dummyDC, &dummyPFD);
-		SetPixelFormat(dummyDC, dummyFormat, &dummyPFD);
-		HGLRC dummyGLRC = wglCreateContext(dummyDC);
-		wglMakeCurrent(dummyDC, dummyGLRC);
+        HDC dummyDC = GetDC(dummyWND);
+        int dummyFormat = ChoosePixelFormat(dummyDC, &dummyPFD);
+        SetPixelFormat(dummyDC, dummyFormat, &dummyPFD);
+        HGLRC dummyGLRC = wglCreateContext(dummyDC);
+        SkASSERT(dummyGLRC);
+        wglMakeCurrent(dummyDC, dummyGLRC);
 
         GET_PROC(GetExtensionsString, ARB);
         GET_PROC(ChoosePixelFormat, ARB);
@@ -236,9 +237,9 @@ SkWGLExtensions::SkWGLExtensions()
         GET_PROC(GetPixelFormatAttribfv, ARB);
         GET_PROC(CreateContextAttribs, ARB);
 
-		wglMakeCurrent(dummyDC, NULL);
-		wglDeleteContext(dummyGLRC);
-		destroy_dummy_window(dummyWND);
+        wglMakeCurrent(dummyDC, NULL);
+        wglDeleteContext(dummyGLRC);
+        destroy_dummy_window(dummyWND);
     }
 
     wglMakeCurrent(prevDC, prevGLRC);
@@ -274,6 +275,8 @@ HGLRC SkCreateWGLContext(HDC dc, int msaaSampleCount, bool preferCoreProfile) {
         static const int kIAttrsCount = SK_ARRAY_COUNT(iAttrs);
         int msaaIAttrs[kIAttrsCount + 4];
         memcpy(msaaIAttrs, iAttrs, sizeof(int) * kIAttrsCount);
+        SkASSERT(0 == msaaIAttrs[kIAttrsCount - 2] &&
+                 0 == msaaIAttrs[kIAttrsCount - 1]);
         msaaIAttrs[kIAttrsCount - 2] = SK_WGL_SAMPLE_BUFFERS;
         msaaIAttrs[kIAttrsCount - 1] = TRUE;
         msaaIAttrs[kIAttrsCount + 0] = SK_WGL_SAMPLES;
@@ -299,7 +302,8 @@ HGLRC SkCreateWGLContext(HDC dc, int msaaSampleCount, bool preferCoreProfile) {
         unsigned int num;
         extensions.choosePixelFormat(dc, iAttrs, fAttrs, 1, &format, &num);
         DescribePixelFormat(dc, format, sizeof(pfd), &pfd);
-        SetPixelFormat(dc, format, &pfd);
+        SkDEBUGCODE(BOOL set =) SetPixelFormat(dc, format, &pfd);
+        SkASSERT(TRUE == set);
     }
 
     HGLRC glrc = NULL;
@@ -331,6 +335,7 @@ HGLRC SkCreateWGLContext(HDC dc, int msaaSampleCount, bool preferCoreProfile) {
     if (NULL == glrc) {
         glrc = wglCreateContext(dc);
     }
+    SkASSERT(glrc);
 
     wglMakeCurrent(prevDC, prevGLRC);
     return glrc;

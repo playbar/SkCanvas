@@ -38,7 +38,7 @@ template <typename T> class SkPtrWrapper {
 /**
  * This class implements a templated internal doubly linked list data structure.
  */
-template <class T> class SkTInternalLList : public SkNoncopyable {
+template <class T> class SkTInternalLList : SkNoncopyable {
 public:
     SkTInternalLList()
         : fHead(NULL)
@@ -46,6 +46,8 @@ public:
     }
 
     void remove(T* entry) {
+        SkASSERT(NULL != fHead && NULL != fTail);
+        SkASSERT(this->isInList(entry));
 
         T* prev = entry->fPrev;
         T* next = entry->fNext;
@@ -63,9 +65,15 @@ public:
 
         entry->fPrev = NULL;
         entry->fNext = NULL;
+
+#ifdef SK_DEBUG
+        entry->fList = NULL;
+#endif
     }
 
     void addToHead(T* entry) {
+        SkASSERT(NULL == entry->fPrev && NULL == entry->fNext);
+        SkASSERT(NULL == entry->fList);
 
         entry->fPrev = NULL;
         entry->fNext = fHead;
@@ -76,9 +84,15 @@ public:
         if (NULL == fTail) {
             fTail = entry;
         }
+
+#ifdef SK_DEBUG
+        entry->fList = this;
+#endif
     }
 
     void addToTail(T* entry) {
+        SkASSERT(NULL == entry->fPrev && NULL == entry->fNext);
+        SkASSERT(NULL == entry->fList);
 
         entry->fPrev = fTail;
         entry->fNext = NULL;
@@ -89,6 +103,10 @@ public:
         if (NULL == fHead) {
             fHead = entry;
         }
+
+#ifdef SK_DEBUG
+        entry->fList = this;
+#endif
     }
 
     /**
@@ -97,17 +115,20 @@ public:
      * at the tail.
      */
     void addBefore(T* newEntry, T* existingEntry) {
+        SkASSERT(NULL != newEntry);
 
         if (NULL == existingEntry) {
             this->addToTail(newEntry);
             return;
         }
 
+        SkASSERT(this->isInList(existingEntry));
         newEntry->fNext = existingEntry;
         T* prev = existingEntry->fPrev;
         existingEntry->fPrev = newEntry;
         newEntry->fPrev = prev;
         if (NULL == prev) {
+            SkASSERT(fHead == existingEntry);
             fHead = newEntry;
         } else {
             prev->fNext = newEntry;
@@ -123,20 +144,27 @@ public:
      * at the head.
      */
     void addAfter(T* newEntry, T* existingEntry) {
+        SkASSERT(NULL != newEntry);
+
         if (NULL == existingEntry) {
             this->addToHead(newEntry);
             return;
         }
 
+        SkASSERT(this->isInList(existingEntry));
         newEntry->fPrev = existingEntry;
         T* next = existingEntry->fNext;
         existingEntry->fNext = newEntry;
         newEntry->fNext = next;
         if (NULL == next) {
+            SkASSERT(fTail == existingEntry);
             fTail = newEntry;
         } else {
             next->fPrev = newEntry;
         }
+#ifdef SK_DEBUG
+        newEntry->fList = this;
+#endif
     }
 
     bool isEmpty() const {
@@ -161,6 +189,7 @@ public:
             if (kHead_IterStart == startLoc) {
                 fCurr = list.fHead;
             } else {
+                SkASSERT(kTail_IterStart == startLoc);
                 fCurr = list.fTail;
             }
 
@@ -193,6 +222,45 @@ public:
     private:
         T* fCurr;
     };
+
+#ifdef SK_DEBUG
+    void validate() const {
+        SkASSERT(!fHead == !fTail);
+        Iter iter;
+        for (T* item = iter.init(*this, Iter::kHead_IterStart); NULL != item; item = iter.next()) {
+            SkASSERT(this->isInList(item));
+            if (NULL == item->fPrev) {
+                SkASSERT(fHead == item);
+            } else {
+                SkASSERT(item->fPrev->fNext == item);
+            }
+            if (NULL == item->fNext) {
+                SkASSERT(fTail == item);
+            } else {
+                SkASSERT(item->fNext->fPrev == item);
+            }
+        }
+    }
+
+    /**
+     * Debugging-only method that uses the list back pointer to check if 'entry' is indeed in 'this'
+     * list.
+     */
+    bool isInList(const T* entry) const {
+        return entry->fList == this;
+    }
+
+    /**
+     * Debugging-only method that laboriously counts the list entries.
+     */
+    int countEntries() const {
+        int count = 0;
+        for (T* entry = fHead; NULL != entry; entry = entry->fNext) {
+            ++count;
+        }
+        return count;
+    }
+#endif // SK_DEBUG
 
 private:
     T* fHead;

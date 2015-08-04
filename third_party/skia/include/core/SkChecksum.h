@@ -48,6 +48,7 @@ public:
      *  @return hash result
      */
     static uint32_t Murmur3(const uint32_t* data, size_t bytes, uint32_t seed=0) {
+        SkASSERT(SkIsAlign4(bytes));
         const size_t words = bytes/4;
 
         uint32_t hash = seed;
@@ -85,6 +86,7 @@ public:
      *  @return checksum result
      */
     static uint32_t Compute(const uint32_t* data, size_t size) {
+        SkASSERT(SkIsAlign4(size));
 
         /*
          *  We want to let the compiler use 32bit or 64bit addressing and math

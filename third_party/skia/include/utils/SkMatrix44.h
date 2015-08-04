@@ -59,7 +59,7 @@ static const SkMScalar SK_MScalar1 = 1;
 ///////////////////////////////////////////////////////////////////////////////
 
 struct SkVector4 {
-    float fData[4];
+    SkScalar fData[4];
 
     SkVector4() {
         this->set(0, 0, 0, 1);
@@ -67,7 +67,7 @@ struct SkVector4 {
     SkVector4(const SkVector4& src) {
         memcpy(fData, src.fData, sizeof(fData));
     }
-    SkVector4(float x, float y, float z, float w = SK_Scalar1) {
+    SkVector4(SkScalar x, SkScalar y, SkScalar z, SkScalar w = SK_Scalar1) {
         fData[0] = x;
         fData[1] = y;
         fData[2] = z;
@@ -86,12 +86,12 @@ struct SkVector4 {
     bool operator!=(const SkVector4& v) {
         return !(*this == v);
     }
-    bool equals(float x, float y, float z, float w = SK_Scalar1) {
+    bool equals(SkScalar x, SkScalar y, SkScalar z, SkScalar w = SK_Scalar1) {
         return fData[0] == x && fData[1] == y &&
                fData[2] == z && fData[3] == w;
     }
 
-    void set(float x, float y, float z, float w = SK_Scalar1) {
+    void set(SkScalar x, SkScalar y, SkScalar z, SkScalar w = SK_Scalar1) {
         fData[0] = x;
         fData[1] = y;
         fData[2] = z;
@@ -173,6 +173,7 @@ public:
         if (fTypeMask & kUnknown_Mask) {
             fTypeMask = this->computeTypeMask();
         }
+        SkASSERT(!(fTypeMask & kUnknown_Mask));
         return (TypeMask)fTypeMask;
     }
 
@@ -207,6 +208,8 @@ public:
      *  (3, 0)  perspective-x
      */
     inline SkMScalar get(int row, int col) const {
+        SkASSERT((unsigned)row <= 3);
+        SkASSERT((unsigned)col <= 3);
         return fMat[col][row];
     }
 
@@ -217,6 +220,8 @@ public:
      *  (3, 0)  perspective-x
      */
     inline void set(int row, int col, SkMScalar value) {
+        SkASSERT((unsigned)row <= 3);
+        SkASSERT((unsigned)col <= 3);
         fMat[col][row] = value;
         this->dirtyTypeMask();
     }
@@ -325,18 +330,18 @@ public:
     /** Apply the matrix to the src vector, returning the new vector in dst.
         It is legal for src and dst to point to the same memory.
      */
-    void mapScalars(const float src[4], float dst[4]) const;
-    inline void mapScalars(float vec[4]) const {
+    void mapScalars(const SkScalar src[4], SkScalar dst[4]) const;
+    inline void mapScalars(SkScalar vec[4]) const {
         this->mapScalars(vec, vec);
     }
 
     SK_ATTR_DEPRECATED("use mapScalars")
-    void map(const float src[4], float dst[4]) const {
+    void map(const SkScalar src[4], SkScalar dst[4]) const {
         this->mapScalars(src, dst);
     }
 
     SK_ATTR_DEPRECATED("use mapScalars")
-    void map(float vec[4]) const {
+    void map(SkScalar vec[4]) const {
         this->mapScalars(vec, vec);
     }
 
@@ -401,6 +406,7 @@ private:
     }
 
     inline void setTypeMask(int mask) {
+        SkASSERT(0 == (~(kAllPublic_Masks | kUnknown_Mask) & mask));
         fTypeMask = mask;
     }
 

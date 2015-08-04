@@ -9,7 +9,7 @@
 #define SkWidget_DEFINED
 
 #include "SkBitmap.h"
-//#include "SkDOM.h"
+#include "SkDOM.h"
 #include "SkPaint.h"
 #include "SkString.h"
 #include "SkTDArray.h"
@@ -37,6 +37,7 @@ protected:
     virtual void onEnabledChange();
 
     // <event ...> to initialize the event from XML
+    virtual void onInflate(const SkDOM& dom, const SkDOM::Node* node);
 
 private:
     SkEvent fEvent;
@@ -60,6 +61,7 @@ protected:
     virtual void onLabelChange();
 
     // overrides
+    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 
 private:
     SkString    fLabel;
@@ -85,6 +87,7 @@ protected:
     virtual void onButtonStateChange();
 
     // overrides
+    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 
 private:
     State   fState;
@@ -100,7 +103,7 @@ public:
 protected:
     virtual bool onEvent(const SkEvent&);
     virtual void onDraw(SkCanvas*);
-    virtual Click* onFindClickHandler(float x, float y, unsigned modi) SK_OVERRIDE;
+    virtual Click* onFindClickHandler(SkScalar x, SkScalar y, unsigned modi) SK_OVERRIDE;
     virtual bool onClick(Click* click);
 
 private:
@@ -116,6 +119,7 @@ public:
 protected:
     virtual bool onEvent(const SkEvent&);
     virtual void onDraw(SkCanvas*);
+    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 
 private:
     typedef SkButtonWidget INHERITED;
@@ -142,7 +146,7 @@ public:
     void    setSpacingAlign(SkTextBox::SpacingAlign);
 
     void    getMargin(SkPoint* margin) const;
-    void    setMargin(float dx, float dy);
+    void    setMargin(SkScalar dx, SkScalar dy);
 
     size_t  getText(SkString* text = NULL) const;
     size_t  getText(char text[] = NULL) const;
@@ -156,6 +160,7 @@ public:
 protected:
     // overrides
     virtual void onDraw(SkCanvas*);
+    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 
 private:
     SkPoint     fMargin;
@@ -182,6 +187,7 @@ public:
 
 protected:
     virtual void onDraw(SkCanvas*);
+    virtual void onInflate(const SkDOM&, const SkDOM::Node*);
 
 private:
     SkBitmap    fBitmap;
@@ -203,6 +209,7 @@ protected:
     virtual void onLabelChange();
 
     // overrides
+    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -213,6 +220,7 @@ public:
 
 protected:
     virtual void onDraw(SkCanvas*);
+    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -231,6 +239,7 @@ public:
 
 protected:
     virtual void onDraw(SkCanvas*);
+    virtual void onInflate(const SkDOM& dom, const SkDOM::Node*);
 
 private:
     State   fState;
@@ -251,6 +260,7 @@ public:
 
 protected:
     virtual void onDraw(SkCanvas*);
+    virtual void onInflate(const SkDOM& dom, const SkDOM::Node* node);
 
 private:
     uint16_t    fValue, fMax;
@@ -271,6 +281,7 @@ public:
 
     static SkListSource* CreateFromDir(const char path[], const char suffix[],
                                         const char targetPrefix[]);
+    static SkListSource* CreateFromDOM(const SkDOM& dom, const SkDOM::Node* node);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -280,8 +291,8 @@ public:
             SkListView(uint32_t flags = 0);
     virtual ~SkListView();
 
-    float    getRowHeight() const { return fRowHeight; }
-    void        setRowHeight(float);
+    SkScalar    getRowHeight() const { return fRowHeight; }
+    void        setRowHeight(SkScalar);
 
     /** Return the index of the selected row, or -1 if none
     */
@@ -323,11 +334,12 @@ protected:
     virtual void onDraw(SkCanvas*);
     virtual void onSizeChange();
     virtual bool onEvent(const SkEvent&);
+    virtual void onInflate(const SkDOM& dom, const SkDOM::Node* node);
 
 private:
     SkPaint         fPaint[kAttrCount];
     SkListSource*   fSource;
-    float        fRowHeight;
+    SkScalar        fRowHeight;
     int             fCurrIndex;     // logical index
     int             fScrollIndex;   // logical index of top-most visible row
     int             fVisibleRowCount;
@@ -352,7 +364,7 @@ public:
     virtual ~SkGridView();
 
     void    getCellSize(SkPoint*) const;
-    void    setCellSize(float x, float y);
+    void    setCellSize(SkScalar x, SkScalar y);
 
     /** Return the index of the selected item, or -1 if none
     */
@@ -378,6 +390,7 @@ protected:
     virtual void onDraw(SkCanvas*);
     virtual void onSizeChange();
     virtual bool onEvent(const SkEvent&);
+    virtual void onInflate(const SkDOM& dom, const SkDOM::Node* node);
 
 private:
     SkView*         fScrollBar;

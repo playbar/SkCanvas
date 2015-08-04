@@ -36,12 +36,12 @@ void SkStaticTextView::computeSize()
 {
     if (fMode == kAutoWidth_Mode)
     {
-        float width = fPaint.measureText(fText.c_str(), fText.size());
+        SkScalar width = fPaint.measureText(fText.c_str(), fText.size());
         this->setWidth(width + fMargin.fX * 2);
     }
     else if (fMode == kAutoHeight_Mode)
     {
-        float width = this->width() - fMargin.fX * 2;
+        SkScalar width = this->width() - fMargin.fX * 2;
         int lines = width > 0 ? SkTextLineBreaker::CountLines(fText.c_str(), fText.size(), fPaint, width) : 0;
 
         this->setHeight(lines * fPaint.getFontSpacing() + fMargin.fY * 2);
@@ -50,6 +50,8 @@ void SkStaticTextView::computeSize()
 
 void SkStaticTextView::setMode(Mode mode)
 {
+    SkASSERT((unsigned)mode < kModeCount);
+
     if (fMode != mode)
     {
         fMode = SkToU8(mode);
@@ -69,7 +71,7 @@ void SkStaticTextView::getMargin(SkPoint* margin) const
         *margin = fMargin;
 }
 
-void SkStaticTextView::setMargin(float dx, float dy)
+void SkStaticTextView::setMargin(SkScalar dx, SkScalar dy)
 {
     if (fMargin.fX != dx || fMargin.fY != dy)
     {
@@ -164,7 +166,7 @@ if (false) { // avoid bit rot, suppress warning
         assert_no_attr(dom, node, "spacing-align");
     }
 
-    float s[2];
+    SkScalar s[2];
     if (dom.findScalars(node, "margin", s, 2)) {
         this->setMargin(s[0], s[1]);
     } else {

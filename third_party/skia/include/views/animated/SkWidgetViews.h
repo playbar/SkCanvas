@@ -173,7 +173,7 @@ public:
     void    setSpacingAlign(SkTextBox::SpacingAlign);
 
     void    getMargin(SkPoint* margin) const;
-    void    setMargin(float dx, float dy);
+    void    setMargin(SkScalar dx, SkScalar dy);
 
     size_t  getText(SkString* text = NULL) const;
     size_t  getText(char text[] = NULL) const;
@@ -262,7 +262,7 @@ private:
 
     int     logicalToVisualIndex(int index) const { return index - fScrollIndex; }
     void    invalSelection();
-    float getContentWidth() const;
+    SkScalar getContentWidth() const;
     bool    getRowRect(int index, SkRect*) const;
     void    ensureSelectionIsVisible();
     void    ensureVisibleRowCount();
@@ -278,7 +278,7 @@ private:
     SkAnimator*     fAnims;
     BindingRec*     fBindings;
     SkString        fSkinName;
-    float        fHeights[2];
+    SkScalar        fHeights[2];
     int16_t         fScrollIndex, fCurrIndex;
     uint16_t        fVisibleRowCount, fBindingCount;
     SkBool8         fAnimContentDirty;

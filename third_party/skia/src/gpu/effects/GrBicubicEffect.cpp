@@ -2,8 +2,7 @@
 
 #define DS(x) SkDoubleToScalar(x)
 
-const float GrBicubicEffect::gMitchellCoefficients[16] = 
-{
+const SkScalar GrBicubicEffect::gMitchellCoefficients[16] = {
     DS( 1.0 / 18.0), DS(-9.0 / 18.0), DS( 15.0 / 18.0), DS( -7.0 / 18.0),
     DS(16.0 / 18.0), DS( 0.0 / 18.0), DS(-36.0 / 18.0), DS( 21.0 / 18.0),
     DS( 1.0 / 18.0), DS( 9.0 / 18.0), DS( 27.0 / 18.0), DS(-21.0 / 18.0),
@@ -118,7 +117,7 @@ void GrGLBicubicEffect::setData(const GrGLUniformManager& uman,
 }
 
 static inline void convert_row_major_scalar_coeffs_to_column_major_floats(float dst[16],
-                                                                          const float src[16]) {
+                                                                          const SkScalar src[16]) {
     for (int y = 0; y < 4; y++) {
         for (int x = 0; x < 4; x++) {
             dst[x * 4 + y] = SkScalarToFloat(src[y * 4 + x]);
@@ -127,7 +126,7 @@ static inline void convert_row_major_scalar_coeffs_to_column_major_floats(float 
 }
 
 GrBicubicEffect::GrBicubicEffect(GrTexture* texture,
-                                 const float coefficients[16],
+                                 const SkScalar coefficients[16],
                                  const SkMatrix &matrix,
                                  const SkShader::TileMode tileModes[2])
   : INHERITED(texture, matrix, GrTextureParams(tileModes, GrTextureParams::kNone_FilterMode))
@@ -136,7 +135,7 @@ GrBicubicEffect::GrBicubicEffect(GrTexture* texture,
 }
 
 GrBicubicEffect::GrBicubicEffect(GrTexture* texture,
-                                 const float coefficients[16],
+                                 const SkScalar coefficients[16],
                                  const SkMatrix &matrix,
                                  const SkRect& domain)
   : INHERITED(texture, matrix, GrTextureParams(SkShader::kClamp_TileMode,
@@ -172,9 +171,42 @@ GrEffectRef* GrBicubicEffect::TestCreate(SkRandom* random,
                                          GrTexture* textures[]) {
     int texIdx = random->nextBool() ? GrEffectUnitTest::kSkiaPMTextureIdx :
                                       GrEffectUnitTest::kAlphaTextureIdx;
-    float coefficients[16];
+    SkScalar coefficients[16];
     for (int i = 0; i < 16; i++) {
         coefficients[i] = random->nextSScalar1();
     }
     return GrBicubicEffect::Create(textures[texIdx], coefficients);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+bool GrBicubicEffect::ShouldUseBicubic(const SkMatrix& matrix,
+                                       GrTextureParams::FilterMode* filterMode) {
+    if (matrix.isIdentity()) {
+        *filterMode = GrTextureParams::kNone_FilterMode;
+        return false;
+    }
+
+    SkScalar scales[2];
+    if (!matrix.getMinMaxScales(scales) || scales[0] < SK_Scalar1) {
+        // Bicubic doesn't handle arbitrary minimization well, as src texels can be skipped
+        // entirely,
+        *filterMode = GrTextureParams::kMipMap_FilterMode;
+        return false;
+    }
+    // At this point if scales[1] == SK_Scalar1 then the matrix doesn't do any scaling.
+    if (scales[1] == SK_Scalar1) {
+        if (matrix.rectStaysRect() && SkScalarIsInt(matrix.getTranslateX()) &&
+            SkScalarIsInt(matrix.getTranslateY())) {
+            *filterMode = GrTextureParams::kNone_FilterMode;
+        } else {
+            // Use bilerp to handle rotation or fractional translation.
+            *filterMode = GrTextureParams::kBilerp_FilterMode;
+        }
+        return false;
+    }
+    // When we use the bicubic filtering effect each sample is read from the texture using
+    // nearest neighbor sampling.
+    *filterMode = GrTextureParams::kNone_FilterMode;
+    return true;
 }

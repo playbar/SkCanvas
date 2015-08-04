@@ -49,8 +49,8 @@ public:
     /* Computes a domain that bounds all the texels in texelRect. Note that with bilerp enabled
        texels neighboring the domain may be read. */
     static const SkRect MakeTexelDomain(const GrTexture* texture, const SkIRect& texelRect) {
-        float wInv = SK_Scalar1 / texture->width();
-        float hInv = SK_Scalar1 / texture->height();
+        SkScalar wInv = SK_Scalar1 / texture->width();
+        SkScalar hInv = SK_Scalar1 / texture->height();
         SkRect result = {
             texelRect.fLeft * wInv,
             texelRect.fTop * hInv,
@@ -117,7 +117,7 @@ public:
         SkDEBUGCODE(Mode                  fMode;)
         GrGLUniformManager::UniformHandle fDomainUni;
         SkString                          fDomainName;
-        GLfloat                         fPrevDomain[4];
+        GrGLfloat                         fPrevDomain[4];
     };
 
 protected:

@@ -7,7 +7,8 @@
 
 #include "SkColorFilter.h"
 
-#include "SkFlattenableBuffers.h"
+#include "SkReadBuffer.h"
+#include "SkWriteBuffer.h"
 #include "SkShader.h"
 #include "SkUnPreMultiply.h"
 #include "SkString.h"
@@ -16,7 +17,7 @@ bool SkColorFilter::asColorMode(SkColor* color, SkXfermode::Mode* mode) const {
     return false;
 }
 
-bool SkColorFilter::asColorMatrix(float matrix[20]) const {
+bool SkColorFilter::asColorMatrix(SkScalar matrix[20]) const {
     return false;
 }
 
@@ -25,6 +26,8 @@ bool SkColorFilter::asComponentTable(SkBitmap*) const {
 }
 
 void SkColorFilter::filterSpan16(const uint16_t s[], int count, uint16_t d[]) const {
+    SkASSERT(this->getFlags() & SkColorFilter::kHasFilter16_Flag);
+    SkDEBUGFAIL("missing implementation of SkColorFilter::filterSpan16");
 
     if (d != s) {
         memcpy(d, s, count * sizeof(uint16_t));

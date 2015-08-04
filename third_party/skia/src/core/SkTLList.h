@@ -28,7 +28,7 @@ inline void* operator new(size_t, SkTLList<T>* list,
     constructor arguments for type_name. These macros behave like addBefore() and addAfter().
 */
 template <typename T>
-class SkTLList : public SkNoncopyable {
+class SkTLList : SkNoncopyable {
 private:
     struct Block;
     struct Node {
@@ -45,9 +45,12 @@ public:
     /** allocCnt is the number of objects to allocate as a group. In the worst case fragmentation
         each object is using the space required for allocCnt unfragmented objects. */
     SkTLList(int allocCnt = 1) : fCount(0), fAllocCnt(allocCnt) {
+        SkASSERT(allocCnt > 0);
+        this->validate();
     }
 
     ~SkTLList() {
+        this->validate();
         typename NodeList::Iter iter;
         Node* node = iter.init(fList, Iter::kHead_IterStart);
         while (NULL != node) {
@@ -64,16 +67,38 @@ public:
     }
 
     T* addToHead(const T& t) {
+        this->validate();
         Node* node = this->createNode();
         fList.addToHead(node);
         SkNEW_PLACEMENT_ARGS(node->fObj, T, (t));
+        this->validate();
+        return reinterpret_cast<T*>(node->fObj);
+    }
+
+    T* addToHead() {
+        this->validate();
+        Node* node = this->createNode();
+        fList.addToHead(node);
+        SkNEW_PLACEMENT(node->fObj, T);
+        this->validate();
         return reinterpret_cast<T*>(node->fObj);
     }
 
     T* addToTail(const T& t) {
+        this->validate();
         Node* node = this->createNode();
         fList.addToTail(node);
         SkNEW_PLACEMENT_ARGS(node->fObj, T, (t));
+        this->validate();
+        return reinterpret_cast<T*>(node->fObj);
+    }
+
+    T* addToTail() {
+        this->validate();
+        Node* node = this->createNode();
+        fList.addToTail(node);
+        SkNEW_PLACEMENT(node->fObj, T);
+        this->validate();
         return reinterpret_cast<T*>(node->fObj);
     }
 
@@ -99,25 +124,33 @@ public:
     const T* tail() const { return Iter(*this, Iter::kTail_IterStart).get(); }
 
     void popHead() {
+        this->validate();
         Node* node = fList.head();
         if (NULL != node) {
             this->removeNode(node);
         }
+        this->validate();
     }
 
     void popTail() {
+        this->validate();
         Node* node = fList.head();
         if (NULL != node) {
             this->removeNode(node);
         }
+        this->validate();
     }
-	
+
     void remove(T* t) {
+        this->validate();
         Node* node = reinterpret_cast<Node*>(t);
+        SkASSERT(reinterpret_cast<T*>(node->fObj) == t);
         this->removeNode(node);
+        this->validate();
     }
 
     void reset() {
+        this->validate();
         Iter iter(*this, Iter::kHead_IterStart);
         while (iter.get()) {
             Iter next = iter;
@@ -125,10 +158,12 @@ public:
             this->remove(iter.get());
             iter = next;
         }
+        SkASSERT(0 == fCount);
+        this->validate();
     }
 
     int count() const { return fCount; }
-    bool isEmpty() const { return 0 == fCount; }
+    bool isEmpty() const { this->validate(); return 0 == fCount; }
 
     bool operator== (const SkTLList& list) const {
         if (this == &list) {
@@ -140,6 +175,7 @@ public:
         for (Iter a(*this, Iter::kHead_IterStart), b(list, Iter::kHead_IterStart);
              a.get();
              a.next(), b.next()) {
+            SkASSERT(NULL != b.get()); // already checked that counts match.
             if (!(*a.get() == *b.get())) {
                 return false;
             }
@@ -162,11 +198,11 @@ public:
 
         Iter() {}
 
-        Iter(const SkTLList& list, IterStart start) {
+        Iter(const SkTLList& list, IterStart start = kHead_IterStart) {
             INHERITED::init(list.fList, start);
         }
 
-        T* init(const SkTLList& list, IterStart start) {
+        T* init(const SkTLList& list, IterStart start = kHead_IterStart) {
             return this->nodeToObj(INHERITED::init(list.fList, start));
         }
 
@@ -227,6 +263,7 @@ private:
     }
 
     void removeNode(Node* node) {
+        SkASSERT(NULL != node);
         fList.remove(node);
         SkTCast<T*>(node->fObj)->~T();
         if (0 == --node->fBlock->fNodesInUse) {
@@ -242,6 +279,58 @@ private:
             fFreeList.addToHead(node);
         }
         --fCount;
+        this->validate();
+    }
+
+    void validate() const {
+#ifdef SK_DEBUG
+        SkASSERT((0 == fCount) == fList.isEmpty());
+        SkASSERT((0 != fCount) || fFreeList.isEmpty());
+
+        fList.validate();
+        fFreeList.validate();
+        typename NodeList::Iter iter;
+        Node* freeNode = iter.init(fFreeList, Iter::kHead_IterStart);
+        while (freeNode) {
+            SkASSERT(fFreeList.isInList(freeNode));
+            Block* block = freeNode->fBlock;
+            SkASSERT(block->fNodesInUse > 0 && block->fNodesInUse < fAllocCnt);
+
+            int activeCnt = 0;
+            int freeCnt = 0;
+            for (int i = 0; i < fAllocCnt; ++i) {
+                bool free = fFreeList.isInList(block->fNodes + i);
+                bool active = fList.isInList(block->fNodes + i);
+                SkASSERT(free != active);
+                activeCnt += active;
+                freeCnt += free;
+            }
+            SkASSERT(activeCnt == block->fNodesInUse);
+            freeNode = iter.next();
+        }
+
+        int count = 0;
+        Node* activeNode = iter.init(fList, Iter::kHead_IterStart);
+        while (activeNode) {
+            ++count;
+            SkASSERT(fList.isInList(activeNode));
+            Block* block = activeNode->fBlock;
+            SkASSERT(block->fNodesInUse > 0 && block->fNodesInUse <= fAllocCnt);
+
+            int activeCnt = 0;
+            int freeCnt = 0;
+            for (int i = 0; i < fAllocCnt; ++i) {
+                bool free = fFreeList.isInList(block->fNodes + i);
+                bool active = fList.isInList(block->fNodes + i);
+                SkASSERT(free != active);
+                activeCnt += active;
+                freeCnt += free;
+            }
+            SkASSERT(activeCnt == block->fNodesInUse);
+            activeNode = iter.next();
+        }
+        SkASSERT(count == fCount);
+#endif
     }
 
     // Support in-place initializing of objects inserted into the list via operator new.
@@ -253,14 +342,18 @@ private:
 
     // Helpers that insert the node and returns a pointer to where the new object should be init'ed.
     void* internalAddBefore(Iter location) {
+        this->validate();
         Node* node = this->createNode();
         fList.addBefore(node, location.getNode());
+        this->validate();
         return node->fObj;
     }
 
     void* internalAddAfter(Iter location) {
+        this->validate();
         Node* node = this->createNode();
         fList.addAfter(node, location.getNode());
+        this->validate();
         return node->fObj;
     }
 
@@ -276,6 +369,7 @@ template <typename T>
 void *operator new(size_t, SkTLList<T>* list,
                    typename SkTLList<T>::Placement placement,
                    const typename SkTLList<T>::Iter& location) {
+    SkASSERT(NULL != list);
     if (SkTLList<T>::kBefore_Placement == placement) {
         return list->internalAddBefore(location);
     } else {

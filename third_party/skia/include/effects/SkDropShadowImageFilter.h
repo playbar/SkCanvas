@@ -11,17 +11,33 @@
 
 class SK_API SkDropShadowImageFilter : public SkImageFilter {
 public:
-    SkDropShadowImageFilter(float dx, float dy, float sigma, SkColor, SkImageFilter* input = NULL);
-    SkDropShadowImageFilter(float dx, float dy, float sigmaX, float sigmaY, SkColor, SkImageFilter* input = NULL, const CropRect* cropRect = NULL);
+    static SkDropShadowImageFilter* Create(SkScalar dx, SkScalar dy, SkScalar sigma,
+                                           SkColor color, SkImageFilter* input = NULL) {
+        return SkNEW_ARGS(SkDropShadowImageFilter, (dx, dy, sigma, color, input));
+    }
+    static SkDropShadowImageFilter* Create(SkScalar dx, SkScalar dy,
+                                           SkScalar sigmaX, SkScalar sigmaY, SkColor color,
+                                           SkImageFilter* input = NULL,
+                                           const CropRect* cropRect = NULL) {
+        return SkNEW_ARGS(SkDropShadowImageFilter, (dx, dy, sigmaX, sigmaY,
+                                                    color, input, cropRect));
+    }
+    virtual void computeFastBounds(const SkRect&, SkRect*) const SK_OVERRIDE;
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkDropShadowImageFilter)
 
 protected:
-    explicit SkDropShadowImageFilter(SkFlattenableReadBuffer&);
-    virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
-    virtual bool onFilterImage(Proxy*, const SkBitmap& source, const SkMatrix&, SkBitmap* result, SkIPoint* loc) SK_OVERRIDE;
+    SkDropShadowImageFilter(SkScalar dx, SkScalar dy, SkScalar sigma, SkColor,
+                            SkImageFilter* input);
+    SkDropShadowImageFilter(SkScalar dx, SkScalar dy, SkScalar sigmaX, SkScalar sigmaY, SkColor,
+                            SkImageFilter* input, const CropRect* cropRect);
+    explicit SkDropShadowImageFilter(SkReadBuffer&);
+    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
+    virtual bool onFilterImage(Proxy*, const SkBitmap& source, const Context&, SkBitmap* result, SkIPoint* loc) const SK_OVERRIDE;
+    virtual bool onFilterBounds(const SkIRect& src, const SkMatrix&,
+                                SkIRect* dst) const SK_OVERRIDE;
 
 private:
-    float fDx, fDy, fSigmaX, fSigmaY;
+    SkScalar fDx, fDy, fSigmaX, fSigmaY;
     SkColor fColor;
     typedef SkImageFilter INHERITED;
 };

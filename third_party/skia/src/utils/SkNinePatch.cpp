@@ -47,12 +47,12 @@ static int fillIndices(uint16_t indices[], int xCount, int yCount) {
 }
 
 // Computes the delta between vertices along a single axis
-static float computeVertexDelta(bool isStretchyVertex,
-                                   float currentVertex,
-                                   float prevVertex,
-                                   float stretchFactor) {
+static SkScalar computeVertexDelta(bool isStretchyVertex,
+                                   SkScalar currentVertex,
+                                   SkScalar prevVertex,
+                                   SkScalar stretchFactor) {
     // the standard delta between vertices if no stretching is required
-    float delta = currentVertex - prevVertex;
+    SkScalar delta = currentVertex - prevVertex;
 
     // if the stretch factor is negative or zero we need to shrink the 9-patch
     // to fit within the target bounds.  This means that we will eliminate all
@@ -72,17 +72,17 @@ static float computeVertexDelta(bool isStretchyVertex,
 }
 
 static void fillRow(SkPoint verts[], SkPoint texs[],
-                    const float vy, const float ty,
+                    const SkScalar vy, const SkScalar ty,
                     const SkRect& bounds, const int32_t xDivs[], int numXDivs,
-                    const float stretchX, int width) {
-    float vx = bounds.fLeft;
+                    const SkScalar stretchX, int width) {
+    SkScalar vx = bounds.fLeft;
     verts->set(vx, vy); verts++;
     texs->set(0, ty); texs++;
 
-    float prev = 0;
+    SkScalar prev = 0;
     for (int x = 0; x < numXDivs; x++) {
 
-        const float tx = SkIntToScalar(xDivs[x]);
+        const SkScalar tx = SkIntToScalar(xDivs[x]);
         vx += computeVertexDelta(x & 1, tx, prev, stretchX);
         prev = tx;
 
@@ -150,14 +150,14 @@ void SkNinePatch::DrawMesh(SkCanvas* canvas, const SkRect& bounds,
         }
     }
 
-    float stretchX = 0, stretchY = 0;
+    SkScalar stretchX = 0, stretchY = 0;
 
     if (numXStretch > 0) {
         int stretchSize = 0;
         for (int i = 1; i < numXDivs; i += 2) {
             stretchSize += xDivs[i] - xDivs[i-1];
         }
-        const float fixed = SkIntToScalar(bitmap.width() - stretchSize);
+        const SkScalar fixed = SkIntToScalar(bitmap.width() - stretchSize);
         if (bounds.width() >= fixed)
             stretchX = (bounds.width() - fixed) / stretchSize;
         else // reuse stretchX, but keep it negative as a signal
@@ -169,7 +169,7 @@ void SkNinePatch::DrawMesh(SkCanvas* canvas, const SkRect& bounds,
         for (int i = 1; i < numYDivs; i += 2) {
             stretchSize += yDivs[i] - yDivs[i-1];
         }
-        const float fixed = SkIntToScalar(bitmap.height() - stretchSize);
+        const SkScalar fixed = SkIntToScalar(bitmap.height() - stretchSize);
         if (bounds.height() >= fixed)
             stretchY = (bounds.height() - fixed) / stretchSize;
         else // reuse stretchX, but keep it negative as a signal
@@ -203,17 +203,18 @@ void SkNinePatch::DrawMesh(SkCanvas* canvas, const SkRect& bounds,
     if (numXDivs == 2 && numYDivs <= 2) {
         mesh.fIndices = g3x3Indices;
     } else {
-        fillIndices(indices, numXDivs + 1, numYDivs + 1);
+        SkDEBUGCODE(int n =) fillIndices(indices, numXDivs + 1, numYDivs + 1);
+        SkASSERT(n == indexCount);
         mesh.fIndices = indices;
     }
 
-    float vy = bounds.fTop;
+    SkScalar vy = bounds.fTop;
     fillRow(verts, texs, vy, 0, bounds, xDivs, numXDivs,
             stretchX, bitmap.width());
     verts += numXDivs + 2;
     texs += numXDivs + 2;
     for (int y = 0; y < numYDivs; y++) {
-        const float ty = SkIntToScalar(yDivs[y]);
+        const SkScalar ty = SkIntToScalar(yDivs[y]);
         if (stretchY >= 0) {
             if (y & 1) {
                 vy += stretchY;
@@ -259,11 +260,11 @@ static void drawNineViaRects(SkCanvas* canvas, const SkRect& dst,
     const int32_t srcY[4] = {
         0, margins.fTop, bitmap.height() - margins.fBottom, bitmap.height()
     };
-    float dstX[4] = {
+    SkScalar dstX[4] = {
         dst.fLeft, dst.fLeft + SkIntToScalar(margins.fLeft),
         dst.fRight - SkIntToScalar(margins.fRight), dst.fRight
     };
-    float dstY[4] = {
+    SkScalar dstY[4] = {
         dst.fTop, dst.fTop + SkIntToScalar(margins.fTop),
         dst.fBottom - SkIntToScalar(margins.fBottom), dst.fBottom
     };

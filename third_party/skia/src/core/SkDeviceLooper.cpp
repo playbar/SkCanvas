@@ -21,6 +21,7 @@ SkDeviceLooper::SkDeviceLooper(const SkBitmap& base,
 
     if (!rc.isEmpty()) {
         // clip must be contained by the bitmap
+        SkASSERT(SkIRect::MakeWH(base.width(), base.height()).contains(rc.getBounds()));
     }
 
     if (rc.isEmpty() || !fClippedBounds.intersect(bounds, rc.getBounds())) {
@@ -40,6 +41,9 @@ SkDeviceLooper::~SkDeviceLooper() {
 }
 
 void SkDeviceLooper::mapRect(SkRect* dst, const SkRect& src) const {
+    SkASSERT(kDone_State != fState);
+    SkASSERT(fCurrBitmap);
+    SkASSERT(fCurrRC);
 
     *dst = src;
     dst->offset(SkIntToScalar(-fCurrOffset.fX),
@@ -47,6 +51,9 @@ void SkDeviceLooper::mapRect(SkRect* dst, const SkRect& src) const {
 }
 
 void SkDeviceLooper::mapMatrix(SkMatrix* dst, const SkMatrix& src) const {
+    SkASSERT(kDone_State != fState);
+    SkASSERT(fCurrBitmap);
+    SkASSERT(fCurrRC);
 
     *dst = src;
     dst->postTranslate(SkIntToScalar(-fCurrOffset.fX),
@@ -54,6 +61,8 @@ void SkDeviceLooper::mapMatrix(SkMatrix* dst, const SkMatrix& src) const {
 }
 
 bool SkDeviceLooper::computeCurrBitmapAndClip() {
+    SkASSERT(kComplex_State == fState);
+
     SkIRect r = SkIRect::MakeXYWH(fCurrOffset.x(), fCurrOffset.y(),
                                   fDelta, fDelta);
     if (!fBaseBitmap.extractSubset(&fSubsetBitmap, r)) {

@@ -6,9 +6,10 @@
  */
 
 #include "SkData.h"
-#include "SkFlattenableBuffers.h"
+#include "SkLazyPtr.h"
 #include "SkOSFile.h"
-#include "SkOnce.h"
+#include "SkReadBuffer.h"
+#include "SkWriteBuffer.h"
 
 SkData::SkData(const void* ptr, size_t size, ReleaseProc proc, void* context) {
     fPtr = ptr;
@@ -40,6 +41,7 @@ size_t SkData::copyRange(size_t offset, size_t length, void* buffer) const {
     if (length > available) {
         length = available;
     }
+    SkASSERT(length > 0);
 
     memcpy(buffer, this->bytes() + offset, length);
     return length;
@@ -47,16 +49,14 @@ size_t SkData::copyRange(size_t offset, size_t length, void* buffer) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void SkData::NewEmptyImpl(SkData** empty) {
-    *empty = new SkData(NULL, 0, NULL, NULL);
+SkData* SkData::NewEmptyImpl() {
+    return new SkData(NULL, 0, NULL, NULL);
 }
+void SkData::DeleteEmpty(SkData* ptr) { SkDELETE(ptr); }
 
 SkData* SkData::NewEmpty() {
-    static SkData* gEmptyRef;
-    SK_DECLARE_STATIC_ONCE(once);
-    SkOnce(&once, SkData::NewEmptyImpl, &gEmptyRef);
-    gEmptyRef->ref();
-    return gEmptyRef;
+    SK_DECLARE_STATIC_LAZY_PTR(SkData, empty, NewEmptyImpl, DeleteEmpty);
+    return SkRef(empty.get());
 }
 
 // assumes fPtr was allocated via sk_malloc
@@ -139,6 +139,7 @@ SkData* SkData::NewSubset(const SkData* src, size_t offset, size_t length) {
     if (length > available) {
         length = available;
     }
+    SkASSERT(length > 0);
 
     src->ref(); // this will be balanced in sk_dataref_releaseproc
     return new SkData(src->bytes() + offset, length, sk_dataref_releaseproc,

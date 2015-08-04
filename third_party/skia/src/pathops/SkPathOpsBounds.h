@@ -22,7 +22,7 @@ struct SkPathOpsBounds : public SkRect {
    // Note that add(), unlike SkRect::join() or SkRect::growToInclude()
    // does not treat the bounds of horizontal and vertical lines as
    // empty rectangles.
-    void add(float left, float top, float right, float bottom) {
+    void add(SkScalar left, SkScalar top, SkScalar right, SkScalar bottom) {
         if (left < fLeft) fLeft = left;
         if (top < fTop) fTop = top;
         if (right > fRight) fRight = right;

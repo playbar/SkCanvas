@@ -47,6 +47,7 @@ int sk_feof(SkFILE *f) {
 }
 
 size_t sk_fgetsize(SkFILE* f) {
+    SkASSERT(f);
 
     long curr = ::ftell((FILE*)f); // remember where we are
     if (curr < 0) {
@@ -64,11 +65,13 @@ size_t sk_fgetsize(SkFILE* f) {
 }
 
 bool sk_frewind(SkFILE* f) {
+    SkASSERT(f);
     ::rewind((FILE*)f);
     return true;
 }
 
 size_t sk_fread(void* buffer, size_t byteCount, SkFILE* f) {
+    SkASSERT(f);
     if (buffer == NULL) {
         size_t curr = ::ftell((FILE*)f);
         if ((long)curr == -1) {
@@ -88,10 +91,12 @@ size_t sk_fread(void* buffer, size_t byteCount, SkFILE* f) {
 }
 
 size_t sk_fwrite(const void* buffer, size_t byteCount, SkFILE* f) {
+    SkASSERT(f);
     return ::fwrite(buffer, 1, byteCount, (FILE*)f);
 }
 
 void sk_fflush(SkFILE* f) {
+    SkASSERT(f);
     ::fflush((FILE*)f);
 }
 
@@ -114,6 +119,7 @@ size_t sk_ftell(SkFILE* f) {
 }
 
 void sk_fclose(SkFILE* f) {
+    SkASSERT(f);
     ::fclose((FILE*)f);
 }
 

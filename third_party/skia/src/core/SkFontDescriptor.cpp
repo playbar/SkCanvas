@@ -25,7 +25,7 @@ SkFontDescriptor::SkFontDescriptor(SkTypeface::Style style) {
 }
 
 static void read_string(SkStream* stream, SkString* string) {
-    const uint32_t length = stream->readPackedUInt();
+    const uint32_t length = SkToU32(stream->readPackedUInt());
     if (length > 0) {
         string->resize(length);
         stream->read(string->writable_str(), length);
@@ -61,6 +61,7 @@ SkFontDescriptor::SkFontDescriptor(SkStream* stream) {
             case kSentinel:
                 return;
             default:
+                SkDEBUGFAIL("Unknown id used by a font descriptor");
                 return;
         }
     }

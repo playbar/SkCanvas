@@ -12,6 +12,8 @@
 #include "GrResourceCache.h"
 
 void GrTestTarget::init(GrContext* ctx, GrDrawTarget* target) {
+    SkASSERT(!fContext);
+
     fContext.reset(SkRef(ctx));
     fDrawTarget.reset(SkRef(target));
 
@@ -36,5 +38,5 @@ void GrContext::setMaxTextureSizeOverride(int maxTextureSizeOverride) {
 }
 
 void GrContext::purgeAllUnlockedResources() {
-    fTextureCache->purgeAllUnlocked();
+    fResourceCache->purgeAllUnlocked();
 }

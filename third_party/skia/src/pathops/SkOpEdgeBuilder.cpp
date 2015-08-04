@@ -13,15 +13,12 @@ void SkOpEdgeBuilder::init() {
     fOperand = false;
     fXorMask[0] = fXorMask[1] = (fPath->getFillType() & 1) ? kEvenOdd_PathOpsMask
             : kWinding_PathOpsMask;
-#ifdef SK_DEBUG
-    SkPathOpsDebug::gContourID = 0;
-    SkPathOpsDebug::gSegmentID = 0;
-#endif
     fUnparseable = false;
     fSecondHalf = preFetch();
 }
 
 void SkOpEdgeBuilder::addOperand(const SkPath& path) {
+    SkASSERT(fPathVerbs.count() > 0 && fPathVerbs.end()[-1] == SkPath::kDone_Verb);
     fPathVerbs.pop_back();
     fPath = &path;
     fXorMask[1] = (fPath->getFillType() & 1) ? kEvenOdd_PathOpsMask
@@ -56,7 +53,7 @@ int SkOpEdgeBuilder::preFetch() {
         return 0;
     }
     SkAutoConicToQuads quadder;
-    const float quadderTol = SK_Scalar1 / 16;
+    const SkScalar quadderTol = SK_Scalar1 / 16;
     SkPath::RawIter iter(*fPath);
     SkPoint curveStart;
     SkPoint curve[4];
@@ -174,14 +171,17 @@ bool SkOpEdgeBuilder::walk() {
                 fCurrentContour->addCubic(pointsPtr);
                 break;
             case SkPath::kClose_Verb:
+                SkASSERT(fCurrentContour);
                 if (!close()) {
                     return false;
                 }
                 continue;
             default:
+                SkDEBUGFAIL("bad verb");
                 return false;
         }
         pointsPtr += SkPathOpsVerbToPoints(verb);
+        SkASSERT(fCurrentContour);
     }
    if (fCurrentContour && !fAllowOpenContours && !close()) {
        return false;

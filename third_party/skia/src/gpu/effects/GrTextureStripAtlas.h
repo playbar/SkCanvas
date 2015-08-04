@@ -64,8 +64,8 @@ public:
      * atlas and scaleFactor, returned by getVerticalScaleFactor(), is the y-scale of the row,
      * relative to the height of the overall atlas texture.
      */
-    float getYOffset(int row) const { return SkIntToScalar(row) / fNumRows; }
-    float getVerticalScaleFactor() const { return SkIntToScalar(fDesc.fRowHeight) / fDesc.fHeight; }
+    SkScalar getYOffset(int row) const { return SkIntToScalar(row) / fNumRows; }
+    SkScalar getVerticalScaleFactor() const { return SkIntToScalar(fDesc.fRowHeight) / fDesc.fHeight; }
 
     GrContext* getContext() const { return fDesc.fContext; }
     GrTexture* getTexture() const { return fTexture; }
@@ -79,7 +79,7 @@ private:
      * The state of a single row in our cache, next/prev pointers allow these to be chained
      * together to represent LRU status
      */
-    struct AtlasRow : public SkNoncopyable {
+    struct AtlasRow : SkNoncopyable {
         AtlasRow() : fKey(kEmptyAtlasRowKey), fLocks(0), fNext(NULL), fPrev(NULL) { }
         // GenerationID of the bitmap that is represented by this row, 0xffffffff means "empty"
         uint32_t fKey;
@@ -123,6 +123,10 @@ private:
     static bool KeyLess(const AtlasRow& lhs, const AtlasRow& rhs) {
         return lhs.fKey < rhs.fKey;
     }
+
+#ifdef SK_DEBUG
+    void validate();
+#endif
 
     /**
      * Clean up callback registered with GrContext. Allows this class to

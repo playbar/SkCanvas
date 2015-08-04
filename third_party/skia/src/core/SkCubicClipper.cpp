@@ -20,8 +20,8 @@ void SkCubicClipper::setClip(const SkIRect& clip) {
 }
 
 
-static bool chopMonoCubicAtY(SkPoint pts[4], float y, float* t) {
-    float ycrv[4];
+static bool chopMonoCubicAtY(SkPoint pts[4], SkScalar y, SkScalar* t) {
+    SkScalar ycrv[4];
     ycrv[0] = pts[0].fY - y;
     ycrv[1] = pts[1].fY - y;
     ycrv[2] = pts[2].fY - y;
@@ -31,23 +31,23 @@ static bool chopMonoCubicAtY(SkPoint pts[4], float y, float* t) {
     // Initial guess.
     // TODO(turk): Check for zero denominator? Shouldn't happen unless the curve
     // is not only monotonic but degenerate.
-    float t1 = ycrv[0] / (ycrv[0] - ycrv[3]);
+    SkScalar t1 = ycrv[0] / (ycrv[0] - ycrv[3]);
 
     // Newton's iterations.
-    const float tol = SK_Scalar1 / 16384;  // This leaves 2 fixed noise bits.
-    float t0;
+    const SkScalar tol = SK_Scalar1 / 16384;  // This leaves 2 fixed noise bits.
+    SkScalar t0;
     const int maxiters = 5;
     int iters = 0;
     bool converged;
     do {
         t0 = t1;
-        float y01   = SkScalarInterp(ycrv[0], ycrv[1], t0);
-        float y12   = SkScalarInterp(ycrv[1], ycrv[2], t0);
-        float y23   = SkScalarInterp(ycrv[2], ycrv[3], t0);
-        float y012  = SkScalarInterp(y01,  y12,  t0);
-        float y123  = SkScalarInterp(y12,  y23,  t0);
-        float y0123 = SkScalarInterp(y012, y123, t0);
-        float yder  = (y123 - y012) * 3;
+        SkScalar y01   = SkScalarInterp(ycrv[0], ycrv[1], t0);
+        SkScalar y12   = SkScalarInterp(ycrv[1], ycrv[2], t0);
+        SkScalar y23   = SkScalarInterp(ycrv[2], ycrv[3], t0);
+        SkScalar y012  = SkScalarInterp(y01,  y12,  t0);
+        SkScalar y123  = SkScalarInterp(y12,  y23,  t0);
+        SkScalar y0123 = SkScalarInterp(y012, y123, t0);
+        SkScalar yder  = (y123 - y012) * 3;
         // TODO(turk): check for yder==0: horizontal.
         t1 -= y0123 / yder;
         converged = SkScalarAbs(t1 - t0) <= tol;  // NaN-safe
@@ -64,7 +64,7 @@ static bool chopMonoCubicAtY(SkPoint pts[4], float y, float* t) {
 #else  // BISECTION    // Linear convergence, typically 16 iterations.
 
     // Check that the endpoints straddle zero.
-    float tNeg, tPos;    // Negative and positive function parameters.
+    SkScalar tNeg, tPos;    // Negative and positive function parameters.
     if (ycrv[0] < 0) {
         if (ycrv[3] < 0)
             return false;
@@ -80,16 +80,16 @@ static bool chopMonoCubicAtY(SkPoint pts[4], float y, float* t) {
         return true;
     }
 
-    const float tol = SK_Scalar1 / 65536;  // 1 for fixed, 1e-5 for float.
+    const SkScalar tol = SK_Scalar1 / 65536;  // 1 for fixed, 1e-5 for float.
     int iters = 0;
     do {
-        float tMid = (tPos + tNeg) / 2;
-        float y01   = SkScalarInterp(ycrv[0], ycrv[1], tMid);
-        float y12   = SkScalarInterp(ycrv[1], ycrv[2], tMid);
-        float y23   = SkScalarInterp(ycrv[2], ycrv[3], tMid);
-        float y012  = SkScalarInterp(y01,     y12,     tMid);
-        float y123  = SkScalarInterp(y12,     y23,     tMid);
-        float y0123 = SkScalarInterp(y012,    y123,    tMid);
+        SkScalar tMid = (tPos + tNeg) / 2;
+        SkScalar y01   = SkScalarInterp(ycrv[0], ycrv[1], tMid);
+        SkScalar y12   = SkScalarInterp(ycrv[1], ycrv[2], tMid);
+        SkScalar y23   = SkScalarInterp(ycrv[2], ycrv[3], tMid);
+        SkScalar y012  = SkScalarInterp(y01,     y12,     tMid);
+        SkScalar y123  = SkScalarInterp(y12,     y23,     tMid);
+        SkScalar y0123 = SkScalarInterp(y012,    y123,    tMid);
         if (y0123 == 0) {
             *t = tMid;
             return true;
@@ -121,13 +121,13 @@ bool SkCubicClipper::clipCubic(const SkPoint srcPts[4], SkPoint dst[4]) {
     }
 
     // are we completely above or below
-    const float ctop = fClip.fTop;
-    const float cbot = fClip.fBottom;
+    const SkScalar ctop = fClip.fTop;
+    const SkScalar cbot = fClip.fBottom;
     if (dst[3].fY <= ctop || dst[0].fY >= cbot) {
         return false;
     }
 
-    float t;
+    SkScalar t;
     SkPoint tmp[7]; // for SkChopCubicAt
 
     // are we partially above

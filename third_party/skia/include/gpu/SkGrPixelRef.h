@@ -18,17 +18,16 @@
  *  Common baseclass that implements onLockPixels() by calling onReadPixels().
  *  Since it has a copy, it always returns false for onLockPixelsAreWritable().
  */
-class SK_API SkROLockPixelsPixelRef : public SkPixelRef
-{
+class SK_API SkROLockPixelsPixelRef : public SkPixelRef {
 public:
+    SK_DECLARE_INST_COUNT(SkROLockPixelsPixelRef)
     SkROLockPixelsPixelRef(const SkImageInfo&);
     virtual ~SkROLockPixelsPixelRef();
 
 protected:
-    // override from SkPixelRef
-    virtual void* onLockPixels(SkColorTable** ptr);
-    virtual void onUnlockPixels();
-    virtual bool onLockPixelsAreWritable() const;   // return false;
+    virtual bool onNewLockPixels(LockRec*) SK_OVERRIDE;
+    virtual void onUnlockPixels() SK_OVERRIDE;
+    virtual bool onLockPixelsAreWritable() const SK_OVERRIDE;   // return false;
 
 private:
     SkBitmap    fBitmap;
@@ -38,9 +37,9 @@ private:
 /**
  *  PixelRef that wraps a GrSurface
  */
-class SK_API SkGrPixelRef : public SkROLockPixelsPixelRef 
-{
+class SK_API SkGrPixelRef : public SkROLockPixelsPixelRef {
 public:
+    SK_DECLARE_INST_COUNT(SkGrPixelRef)
     /**
      * Constructs a pixel ref around a GrSurface. If the caller has locked the GrSurface in the
      * cache and would like the pixel ref to unlock it in its destructor then transferCacheLock
@@ -57,7 +56,7 @@ public:
 protected:
     // overrides from SkPixelRef
     virtual bool onReadPixels(SkBitmap* dst, const SkIRect* subset) SK_OVERRIDE;
-    virtual SkPixelRef* deepCopy(SkBitmap::Config dstConfig, const SkIRect* subset) SK_OVERRIDE;
+    virtual SkPixelRef* deepCopy(SkColorType, const SkIRect* subset) SK_OVERRIDE;
 
 private:
     GrSurface*  fSurface;

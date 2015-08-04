@@ -166,15 +166,19 @@ float SkIntToFloatCast(int32_t value) {
     if (value >> 24) {    // value is too big (has more than 24 bits set)
         int bias = 8 - SkCLZ(value);
         SkDebugf("value = %d, bias = %d\n", value, bias);
+        SkASSERT(bias > 0 && bias < 8);
         value >>= bias; // need to round?
         shift += bias;
     } else {
         int zeros = SkCLZ(value << 8);
+        SkASSERT(zeros >= 0 && zeros <= 23);
         value <<= zeros;
         shift -= zeros;
     }
 
     // now value is left-aligned to 24 bits
+    SkASSERT((value >> 23) == 1);
+    SkASSERT(shift >= 0 && shift <= 255);
 
     SkFloatIntUnion data;
     data.fSignBitInt = (sign << 31) | (shift << 23) | (value & ~MATISSA_MAGIC_BIG);

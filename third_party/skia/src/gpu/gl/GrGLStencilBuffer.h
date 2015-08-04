@@ -9,25 +9,23 @@
 #ifndef GrGLStencilBuffer_DEFINED
 #define GrGLStencilBuffer_DEFINED
 
+#include "gl/GrGLInterface.h"
 #include "GrStencilBuffer.h"
-//#include "gl/glew.h"
-#include "eggl.h"
 
-class GrGLStencilBuffer : public GrStencilBuffer
-{
+class GrGLStencilBuffer : public GrStencilBuffer {
 public:
-    static const GLenum kUnknownInternalFormat = ~0U;
-    static const GLuint kUnknownBitCount = ~0U;
+    static const GrGLenum kUnknownInternalFormat = ~0U;
+    static const GrGLuint kUnknownBitCount = ~0U;
     struct Format {
-        GLenum  fInternalFormat;
-        GLuint  fStencilBits;
-        GLuint  fTotalBits;
+        GrGLenum  fInternalFormat;
+        GrGLuint  fStencilBits;
+        GrGLuint  fTotalBits;
         bool      fPacked;
     };
 
     GrGLStencilBuffer(GrGpu* gpu,
                       bool isWrapped,
-                      GLint rbid,
+                      GrGLint rbid,
                       int width, int height,
                       int sampleCnt,
                       const Format& format)
@@ -38,9 +36,9 @@ public:
 
     virtual ~GrGLStencilBuffer();
 
-    virtual size_t sizeInBytes() const SK_OVERRIDE;
+    virtual size_t gpuMemorySize() const SK_OVERRIDE;
 
-    GLuint renderbufferID() const {
+    GrGLuint renderbufferID() const {
         return fRenderbufferID;
     }
 
@@ -56,7 +54,7 @@ private:
     // may be zero for external SBs associated with external RTs
     // (we don't require the client to give us the id, just tell
     // us how many bits of stencil there are).
-    GLuint fRenderbufferID;
+    GrGLuint fRenderbufferID;
 
     typedef GrStencilBuffer INHERITED;
 };

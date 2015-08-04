@@ -14,7 +14,37 @@
 class SkPath;
 class SkMatrix;
 
+// Path forward:
+//   core work
+//      add validate method (all radii positive, all radii sums < rect size, etc.)
+//      add contains(SkRect&)  - for clip stack
+//      add contains(SkRRect&) - for clip stack
+//      add heart rect computation (max rect inside RR)
+//      add 9patch rect computation
+//      add growToInclude(SkPath&)
+//   analysis
+//      use growToInclude to fit skp round rects & generate stats (RRs vs. real paths)
+//      check on # of rectorus's the RRs could handle
+//   rendering work
+//      update SkPath.addRRect() to only use quads
+//      add GM and bench
+//   further out
+//      detect and triangulate RRectorii rather than falling back to SW in Ganesh
+//
 
+/** \class SkRRect
+
+    The SkRRect class represents a rounded rect with a potentially different
+    radii for each corner. It does not have a constructor so must be
+    initialized with one of the initialization functions (e.g., setEmpty,
+    setRectRadii, etc.)
+
+    This class is intended to roughly match CSS' border-*-*-radius capabilities.
+    This means:
+        If either of a corner's radii are 0 the corner will be square.
+        Negative radii are not allowed (they are clamped to zero).
+        If the corner curves overlap they will be proportionally reduced to fit.
+*/
 class SK_API SkRRect {
 public:
     /**
@@ -41,6 +71,14 @@ public:
         //!< the curves) nor a rect (i.e., both radii are non-zero)
         kSimple_Type,
 
+        //!< The RR is non-empty and the two left x radii are equal, the two top
+        //!< y radii are equal, and the same for the right and bottom but it is
+        //!< neither an rect, oval, nor a simple RR. It is called "nine patch"
+        //!< because the centers of the corner ellipses form an axis aligned
+        //!< rect with edges that divide the RR into an 9 rectangular patches:
+        //!< an interior patch, four edge patches, and four corner patches.
+        kNinePatch_Type,
+
         //!< A fully general (non-empty) RR. Some of the x and/or y radii are
         //!< different from the others and there must be one corner where
         //!< both radii are non-zero.
@@ -51,10 +89,12 @@ public:
      * Returns the RR's sub type.
      */
     Type getType() const {
+        SkDEBUGCODE(this->validate();)
 
         if (kUnknown_Type == fType) {
             this->computeType();
         }
+        SkASSERT(kUnknown_Type != fType);
         return fType;
     }
 
@@ -64,10 +104,16 @@ public:
     inline bool isRect() const { return kRect_Type == this->getType(); }
     inline bool isOval() const { return kOval_Type == this->getType(); }
     inline bool isSimple() const { return kSimple_Type == this->getType(); }
+    inline bool isSimpleCircular() const {
+        return this->isSimple() && fRadii[0].fX == fRadii[0].fY;
+    }
+    inline bool isNinePatch() const { return kNinePatch_Type == this->getType(); }
     inline bool isComplex() const { return kComplex_Type == this->getType(); }
 
-    float width() const { return fRect.width(); }
-    float height() const { return fRect.height(); }
+    bool allCornersCircular() const;
+
+    SkScalar width() const { return fRect.width(); }
+    SkScalar height() const { return fRect.height(); }
 
     /**
      * Set this RR to the empty rectangle (0,0,0,0) with 0 x & y radii.
@@ -76,6 +122,8 @@ public:
         fRect.setEmpty();
         memset(fRadii, 0, sizeof(fRadii));
         fType = kEmpty_Type;
+
+        SkDEBUGCODE(this->validate();)
     }
 
     /**
@@ -91,6 +139,7 @@ public:
         memset(fRadii, 0, sizeof(fRadii));
         fType = kRect_Type;
 
+        SkDEBUGCODE(this->validate();)
     }
 
     /**
@@ -103,8 +152,8 @@ public:
             return;
         }
 
-        float xRad = SkScalarHalf(oval.width());
-        float yRad = SkScalarHalf(oval.height());
+        SkScalar xRad = SkScalarHalf(oval.width());
+        SkScalar yRad = SkScalarHalf(oval.height());
 
         fRect = oval;
         for (int i = 0; i < 4; ++i) {
@@ -112,12 +161,19 @@ public:
         }
         fType = kOval_Type;
 
+        SkDEBUGCODE(this->validate();)
     }
 
     /**
      * Initialize the RR with the same radii for all four corners.
      */
-    void setRectXY(const SkRect& rect, float xRad, float yRad);
+    void setRectXY(const SkRect& rect, SkScalar xRad, SkScalar yRad);
+
+    /**
+     * Initialize the rr with one radius per-side.
+     */
+    void setNinePatch(const SkRect& rect, SkScalar leftRad, SkScalar topRad,
+                      SkScalar rightRad, SkScalar bottomRad);
 
     /**
      * Initialize the RR with potentially different radii for all four corners.
@@ -141,6 +197,7 @@ public:
      *  of those radii. This call requires the rrect to be non-complex.
      */
     const SkVector& getSimpleRadii() const {
+        SkASSERT(!this->isComplex());
         return fRadii[0];
     }
 
@@ -164,9 +221,9 @@ public:
      *
      *  It is valid for dst == this.
      */
-    void inset(float dx, float dy, SkRRect* dst) const;
+    void inset(SkScalar dx, SkScalar dy, SkRRect* dst) const;
 
-    void inset(float dx, float dy) {
+    void inset(SkScalar dx, SkScalar dy) {
         this->inset(dx, dy, this);
     }
 
@@ -178,11 +235,18 @@ public:
      *
      *  It is valid for dst == this.
      */
-    void outset(float dx, float dy, SkRRect* dst) const {
+    void outset(SkScalar dx, SkScalar dy, SkRRect* dst) const {
         this->inset(-dx, -dy, dst);
     }
-    void outset(float dx, float dy) {
+    void outset(SkScalar dx, SkScalar dy) {
         this->inset(-dx, -dy, this);
+    }
+
+    /**
+     * Translate the rrect by (dx, dy).
+     */
+    void offset(SkScalar dx, SkScalar dy) {
+        fRect.offset(dx, dy);
     }
 
     /**
@@ -191,8 +255,10 @@ public:
      */
     bool contains(const SkRect& rect) const;
 
+    SkDEBUGCODE(void validate() const;)
+
     enum {
-        kSizeInMemory = 12 * sizeof(float)
+        kSizeInMemory = 12 * sizeof(SkScalar)
     };
 
     /**
@@ -226,6 +292,14 @@ public:
      */
     bool transform(const SkMatrix& matrix, SkRRect* dst) const;
 
+#ifdef SK_DEVELOPER
+    /**
+     * Prints the rrect using SkDebugf. This is intended for Skia development debugging. Don't
+     * rely on the existence of this function or the formatting of its output.
+     */
+    void dump() const;
+#endif
+
 private:
     SkRect fRect;
     // Radii order is UL, UR, LR, LL. Use Corner enum to index into fRadii[]
@@ -235,7 +309,7 @@ private:
     // uninitialized data
 
     void computeType() const;
-    bool checkCornerContainment(float x, float y) const;
+    bool checkCornerContainment(SkScalar x, SkScalar y) const;
 
     // to access fRadii directly
     friend class SkPath;

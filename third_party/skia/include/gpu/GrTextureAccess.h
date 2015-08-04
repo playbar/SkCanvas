@@ -20,16 +20,13 @@ class GrTexture;
  * filtering and tiling to perform a cache lookup. If it wasn't for this latter usage this would
  * be folded into GrTextureAccess. The default is clamp tile modes and no filtering.
  */
-class GrTextureParams 
-{
+class GrTextureParams {
 public:
-    GrTextureParams() 
-	{
+    GrTextureParams() {
         this->reset();
     }
 
-    enum FilterMode 
-	{
+    enum FilterMode {
         kNone_FilterMode,
         kBilerp_FilterMode,
         kMipMap_FilterMode
@@ -115,8 +112,7 @@ private:
  *  key. However, if a GrEffect uses different swizzles based on its input then it must
  *  consider that variation in its key-generation.
  */
-class GrTextureAccess : public SkNoncopyable
-{
+class GrTextureAccess : SkNoncopyable {
 public:
     /**
      * A default GrTextureAccess must have reset() called on it in a GrEffect subclass's
@@ -153,7 +149,11 @@ public:
                SkShader::TileMode tileXAndY = SkShader::kClamp_TileMode);
 
     bool operator== (const GrTextureAccess& other) const {
-
+#ifdef SK_DEBUG
+        // below assumes all chars in fSwizzle are initialized even if string is < 4 chars long.
+        SkASSERT(memcmp(fSwizzle, other.fSwizzle, sizeof(fSwizzle)-1) ==
+                 strcmp(fSwizzle, other.fSwizzle));
+#endif
         return fParams == other.fParams &&
                (fTexture.get() == other.fTexture.get()) &&
                (0 == memcmp(fSwizzle, other.fSwizzle, sizeof(fSwizzle)-1));

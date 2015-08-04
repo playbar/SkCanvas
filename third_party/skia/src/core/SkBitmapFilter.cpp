@@ -36,8 +36,8 @@ void highQualityFilter(ColorPacker pack, const SkBitmapProcState& s, int x, int 
         srcPt.fX -= SK_ScalarHalf;
         srcPt.fY -= SK_ScalarHalf;
 
-        float weight = 0;
-        float fr = 0, fg = 0, fb = 0, fa = 0;
+        SkScalar weight = 0;
+        SkScalar fr = 0, fg = 0, fb = 0, fa = 0;
 
         int y0 = SkClampMax(SkScalarCeilToInt(srcPt.fY-s.getBitmapFilter()->width()), maxY);
         int y1 = SkClampMax(SkScalarFloorToInt(srcPt.fY+s.getBitmapFilter()->width()+1), maxY);
@@ -45,12 +45,12 @@ void highQualityFilter(ColorPacker pack, const SkBitmapProcState& s, int x, int 
         int x1 = SkClampMax(SkScalarFloorToInt(srcPt.fX+s.getBitmapFilter()->width())+1, maxX);
 
         for (int srcY = y0; srcY < y1; srcY++) {
-            float yWeight = s.getBitmapFilter()->lookupScalar((srcPt.fY - srcY));
+            SkScalar yWeight = s.getBitmapFilter()->lookupScalar((srcPt.fY - srcY));
 
             for (int srcX = x0; srcX < x1 ; srcX++) {
-                float xWeight = s.getBitmapFilter()->lookupScalar((srcPt.fX - srcX));
+                SkScalar xWeight = s.getBitmapFilter()->lookupScalar((srcPt.fX - srcX));
 
-                float combined_weight = SkScalarMul(xWeight, yWeight);
+                SkScalar combined_weight = SkScalarMul(xWeight, yWeight);
 
                 SkPMColor c = *s.fBitmap->getAddr32(srcX, srcY);
                 fr += combined_weight * SkGetPackedR32(c);
@@ -108,6 +108,7 @@ SkBitmapFilter *SkBitmapFilter::Allocate() {
     } else if (!strcmp(c_bitmapFilter, "box")) {
         return SkNEW(SkBoxFilter);
     } else {
+        SkDEBUGFAIL("Unknown filter type");
     }
 
     return NULL;
@@ -122,8 +123,8 @@ bool SkBitmapProcState::setBitmapFilterProcs() {
         return false;
     }
 
-    // TODO: consider supporting other configs (e.g. 565, A8)
-    if (fBitmap->config() != SkBitmap::kARGB_8888_Config) {
+    // TODO: consider supporting other colortypes (e.g. 565, A8)
+    if (fBitmap->colorType() != kN32_SkColorType) {
         return false;
     }
 

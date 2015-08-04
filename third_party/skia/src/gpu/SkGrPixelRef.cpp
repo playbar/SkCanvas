@@ -23,18 +23,22 @@ SkROLockPixelsPixelRef::SkROLockPixelsPixelRef(const SkImageInfo& info)
 
 SkROLockPixelsPixelRef::~SkROLockPixelsPixelRef() {}
 
-void* SkROLockPixelsPixelRef::onLockPixels(SkColorTable** ctable) {
-    if (ctable) {
-        *ctable = NULL;
-    }
+bool SkROLockPixelsPixelRef::onNewLockPixels(LockRec* rec) {
     fBitmap.reset();
 //    SkDebugf("---------- calling readpixels in support of lockpixels\n");
     if (!this->onReadPixels(&fBitmap, NULL)) {
         SkDebugf("SkROLockPixelsPixelRef::onLockPixels failed!\n");
-        return NULL;
+        return false;
     }
     fBitmap.lockPixels();
-    return fBitmap.getPixels();
+    if (NULL == fBitmap.getPixels()) {
+        return false;
+    }
+
+    rec->fPixels = fBitmap.getPixels();
+    rec->fColorTable = NULL;
+    rec->fRowBytes = fBitmap.rowBytes();
+    return true;
 }
 
 void SkROLockPixelsPixelRef::onUnlockPixels() {
@@ -47,9 +51,9 @@ bool SkROLockPixelsPixelRef::onLockPixelsAreWritable() const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static SkGrPixelRef* copyToTexturePixelRef(GrTexture* texture, SkBitmap::Config dstConfig,
+static SkGrPixelRef* copyToTexturePixelRef(GrTexture* texture, SkColorType dstCT,
                                            const SkIRect* subset) {
-    if (NULL == texture) {
+    if (NULL == texture || kUnknown_SkColorType == dstCT) {
         return NULL;
     }
     GrContext* context = texture->getContext();
@@ -61,6 +65,7 @@ static SkGrPixelRef* copyToTexturePixelRef(GrTexture* texture, SkBitmap::Config 
     SkIPoint pointStorage;
     SkIPoint* topLeft;
     if (subset != NULL) {
+        SkASSERT(SkIRect::MakeWH(texture->width(), texture->height()).contains(*subset));
         // Create a new texture that is the size of subset.
         desc.fWidth = subset->width();
         desc.fHeight = subset->height();
@@ -72,15 +77,7 @@ static SkGrPixelRef* copyToTexturePixelRef(GrTexture* texture, SkBitmap::Config 
         topLeft = NULL;
     }
     desc.fFlags = kRenderTarget_GrTextureFlagBit | kNoStencil_GrTextureFlagBit;
-    desc.fConfig = SkBitmapConfig2GrPixelConfig(dstConfig);
-
-    SkImageInfo info;
-    if (!GrPixelConfig2ColorType(desc.fConfig, &info.fColorType)) {
-        return NULL;
-    }
-    info.fWidth = desc.fWidth;
-    info.fHeight = desc.fHeight;
-    info.fAlphaType = kPremul_SkAlphaType;
+    desc.fConfig = SkImageInfo2GrPixelConfig(dstCT, kPremul_SkAlphaType);
 
     GrTexture* dst = context->createUncachedTexture(desc, NULL, 0);
     if (NULL == dst) {
@@ -89,7 +86,18 @@ static SkGrPixelRef* copyToTexturePixelRef(GrTexture* texture, SkBitmap::Config 
 
     context->copyTexture(texture, dst->asRenderTarget(), topLeft);
 
-    SkGrPixelRef* pixelRef = new SkGrPixelRef(info, dst);
+    // TODO: figure out if this is responsible for Chrome canvas errors
+#if 0
+    // The render texture we have created (to perform the copy) isn't fully
+    // functional (since it doesn't have a stencil buffer). Release it here
+    // so the caller doesn't try to render to it.
+    // TODO: we can undo this release when dynamic stencil buffer attach/
+    // detach has been implemented
+    dst->releaseRenderTarget();
+#endif
+
+    SkImageInfo info = SkImageInfo::Make(desc.fWidth, desc.fHeight, dstCT, kPremul_SkAlphaType);
+    SkGrPixelRef* pixelRef = SkNEW_ARGS(SkGrPixelRef, (info, dst));
     SkSafeUnref(dst);
     return pixelRef;
 }
@@ -99,19 +107,27 @@ static SkGrPixelRef* copyToTexturePixelRef(GrTexture* texture, SkBitmap::Config 
 SkGrPixelRef::SkGrPixelRef(const SkImageInfo& info, GrSurface* surface,
                            bool transferCacheLock) : INHERITED(info) {
     // TODO: figure out if this is responsible for Chrome canvas errors
-
+#if 0
+    // The GrTexture has a ref to the GrRenderTarget but not vice versa.
+    // If the GrTexture exists take a ref to that (rather than the render
+    // target)
+    fSurface = surface->asTexture();
+#else
     fSurface = NULL;
-
-    if (NULL == fSurface)
-	{
+#endif
+    if (NULL == fSurface) {
         fSurface = surface;
     }
     fUnlock = transferCacheLock;
     SkSafeRef(surface);
+
+    if (fSurface) {
+        SkASSERT(info.fWidth <= fSurface->width());
+        SkASSERT(info.fHeight <= fSurface->height());
+    }
 }
 
-SkGrPixelRef::~SkGrPixelRef()
-{
+SkGrPixelRef::~SkGrPixelRef() {
     if (fUnlock) {
         GrContext* context = fSurface->getContext();
         GrTexture* texture = fSurface->asTexture();
@@ -129,22 +145,22 @@ GrTexture* SkGrPixelRef::getTexture() {
     return NULL;
 }
 
-SkPixelRef* SkGrPixelRef::deepCopy(SkBitmap::Config dstConfig, const SkIRect* subset) {
+SkPixelRef* SkGrPixelRef::deepCopy(SkColorType dstCT, const SkIRect* subset) {
     if (NULL == fSurface) {
         return NULL;
     }
-
+    
     // Note that when copying a render-target-backed pixel ref, we
     // return a texture-backed pixel ref instead.  This is because
     // render-target pixel refs are usually created in conjunction with
     // a GrTexture owned elsewhere (e.g., SkGpuDevice), and cannot live
     // independently of that texture.  Texture-backed pixel refs, on the other
     // hand, own their GrTextures, and are thus self-contained.
-    return copyToTexturePixelRef(fSurface->asTexture(), dstConfig, subset);
+    return copyToTexturePixelRef(fSurface->asTexture(), dstCT, subset);
 }
 
 bool SkGrPixelRef::onReadPixels(SkBitmap* dst, const SkIRect* subset) {
-    if (NULL == fSurface || !fSurface->isValid()) {
+    if (NULL == fSurface || fSurface->wasDestroyed()) {
         return false;
     }
 
@@ -156,12 +172,11 @@ bool SkGrPixelRef::onReadPixels(SkBitmap* dst, const SkIRect* subset) {
         height = subset->height();
     } else {
         left = 0;
-        width = fSurface->width();
+        width = this->info().fWidth;
         top = 0;
-        height = fSurface->height();
+        height = this->info().fHeight;
     }
-    dst->setConfig(SkBitmap::kARGB_8888_Config, width, height);
-    if (!dst->allocPixels()) {
+    if (!dst->allocPixels(SkImageInfo::MakeN32Premul(width, height))) {
         SkDebugf("SkGrPixelRef::onReadPixels failed to alloc bitmap for result!\n");
         return false;
     }

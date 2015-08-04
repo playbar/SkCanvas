@@ -21,22 +21,25 @@ SkPMColor SkPreMultiplyColor(SkColor c) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static inline float ByteToScalar(U8CPU x) {
+static inline SkScalar ByteToScalar(U8CPU x) {
+    SkASSERT(x <= 255);
     return SkIntToScalar(x) / 255;
 }
 
-static inline float ByteDivToScalar(int numer, U8CPU denom) {
+static inline SkScalar ByteDivToScalar(int numer, U8CPU denom) {
     // cast to keep the answer signed
     return SkIntToScalar(numer) / (int)denom;
 }
 
-void SkRGBToHSV(U8CPU r, U8CPU g, U8CPU b, float hsv[3]) {
+void SkRGBToHSV(U8CPU r, U8CPU g, U8CPU b, SkScalar hsv[3]) {
+    SkASSERT(hsv);
 
     unsigned min = SkMin32(r, SkMin32(g, b));
     unsigned max = SkMax32(r, SkMax32(g, b));
     unsigned delta = max - min;
 
-    float v = ByteToScalar(max);
+    SkScalar v = ByteToScalar(max);
+    SkASSERT(v >= 0 && v <= SK_Scalar1);
 
     if (0 == delta) { // we're a shade of gray
         hsv[0] = 0;
@@ -45,9 +48,10 @@ void SkRGBToHSV(U8CPU r, U8CPU g, U8CPU b, float hsv[3]) {
         return;
     }
 
-    float s = ByteDivToScalar(delta, max);
+    SkScalar s = ByteDivToScalar(delta, max);
+    SkASSERT(s >= 0 && s <= SK_Scalar1);
 
-    float h;
+    SkScalar h;
     if (r == max) {
         h = ByteDivToScalar(g - b, delta);
     } else if (g == max) {
@@ -60,13 +64,14 @@ void SkRGBToHSV(U8CPU r, U8CPU g, U8CPU b, float hsv[3]) {
     if (h < 0) {
         h += SkIntToScalar(360);
     }
+    SkASSERT(h >= 0 && h < SkIntToScalar(360));
 
     hsv[0] = h;
     hsv[1] = s;
     hsv[2] = v;
 }
 
-static inline U8CPU UnitScalarToByte(float x) {
+static inline U8CPU UnitScalarToByte(SkScalar x) {
     if (x < 0) {
         return 0;
     }
@@ -76,7 +81,9 @@ static inline U8CPU UnitScalarToByte(float x) {
     return SkScalarToFixed(x) >> 8;
 }
 
-SkColor SkHSVToColor(U8CPU a, const float hsv[3]) {
+SkColor SkHSVToColor(U8CPU a, const SkScalar hsv[3]) {
+    SkASSERT(hsv);
+
     U8CPU s = UnitScalarToByte(hsv[1]);
     U8CPU v = UnitScalarToByte(hsv[2]);
 
@@ -93,6 +100,7 @@ SkColor SkHSVToColor(U8CPU a, const float hsv[3]) {
 
     unsigned r, g, b;
 
+    SkASSERT((unsigned)(hx >> 16) < 6);
     switch (hx >> 16) {
         case 0: r = v; g = t; b = p; break;
         case 1: r = q; g = v; b = p; break;

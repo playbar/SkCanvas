@@ -10,13 +10,19 @@
 
 #define GPUGL static_cast<GrGpuGL*>(getGpu())
 
+#define GL_CALL(X) GR_GL_CALL(GPUGL->glInterface(), X)
+
 void GrGLTexture::init(GrGpuGL* gpu,
                        const Desc& textureDesc,
                        const GrGLRenderTarget::Desc* rtDesc) {
 
+    SkASSERT(0 != textureDesc.fTextureID);
+
     fTexParams.invalidate();
     fTexParamsTimestamp = GrGpu::kExpiredTimestamp;
-    fTexIDObj.reset(SkNEW_ARGS(GrGLTexID, (textureDesc.fTextureID, textureDesc.fIsWrapped)));
+    fTexIDObj.reset(SkNEW_ARGS(GrGLTexID, (GPUGL->glInterface(),
+                                           textureDesc.fTextureID,
+                                           textureDesc.fIsWrapped)));
 
     if (NULL != rtDesc) {
         GrGLIRect vp;
@@ -57,6 +63,6 @@ void GrGLTexture::onAbandon() {
     INHERITED::onAbandon();
 }
 
-intptr_t GrGLTexture::getTextureHandle() const {
-    return static_cast<intptr_t>(this->textureID());
+GrBackendObject GrGLTexture::getTextureHandle() const {
+    return static_cast<GrBackendObject>(this->textureID());
 }

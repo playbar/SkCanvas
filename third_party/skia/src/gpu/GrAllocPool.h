@@ -10,8 +10,7 @@
 
 #include "SkTypes.h"
 
-class GrAllocPool : public SkNoncopyable 
-{
+class GrAllocPool : SkNoncopyable {
 public:
     GrAllocPool(size_t blockSize = 0);
     ~GrAllocPool();
@@ -20,7 +19,17 @@ public:
      *  Frees all blocks that have been allocated with alloc().
      */
     void reset();
+
+    /**
+     *  Returns a block of memory bytes size big. This address must not be
+     *  passed to realloc/free/delete or any other function that assumes the
+     *  address was allocated by malloc or new (because it hasn't).
+     */
     void* alloc(size_t bytes);
+
+    /**
+     * Releases the most recently allocated bytes back to allocpool.
+     */
     void release(size_t bytes);
 
 private:
@@ -37,8 +46,7 @@ private:
 #endif
 };
 
-template <typename T> class GrTAllocPool
-{
+template <typename T> class GrTAllocPool {
 public:
     GrTAllocPool(int count) : fPool(count * sizeof(T)) {}
 

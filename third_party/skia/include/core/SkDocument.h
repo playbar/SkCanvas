@@ -51,7 +51,7 @@ public:
     static SkDocument* CreatePDF(
             const char filename[],
             SkPicture::EncodeBitmap encoder = NULL,
-			float rasterDpi = SK_ScalarDefaultRasterDPI);
+            SkScalar rasterDpi = SK_ScalarDefaultRasterDPI);
 
     /**
      *  Create a PDF-backed document, writing the results into a stream.
@@ -78,14 +78,14 @@ public:
     static SkDocument* CreatePDF(
             SkWStream*, void (*Done)(SkWStream*,bool aborted) = NULL,
             SkPicture::EncodeBitmap encoder = NULL,
-			float rasterDpi = SK_ScalarDefaultRasterDPI);
+            SkScalar rasterDpi = SK_ScalarDefaultRasterDPI);
 
     /**
      *  Begin a new page for the document, returning the canvas that will draw
      *  into the page. The document owns this canvas, and it will go out of
      *  scope when endPage() or close() is called, or the document is deleted.
      */
-	SkCanvas* beginPage(float width, float height,
+    SkCanvas* beginPage(SkScalar width, SkScalar height,
                         const SkRect* content = NULL);
 
     /**
@@ -116,7 +116,7 @@ protected:
     // cannot do this for them.
     virtual ~SkDocument();
 
-	virtual SkCanvas* onBeginPage(float width, float height,
+    virtual SkCanvas* onBeginPage(SkScalar width, SkScalar height,
                                   const SkRect& content) = 0;
     virtual void onEndPage() = 0;
     virtual bool onClose(SkWStream*) = 0;

@@ -10,34 +10,66 @@
 #define GrSurface_DEFINED
 
 #include "GrTypes.h"
-#include "GrResource.h"
+#include "GrGpuObject.h"
 #include "SkRect.h"
 
 class GrTexture;
 class GrRenderTarget;
 struct SkImageInfo;
 
-class GrSurface : public GrResource
-{
+class GrSurface : public GrGpuObject {
 public:
     SK_DECLARE_INST_COUNT(GrSurface);
-	int width() const { return fDesc.fWidth; }
+
+    /**
+     * Retrieves the width of the surface.
+     *
+     * @return the width in texels
+     */
+    int width() const { return fDesc.fWidth; }
+
+    /**
+     * Retrieves the height of the surface.
+     *
+     * @return the height in texels
+     */
     int height() const { return fDesc.fHeight; }
+
+    /**
+     * Helper that gets the width and height of the surface as a bounding rectangle.
+     */
     void getBoundsRect(SkRect* rect) const { rect->setWH(SkIntToScalar(this->width()),
                                                          SkIntToScalar(this->height())); }
 
-    GrSurfaceOrigin origin() const 
-	{
+    GrSurfaceOrigin origin() const {
+        SkASSERT(kTopLeft_GrSurfaceOrigin == fDesc.fOrigin || kBottomLeft_GrSurfaceOrigin == fDesc.fOrigin);
         return fDesc.fOrigin;
     }
+
+    /**
+     * Retrieves the pixel config specified when the surface was created.
+     * For render targets this can be kUnknown_GrPixelConfig
+     * if client asked us to render to a target that has a pixel
+     * config that isn't equivalent with one of our configs.
+     */
     GrPixelConfig config() const { return fDesc.fConfig; }
 
+    /**
+     * Return the descriptor describing the surface
+     */
     const GrTextureDesc& desc() const { return fDesc; }
 
-    void asImageInfo(SkImageInfo*) const;
+    SkImageInfo info() const;
+
+    /**
+     * @return the texture associated with the surface, may be NULL.
+     */
     virtual GrTexture* asTexture() = 0;
     virtual const GrTexture* asTexture() const = 0;
 
+    /**
+     * @return the render target underlying this surface, may be NULL.
+     */
     virtual GrRenderTarget* asRenderTarget() = 0;
     virtual const GrRenderTarget* asRenderTarget() const = 0;
 
@@ -46,13 +78,13 @@ public:
      * catches the case where a GrTexture and GrRenderTarget refer to the same
      * GPU memory.
      */
-    bool isSameAs(const GrSurface* other) const 
-	{
+    bool isSameAs(const GrSurface* other) const {
         const GrRenderTarget* thisRT = this->asRenderTarget();
         if (NULL != thisRT) {
             return thisRT == other->asRenderTarget();
         } else {
             const GrTexture* thisTex = this->asTexture();
+            SkASSERT(NULL != thisTex); // We must be one or the other
             return thisTex == other->asTexture();
         }
     }
@@ -106,14 +138,13 @@ public:
 protected:
     GrSurface(GrGpu* gpu, bool isWrapped, const GrTextureDesc& desc)
     : INHERITED(gpu, isWrapped)
-    , fDesc(desc) 
-	{
+    , fDesc(desc) {
     }
 
     GrTextureDesc fDesc;
 
 private:
-    typedef GrResource INHERITED;
+    typedef GrGpuObject INHERITED;
 };
 
 #endif // GrSurface_DEFINED

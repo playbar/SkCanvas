@@ -50,7 +50,7 @@ static const size_t kLineSegIdxSBufize = kIdxsPerLineSeg *
                                          kNumLineSegsInIdxBuffer;
 
 static bool push_quad_index_data(GrIndexBuffer* qIdxBuffer) {
-    uint16_t* data = (uint16_t*) qIdxBuffer->lock();
+    uint16_t* data = (uint16_t*) qIdxBuffer->map();
     bool tempData = NULL == data;
     if (tempData) {
         data = SkNEW_ARRAY(uint16_t, kNumQuadsInIdxBuffer * kIdxsPerQuad);
@@ -86,13 +86,13 @@ static bool push_quad_index_data(GrIndexBuffer* qIdxBuffer) {
         delete[] data;
         return ret;
     } else {
-        qIdxBuffer->unlock();
+        qIdxBuffer->unmap();
         return true;
     }
 }
 
 static bool push_line_index_data(GrIndexBuffer* lIdxBuffer) {
-    uint16_t* data = (uint16_t*) lIdxBuffer->lock();
+    uint16_t* data = (uint16_t*) lIdxBuffer->map();
     bool tempData = NULL == data;
     if (tempData) {
         data = SkNEW_ARRAY(uint16_t, kNumLineSegsInIdxBuffer * kIdxsPerLineSeg);
@@ -139,7 +139,7 @@ static bool push_line_index_data(GrIndexBuffer* lIdxBuffer) {
         delete[] data;
         return ret;
     } else {
-        lIdxBuffer->unlock();
+        lIdxBuffer->unmap();
         return true;
     }
 }
@@ -183,6 +183,23 @@ namespace {
 // Takes 178th time of logf on Z600 / VC2010
 int get_float_exp(float x) {
     GR_STATIC_ASSERT(sizeof(int) == sizeof(float));
+#ifdef SK_DEBUG
+    static bool tested;
+    if (!tested) {
+        tested = true;
+        SkASSERT(get_float_exp(0.25f) == -2);
+        SkASSERT(get_float_exp(0.3f) == -2);
+        SkASSERT(get_float_exp(0.5f) == -1);
+        SkASSERT(get_float_exp(1.f) == 0);
+        SkASSERT(get_float_exp(2.f) == 1);
+        SkASSERT(get_float_exp(2.5f) == 1);
+        SkASSERT(get_float_exp(8.f) == 3);
+        SkASSERT(get_float_exp(100.f) == 6);
+        SkASSERT(get_float_exp(1000.f) == 9);
+        SkASSERT(get_float_exp(1024.f) == 10);
+        SkASSERT(get_float_exp(3000000.f) == 21);
+    }
+#endif
     const int* iptr = (const int*)&x;
     return (((*iptr) & 0x7f800000) >> 23) - 127;
 }
@@ -192,8 +209,8 @@ int get_float_exp(float x) {
 // found along the curve segment it will return 1 and
 // dst[0] is the original conic. If it returns 2 the dst[0]
 // and dst[1] are the two new conics.
-int split_conic(const SkPoint src[3], SkConic dst[2], const float weight) {
-    float t = SkFindQuadMaxCurvature(src);
+int split_conic(const SkPoint src[3], SkConic dst[2], const SkScalar weight) {
+    SkScalar t = SkFindQuadMaxCurvature(src);
     if (t == 0) {
         if (dst) {
             dst[0].set(src, weight);
@@ -212,7 +229,7 @@ int split_conic(const SkPoint src[3], SkConic dst[2], const float weight) {
 // Calls split_conic on the entire conic and then once more on each subsection.
 // Most cases will result in either 1 conic (chop point is not within t range)
 // or 3 points (split once and then one subsection is split again).
-int chop_conic(const SkPoint src[3], SkConic dst[4], const float weight) {
+int chop_conic(const SkPoint src[3], SkConic dst[4], const SkScalar weight) {
     SkConic dstTemp[2];
     int conicCnt = split_conic(src, dstTemp, weight);
     if (2 == conicCnt) {
@@ -228,8 +245,8 @@ int chop_conic(const SkPoint src[3], SkConic dst[4], const float weight) {
 // in this case approx the path with lines
 // otherwise returns 1
 int is_degen_quad_or_conic(const SkPoint p[3]) {
-    static const float gDegenerateToLineTol = SK_Scalar1;
-    static const float gDegenerateToLineTolSqd =
+    static const SkScalar gDegenerateToLineTol = SK_Scalar1;
+    static const SkScalar gDegenerateToLineTolSqd =
         SkScalarMul(gDegenerateToLineTol, gDegenerateToLineTol);
 
     if (p[0].distanceToSqd(p[1]) < gDegenerateToLineTolSqd ||
@@ -237,7 +254,7 @@ int is_degen_quad_or_conic(const SkPoint p[3]) {
         return 1;
     }
 
-    float dsqd = p[1].distanceToLineBetweenSqd(p[0], p[2]);
+    SkScalar dsqd = p[1].distanceToLineBetweenSqd(p[0], p[2]);
     if (dsqd < gDegenerateToLineTolSqd) {
         return 1;
     }
@@ -251,8 +268,8 @@ int is_degen_quad_or_conic(const SkPoint p[3]) {
 // we subdivide the quads to avoid huge overfill
 // if it returns -1 then should be drawn as lines
 int num_quad_subdivs(const SkPoint p[3]) {
-    static const float gDegenerateToLineTol = SK_Scalar1;
-    static const float gDegenerateToLineTolSqd =
+    static const SkScalar gDegenerateToLineTol = SK_Scalar1;
+    static const SkScalar gDegenerateToLineTolSqd =
         SkScalarMul(gDegenerateToLineTol, gDegenerateToLineTol);
 
     if (p[0].distanceToSqd(p[1]) < gDegenerateToLineTolSqd ||
@@ -260,7 +277,7 @@ int num_quad_subdivs(const SkPoint p[3]) {
         return -1;
     }
 
-    float dsqd = p[1].distanceToLineBetweenSqd(p[0], p[2]);
+    SkScalar dsqd = p[1].distanceToLineBetweenSqd(p[0], p[2]);
     if (dsqd < gDegenerateToLineTolSqd) {
         return -1;
     }
@@ -273,7 +290,7 @@ int num_quad_subdivs(const SkPoint p[3]) {
     // tuned on windows  Quadro FX 380 / Z600
     // trade off of fill vs cpu time on verts
     // maybe different when do this using gpu (geo or tess shaders)
-    static const float gSubdivTol = 175 * SK_Scalar1;
+    static const SkScalar gSubdivTol = 175 * SK_Scalar1;
 
     if (dsqd <= SkScalarMul(gSubdivTol, gSubdivTol)) {
         return 0;
@@ -285,7 +302,7 @@ int num_quad_subdivs(const SkPoint p[3]) {
 
         // +1 since we're ignoring the mantissa contribution.
         int log = get_float_exp(dsqd/(gSubdivTol*gSubdivTol)) + 1;
-        log = GrMin(GrMax(0, log), kMaxSub);
+        log = SkTMin(SkTMax(0, log), kMaxSub);
         return log;
     }
 }
@@ -316,8 +333,8 @@ int generate_lines_and_quads(const SkPath& path,
     bool persp = m.hasPerspective();
 
     for (;;) {
-        GrPoint pathPts[4];
-        GrPoint devPts[4];
+        SkPoint pathPts[4];
+        SkPoint devPts[4];
         SkPath::Verb verb = iter.next(pathPts);
         switch (verb) {
             case SkPath::kConic_Verb: {
@@ -382,6 +399,7 @@ int generate_lines_and_quads(const SkPath& path,
 
                     if (SkIRect::Intersects(devClipBounds, ibounds)) {
                         int subdiv = num_quad_subdivs(devPts);
+                        SkASSERT(subdiv >= -1);
                         if (-1 == subdiv) {
                             SkPoint* pts = lines->push_back_n(4);
                             pts[0] = devPts[0];
@@ -414,7 +432,7 @@ int generate_lines_and_quads(const SkPath& path,
                     // We convert cubics to quadratics (for now).
                     // In perspective have to do conversion in src space.
                     if (persp) {
-                        float tolScale =
+                        SkScalar tolScale =
                             GrPathUtils::scaleToleranceToSrc(SK_Scalar1, m,
                                                              path.getBounds());
                         GrPathUtils::convertCubicToQuads(pathPts, tolScale, false, kDummyDir, &q);
@@ -437,6 +455,7 @@ int generate_lines_and_quads(const SkPath& path,
                         bounds.roundOut(&ibounds);
                         if (SkIRect::Intersects(devClipBounds, ibounds)) {
                             int subdiv = num_quad_subdivs(qInDevSpace);
+                            SkASSERT(subdiv >= -1);
                             if (-1 == subdiv) {
                                 SkPoint* pts = lines->push_back_n(4);
                                 // lines should always be in device coords
@@ -467,35 +486,35 @@ int generate_lines_and_quads(const SkPath& path,
 }
 
 struct LineVertex {
-    GrPoint fPos;
+    SkPoint fPos;
     GrColor fCoverage;
 };
 
 struct BezierVertex {
-    GrPoint fPos;
+    SkPoint fPos;
     union {
         struct {
-            float fK;
-            float fL;
-            float fM;
+            SkScalar fK;
+            SkScalar fL;
+            SkScalar fM;
         } fConic;
-        GrVec   fQuadCoord;
+        SkVector   fQuadCoord;
         struct {
-            float fBogus[4];
+            SkScalar fBogus[4];
         };
     };
 };
 
-GR_STATIC_ASSERT(sizeof(BezierVertex) == 3 * sizeof(GrPoint));
+GR_STATIC_ASSERT(sizeof(BezierVertex) == 3 * sizeof(SkPoint));
 
 void intersect_lines(const SkPoint& ptA, const SkVector& normA,
                      const SkPoint& ptB, const SkVector& normB,
                      SkPoint* result) {
 
-    float lineAW = -normA.dot(ptA);
-    float lineBW = -normB.dot(ptB);
+    SkScalar lineAW = -normA.dot(ptA);
+    SkScalar lineBW = -normB.dot(ptB);
 
-    float wInv = SkScalarMul(normA.fX, normB.fY) -
+    SkScalar wInv = SkScalarMul(normA.fX, normB.fY) -
         SkScalarMul(normA.fY, normB.fX);
     wInv = SkScalarInvert(wInv);
 
@@ -509,12 +528,13 @@ void intersect_lines(const SkPoint& ptA, const SkVector& normA,
 void set_uv_quad(const SkPoint qpts[3], BezierVertex verts[kVertsPerQuad]) {
     // this should be in the src space, not dev coords, when we have perspective
     GrPathUtils::QuadUVMatrix DevToUV(qpts);
-    DevToUV.apply<kVertsPerQuad, sizeof(BezierVertex), sizeof(GrPoint)>(verts);
+    DevToUV.apply<kVertsPerQuad, sizeof(BezierVertex), sizeof(SkPoint)>(verts);
 }
 
 void bloat_quad(const SkPoint qpts[3], const SkMatrix* toDevice,
                 const SkMatrix* toSrc, BezierVertex verts[kVertsPerQuad],
                 SkRect* devBounds) {
+    SkASSERT(!toDevice == !toSrc);
     // original quad is specified by tri a,b,c
     SkPoint a = qpts[0];
     SkPoint b = qpts[1];
@@ -551,6 +571,7 @@ void bloat_quad(const SkPoint qpts[3], const SkMatrix* toDevice,
     cb -= c;
 
     // We should have already handled degenerates
+    SkASSERT(ab.length() > 0 && cb.length() > 0);
 
     ab.normalize();
     SkVector abN;
@@ -592,8 +613,8 @@ void bloat_quad(const SkPoint qpts[3], const SkMatrix* toDevice,
 // K = dot(k, P), L = dot(l, P), M = dot(m, P)
 // k, l, m are calculated in function GrPathUtils::getConicKLM
 void set_conic_coeffs(const SkPoint p[3], BezierVertex verts[kVertsPerQuad],
-                      const float weight) {
-    float klm[9];
+                      const SkScalar weight) {
+    SkScalar klm[9];
 
     GrPathUtils::getConicKLM(p, weight, klm);
 
@@ -606,7 +627,7 @@ void set_conic_coeffs(const SkPoint p[3], BezierVertex verts[kVertsPerQuad],
 }
 
 void add_conics(const SkPoint p[3],
-                const float weight,
+                const SkScalar weight,
                 const SkMatrix* toDevice,
                 const SkMatrix* toSrc,
                 BezierVertex** vert,
@@ -622,6 +643,7 @@ void add_quads(const SkPoint p[3],
                const SkMatrix* toSrc,
                BezierVertex** vert,
                SkRect* devBounds) {
+    SkASSERT(subdiv >= 0);
     if (subdiv) {
         SkPoint newP[5];
         SkChopQuadAtHalf(p, newP);
@@ -686,13 +708,13 @@ namespace {
 // position + edge
 extern const GrVertexAttrib gHairlineBezierAttribs[] = {
     {kVec2f_GrVertexAttribType, 0,                  kPosition_GrVertexAttribBinding},
-    {kVec4f_GrVertexAttribType, sizeof(GrPoint),    kEffect_GrVertexAttribBinding}
+    {kVec4f_GrVertexAttribType, sizeof(SkPoint),    kEffect_GrVertexAttribBinding}
 };
 
 // position + coverage
 extern const GrVertexAttrib gHairlineLineAttribs[] = {
     {kVec2f_GrVertexAttribType,  0,               kPosition_GrVertexAttribBinding},
-    {kVec4ub_GrVertexAttribType, sizeof(GrPoint), kCoverage_GrVertexAttribBinding},
+    {kVec4ub_GrVertexAttribType, sizeof(SkPoint), kCoverage_GrVertexAttribBinding},
 };
 
 };
@@ -710,6 +732,7 @@ bool GrAAHairLinePathRenderer::createLineGeom(const SkPath& path,
     int vertCnt = kVertsPerLineSeg * lineCnt;
 
     drawState->setVertexAttribs<gHairlineLineAttribs>(SK_ARRAY_COUNT(gHairlineLineAttribs));
+    SkASSERT(sizeof(LineVertex) == drawState->getVertexSize());
 
     if (!arg->set(target, vertCnt, 0)) {
         return false;
@@ -730,9 +753,9 @@ bool GrAAHairLinePathRenderer::createLineGeom(const SkPath& path,
         add_line(&lines[2*i], toSrc, drawState->getCoverageColor(), &verts);
     }
     // All the verts computed by add_line are within sqrt(1^2 + 0.5^2) of the end points.
-    static const float kSqrtOfOneAndAQuarter = 1.118f;
+    static const SkScalar kSqrtOfOneAndAQuarter = 1.118f;
     // Add a little extra to account for vector normalization precision.
-    static const float kOutset = kSqrtOfOneAndAQuarter + SK_Scalar1 / 20;
+    static const SkScalar kOutset = kSqrtOfOneAndAQuarter + SK_Scalar1 / 20;
     devBounds->outset(kOutset, kOutset);
 
     return true;
@@ -756,6 +779,7 @@ bool GrAAHairLinePathRenderer::createBezierGeom(
     int vertCnt = kVertsPerQuad * quadCnt + kVertsPerQuad * conicCnt;
 
     target->drawState()->setVertexAttribs<gHairlineBezierAttribs>(SK_ARRAY_COUNT(gHairlineBezierAttribs));
+    SkASSERT(sizeof(BezierVertex) == target->getDrawState().getVertexSize());
 
     if (!arg->set(target, vertCnt, 0)) {
         return false;
@@ -791,6 +815,7 @@ bool GrAAHairLinePathRenderer::createBezierGeom(
 
     int unsubdivQuadCnt = quads.count() / 3;
     for (int i = 0; i < unsubdivQuadCnt; ++i) {
+        SkASSERT(qSubdivs[i] >= 0);
         add_quads(&quads[3*i], qSubdivs[i], toDevice, toSrc, &verts, devBounds);
     }
 
@@ -832,6 +857,7 @@ bool check_bounds(GrDrawState* drawState, const SkRect& devBounds, void* vertice
         tolDevBounds.outset(SK_Scalar1 / 1000, SK_Scalar1 / 1000);
     } else {
         // Non-persp matrices cause this path renderer to draw in device space.
+        SkASSERT(drawState->getViewMatrix().isIdentity());
     }
     SkRect actualBounds;
 
@@ -864,7 +890,7 @@ bool GrAAHairLinePathRenderer::onDrawPath(const SkPath& path,
                                           bool antiAlias) {
     GrDrawState* drawState = target->drawState();
 
-    float hairlineCoverage;
+    SkScalar hairlineCoverage;
     if (IsStrokeHairlineOrEquivalent(stroke,
                                      target->getDrawState().getViewMatrix(),
                                      &hairlineCoverage)) {
@@ -915,13 +941,15 @@ bool GrAAHairLinePathRenderer::onDrawPath(const SkPath& path,
         GrDrawState* drawState = target->drawState();
 
         // Check devBounds
+        SkASSERT(check_bounds<LineVertex>(drawState, devBounds, arg.vertices(),
+                                          kVertsPerLineSeg * lineCnt));
 
         {
             GrDrawState::AutoRestoreEffects are(drawState);
             target->setIndexSourceToBuffer(fLinesIndexBuffer);
             int lines = 0;
             while (lines < lineCnt) {
-                int n = GrMin(lineCnt - lines, kNumLineSegsInIdxBuffer);
+                int n = SkTMin(lineCnt - lines, kNumLineSegsInIdxBuffer);
                 target->drawIndexed(kTriangles_GrPrimitiveType,
                                     kVertsPerLineSeg*lines,     // startV
                                     0,                          // startI
@@ -965,16 +993,19 @@ bool GrAAHairLinePathRenderer::onDrawPath(const SkPath& path,
         static const int kEdgeAttrIndex = 1;
 
         // Check devBounds
+        SkASSERT(check_bounds<BezierVertex>(drawState, devBounds, arg.vertices(),
+                                            kVertsPerQuad * quadCnt + kVertsPerQuad * conicCnt));
 
         if (quadCnt > 0) {
-            GrEffectRef* hairQuadEffect = GrQuadEffect::Create(kHairAA_GrBezierEdgeType,
+            GrEffectRef* hairQuadEffect = GrQuadEffect::Create(kHairlineAA_GrEffectEdgeType,
                                                                *target->caps());
+            SkASSERT(NULL != hairQuadEffect);
             GrDrawState::AutoRestoreEffects are(drawState);
             target->setIndexSourceToBuffer(fQuadsIndexBuffer);
             drawState->addCoverageEffect(hairQuadEffect, kEdgeAttrIndex)->unref();
             int quads = 0;
             while (quads < quadCnt) {
-                int n = GrMin(quadCnt - quads, kNumQuadsInIdxBuffer);
+                int n = SkTMin(quadCnt - quads, kNumQuadsInIdxBuffer);
                 target->drawIndexed(kTriangles_GrPrimitiveType,
                                     kVertsPerQuad*quads,               // startV
                                     0,                                 // startI
@@ -987,12 +1018,13 @@ bool GrAAHairLinePathRenderer::onDrawPath(const SkPath& path,
 
         if (conicCnt > 0) {
             GrDrawState::AutoRestoreEffects are(drawState);
-            GrEffectRef* hairConicEffect = GrConicEffect::Create(kHairAA_GrBezierEdgeType,
+            GrEffectRef* hairConicEffect = GrConicEffect::Create(kHairlineAA_GrEffectEdgeType,
                                                                  *target->caps());
+            SkASSERT(NULL != hairConicEffect);
             drawState->addCoverageEffect(hairConicEffect, 1, 2)->unref();
             int conics = 0;
             while (conics < conicCnt) {
-                int n = GrMin(conicCnt - conics, kNumQuadsInIdxBuffer);
+                int n = SkTMin(conicCnt - conics, kNumQuadsInIdxBuffer);
                 target->drawIndexed(kTriangles_GrPrimitiveType,
                                     kVertsPerQuad*(quadCnt + conics),  // startV
                                     0,                                 // startI

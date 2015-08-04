@@ -48,6 +48,9 @@ public:
     }
 
     bool operator== (const GrEffectStage& other) const {
+        SkASSERT(NULL != fEffectRef.get());
+        SkASSERT(NULL != other.fEffectRef.get());
+
         if (!(*this->getEffect())->isEqual(*other.getEffect())) {
             return false;
         }
@@ -100,6 +103,7 @@ public:
         if (fCoordChangeMatrixSet) {
             savedCoordChange->fCoordChangeMatrix = fCoordChangeMatrix;
         }
+        SkASSERT(NULL == savedCoordChange->fEffectRef.get());
         SkDEBUGCODE(SkRef(fEffectRef.get());)
         SkDEBUGCODE(savedCoordChange->fEffectRef.reset(fEffectRef.get());)
     }
@@ -112,6 +116,7 @@ public:
         if (fCoordChangeMatrixSet) {
             fCoordChangeMatrix = savedCoordChange.fCoordChangeMatrix;
         }
+        SkASSERT(savedCoordChange.fEffectRef.get() == fEffectRef);
         SkDEBUGCODE(savedCoordChange.fEffectRef.reset(NULL);)
     }
 
@@ -132,6 +137,8 @@ public:
         }
 
         void saveFrom(const GrEffectStage& stage) {
+            SkASSERT(!fInitialized);
+            SkASSERT(NULL != stage.fEffectRef.get());
             stage.fEffectRef->get()->incDeferredRefCounts();
             fEffect = stage.fEffectRef->get();
             fCoordChangeMatrixSet = stage.fCoordChangeMatrixSet;
@@ -144,6 +151,7 @@ public:
         }
 
         void restoreTo(GrEffectStage* stage) const {
+            SkASSERT(fInitialized);
             stage->fEffectRef.reset(GrEffect::CreateEffectRef(fEffect));
             stage->fCoordChangeMatrixSet = fCoordChangeMatrixSet;
             if (fCoordChangeMatrixSet) {

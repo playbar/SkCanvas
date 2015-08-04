@@ -21,40 +21,45 @@
 #include "GrGpu.h"
 #include "GrTHashTable.h"
 #include "SkTypes.h"
-#include "eggl.h"
 
 #ifdef SK_DEVELOPER
 #define PROGRAM_CACHE_STATS
 #endif
 
-class GrGpuGL : public GrGpu
-{
+class GrGLNameAllocator;
+
+class GrGpuGL : public GrGpu {
 public:
     GrGpuGL(const GrGLContext& ctx, GrContext* context);
     virtual ~GrGpuGL();
 
     const GrGLContext& glContext() const { return fGLContext; }
 
-    const GrGLContextInfo& ctxInfo() const { return fGLContext.info(); }
-    uint32_t glVersion() const { return fGLContext.info().version(); }
+    const GrGLInterface* glInterface() const { return fGLContext.interface(); }
+    const GrGLContextInfo& ctxInfo() const { return fGLContext; }
+    GrGLStandard glStandard() const { return fGLContext.standard(); }
+    GrGLVersion glVersion() const { return fGLContext.version(); }
+    GrGLSLGeneration glslGeneration() const { return fGLContext.glslGeneration(); }
+    const GrGLCaps& glCaps() const { return *fGLContext.caps(); }
 
-    // Used by GrGLProgram and GrGLTexGenProgramEffects to configure OpenGL state.
+    virtual void discard(GrRenderTarget*) SK_OVERRIDE;
+
+    // Used by GrGLProgram and GrGLPathTexGenProgramEffects to configure OpenGL
+    // state.
     void bindTexture(int unitIdx, const GrTextureParams& params, GrGLTexture* texture);
     void setProjectionMatrix(const SkMatrix& matrix,
                              const SkISize& renderTargetSize,
                              GrSurfaceOrigin renderTargetOrigin);
-    enum TexGenComponents 
-	{
-        kS_TexGenComponents = 1,
-        kST_TexGenComponents = 2,
-        kSTR_TexGenComponents = 3
+    enum PathTexGenComponents {
+        kS_PathTexGenComponents = 1,
+        kST_PathTexGenComponents = 2,
+        kSTR_PathTexGenComponents = 3
     };
-    void enableTexGen(int unitIdx, TexGenComponents, const GLfloat* coefficients);
-    void enableTexGen(int unitIdx, TexGenComponents, const SkMatrix& matrix);
-    void flushTexGenSettings(int numUsedTexCoordSets);
+    void enablePathTexGen(int unitIdx, PathTexGenComponents, const GrGLfloat* coefficients);
+    void enablePathTexGen(int unitIdx, PathTexGenComponents, const SkMatrix& matrix);
+    void flushPathTexGenSettings(int numUsedTexCoordSets);
     bool shouldUseFixedFunctionTexturing() const {
-        return this->glCaps().fixedFunctionSupport() &&
-               this->glCaps().pathRenderingSupport();
+        return this->glCaps().pathRenderingSupport();
     }
 
     bool programUnitTest(int maxStages);
@@ -77,33 +82,36 @@ public:
 
     virtual void abandonResources() SK_OVERRIDE;
 
-    const GrGLCaps& glCaps() const { return *fGLContext.info().caps(); }
-
     // These functions should be used to bind GL objects. They track the GL state and skip redundant
     // bindings. Making the equivalent glBind calls directly will confuse the state tracking.
-    void bindVertexArray(GLuint id) {
+    void bindVertexArray(GrGLuint id) {
         fHWGeometryState.setVertexArrayID(this, id);
     }
-    void bindIndexBufferAndDefaultVertexArray(GLuint id) {
+    void bindIndexBufferAndDefaultVertexArray(GrGLuint id) {
         fHWGeometryState.setIndexBufferIDOnDefaultVertexArray(this, id);
     }
-    void bindVertexBuffer(GLuint id) {
+    void bindVertexBuffer(GrGLuint id) {
         fHWGeometryState.setVertexBufferID(this, id);
     }
 
     // These callbacks update state tracking when GL objects are deleted. They are called from
     // GrGLResource onRelease functions.
-    void notifyVertexArrayDelete(GLuint id) {
+    void notifyVertexArrayDelete(GrGLuint id) {
         fHWGeometryState.notifyVertexArrayDelete(id);
     }
-    void notifyVertexBufferDelete(GLuint id) {
+    void notifyVertexBufferDelete(GrGLuint id) {
         fHWGeometryState.notifyVertexBufferDelete(id);
     }
-    void notifyIndexBufferDelete(GLuint id) {
+    void notifyIndexBufferDelete(GrGLuint id) {
         fHWGeometryState.notifyIndexBufferDelete(id);
     }
     void notifyTextureDelete(GrGLTexture* texture);
     void notifyRenderTargetDelete(GrRenderTarget* renderTarget);
+
+    // These functions should be used to generate and delete GL path names. They have their own
+    // allocator that runs on the client side, so they are much faster than going through GenPaths.
+    GrGLuint createGLPathObject();
+    void deleteGLPathObject(GrGLuint);
 
 protected:
     virtual bool onCopySurface(GrSurface* dst,
@@ -123,9 +131,11 @@ private:
     virtual GrTexture* onCreateTexture(const GrTextureDesc& desc,
                                        const void* srcData,
                                        size_t rowBytes) SK_OVERRIDE;
+    virtual GrTexture* onCreateCompressedTexture(const GrTextureDesc& desc,
+                                                 const void* srcData) SK_OVERRIDE;
     virtual GrVertexBuffer* onCreateVertexBuffer(size_t size, bool dynamic) SK_OVERRIDE;
     virtual GrIndexBuffer* onCreateIndexBuffer(size_t size, bool dynamic) SK_OVERRIDE;
-    //virtual GrPath* onCreatePath(const SkPath&, const SkStrokeRec&) SK_OVERRIDE;
+    virtual GrPath* onCreatePath(const SkPath&, const SkStrokeRec&) SK_OVERRIDE;
     virtual GrTexture* onWrapBackendTexture(const GrBackendTextureDesc&) SK_OVERRIDE;
     virtual GrRenderTarget* onWrapBackendRenderTarget(const GrBackendRenderTargetDesc&) SK_OVERRIDE;
     virtual bool createStencilBufferForRenderTarget(GrRenderTarget* rt,
@@ -136,8 +146,6 @@ private:
         GrRenderTarget* rt) SK_OVERRIDE;
 
     virtual void onClear(const SkIRect* rect, GrColor color, bool canIgnoreRect) SK_OVERRIDE;
-
-    virtual void onForceRenderTargetFlush() SK_OVERRIDE;
 
     virtual bool onReadPixels(GrRenderTarget* target,
                               int left, int top,
@@ -157,11 +165,18 @@ private:
 
     virtual void onGpuStencilPath(const GrPath*, SkPath::FillType) SK_OVERRIDE;
     virtual void onGpuDrawPath(const GrPath*, SkPath::FillType) SK_OVERRIDE;
+    virtual void onGpuDrawPaths(int, const GrPath**, const SkMatrix*,
+                                SkPath::FillType,
+                                SkStrokeRec::Style) SK_OVERRIDE;
 
     virtual void clearStencil() SK_OVERRIDE;
     virtual void clearStencilClip(const SkIRect& rect,
                                   bool insideClip) SK_OVERRIDE;
     virtual bool flushGraphicsState(DrawType, const GrDeviceCoordTexture* dstCopy) SK_OVERRIDE;
+
+    // GrDrawTarget ovverides
+    virtual void didAddGpuTraceMarker() SK_OVERRIDE;
+    virtual void didRemoveGpuTraceMarker() SK_OVERRIDE;
 
     // binds texture unit in GL
     void setTextureUnit(int unitIdx);
@@ -176,6 +191,8 @@ private:
     // (after any blending optimizations or dual source blending considerations
     // have been accounted for).
     void flushBlend(bool isLines, GrBlendCoeff srcCoeff, GrBlendCoeff dstCoeff);
+
+    bool hasExtension(const char* ext) const { return fGLContext.hasExtension(ext); }
 
     static bool BlendCoeffReferencesConstant(GrBlendCoeff coeff);
 
@@ -193,7 +210,7 @@ private:
         enum {
             // We may actually have kMaxEntries+1 shaders in the GL context because we create a new
             // shader before evicting from the cache.
-            kMaxEntries = 32,
+            kMaxEntries = 128,
             kHashBits = 6,
         };
 
@@ -246,9 +263,9 @@ private:
 
     bool configToGLFormats(GrPixelConfig config,
                            bool getSizedInternal,
-                           GLenum* internalFormat,
-                           GLenum* externalFormat,
-                           GLenum* externalType);
+                           GrGLenum* internalFormat,
+                           GrGLenum* externalFormat,
+                           GrGLenum* externalType);
     // helper for onCreateTexture and writeTexturePixels
     bool uploadTexData(const GrGLTexture::Desc& desc,
                        bool isNewTexture,
@@ -257,8 +274,20 @@ private:
                        const void* data,
                        size_t rowBytes);
 
+    // helper for onCreateCompressedTexture. If width and height are
+    // set to -1, then this function will use desc.fWidth and desc.fHeight
+    // for the size of the data. The isNewTexture flag should be set to true
+    // whenever a new texture needs to be created. Otherwise, we assume that
+    // the texture is already in GPU memory and that it's going to be updated
+    // with new data.
+    bool uploadCompressedTexData(const GrGLTexture::Desc& desc,
+                                 const void* data,
+                                 bool isNewTexture = true,
+                                 int left = 0, int top = 0,
+                                 int width = -1, int height = -1);
+
     bool createRenderTargetObjects(int width, int height,
-                                   GLuint texID,
+                                   GrGLuint texID,
                                    GrGLRenderTarget::Desc* desc);
 
     GrGLContext fGLContext;
@@ -271,7 +300,7 @@ private:
     ///@name Caching of GL State
     ///@{
     int                         fHWActiveTextureUnitIdx;
-    GLuint                    fHWProgramID;
+    GrGLuint                    fHWProgramID;
 
     GrGLProgram::SharedGLState  fSharedGLProgramState;
 
@@ -296,15 +325,13 @@ private:
     /**
      * Tracks bound vertex and index buffers and vertex attrib array state.
      */
-    class HWGeometryState 
-	{
+    class HWGeometryState {
     public:
         HWGeometryState() { fVBOVertexArray = NULL; this->invalidate(); }
 
         ~HWGeometryState() { SkSafeUnref(fVBOVertexArray); }
 
-        void invalidate() 
-		{
+        void invalidate() {
             fBoundVertexArrayIDIsValid = false;
             fBoundVertexBufferIDIsValid = false;
             fDefaultVertexArrayBoundIndexBufferID = false;
@@ -315,27 +342,26 @@ private:
             }
         }
 
-        void notifyVertexArrayDelete(GLuint id) 
-		{
+        void notifyVertexArrayDelete(GrGLuint id) {
             if (fBoundVertexArrayIDIsValid && fBoundVertexArrayID == id) {
                 // Does implicit bind to 0
                 fBoundVertexArrayID = 0;
             }
         }
 
-        void setVertexArrayID(GrGpuGL* gpu, GLuint arrayID) {
+        void setVertexArrayID(GrGpuGL* gpu, GrGLuint arrayID) {
             if (!gpu->glCaps().vertexArrayObjectSupport()) {
+                SkASSERT(0 == arrayID);
                 return;
             }
-            if (!fBoundVertexArrayIDIsValid || arrayID != fBoundVertexArrayID)
-			{
-					glBindVertexArray(arrayID);
-					fBoundVertexArrayIDIsValid = true;
-					fBoundVertexArrayID = arrayID;
+            if (!fBoundVertexArrayIDIsValid || arrayID != fBoundVertexArrayID) {
+                GR_GL_CALL(gpu->glInterface(), BindVertexArray(arrayID));
+                fBoundVertexArrayIDIsValid = true;
+                fBoundVertexArrayID = arrayID;
             }
         }
 
-        void notifyVertexBufferDelete(GLuint id) {
+        void notifyVertexBufferDelete(GrGLuint id) {
             if (fBoundVertexBufferIDIsValid && id == fBoundVertexBufferID) {
                 fBoundVertexBufferID = 0;
             }
@@ -345,7 +371,7 @@ private:
             fDefaultVertexArrayAttribState.notifyVertexBufferDelete(id);
         }
 
-        void notifyIndexBufferDelete(GLuint id) {
+        void notifyIndexBufferDelete(GrGLuint id) {
             if (fDefaultVertexArrayBoundIndexBufferIDIsValid &&
                 id == fDefaultVertexArrayBoundIndexBufferID) {
                 fDefaultVertexArrayBoundIndexBufferID = 0;
@@ -355,11 +381,9 @@ private:
             }
         }
 
-        void setVertexBufferID(GrGpuGL* gpu, GLuint id) 
-		{
-            if (!fBoundVertexBufferIDIsValid || id != fBoundVertexBufferID)
-			{
-                glBindBuffer(GL_ARRAY_BUFFER, id);
+        void setVertexBufferID(GrGpuGL* gpu, GrGLuint id) {
+            if (!fBoundVertexBufferIDIsValid || id != fBoundVertexBufferID) {
+                GR_GL_CALL(gpu->glInterface(), BindBuffer(GR_GL_ARRAY_BUFFER, id));
                 fBoundVertexBufferIDIsValid = true;
                 fBoundVertexBufferID = id;
             }
@@ -369,13 +393,11 @@ private:
          * Binds the default vertex array and binds the index buffer. This is used when binding
          * an index buffer in order to update it.
          */
-        void setIndexBufferIDOnDefaultVertexArray(GrGpuGL* gpu, GLuint id)
-		{
+        void setIndexBufferIDOnDefaultVertexArray(GrGpuGL* gpu, GrGLuint id) {
             this->setVertexArrayID(gpu, 0);
             if (!fDefaultVertexArrayBoundIndexBufferIDIsValid ||
-                id != fDefaultVertexArrayBoundIndexBufferID) 
-			{
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
+                id != fDefaultVertexArrayBoundIndexBufferID) {
+                GR_GL_CALL(gpu->glInterface(), BindBuffer(GR_GL_ELEMENT_ARRAY_BUFFER, id));
                 fDefaultVertexArrayBoundIndexBufferIDIsValid = true;
                 fDefaultVertexArrayBoundIndexBufferID = id;
             }
@@ -392,13 +414,13 @@ private:
                                                         const GrGLIndexBuffer* ibuffer);
 
     private:
-        GLuint                fBoundVertexArrayID;
-        GLuint                fBoundVertexBufferID;
-        bool                  fBoundVertexArrayIDIsValid;
-        bool                  fBoundVertexBufferIDIsValid;
+        GrGLuint                fBoundVertexArrayID;
+        GrGLuint                fBoundVertexBufferID;
+        bool                    fBoundVertexArrayIDIsValid;
+        bool                    fBoundVertexBufferIDIsValid;
 
-        GLuint                fDefaultVertexArrayBoundIndexBufferID;
-        bool                  fDefaultVertexArrayBoundIndexBufferIDIsValid;
+        GrGLuint                fDefaultVertexArrayBoundIndexBufferID;
+        bool                    fDefaultVertexArrayBoundIndexBufferIDIsValid;
         // We return a non-const pointer to this from bindArrayAndBuffersToDraw when vertex array 0
         // is bound. However, this class is internal to GrGpuGL and this object never leaks out of
         // GrGpuGL.
@@ -408,8 +430,7 @@ private:
         GrGLVertexArray*        fVBOVertexArray;
     } fHWGeometryState;
 
-	struct HWBlendState
-	{
+    struct {
         GrBlendCoeff    fSrcCoeff;
         GrBlendCoeff    fDstCoeff;
         GrColor         fConstColor;
@@ -422,18 +443,16 @@ private:
             fConstColorValid = false;
             fEnabled = kUnknown_TriState;
         }
-	}fHWBlendState;
+    } fHWBlendState;
 
-	struct HWAAState
-	{
+    struct {
         TriState fMSAAEnabled;
         TriState fSmoothLineEnabled;
-        void invalidate() 
-		{
+        void invalidate() {
             fMSAAEnabled = kUnknown_TriState;
             fSmoothLineEnabled = kUnknown_TriState;
         }
-	}fHWAAState;
+    } fHWAAState;
 
 
     GrGLProgram::MatrixState    fHWProjectionMatrixState;
@@ -448,18 +467,20 @@ private:
     GrRenderTarget*             fHWBoundRenderTarget;
     SkTArray<GrTexture*, true>  fHWBoundTextures;
 
-    struct TexGenData {
-        GLenum  fMode;
-        GLint   fNumComponents;
-        GLfloat fCoefficients[3 * 3];
+    struct PathTexGenData {
+        GrGLenum  fMode;
+        GrGLint   fNumComponents;
+        GrGLfloat fCoefficients[3 * 3];
     };
-    int                         fHWActiveTexGenSets;
-    SkTArray<TexGenData, true>  fHWTexGenSettings;
+    int                         fHWActivePathTexGenSets;
+    SkTArray<PathTexGenData, true>  fHWPathTexGenSettings;
     ///@}
 
     // we record what stencil format worked last time to hopefully exit early
     // from our loop that tries stencil formats and calls check fb status.
     int fLastSuccessfulStencilFmtIdx;
+
+    SkAutoTDelete<GrGLNameAllocator> fPathNameAllocator;
 
     typedef GrGpu INHERITED;
 };

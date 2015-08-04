@@ -1,11 +1,9 @@
-
 /*
  * Copyright 2006 The Android Open Source Project
  *
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 
 #ifndef SkEndian_DEFINED
 #define SkEndian_DEFINED
@@ -29,9 +27,10 @@
 /** Swap the two bytes in the low 16bits of the parameters.
     e.g. 0x1234 -> 0x3412
 */
-static inline uint16_t SkEndianSwap16(U16CPU value) {
+static inline uint16_t SkEndianSwap16(uint16_t value) {
     return static_cast<uint16_t>((value >> 8) | (value << 8));
 }
+
 template<uint16_t N> struct SkTEndianSwap16 {
     static const uint16_t value = static_cast<uint16_t>((N >> 8) | ((N & 0xFF) << 8));
 };
@@ -40,6 +39,7 @@ template<uint16_t N> struct SkTEndianSwap16 {
     low two bytes of each value in the array.
 */
 static inline void SkEndianSwap16s(uint16_t array[], int count) {
+    SkASSERT(count == 0 || array != NULL);
 
     while (--count >= 0) {
         *array = SkEndianSwap16(*array);
@@ -51,11 +51,12 @@ static inline void SkEndianSwap16s(uint16_t array[], int count) {
     e.g. 0x12345678 -> 0x78563412
 */
 static inline uint32_t SkEndianSwap32(uint32_t value) {
-    return  ((value & 0xFF) << 24) |
-            ((value & 0xFF00) << 8) |
-            ((value & 0xFF0000) >> 8) |
+    return ((value & 0xFF) << 24) |
+           ((value & 0xFF00) << 8) |
+           ((value & 0xFF0000) >> 8) |
             (value >> 24);
 }
+
 template<uint32_t N> struct SkTEndianSwap32 {
     static const uint32_t value = ((N & 0xFF) << 24) |
                                   ((N & 0xFF00) << 8) |
@@ -67,6 +68,7 @@ template<uint32_t N> struct SkTEndianSwap32 {
     bytes of each value in the array.
 */
 static inline void SkEndianSwap32s(uint32_t array[], int count) {
+    SkASSERT(count == 0 || array != NULL);
 
     while (--count >= 0) {
         *array = SkEndianSwap32(*array);
@@ -102,6 +104,7 @@ template<uint64_t N> struct SkTEndianSwap64 {
     bytes of each value in the array.
 */
 static inline void SkEndianSwap64s(uint64_t array[], int count) {
+    SkASSERT(count == 0 || array != NULL);
 
     while (--count >= 0) {
         *array = SkEndianSwap64(*array);

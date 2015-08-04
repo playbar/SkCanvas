@@ -107,6 +107,7 @@ void* SkChunkAlloc::alloc(size_t bytes, AllocFailType ftype) {
         fBlock = block;
     }
 
+    SkASSERT(block && bytes <= block->fFreeSize);
     char* ptr = block->fFreePtr;
 
     block->fFreeSize -= bytes;

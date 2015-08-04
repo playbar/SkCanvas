@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2011 Google Inc.
  *
@@ -6,38 +5,41 @@
  * found in the LICENSE file.
  */
 #include "SkColorMatrix.h"
-#include "SkFlattenableBuffers.h"
-
-#define kRScale     0
-#define kGScale     6
-#define kBScale     12
-#define kAScale     18
 
 void SkColorMatrix::setIdentity() {
     memset(fMat, 0, sizeof(fMat));
-    fMat[kRScale] = fMat[kGScale] = fMat[kBScale] = fMat[kAScale] = SK_Scalar1;
+    fMat[kR_Scale] = fMat[kG_Scale] = fMat[kB_Scale] = fMat[kA_Scale] = 1;
 }
 
-void SkColorMatrix::setScale(float rScale, float gScale, float bScale,
-                             float aScale) {
+void SkColorMatrix::setScale(SkScalar rScale, SkScalar gScale, SkScalar bScale,
+                             SkScalar aScale) {
     memset(fMat, 0, sizeof(fMat));
-    fMat[kRScale] = rScale;
-    fMat[kGScale] = gScale;
-    fMat[kBScale] = bScale;
-    fMat[kAScale] = aScale;
+    fMat[kR_Scale] = rScale;
+    fMat[kG_Scale] = gScale;
+    fMat[kB_Scale] = bScale;
+    fMat[kA_Scale] = aScale;
+}
+
+void SkColorMatrix::postTranslate(SkScalar dr, SkScalar dg, SkScalar db,
+                                  SkScalar da) {
+    fMat[kR_Trans] += dr;
+    fMat[kG_Trans] += dg;
+    fMat[kB_Trans] += db;
+    fMat[kA_Trans] += da;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void SkColorMatrix::setRotate(Axis axis, float degrees) {
-    float S, C;
+void SkColorMatrix::setRotate(Axis axis, SkScalar degrees) {
+    SkScalar S, C;
 
     S = SkScalarSinCos(SkDegreesToRadians(degrees), &C);
 
     this->setSinCos(axis, S, C);
 }
 
-void SkColorMatrix::setSinCos(Axis axis, float sine, float cosine) {
+void SkColorMatrix::setSinCos(Axis axis, SkScalar sine, SkScalar cosine) {
+    SkASSERT((unsigned)axis < 3);
 
     static const uint8_t gRotateIndex[] = {
         6, 7, 11, 12,
@@ -53,13 +55,13 @@ void SkColorMatrix::setSinCos(Axis axis, float sine, float cosine) {
     fMat[index[3]] = cosine;
 }
 
-void SkColorMatrix::preRotate(Axis axis, float degrees) {
+void SkColorMatrix::preRotate(Axis axis, SkScalar degrees) {
     SkColorMatrix tmp;
     tmp.setRotate(axis, degrees);
     this->preConcat(tmp);
 }
 
-void SkColorMatrix::postRotate(Axis axis, float degrees) {
+void SkColorMatrix::postRotate(Axis axis, SkScalar degrees) {
     SkColorMatrix tmp;
     tmp.setRotate(axis, degrees);
     this->postConcat(tmp);
@@ -69,15 +71,15 @@ void SkColorMatrix::postRotate(Axis axis, float degrees) {
 
 void SkColorMatrix::setConcat(const SkColorMatrix& matA,
                               const SkColorMatrix& matB) {
-    float    tmp[20];
-    float*   result = fMat;
+    SkScalar    tmp[20];
+    SkScalar*   result = fMat;
 
     if (&matA == this || &matB == this) {
         result = tmp;
     }
 
-    const float* a = matA.fMat;
-    const float* b = matB.fMat;
+    const SkScalar* a = matA.fMat;
+    const SkScalar* b = matB.fMat;
 
     int index = 0;
     for (int j = 0; j < 20; j += 5) {
@@ -101,40 +103,40 @@ void SkColorMatrix::setConcat(const SkColorMatrix& matA,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void setrow(float row[], float r, float g, float b) {
+static void setrow(SkScalar row[], SkScalar r, SkScalar g, SkScalar b) {
     row[0] = r;
     row[1] = g;
     row[2] = b;
 }
 
-static const float kHueR = 0.213f;
-static const float kHueG = 0.715f;
-static const float kHueB = 0.072f;
+static const SkScalar kHueR = 0.213f;
+static const SkScalar kHueG = 0.715f;
+static const SkScalar kHueB = 0.072f;
 
-void SkColorMatrix::setSaturation(float sat) {
+void SkColorMatrix::setSaturation(SkScalar sat) {
     memset(fMat, 0, sizeof(fMat));
 
-    const float R = SkScalarMul(kHueR, SK_Scalar1 - sat);
-    const float G = SkScalarMul(kHueG, SK_Scalar1 - sat);
-    const float B = SkScalarMul(kHueB, SK_Scalar1 - sat);
+    const SkScalar R = kHueR * (1 - sat);
+    const SkScalar G = kHueG * (1 - sat);
+    const SkScalar B = kHueB * (1 - sat);
 
     setrow(fMat +  0, R + sat, G, B);
     setrow(fMat +  5, R, G + sat, B);
     setrow(fMat + 10, R, G, B + sat);
-    fMat[18] = SK_Scalar1;
+    fMat[kA_Scale] = 1;
 }
 
-static const float kR2Y = 0.299f;
-static const float kG2Y = 0.587f;
-static const float kB2Y = 0.114f;
+static const SkScalar kR2Y = 0.299f;
+static const SkScalar kG2Y = 0.587f;
+static const SkScalar kB2Y = 0.114f;
 
-static const float kR2U = -0.16874f;
-static const float kG2U = -0.33126f;
-static const float kB2U = 0.5f;
+static const SkScalar kR2U = -0.16874f;
+static const SkScalar kG2U = -0.33126f;
+static const SkScalar kB2U = 0.5f;
 
-static const float kR2V = 0.5f;
-static const float kG2V = -0.41869f;
-static const float kB2V = -0.08131f;
+static const SkScalar kR2V = 0.5f;
+static const SkScalar kG2V = -0.41869f;
+static const SkScalar kB2V = -0.08131f;
 
 void SkColorMatrix::setRGB2YUV() {
     memset(fMat, 0, sizeof(fMat));
@@ -142,19 +144,19 @@ void SkColorMatrix::setRGB2YUV() {
     setrow(fMat +  0, kR2Y, kG2Y, kB2Y);
     setrow(fMat +  5, kR2U, kG2U, kB2U);
     setrow(fMat + 10, kR2V, kG2V, kB2V);
-    fMat[18] = SK_Scalar1;
+    fMat[kA_Scale] = 1;
 }
 
-static const float kV2R = 1.402f;
-static const float kU2G = -0.34414f;
-static const float kV2G = -0.71414f;
-static const float kU2B = 1.772f;
+static const SkScalar kV2R = 1.402f;
+static const SkScalar kU2G = -0.34414f;
+static const SkScalar kV2G = -0.71414f;
+static const SkScalar kU2B = 1.772f;
 
 void SkColorMatrix::setYUV2RGB() {
     memset(fMat, 0, sizeof(fMat));
 
-    setrow(fMat +  0, SK_Scalar1, 0, kV2R);
-    setrow(fMat +  5, SK_Scalar1, kU2G, kV2G);
-    setrow(fMat + 10, SK_Scalar1, kU2B, 0);
-    fMat[18] = SK_Scalar1;
+    setrow(fMat +  0, 1, 0, kV2R);
+    setrow(fMat +  5, 1, kU2G, kV2G);
+    setrow(fMat + 10, 1, kU2B, 0);
+    fMat[kA_Scale] = 1;
 }

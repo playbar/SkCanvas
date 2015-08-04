@@ -26,7 +26,7 @@ public:
     SK_DECLARE_INST_COUNT(GrRenderTarget)
 
     // GrResource overrides
-    virtual size_t sizeInBytes() const SK_OVERRIDE;
+    virtual size_t gpuMemorySize() const SK_OVERRIDE;
 
     // GrSurface overrides
     /**
@@ -60,7 +60,7 @@ public:
      * If this RT is multisampled, this is the multisample buffer
      * @return the 3D API's handle to this object (e.g. FBO ID in OpenGL)
      */
-    virtual intptr_t getRenderTargetHandle() const = 0;
+    virtual GrBackendObject getRenderTargetHandle() const = 0;
 
     /**
      * If this RT is multisampled, this is the buffer it is resolved to.
@@ -68,7 +68,7 @@ public:
      * (In GL a separate FBO ID is used for the MSAA and resolved buffers)
      * @return the 3D API's handle to this object (e.g. FBO ID in OpenGL)
      */
-    virtual intptr_t getRenderTargetResolvedHandle() const = 0;
+    virtual GrBackendObject getRenderTargetResolvedHandle() const = 0;
 
     /**
      * @return true if the surface is multisampled, false otherwise
@@ -121,6 +121,12 @@ public:
      */
     void resolve();
 
+    /**
+     * Provide a performance hint that the render target's contents are allowed
+     * to become undefined.
+     */
+    void discard();
+
     // a MSAA RT may require explicit resolving , it may auto-resolve (e.g. FBO
     // 0 in GL), or be unresolvable because the client didn't give us the
     // resolve destination.
@@ -156,6 +162,7 @@ private:
     friend class GrTexture;
     // called by ~GrTexture to remove the non-ref'ed back ptr.
     void owningTextureDestroyed() {
+        SkASSERT(NULL != fTexture);
         fTexture = NULL;
     }
 

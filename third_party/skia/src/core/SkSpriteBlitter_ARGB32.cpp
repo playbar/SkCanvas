@@ -20,6 +20,7 @@
 class Sprite_D32_S32 : public SkSpriteBlitter {
 public:
     Sprite_D32_S32(const SkBitmap& src, U8CPU alpha)  : INHERITED(src) {
+        SkASSERT(src.colorType() == kN32_SkColorType);
 
         unsigned flags32 = 0;
         if (255 != alpha) {
@@ -34,6 +35,7 @@ public:
     }
 
     virtual void blitRect(int x, int y, int width, int height) {
+        SkASSERT(width > 0 && height > 0);
         uint32_t* SK_RESTRICT dst = fDevice->getAddr32(x, y);
         const uint32_t* SK_RESTRICT src = fSource->getAddr32(x - fLeft,
                                                              y - fTop);
@@ -121,6 +123,7 @@ public:
         : Sprite_D32_XferFilter(source, paint) {}
 
     virtual void blitRect(int x, int y, int width, int height) {
+        SkASSERT(width > 0 && height > 0);
         uint32_t* SK_RESTRICT dst = fDevice->getAddr32(x, y);
         const uint32_t* SK_RESTRICT src = fSource->getAddr32(x - fLeft,
                                                              y - fTop);
@@ -154,6 +157,7 @@ private:
 
 static void fillbuffer(SkPMColor* SK_RESTRICT dst,
                        const SkPMColor16* SK_RESTRICT src, int count) {
+    SkASSERT(count > 0);
 
     do {
         *dst++ = SkPixel4444ToPixel32(*src++);
@@ -166,6 +170,7 @@ public:
         : Sprite_D32_XferFilter(source, paint) {}
 
     virtual void blitRect(int x, int y, int width, int height) {
+        SkASSERT(width > 0 && height > 0);
         SkPMColor* SK_RESTRICT dst = fDevice->getAddr32(x, y);
         const SkPMColor16* SK_RESTRICT src = fSource->getAddr16(x - fLeft,
                                                                 y - fTop);
@@ -212,6 +217,7 @@ public:
     Sprite_D32_S4444_Opaque(const SkBitmap& source) : SkSpriteBlitter(source) {}
 
     virtual void blitRect(int x, int y, int width, int height) {
+        SkASSERT(width > 0 && height > 0);
         SkPMColor* SK_RESTRICT dst = fDevice->getAddr32(x, y);
         const SkPMColor16* SK_RESTRICT src = fSource->getAddr16(x - fLeft,
                                                                 y - fTop);
@@ -240,6 +246,7 @@ public:
     Sprite_D32_S4444(const SkBitmap& source) : SkSpriteBlitter(source) {}
 
     virtual void blitRect(int x, int y, int width, int height) {
+        SkASSERT(width > 0 && height > 0);
         SkPMColor* SK_RESTRICT dst = fDevice->getAddr32(x, y);
         const SkPMColor16* SK_RESTRICT src = fSource->getAddr16(x - fLeft,
                                                                 y - fTop);
@@ -256,11 +263,10 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "SkTemplatesPriv.h"
+SkSpriteBlitter* SkSpriteBlitter::ChooseD32(const SkBitmap& source, const SkPaint& paint,
+        SkTBlitterAllocator* allocator) {
+    SkASSERT(allocator != NULL);
 
-SkSpriteBlitter* SkSpriteBlitter::ChooseD32(const SkBitmap& source,
-                                            const SkPaint& paint,
-                                            void* storage, size_t storageSize) {
     if (paint.getMaskFilter() != NULL) {
         return NULL;
     }
@@ -270,33 +276,28 @@ SkSpriteBlitter* SkSpriteBlitter::ChooseD32(const SkBitmap& source,
     SkColorFilter* filter = paint.getColorFilter();
     SkSpriteBlitter* blitter = NULL;
 
-    switch (source.config()) {
-        case SkBitmap::kARGB_4444_Config:
+    switch (source.colorType()) {
+        case kARGB_4444_SkColorType:
             if (alpha != 0xFF) {
                 return NULL;    // we only have opaque sprites
             }
             if (xfermode || filter) {
-                SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D32_S4444_XferFilter,
-                                      storage, storageSize, (source, paint));
+                blitter = allocator->createT<Sprite_D32_S4444_XferFilter>(source, paint);
             } else if (source.isOpaque()) {
-                SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D32_S4444_Opaque,
-                                      storage, storageSize, (source));
+                blitter = allocator->createT<Sprite_D32_S4444_Opaque>(source);
             } else {
-                SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D32_S4444,
-                                      storage, storageSize, (source));
+                blitter = allocator->createT<Sprite_D32_S4444>(source);
             }
             break;
-        case SkBitmap::kARGB_8888_Config:
+        case kN32_SkColorType:
             if (xfermode || filter) {
                 if (255 == alpha) {
                     // this can handle xfermode or filter, but not alpha
-                    SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D32_S32A_XferFilter,
-                                      storage, storageSize, (source, paint));
+                    blitter = allocator->createT<Sprite_D32_S32A_XferFilter>(source, paint);
                 }
             } else {
                 // this can handle alpha, but not xfermode or filter
-                SK_PLACEMENT_NEW_ARGS(blitter, Sprite_D32_S32,
-                              storage, storageSize, (source, alpha));
+                blitter = allocator->createT<Sprite_D32_S32>(source, alpha);
             }
             break;
         default:

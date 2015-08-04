@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2006 The Android Open Source Project
  *
@@ -6,13 +5,17 @@
  * found in the LICENSE file.
  */
 
-
 #include "SkEmbossMaskFilter.h"
 #include "SkBlurMaskFilter.h"
 #include "SkBlurMask.h"
 #include "SkEmbossMask.h"
-#include "SkFlattenableBuffers.h"
+#include "SkReadBuffer.h"
+#include "SkWriteBuffer.h"
 #include "SkString.h"
+
+SkEmbossMaskFilter* SkEmbossMaskFilter::Create(SkScalar blurSigma, const Light& light) {
+    return SkNEW_ARGS(SkEmbossMaskFilter, (blurSigma, light));
+}
 
 static inline int pin2byte(int n) {
     if (n < 0) {
@@ -23,15 +26,15 @@ static inline int pin2byte(int n) {
     return n;
 }
 
-SkMaskFilter* SkBlurMaskFilter::CreateEmboss(const float direction[3],
-                                             float ambient, float specular,
-                                             float blurRadius) {
+SkMaskFilter* SkBlurMaskFilter::CreateEmboss(const SkScalar direction[3],
+                                             SkScalar ambient, SkScalar specular,
+                                             SkScalar blurRadius) {
     return SkBlurMaskFilter::CreateEmboss(SkBlurMask::ConvertRadiusToSigma(blurRadius),
                                           direction, ambient, specular);
 }
 
-SkMaskFilter* SkBlurMaskFilter::CreateEmboss(float blurSigma, const float direction[3],
-                                             float ambient, float specular) {
+SkMaskFilter* SkBlurMaskFilter::CreateEmboss(SkScalar blurSigma, const SkScalar direction[3],
+                                             SkScalar ambient, SkScalar specular) {
     if (direction == NULL) {
         return NULL;
     }
@@ -48,13 +51,13 @@ SkMaskFilter* SkBlurMaskFilter::CreateEmboss(float blurSigma, const float direct
     light.fAmbient = SkToU8(am);
     light.fSpecular = SkToU8(sp);
 
-    return SkNEW_ARGS(SkEmbossMaskFilter, (blurSigma, light));
+    return SkEmbossMaskFilter::Create(blurSigma, light);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void normalize(float v[3]) {
-    float mag = SkScalarSquare(v[0]) + SkScalarSquare(v[1]) + SkScalarSquare(v[2]);
+static void normalize(SkScalar v[3]) {
+    SkScalar mag = SkScalarSquare(v[0]) + SkScalarSquare(v[1]) + SkScalarSquare(v[2]);
     mag = SkScalarSqrt(mag);
 
     for (int i = 0; i < 3; i++) {
@@ -62,16 +65,9 @@ static void normalize(float v[3]) {
     }
 }
 
-SkEmbossMaskFilter::SkEmbossMaskFilter(float blurSigma, const Light& light)
+SkEmbossMaskFilter::SkEmbossMaskFilter(SkScalar blurSigma, const Light& light)
     : fLight(light), fBlurSigma(blurSigma) {
     normalize(fLight.fDirection);
-}
-
-SkEmbossMaskFilter::SkEmbossMaskFilter(const Light& light, float blurRadius)
-        : fLight(light) {
-    normalize(fLight.fDirection);
-
-    fBlurSigma = SkBlurMask::ConvertRadiusToSigma(blurRadius);
 }
 
 SkMask::Format SkEmbossMaskFilter::getFormat() const {
@@ -80,10 +76,9 @@ SkMask::Format SkEmbossMaskFilter::getFormat() const {
 
 bool SkEmbossMaskFilter::filterMask(SkMask* dst, const SkMask& src,
                                     const SkMatrix& matrix, SkIPoint* margin) const {
-    float sigma = matrix.mapRadius(fBlurSigma);
+    SkScalar sigma = matrix.mapRadius(fBlurSigma);
 
-    if (!SkBlurMask::BoxBlur(dst, src, sigma, SkBlurMask::kInner_Style,
-                             SkBlurMask::kLow_Quality)) {
+    if (!SkBlurMask::BoxBlur(dst, src, sigma, kInner_SkBlurStyle, kLow_SkBlurQuality)) {
         return false;
     }
 
@@ -129,13 +124,15 @@ bool SkEmbossMaskFilter::filterMask(SkMask* dst, const SkMask& src,
     return true;
 }
 
-SkEmbossMaskFilter::SkEmbossMaskFilter(SkFlattenableReadBuffer& buffer)
+SkEmbossMaskFilter::SkEmbossMaskFilter(SkReadBuffer& buffer)
         : SkMaskFilter(buffer) {
+    SkASSERT(buffer.getArrayCount() == sizeof(Light));
     buffer.readByteArray(&fLight, sizeof(Light));
-    fBlurSigma = SkScalarAbs(buffer.readScalar());
+    SkASSERT(fLight.fPad == 0); // for the font-cache lookup to be clean
+    fBlurSigma = buffer.readScalar();
 }
 
-void SkEmbossMaskFilter::flatten(SkFlattenableWriteBuffer& buffer) const {
+void SkEmbossMaskFilter::flatten(SkWriteBuffer& buffer) const {
     this->INHERITED::flatten(buffer);
 
     Light tmpLight = fLight;
@@ -144,7 +141,7 @@ void SkEmbossMaskFilter::flatten(SkFlattenableWriteBuffer& buffer) const {
     buffer.writeScalar(fBlurSigma);
 }
 
-#ifdef SK_DEVELOPER
+#ifndef SK_IGNORE_TO_STRING
 void SkEmbossMaskFilter::toString(SkString* str) const {
     str->append("SkEmbossMaskFilter: (");
 

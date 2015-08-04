@@ -15,6 +15,8 @@ SkTagList::~SkTagList()
 
 SkTagList* SkTagList::Find(SkTagList* rec, U8CPU tag)
 {
+    SkASSERT(tag < kSkTagListCount);
+
     while (rec != NULL)
     {
         if (rec->fTag == tag)
@@ -26,6 +28,8 @@ SkTagList* SkTagList::Find(SkTagList* rec, U8CPU tag)
 
 void SkTagList::DeleteTag(SkTagList** head, U8CPU tag)
 {
+    SkASSERT(tag < kSkTagListCount);
+
     SkTagList* rec = *head;
     SkTagList* prev = NULL;
 

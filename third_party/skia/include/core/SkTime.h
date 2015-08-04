@@ -11,12 +11,11 @@
 #define SkTime_DEFINED
 
 #include "SkTypes.h"
-#include "SkUserConfig.h"
 
 /** \class SkTime
     Platform-implemented utilities to return time of day, and millisecond counter.
 */
-class SK_API SkTime {
+class SkTime {
 public:
     struct DateTime {
         uint16_t fYear;          //!< e.g. 2005
@@ -51,6 +50,10 @@ public:
     }
     ~SkAutoTime()
     {
+        SkMSec dur = SkTime::GetMSecs() - fNow;
+        if (dur >= fMinToDump) {
+            SkDebugf("%s %d\n", fLabel ? fLabel : "", dur);
+        }
     }
 private:
     const char* fLabel;

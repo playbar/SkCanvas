@@ -15,6 +15,8 @@
 
 static void horiline(int x, int stopx, SkFixed fy, SkFixed dy,
                      SkBlitter* blitter) {
+    SkASSERT(x < stopx);
+
     do {
         blitter->blitH(x, fy >> 16, 1);
         fy += dy;
@@ -23,6 +25,7 @@ static void horiline(int x, int stopx, SkFixed fy, SkFixed dy,
 
 static void vertline(int y, int stopy, SkFixed fx, SkFixed dx,
                      SkBlitter* blitter) {
+    SkASSERT(y < stopy);
 
     do {
         blitter->blitH(fx >> 16, y, 1);
@@ -48,7 +51,7 @@ void SkScan::HairLineRgn(const SkPoint& pt0, const SkPoint& pt1,
     // the line. TODO find a way to actually draw beyond that range.
     {
         SkRect fixedBounds;
-        const float max = SkIntToScalar(32767);
+        const SkScalar max = SkIntToScalar(32767);
         fixedBounds.set(-max, -max, max, max);
         if (!SkLineClipper::IntersectLine(pts, fixedBounds, pts)) {
             return;
@@ -69,6 +72,10 @@ void SkScan::HairLineRgn(const SkPoint& pt0, const SkPoint& pt1,
     SkFDot6 x1 = SkScalarToFDot6(pts[1].fX);
     SkFDot6 y1 = SkScalarToFDot6(pts[1].fY);
 
+    SkASSERT(canConvertFDot6ToFixed(x0));
+    SkASSERT(canConvertFDot6ToFixed(y0));
+    SkASSERT(canConvertFDot6ToFixed(x1));
+    SkASSERT(canConvertFDot6ToFixed(y1));
 
     if (clip) {
         // now perform clipping again, as the rounding to dot6 can wiggle us
@@ -187,8 +194,8 @@ void SkScan::HairRect(const SkRect& rect, const SkRasterClip& clip,
 static int compute_int_quad_dist(const SkPoint pts[3]) {
     // compute the vector between the control point ([1]) and the middle of the
     // line connecting the start and end ([0] and [2])
-    float dx = SkScalarHalf(pts[0].fX + pts[2].fX) - pts[1].fX;
-    float dy = SkScalarHalf(pts[0].fY + pts[2].fY) - pts[1].fY;
+    SkScalar dx = SkScalarHalf(pts[0].fX + pts[2].fX) - pts[1].fX;
+    SkScalar dy = SkScalarHalf(pts[0].fY + pts[2].fY) - pts[1].fY;
     // we want everyone to be positive
     dx = SkScalarAbs(dx);
     dy = SkScalarAbs(dy);
@@ -295,7 +302,7 @@ static void hair_path(const SkPath& path, const SkRasterClip& rclip,
                 break;
             case SkPath::kConic_Verb: {
                 // how close should the quads be to the original conic?
-                const float tol = SK_Scalar1 / 4;
+                const SkScalar tol = SK_Scalar1 / 4;
                 const SkPoint* quadPts = converter.computeQuads(pts,
                                                        iter.conicWeight(), tol);
                 for (int i = 0; i < converter.countQuads(); ++i) {
@@ -330,15 +337,16 @@ void SkScan::AntiHairPath(const SkPath& path, const SkRasterClip& clip,
 
 void SkScan::FrameRect(const SkRect& r, const SkPoint& strokeSize,
                        const SkRasterClip& clip, SkBlitter* blitter) {
+    SkASSERT(strokeSize.fX >= 0 && strokeSize.fY >= 0);
 
     if (strokeSize.fX < 0 || strokeSize.fY < 0) {
         return;
     }
 
-    const float dx = strokeSize.fX;
-    const float dy = strokeSize.fY;
-    float rx = SkScalarHalf(dx);
-    float ry = SkScalarHalf(dy);
+    const SkScalar dx = strokeSize.fX;
+    const SkScalar dy = strokeSize.fY;
+    SkScalar rx = SkScalarHalf(dx);
+    SkScalar ry = SkScalarHalf(dy);
     SkRect   outer, tmp;
 
     outer.set(r.fLeft - rx, r.fTop - ry,

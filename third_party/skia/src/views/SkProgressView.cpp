@@ -46,9 +46,9 @@ void SkProgressView::setValue(U16CPU value)
             if (fInterp)
                 delete fInterp;
             fInterp = new SkInterpolator(1, 2);
-            float x = (float)(fValue << 8);
+            SkScalar x = (SkScalar)(fValue << 8);
             fInterp->setKeyFrame(0, SkTime::GetMSecs(), &x, 0);
-            x = (float)(value << 8);
+            x = (SkScalar)(value << 8);
             fInterp->setKeyFrame(1, SkTime::GetMSecs() + 333, &x);
         }
         fValue = SkToU16(value);
@@ -65,7 +65,7 @@ void SkProgressView::onDraw(SkCanvas* canvas)
 
     if (fInterp)
     {
-        float x;
+        SkScalar x;
         if (fInterp->timeToValues(SkTime::GetMSecs(), &x) == SkInterpolator::kFreezeEnd_Result)
         {
             delete fInterp;
@@ -109,8 +109,24 @@ void SkProgressView::onDraw(SkCanvas* canvas)
 static SkShader* inflate_shader(const char file[])
 {
     SkBitmap    bm;
+
     return SkImageDecoder::DecodeFile(file, &bm) ?
             SkShader::CreateBitmapShader(bm, SkShader::kRepeat_TileMode, SkShader::kRepeat_TileMode) :
             NULL;
 }
 
+void SkProgressView::onInflate(const SkDOM& dom, const SkDOM::Node* node)
+{
+    this->INHERITED::onInflate(dom, node);
+
+    const char* s;
+
+    SkASSERT(fOnShader == NULL);
+    SkASSERT(fOffShader == NULL);
+
+    if ((s = dom.findAttr(node, "src-on")) != NULL)
+        fOnShader = inflate_shader(s);
+    if ((s = dom.findAttr(node, "src-off")) != NULL)
+        fOffShader = inflate_shader(s);
+    (void)dom.findBool(node, "do-interp", &fDoInterp);
+}

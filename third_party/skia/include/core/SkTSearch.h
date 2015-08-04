@@ -38,9 +38,12 @@
 template <typename T, typename K, typename LESS>
 int SkTSearch(const T base[], int count, const K& key, size_t elemSize, LESS& less)
 {
+    SkASSERT(count >= 0);
     if (count <= 0) {
         return ~0;
     }
+
+    SkASSERT(base != NULL); // base may be NULL if count is zero
 
     int lo = 0;
     int hi = count - 1;
@@ -102,9 +105,9 @@ int SkTSearch(T* base[], int count, T* target, size_t elemSize) {
     return SkTSearch(base, count, target, elemSize, functor);
 }
 
-SK_API int SkStrSearch(const char*const* base, int count, const char target[],
+int SkStrSearch(const char*const* base, int count, const char target[],
                 size_t target_len, size_t elemSize);
-SK_API int SkStrSearch(const char*const* base, int count, const char target[],
+int SkStrSearch(const char*const* base, int count, const char target[],
                 size_t elemSize);
 
 /** Like SkStrSearch, but treats target as if it were all lower-case. Assumes that

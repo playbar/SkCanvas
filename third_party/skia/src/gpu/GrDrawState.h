@@ -13,7 +13,6 @@
 #include "GrColor.h"
 #include "GrEffectStage.h"
 #include "GrPaint.h"
-#include "GrPoint.h"
 #include "GrRenderTarget.h"
 #include "GrStencil.h"
 #include "GrTemplates.h"
@@ -63,7 +62,7 @@ public:
         }
     }
 
-    virtual ~GrDrawState() { }
+    virtual ~GrDrawState() { SkASSERT(0 == fBlockEffectRemovalCnt); }
 
     /**
      * Resets to the default state. GrEffects will be removed from all stages.
@@ -152,6 +151,7 @@ public:
      class AutoVertexAttribRestore {
      public:
          AutoVertexAttribRestore(GrDrawState* drawState) {
+             SkASSERT(NULL != drawState);
              fDrawState = drawState;
              fVAPtr = drawState->fCommon.fVAPtr;
              fVACount = drawState->fCommon.fVACount;
@@ -184,20 +184,20 @@ public:
      *                      Defaults to zero (corresponding to vertex position)
      * @return pointer to the vertex component as a GrPoint
      */
-    static GrPoint* GetVertexPoint(void* vertices,
+    static SkPoint* GetVertexPoint(void* vertices,
                                    int vertexIndex,
                                    int vertexSize,
                                    int offset = 0) {
         intptr_t start = GrTCast<intptr_t>(vertices);
-        return GrTCast<GrPoint*>(start + offset +
+        return GrTCast<SkPoint*>(start + offset +
                                  vertexIndex * vertexSize);
     }
-    static const GrPoint* GetVertexPoint(const void* vertices,
+    static const SkPoint* GetVertexPoint(const void* vertices,
                                          int vertexIndex,
                                          int vertexSize,
                                          int offset = 0) {
         intptr_t start = GrTCast<intptr_t>(vertices);
-        return GrTCast<const GrPoint*>(start + offset +
+        return GrTCast<const SkPoint*>(start + offset +
                                        vertexIndex * vertexSize);
     }
 
@@ -341,11 +341,13 @@ public:
     ////
 
     const GrEffectRef* addColorEffect(const GrEffectRef* effect, int attr0 = -1, int attr1 = -1) {
+        SkASSERT(NULL != effect);
         SkNEW_APPEND_TO_TARRAY(&fColorStages, GrEffectStage, (effect, attr0, attr1));
         return effect;
     }
 
     const GrEffectRef* addCoverageEffect(const GrEffectRef* effect, int attr0 = -1, int attr1 = -1) {
+        SkASSERT(NULL != effect);
         SkNEW_APPEND_TO_TARRAY(&fCoverageStages, GrEffectStage, (effect, attr0, attr1));
         return effect;
     }
@@ -394,8 +396,10 @@ public:
         void set(GrDrawState* ds) {
             if (NULL != fDrawState) {
                 int n = fDrawState->fColorStages.count() - fColorEffectCnt;
+                SkASSERT(n >= 0);
                 fDrawState->fColorStages.pop_back_n(n);
                 n = fDrawState->fCoverageStages.count() - fCoverageEffectCnt;
+                SkASSERT(n >= 0);
                 fDrawState->fCoverageStages.pop_back_n(n);
                 SkDEBUGCODE(--fDrawState->fBlockEffectRemovalCnt;)
             }
@@ -406,6 +410,8 @@ public:
                 SkDEBUGCODE(++ds->fBlockEffectRemovalCnt;)
             }
         }
+
+        bool isSet() const { return NULL != fDrawState; }
 
     private:
         GrDrawState* fDrawState;
@@ -660,6 +666,7 @@ public:
             this->restore();
 
             if (NULL != ds) {
+                SkASSERT(NULL == fSavedTarget);
                 fSavedTarget = ds->getRenderTarget();
                 SkSafeRef(fSavedTarget);
                 ds->setRenderTarget(newTarget);
@@ -824,6 +831,7 @@ public:
      * @param face  the face(s) to draw.
      */
     void setDrawFace(DrawFace face) {
+        SkASSERT(kInvalid_DrawFace != face);
         fCommon.fDrawFace = face;
     }
 
@@ -860,6 +868,7 @@ public:
     bool operator !=(const GrDrawState& s) const { return !(*this == s); }
 
     GrDrawState& operator= (const GrDrawState& s) {
+        SkASSERT(0 == fBlockEffectRemovalCnt || 0 == this->numTotalStages());
         this->setRenderTarget(s.fRenderTarget.get());
         fCommon = s.fCommon;
         fColorStages = s.fColorStages;
@@ -870,6 +879,7 @@ public:
 private:
 
     void onReset(const SkMatrix* initialViewMatrix) {
+        SkASSERT(0 == fBlockEffectRemovalCnt || 0 == this->numTotalStages());
         fColorStages.reset();
         fCoverageStages.reset();
 
@@ -923,6 +933,9 @@ private:
                           fStencilSettings == other.fStencilSettings &&
                           fCoverage == other.fCoverage &&
                           fDrawFace == other.fDrawFace;
+            SkASSERT(!result || 0 == memcmp(fFixedFunctionVertexAttribIndices,
+                                            other.fFixedFunctionVertexAttribIndices,
+                                            sizeof(fFixedFunctionVertexAttribIndices)));
             return result;
         }
         bool operator!= (const CommonState& other) const { return !(*this == other); }
@@ -971,6 +984,7 @@ public:
         }
 
         void restoreTo(GrDrawState* drawState) {
+            SkASSERT(fInitialized);
             drawState->fCommon = fCommon;
             drawState->setRenderTarget(fRenderTarget);
             // reinflate color/cov stage arrays.

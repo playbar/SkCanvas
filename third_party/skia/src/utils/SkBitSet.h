@@ -45,6 +45,7 @@ public:
      */
     template<typename T>
     void exportTo(SkTDArray<T>* array) const {
+        SkASSERT(array);
         uint32_t* data = reinterpret_cast<uint32_t*>(fBitData.get());
         for (unsigned int i = 0; i < fDwordCount; ++i) {
             uint32_t value = data[i];
@@ -66,7 +67,9 @@ private:
     size_t fBitCount;
 
     uint32_t* internalGet(int index) const {
+        SkASSERT((size_t)index < fBitCount);
         size_t internalIndex = index / 32;
+        SkASSERT(internalIndex < fDwordCount);
         return reinterpret_cast<uint32_t*>(fBitData.get()) + internalIndex;
     }
 };

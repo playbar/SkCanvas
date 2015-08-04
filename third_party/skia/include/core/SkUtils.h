@@ -17,7 +17,7 @@
     @param value    The 16bit value to be copied into buffer
     @param count    The number of times value should be copied into the buffer.
 */
-void sk_memset16_portable(uint16_t dst[], uint16_t value, int count);
+void sk_memset16(uint16_t dst[], uint16_t value, int count);
 typedef void (*SkMemset16Proc)(uint16_t dst[], uint16_t value, int count);
 SkMemset16Proc SkMemset16GetPlatformProc();
 
@@ -26,36 +26,38 @@ SkMemset16Proc SkMemset16GetPlatformProc();
     @param value    The 32bit value to be copied into buffer
     @param count    The number of times value should be copied into the buffer.
 */
-void sk_memset32_portable(uint32_t dst[], uint32_t value, int count);
+void sk_memset32(uint32_t dst[], uint32_t value, int count);
 typedef void (*SkMemset32Proc)(uint32_t dst[], uint32_t value, int count);
 SkMemset32Proc SkMemset32GetPlatformProc();
 
-#ifndef sk_memset16
-extern SkMemset16Proc sk_memset16;
-#endif
-
-#ifndef sk_memset32
-extern SkMemset32Proc sk_memset32;
-#endif
+/** Similar to memcpy(), but it copies count 32bit values from src to dst.
+    @param dst      The memory to have value copied into it
+    @param src      The memory to have value copied from it
+    @param count    The number of values should be copied.
+*/
+void sk_memcpy32(uint32_t dst[], const uint32_t src[], int count);
+typedef void (*SkMemcpy32Proc)(uint32_t dst[], const uint32_t src[], int count);
+SkMemcpy32Proc SkMemcpy32GetPlatformProc();
 
 ///////////////////////////////////////////////////////////////////////////////
 
 #define kMaxBytesInUTF8Sequence     4
 
 #ifdef SK_DEBUG
- SK_API   int SkUTF8_LeadByteToCount(unsigned c);
+    int SkUTF8_LeadByteToCount(unsigned c);
 #else
     #define SkUTF8_LeadByteToCount(c)   ((((0xE5 << 24) >> ((unsigned)c >> 4 << 1)) & 3) + 1)
 #endif
 
 inline int SkUTF8_CountUTF8Bytes(const char utf8[]) {
+    SkASSERT(utf8);
     return SkUTF8_LeadByteToCount(*(const uint8_t*)utf8);
 }
 
 int         SkUTF8_CountUnichars(const char utf8[]);
 int         SkUTF8_CountUnichars(const char utf8[], size_t byteLength);
-SK_API SkUnichar   SkUTF8_ToUnichar(const char utf8[]);
-SK_API SkUnichar   SkUTF8_NextUnichar(const char**);
+SkUnichar   SkUTF8_ToUnichar(const char utf8[]);
+SkUnichar   SkUTF8_NextUnichar(const char**);
 SkUnichar   SkUTF8_PrevUnichar(const char**);
 
 /** Return the number of bytes need to convert a unichar
@@ -103,8 +105,10 @@ public:
         retained, so DON'T DELETE IT.
     */
     SkAutoTrace(const char label[]) : fLabel(label) {
+        SkDebugf("--- trace: %s Enter\n", fLabel);
     }
     ~SkAutoTrace() {
+        SkDebugf("--- trace: %s Leave\n", fLabel);
     }
 private:
     const char* fLabel;

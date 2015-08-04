@@ -8,20 +8,6 @@
 #include "SkUnPreMultiply.h"
 #include "SkColorPriv.h"
 
-// index this table with alpha [0..255]
-const SkUnPreMultiply::Scale* SkUnPreMultiply::GetScaleTable() {
-	return gTable;
-}
-
-SkUnPreMultiply::Scale SkUnPreMultiply::GetScale(U8CPU alpha) {
-	return gTable[alpha];
-}
-
-U8CPU SkUnPreMultiply::ApplyScale(SkUnPreMultiply::Scale scale, U8CPU component) {
-	return (scale * component + (1 << 23)) >> 24;
-}
-
-
 SkColor SkUnPreMultiply::PMColorToColor(SkPMColor c) {
     const unsigned a = SkGetPackedA32(c);
     const Scale scale = GetScale(a);
@@ -29,6 +15,15 @@ SkColor SkUnPreMultiply::PMColorToColor(SkPMColor c) {
                           ApplyScale(scale, SkGetPackedR32(c)),
                           ApplyScale(scale, SkGetPackedG32(c)),
                           ApplyScale(scale, SkGetPackedB32(c)));
+}
+
+uint32_t SkUnPreMultiply::UnPreMultiplyPreservingByteOrder(SkPMColor c) {
+    const U8CPU a = SkGetPackedA32(c);
+    const Scale scale = GetScale(a);
+    return SkPackARGB32NoCheck(a,
+                               ApplyScale(scale, SkGetPackedR32(c)),
+                               ApplyScale(scale, SkGetPackedG32(c)),
+                               ApplyScale(scale, SkGetPackedB32(c)));
 }
 
 const uint32_t SkUnPreMultiply::gTable[] = {
@@ -66,4 +61,29 @@ const uint32_t SkUnPreMultiply::gTable[] = {
     0x010739CE, 0x01062B2E, 0x01051EB8, 0x01041466, 0x01030C31, 0x01020612, 0x01010204, 0x01000000
 };
 
+#ifdef BUILD_DIVIDE_TABLE
+void SkUnPreMultiply_BuildTable() {
+    for (unsigned i = 0; i <= 255; i++) {
+        uint32_t scale;
 
+        if (0 == i) {
+            scale = 0;
+        } else {
+            scale = ((255 << 24) + (i >> 1)) / i;
+        }
+
+        SkDebugf(" 0x%08X,", scale);
+        if ((i & 7) == 7) {
+            SkDebugf("\n");
+        }
+
+        // test the result
+        for (int j = 1; j <= i; j++) {
+            uint32_t test = (j * scale + (1 << 23)) >> 24;
+            uint32_t div = roundf(j * 255.0f / i);
+            int diff = SkAbs32(test - div);
+            SkASSERT(diff <= 1 && test <= 255);
+        }
+    }
+}
+#endif

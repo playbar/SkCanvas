@@ -23,7 +23,7 @@ public:
         kLeft   = 3
     };
     // Edge index goes clockwise around the boundary, beginning at the "top"
-    virtual SkPoint eval(Edge, float unitInterval) = 0;
+    virtual SkPoint eval(Edge, SkScalar unitInterval) = 0;
 
 private:
     typedef SkRefCnt INHERITED;
@@ -37,7 +37,7 @@ public:
     SkBoundary* getBoundary() const { return fBoundary; }
     SkBoundary* setBoundary(SkBoundary*);
 
-    SkPoint eval(float unitU, float unitV);
+    SkPoint eval(SkScalar unitU, SkScalar unitV);
     bool evalPatch(SkPoint verts[], int rows, int cols);
 
 private:
@@ -51,7 +51,7 @@ public:
     SkPoint fPts[4];
 
     // override
-    virtual SkPoint eval(Edge, float);
+    virtual SkPoint eval(Edge, SkScalar);
 };
 
 class SkCubicBoundary : public SkBoundary {
@@ -60,7 +60,7 @@ public:
     SkPoint fPts[13];
 
     // override
-    virtual SkPoint eval(Edge, float);
+    virtual SkPoint eval(Edge, SkScalar);
 };
 
 #endif
