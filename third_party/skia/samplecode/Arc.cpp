@@ -43,6 +43,7 @@ protected:
 		PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create(canvas, NULL, false);
 		ctx->beginPath();
 		ctx->setLineWidth(5);
+		ctx->setStrokeColor("#ff00ff");
 		ctx->arc(100, 75, 50, 0, 2 * M_PI, false);
 		ctx->stroke();
 	}
@@ -60,7 +61,7 @@ protected:
 
     virtual void onDrawContent(SkCanvas* canvas)
 	{
-		TestLine(canvas);
+		TestArc(canvas);
 	}
 
 private:
