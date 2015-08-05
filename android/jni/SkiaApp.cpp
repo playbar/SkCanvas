@@ -11,13 +11,12 @@
 #include <GLES2/gl2.h>
 #include "SkRefCnt.h"
 #include "SkGpuDevice.h"
-#include "CanvasRenderingContext2D.h"
 #include "EGTLog.h"
-using namespace WebCore;
-using namespace WTF;
 #include "SkStream.h"
 #include "SkImageDecoder.h"
 #include "SkBitmap.h"
+#include "SkRefCnt.h"
+#include "GrGLInterface.h"
 
 #include <string>
 #define LOG_TAG "SkiaApp"
@@ -55,7 +54,10 @@ void SkiaApp::windowChanged(int width,int height){
 	LOGD("%s:(%d,%d)",__func__,width,height);
 
 	glViewport(0,0,width,height);
-		fCurContext = GrContext::Create();
+	SkAutoTUnref<const GrGLInterface> glInterface;
+	glInterface.reset( GrGLCreateNativeInterface() );
+	const GrGLInterface *fCurIntf = GrGLInterfaceRemoveNVPR( glInterface.get());
+		fCurContext = GrContext::Create( kOpenGL_GrBackend, (GrBackendContext) fCurIntf);
 			GrBackendRenderTargetDesc desc;
 			desc.fWidth = SkScalarRoundToInt(width);
 			desc.fHeight = SkScalarRoundToInt(height);
@@ -91,9 +93,10 @@ bool SkiaApp::createBitmap(const std::string &src){
 		LOGE("%s:coder is null",__func__);
 		return false;
 	}
-	bool ret = coder->decode(&stream, &bitmap, SkBitmap::kARGB_8888_Config,SkImageDecoder::kDecodePixels_Mode);
-	LOGD("%s:ret = %d,config=%d",__func__,ret,bitmap.getConfig());
-	return ret;
+	//bool ret = coder->decode(&stream, &bitmap, SkBitmap::kARGB_8888_Config,SkImageDecoder::kDecodePixels_Mode);
+	//LOGD("%s:ret = %d,config=%d",__func__,ret,bitmap.getConfig());
+	//return ret;
+	return true;
 }
 
 SkCanvas* SkiaApp::createCanvas()
@@ -142,16 +145,7 @@ void SkiaApp::DrawTest(SkCanvas *canvas )
 
 void SkiaApp::TestArc(SkCanvas *canvas )
 {
-	PassOwnPtr<CanvasRenderingContext2D> ctx = CanvasRenderingContext2D::create( canvas, NULL, false );
-	ctx->beginPath();
-	ctx->setLineWidth( 5);
-	ctx->setStrokeColor("#ff00ff");
-	//ctx->arc( 100, 75, 50, 0, 2 * M_PI, false );
-	ctx->moveTo( 100, 100);
-	ctx->bezierCurveTo( 20, 100, 200, 100, 200, 20);
-	//ctx->lineTo( 200, 100);
-	//ctx->rect( 50, 50, 150, 80);
-	ctx->fill();
+
 }
 
 void SkiaApp::TestDrawImage(SkCanvas *canvas )

@@ -29,6 +29,8 @@ LOCAL_C_INCLUDES := $../../skia/include/core \
 					$../../skia/include/pathops \
 					$../../skia/include/ports \
 					$../../skia/include/effects \
+					$../../skia/include/config \
+					$../../skia/include/gpu/gl \
 					$../../skia/src/opts \
 					$../../skia/src/sfnt \
 					$../../skia/include/images \
@@ -37,17 +39,12 @@ LOCAL_C_INCLUDES := $../../skia/include/core \
 					$../../ \
 					$../../skia/config \
 					$../../android/jni \
-#					$../../third_party\libpng \
-#					$../../../third_party/zlib \
-#					$../../../third_party/zlib/google \
-#					$../../../third_party/zlib/contrib/minizip
+					
 					
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
 
-LOCAL_SRC_FILES := SkUserConfig_android.cpp \
-				   ../../../skia/ext/SkMemory_new_handler.cpp
-
-MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/core/*.cpp)
+#core
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../skia/src/core/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
 			
@@ -80,18 +77,18 @@ LOCAL_SRC_FILES += $(MY_FILES)
 	
 
 #images
-LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/images/SkImageDecoder.cpp \
-					../../../third_party/skia/src/images/SkImageDecoder_FactoryDefault.cpp \
-					../../../third_party/skia/src/images/SkImageDecoder_FactoryRegistrar.cpp \
-					../../../third_party/skia/src/images/SkImageDecoder_libpng.cpp \
-					../../../third_party/skia/src/images/SkImageEncoder.cpp \
-					../../../third_party/skia/src/images/SkImageEncoder_Factory.cpp \
-					../../../third_party/skia/src/images/SkImageRef.cpp \
-					../../../third_party/skia/src/images/SkImageRef_GlobalPool.cpp \
-					../../../third_party/skia/src/images/SkImageRefPool.cpp \
-					../../../third_party/skia/src/images/SkImages.cpp \
-					../../../third_party/skia/src/images/SkScaledBitmapSampler.cpp \
-					../../../third_party/skia/src/images/SkImageRef_ashmem.cpp
+LOCAL_SRC_FILES	+=  ../../../skia/src/images/SkImageDecoder.cpp \
+					../../../skia/src/images/SkImageDecoder_FactoryDefault.cpp \
+					../../../skia/src/images/SkImageDecoder_FactoryRegistrar.cpp \
+					../../../skia/src/images/SkImageDecoder_libpng.cpp \
+					../../../skia/src/images/SkImageEncoder.cpp \
+					../../../skia/src/images/SkImageEncoder_Factory.cpp \
+					../../../skia/src/images/SkImageRef.cpp \
+					../../../skia/src/images/SkImageRef_GlobalPool.cpp \
+					../../../skia/src/images/SkImageRefPool.cpp \
+					../../../skia/src/images/SkImages.cpp \
+					../../../skia/src/images/SkScaledBitmapSampler.cpp \
+					../../../skia/src/images/SkImageRef_ashmem.cpp
 					
 #lazy
 LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/lazy/SkCachingPixelRef.cpp \
