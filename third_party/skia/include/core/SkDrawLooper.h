@@ -30,8 +30,8 @@ class SkString;
 */
 class SK_API SkDrawLooper : public SkFlattenable {
 public:
-    SK_DECLARE_INST_COUNT(SkDrawLooper)
-
+	SK_DECLARE_INST_COUNT(SkDrawLooper);
+	void deref(){};
     /**
      *  Holds state during a draw. Users call next() until it returns false.
      *

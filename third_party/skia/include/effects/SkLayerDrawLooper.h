@@ -85,9 +85,10 @@ public:
     virtual Factory getFactory() const SK_OVERRIDE { return CreateProc; }
     static SkFlattenable* CreateProc(SkReadBuffer& buffer);
 
-protected:
-    SkLayerDrawLooper();
+	SkLayerDrawLooper();
 
+protected:
+    
     virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
 
 private:

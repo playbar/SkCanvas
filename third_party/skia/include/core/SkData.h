@@ -22,7 +22,8 @@ struct SkFILE;
  */
 class SK_API SkData : public SkRefCnt {
 public:
-    SK_DECLARE_INST_COUNT(SkData)
+	SK_DECLARE_INST_COUNT(SkData);
+	void deref(){};
 
     /**
      *  Returns the number of bytes stored.

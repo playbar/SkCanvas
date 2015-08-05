@@ -48,9 +48,9 @@ public:
     virtual ~DecodingImageGenerator();
 
     // SkImageGenerator implementation.
-    virtual SkData* refEncodedData() OVERRIDE;
-    virtual bool getInfo(SkImageInfo*) OVERRIDE;
-    virtual bool getPixels(const SkImageInfo&, void* pixels, size_t rowBytes) OVERRIDE;
+    virtual SkData* refEncodedData();
+    virtual bool getInfo(SkImageInfo*);
+    virtual bool getPixels(const SkImageInfo&, void* pixels, size_t rowBytes);
 
     void setGenerationId(size_t id) { m_generationId = id; }
 

@@ -16,6 +16,7 @@
 */
 class SK_API SkDashPathEffect : public SkPathEffect {
 public:
+	void deref(){};
     /** intervals: array containing an even number of entries (>=2), with
          the even indices specifying the length of "on" intervals, and the odd
          indices specifying the length of "off" intervals.
@@ -55,9 +56,10 @@ public:
 
     static SkFlattenable* CreateProc(SkReadBuffer&);
 
-protected:
+
     SkDashPathEffect(const SkScalar intervals[], int count, SkScalar phase);
     explicit SkDashPathEffect(SkReadBuffer&);
+protected:
     virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
 
 private:

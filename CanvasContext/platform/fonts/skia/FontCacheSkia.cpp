@@ -60,8 +60,8 @@ PassRefPtr<SimpleFontData> FontCache::platformFallbackForCharacter(const FontDes
     // Changes weight and/or italic of given FontDescription depends on
     // the result of fontconfig so that keeping the correct font mapping
     // of the given character. See http://crbug.com/32109 for details.
-    bool shouldSetSyntheticBold = false;
-    bool shouldSetSyntheticItalic = false;
+//    bool shouldSetSyntheticBold = false;
+ //   bool shouldSetSyntheticItalic = false;
     FontDescription description(fontDescription);
 //    if (family.isBold && description.weight() < FontWeightBold)
 //        description.setWeight(FontWeightBold);

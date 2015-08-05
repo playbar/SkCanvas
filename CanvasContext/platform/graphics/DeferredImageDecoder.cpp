@@ -297,12 +297,12 @@ SkBitmap DeferredImageDecoder::createLazyDecodingBitmap(size_t index)
     SkImageInfo info;
     info.fWidth = decodedSize.width();
     info.fHeight = decodedSize.height();
-    info.fColorType = kPMColor_SkColorType;
+    //info.fColorType = kPMColor_SkColorType;
     info.fAlphaType = kPremul_SkAlphaType;
 
     // Creates a lazily decoded SkPixelRef that references the entire image without scaling.
     SkBitmap bitmap;
-    bitmap.setConfig(info);
+    //bitmap.setConfig(info);
 	ASSERT(false);
     //bitmap.setPixelRef(new LazyDecodingPixelRef(info, m_frameGenerator, index))->unref();
 

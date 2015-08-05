@@ -18,23 +18,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\samplecode\GMSampleView.h">
-      <Filter>samplecode</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\samplecode\SampleApp.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\TransitionView.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\samplecode\TransitionView.h">
-      <Filter>samplecode</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\gm\gm.h">
       <Filter>gm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\samplecode\OverView.h">
-      <Filter>samplecode</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\views\SkTagList.h">
       <Filter>view</Filter>
@@ -42,19 +27,10 @@
     <ClInclude Include="..\..\src\views\SkViewPriv.h">
       <Filter>view</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\samplecode\SampleApp.h">
-      <Filter>samplecode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\samplecode\SampleCode.h">
-      <Filter>samplecode</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\gm\gm.cpp">
       <Filter>gm</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\OverView.cpp">
-      <Filter>samplecode</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\views\SkWindow.cpp">
       <Filter>view</Filter>
@@ -104,118 +80,7 @@
     <ClCompile Include="..\..\src\views\win\SkOSWindow_win.cpp">
       <Filter>view\win</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\samplecode\QuadraticCurveTo.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\Rect.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\BeginPath.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\FillStyle.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\StrokeStyle.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\ShadowColor.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\ShadowBlur.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\ShadowOffsetX.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\ShadowOffsetY.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\CreateLinearGradient.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\CreateRadialGradient.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\AddColorStop.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\LineCap.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\LineJoin.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\MiterLimit.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\StrokeRect .cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\ClearRect.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\Fill.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\Stroke.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\Clip.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\BezierCurveTo.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\Arc.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\ArcTo.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\IsPointInPath.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\Scale.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\Rotate.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\Translate.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\Transform.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SetTransform.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\Font.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\TextAlign.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\TextBaseline .cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\FillText.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\StrokeText.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\CreateImageData.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\DrawImage.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\GlobalAlpha .cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\GlobalCompositeOperation.cpp">
+    <ClCompile Include="..\..\samplecode\SampleCircle.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
   </ItemGroup>

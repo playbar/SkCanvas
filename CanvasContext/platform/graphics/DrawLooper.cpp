@@ -55,7 +55,7 @@ SkDrawLooper* DrawLooper::skDrawLooper() const
 void DrawLooper::addUnmodifiedContent()
 {
     SkLayerDrawLooper::LayerInfo info;
-    m_skDrawLooper->addLayerOnTop(info);
+    //m_skDrawLooper->addLayerOnTop(info);
 }
 
 void DrawLooper::addShadow(const FloatSize& offset, float blur, const Color& color,
@@ -86,19 +86,19 @@ void DrawLooper::addShadow(const FloatSize& offset, float blur, const Color& col
     info.fOffset.set(offset.width(), offset.height());
     info.fPostTranslate = (shadowTransformMode == ShadowIgnoresTransforms);
 
-    SkPaint* paint = m_skDrawLooper->addLayerOnTop(info);
+    //SkPaint* paint = m_skDrawLooper->addLayerOnTop(info);
 
-    if (blur) {
-        uint32_t mfFlags = SkBlurMaskFilter::kHighQuality_BlurFlag;
-        if (shadowTransformMode == ShadowIgnoresTransforms)
-            mfFlags |= SkBlurMaskFilter::kIgnoreTransform_BlurFlag;
-        RefPtr<SkMaskFilter> mf = adoptRef(SkBlurMaskFilter::Create(
-            (double)blur / 2.0, SkBlurMaskFilter::kNormal_BlurStyle, mfFlags));
-        paint->setMaskFilter(mf.get());
-    }
+    //if (blur) {
+    //    uint32_t mfFlags = SkBlurMaskFilter::kHighQuality_BlurFlag;
+    //    if (shadowTransformMode == ShadowIgnoresTransforms)
+    //        mfFlags |= SkBlurMaskFilter::kIgnoreTransform_BlurFlag;
+    //    RefPtr<SkMaskFilter> mf = adoptRef(SkBlurMaskFilter::Create(
+    //        (double)blur / 2.0, SkBlurMaskFilter::kNormal_BlurStyle, mfFlags));
+    //    paint->setMaskFilter(mf.get());
+    //}
 
     RefPtr<SkColorFilter> cf = adoptRef(SkColorFilter::CreateModeFilter(skColor, SkXfermode::kSrcIn_Mode));
-    paint->setColorFilter(cf.get());
+    //paint->setColorFilter(cf.get());
 }
 
 } // namespace WebCore

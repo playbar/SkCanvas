@@ -108,7 +108,8 @@ void BitmapImage::src(const char* src)
 	SkBitmap bitmap;
 	//SkImageDecoder::DecodeFile(src, &bitmap, SkBitmap::kARGB_8888_Config, SkImageDecoder::kDecodePixels_Mode);
 	SkImageDecoder *coder = SkImageDecoder::Factory(&stream);
-	coder->decode(&stream, &bitmap, SkBitmap::kARGB_8888_Config,SkImageDecoder::kDecodePixels_Mode);
+	//coder->decode(&stream, &bitmap, SkBitmap::kARGB_8888_Config,SkImageDecoder::kDecodePixels_Mode);
+	coder->decode(&stream, &bitmap, SkColorType::kRGBA_8888_SkColorType, SkImageDecoder::kDecodePixels_Mode);
 	RefPtr<NativeImageSkia> nativeBmp = NativeImageSkia::create(bitmap);
 	m_frames.grow(1);
 	m_frames[0].m_hasAlpha = !nativeBmp->bitmap().isOpaque();

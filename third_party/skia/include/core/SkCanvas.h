@@ -179,9 +179,7 @@ public:
      *        is drawn to, but is optional here, as there is a small perf hit
      *        sometimes.
      */
-#ifndef SK_SUPPORT_LEGACY_GETTOPDEVICE
-private:
-#endif
+
     SkBaseDevice* getTopDevice(bool updateMatrixClip = false) const;
 public:
 

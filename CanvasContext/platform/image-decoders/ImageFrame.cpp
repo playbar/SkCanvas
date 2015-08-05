@@ -111,7 +111,7 @@ bool ImageFrame::setSize(int newWidth, int newHeight)
     // setSize() should only be called once, it leaks memory otherwise.
     ASSERT(!width() && !height());
 
-    m_bitmap->bitmap().setConfig(SkBitmap::kARGB_8888_Config, newWidth, newHeight);
+    //m_bitmap->bitmap().setConfig(SkBitmap::kARGB_8888_Config, newWidth, newHeight);
     if (!m_bitmap->bitmap().allocPixels(m_allocator, 0))
         return false;
 

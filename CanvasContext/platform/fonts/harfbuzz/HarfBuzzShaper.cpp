@@ -788,7 +788,7 @@ bool HarfBuzzShaper::shapeHarfBuzzRuns()
         if (currentFontData->isSVGFont())
             return false;
 
-        FontPlatformData* platformData = const_cast<FontPlatformData*>(&currentFontData->platformData());
+        //FontPlatformData* platformData = const_cast<FontPlatformData*>(&currentFontData->platformData());
         //HarfBuzzFace* face = platformData->harfBuzzFace();
         //if (!face)
         //    return false;

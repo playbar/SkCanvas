@@ -409,12 +409,12 @@ void GraphicsContext::setColorFilter(ColorFilter colorFilter)
     stateToSet->setColorFilter(WebCoreColorFilterToSkiaColorFilter(colorFilter));
 }
 
-bool GraphicsContext::readPixels(SkBitmap* bitmap, int x, int y, SkCanvas::Config8888 config8888)
+bool GraphicsContext::readPixels(SkBitmap* bitmap, int x, int y )
 {
     if (paintingDisabled())
         return false;
 
-    return m_canvas->readPixels(bitmap, x, y, config8888);
+    return m_canvas->readPixels(bitmap, x, y );
 }
 
 void GraphicsContext::setMatrix(const SkMatrix& matrix)
@@ -438,7 +438,8 @@ bool GraphicsContext::concat(const SkMatrix& matrix)
 
     realizeCanvasSave(SkCanvas::kMatrix_SaveFlag);
 
-    return m_canvas->concat(matrix);
+    m_canvas->concat(matrix);
+	return true;
 }
 
 void GraphicsContext::beginTransparencyLayer(float opacity, const FloatRect* bounds)

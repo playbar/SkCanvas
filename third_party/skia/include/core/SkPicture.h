@@ -37,7 +37,8 @@ struct SkPictInfo;
 */
 class SK_API SkPicture : public SkRefCnt {
 public:
-    SK_DECLARE_INST_COUNT(SkPicture)
+	SK_DECLARE_INST_COUNT(SkPicture);
+	void deref() {};
 
     // AccelData provides a base class for device-specific acceleration
     // data. It is added to the picture via a call to a device's optimize

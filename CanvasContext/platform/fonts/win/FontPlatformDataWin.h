@@ -78,7 +78,7 @@ public:
 
     ~FontPlatformData();
 
-    bool isFixedPitch() const  {return true;};
+    bool isFixedPitch() const;
     float size() const { return m_textSize; }
     HarfBuzzFace* harfBuzzFace() const;
     SkTypeface* typeface() const { return m_typeface.get(); }
