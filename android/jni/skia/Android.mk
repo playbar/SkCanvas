@@ -19,21 +19,21 @@ LOCAL_LDLIBS    := -llog -lGLESv2 -ljnigraphics -lEGL -lz
 LOCAL_EXPORT_LDLIBS :=-lz
 
 				
-LOCAL_C_INCLUDES := $../../third_party/skia/include/core \
-					$../../third_party/skia/src/core \
-					$../../third_party/skia/src/image \
-					$../../third_party/skia/include/utils \
-					$../../third_party/skia/include \
-					$../../third_party/skia/src/gpu \
-					$../../third_party/skia/include/gpu \
-					$../../third_party/skia/include/pathops \
-					$../../third_party/skia/include/ports \
-					$../../third_party/skia/include/effects \
-					$../../third_party/skia/src/opts \
-					$../../third_party/skia/src/sfnt \
-					$../../third_party/skia/include/images \
-					$../../third_party/freetype2/include/android/freetype2 \
-					$../../third_party/freetype2/include/android \
+LOCAL_C_INCLUDES := $../../skia/include/core \
+					$../../skia/src/core \
+					$../../skia/src/image \
+					$../../skia/include/utils \
+					$../../skia/include \
+					$../../skia/src/gpu \
+					$../../skia/include/gpu \
+					$../../skia/include/pathops \
+					$../../skia/include/ports \
+					$../../skia/include/effects \
+					$../../skia/src/opts \
+					$../../skia/src/sfnt \
+					$../../skia/include/images \
+					$../../freetype2/include/android/freetype2 \
+					$../../freetype2/include/android \
 					$../../ \
 					$../../skia/config \
 					$../../android/jni \
@@ -149,8 +149,6 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/utils/SkBase64.cpp \
 #MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/libpng/*.c)
 #MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 #LOCAL_SRC_FILES += $(MY_FILES)	
-
-LOCAL_STATIC_LIBRARIES := png_static
 
 
 #LOCAL_LDLIBS := $(MY_LIBRARY)

@@ -121,22 +121,14 @@ void SkiaApp::resumeApp(){
 void SkiaApp::DrawTest(SkCanvas *canvas )
 {
 	SkMatrix mat;
-<<<<<<< HEAD
-	mat.setAll( 1, 0,0,  0,1,0, 0,0, 1);
-=======
 	mat.setAll( 1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0 );
->>>>>>> a3bc82133454237d993c81953926b017b00169c3
-	canvas->concat( mat );
+
 	if(canvas){
 		//LOGD("%s:",__func__);
 		//canvas->drawColor(0xff00ff00,SkXfermode::Mode::kColor_Mode);
 		SkPaint paint;
 		paint.setColor(0xffff0000);
-<<<<<<< HEAD
-		canvas->drawLine(0,0,100,300,paint);
-=======
 		paint.setStrokeWidth( 10);
->>>>>>> a3bc82133454237d993c81953926b017b00169c3
 		canvas->drawColor( 0xff00ffff);
 		canvas->drawLine(0,0,100,100,paint);
 		canvas->drawText("test", 4, 200, 100, paint );
