@@ -11,6 +11,7 @@ LOCAL_CFLAGS += \
 				-DSK_BUILD_FOR_ANDROID \
 				-D_ARGB_PIXEL_  \
 				-DSK_SUPPORT_GPU \
+				-DSK_IGNORE_ETC1_SUPPORT \
 				-fexceptions
 #				-fshort-wchar	
 #				-DGL_GLEXT_PROTOTYPES
@@ -33,49 +34,46 @@ LOCAL_C_INCLUDES := $../../skia/include/core \
 					$../../skia/include/gpu/gl \
 					$../../skia/src/opts \
 					$../../skia/src/sfnt \
+					$../../skia/src/utils \
 					$../../skia/include/images \
-					$../../freetype2/include/android/freetype2 \
-					$../../freetype2/include/android \
+					$../../skia/third_party/externals/libpng \
 					$../../ \
-					$../../skia/config \
-					$../../android/jni \
 					
 					
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
 
-#core
+##core
 MY_FILES := $(wildcard $(LOCAL_PATH)/../../../skia/src/core/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
 			
-MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/effects/*.cpp)
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../skia/src/effects/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
 					 			
 			
-MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/effects/gradients/*.cpp)
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../skia/src/effects/gradients/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
 
 #--todo
-MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/effects/*.cpp)
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../skia/src/gpu/effects/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
 
-MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/gl/*.cpp)
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../skia/src/gpu/gl/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)
 
-MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/gpu/*.cpp)
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../skia/src/gpu/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)
 			
-MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/image/*.cpp)
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../skia/src/image/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
 
 	
-
 #images
 LOCAL_SRC_FILES	+=  ../../../skia/src/images/SkImageDecoder.cpp \
 					../../../skia/src/images/SkImageDecoder_FactoryDefault.cpp \
@@ -83,64 +81,54 @@ LOCAL_SRC_FILES	+=  ../../../skia/src/images/SkImageDecoder.cpp \
 					../../../skia/src/images/SkImageDecoder_libpng.cpp \
 					../../../skia/src/images/SkImageEncoder.cpp \
 					../../../skia/src/images/SkImageEncoder_Factory.cpp \
-					../../../skia/src/images/SkImageRef.cpp \
-					../../../skia/src/images/SkImageRef_GlobalPool.cpp \
-					../../../skia/src/images/SkImageRefPool.cpp \
-					../../../skia/src/images/SkImages.cpp \
-					../../../skia/src/images/SkScaledBitmapSampler.cpp \
-					../../../skia/src/images/SkImageRef_ashmem.cpp
+					../../../skia/src/images/SkScaledBitmapSampler.cpp 
 					
 #lazy
-LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/lazy/SkCachingPixelRef.cpp \
-					../../../third_party/skia/src/lazy/SkDiscardableMemoryPool.cpp \
-					../../../third_party/skia/src/lazy/SkDiscardablePixelRef.cpp \
+LOCAL_SRC_FILES	+=  ../../../skia/src/lazy/SkCachingPixelRef.cpp \
+					../../../skia/src/lazy/SkDiscardableMemoryPool.cpp \
+					../../../skia/src/lazy/SkDiscardablePixelRef.cpp \
 
 #opts 
-LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/opts/SkBitmapProcState_opts_none.cpp \
-					../../../third_party/skia/src/opts/SkBlitRow_opts_none.cpp \
-					../../../third_party/skia/src/opts/SkBlurImage_opts_none.cpp \
-					../../../third_party/skia/src/opts/SkMorphology_opts_none.cpp \
-					../../../third_party/skia/src/opts/SkUtils_opts_none.cpp \
-					../../../third_party/skia/src/opts/SkXfermode_opts_none.cpp \
-					../../../third_party/skia/src/opts/SkBlitMask_opts_none.cpp
+LOCAL_SRC_FILES	+=  ../../../skia/src/opts/SkBitmapProcState_opts_none.cpp \
+					../../../skia/src/opts/SkBlitRow_opts_none.cpp \
+					../../../skia/src/opts/SkBlurImage_opts_none.cpp \
+					../../../skia/src/opts/SkMorphology_opts_none.cpp \
+					../../../skia/src/opts/SkUtils_opts_none.cpp \
+					../../../skia/src/opts/SkXfermode_opts_none.cpp \
+					../../../skia/src/opts/SkBlitMask_opts_none.cpp
 					
 
 #pathops
-MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/skia/src/pathops/*.cpp)
+MY_FILES := $(wildcard $(LOCAL_PATH)/../../../skia/src/pathops/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)	
 
 #ports
-LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/ports/SkFontHost_none.cpp \
-					../../../third_party/skia/src/ports/SkOSFile_none.cpp \
-					../../../third_party/skia/src/ports/SkOSFile_stdio.cpp \
-					../../../third_party/skia/src/ports/SkFontHost_FreeType.cpp \
-					../../../third_party/skia/src/ports/SkFontHost_FreeType_common.cpp \
-					../../../third_party/skia/src/ports/SkFontHost_fontconfig.cpp \
-					../../../third_party/skia/src/ports/SkFontConfigInterface_android.cpp \
-					../../../third_party/skia/src/ports/SkTLS_none.cpp \
-					../../../third_party/skia/src/ports/SkGlobalInitialization_default.cpp
+LOCAL_SRC_FILES	+=  ../../../skia/src/ports/SkFontHost_none.cpp \
+					../../../skia/src/ports/SkOSFile_none.cpp \
+					../../../skia/src/ports/SkOSFile_stdio.cpp \
+					../../../skia/src/ports/SkTLS_none.cpp \
+					../../../skia/src/ports/SkGlobalInitialization_default.cpp
 
 #sfnt
-LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/sfnt/SkOTTable_name.cpp \
-					../../../third_party/skia/src/sfnt/SkOTUtils.cpp \
+LOCAL_SRC_FILES	+=  ../../../skia/src/sfnt/SkOTTable_name.cpp \
+					../../../skia/src/sfnt/SkOTUtils.cpp \
 					
 
 #utils
-LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/utils/SkBase64.cpp \
-					../../../third_party/skia/src/utils/SkBitSet.cpp \
-					../../../third_party/skia/src/utils/SkCanvasStack.cpp \
-					../../../third_party/skia/src/utils/SkCanvasStateUtils.cpp \
-					../../../third_party/skia/src/utils/SkInterpolator.cpp \
-					../../../third_party/skia/src/utils/SkMatrix44.cpp \
-					../../../third_party/skia/src/utils/SkNullCanvas.cpp \
-					../../../third_party/skia/src/utils/SkNWayCanvas.cpp \
-					../../../third_party/skia/src/utils/SkParse.cpp \
-					../../../third_party/skia/src/utils/SkParseColor.cpp \
-					../../../third_party/skia/src/utils/SkPictureUtils.cpp \
-					../../../third_party/skia/src/utils/SkProxyCanvas.cpp \
-					../../../third_party/skia/src/utils/SkRTConf.cpp\
-					../../../third_party/skia/src/utils/android/ashmem.cpp
+LOCAL_SRC_FILES	+=  ../../../skia/src/utils/SkBase64.cpp \
+					../../../skia/src/utils/SkBitSet.cpp \
+					../../../skia/src/utils/SkCanvasStack.cpp \
+					../../../skia/src/utils/SkCanvasStateUtils.cpp \
+					../../../skia/src/utils/SkInterpolator.cpp \
+					../../../skia/src/utils/SkMatrix44.cpp \
+					../../../skia/src/utils/SkNullCanvas.cpp \
+					../../../skia/src/utils/SkNWayCanvas.cpp \
+					../../../skia/src/utils/SkParse.cpp \
+					../../../skia/src/utils/SkParseColor.cpp \
+					../../../skia/src/utils/SkPictureUtils.cpp \
+					../../../skia/src/utils/SkProxyCanvas.cpp \
+					../../../skia/src/utils/SkRTConf.cpp
 
 #png
 #MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/libpng/*.c)
@@ -152,5 +140,6 @@ LOCAL_SRC_FILES	+=  ../../../third_party/skia/src/utils/SkBase64.cpp \
 
 include $(BUILD_STATIC_LIBRARY)
 $(call import-add-path,$(LOCAL_PATH)/..)
-$(call import-module,../../android/jni/png/prebuilt/android)
+
+#$(call import-module,../../android/jni/png/prebuilt/android)
 
