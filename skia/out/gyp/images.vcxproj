@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Developer|Win32">
+      <Configuration>Release_Developer</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{CE446A2D-AD49-080B-4842-A0C6705DBB5A}</ProjectGuid>
+    <RootNamespace>images</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\images;..\..\include\lazy;..\..\src\lazy;..\..\src\core;..\..\src\image;..\..\src\images;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\third_party\externals\libjpeg;..\..\third_party\externals\libwebp\src;..\..\third_party\externals\libpng;..\..\third_party\externals\zlib;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling />
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_DEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\include\images;..\..\include\lazy;..\..\src\lazy;..\..\src\core;..\..\src\image;..\..\src\images;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\third_party\externals\libjpeg;..\..\third_party\externals\libwebp\src;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_DEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)skia_images.lib</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\images;..\..\include\lazy;..\..\src\lazy;..\..\src\core;..\..\src\image;..\..\src\images;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\third_party\externals\libjpeg;..\..\third_party\externals\libwebp\src;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling />
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\include\images;..\..\include\lazy;..\..\src\lazy;..\..\src\core;..\..\src\image;..\..\src\images;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\third_party\externals\libjpeg;..\..\third_party\externals\libwebp\src;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Lib>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <OutputFile>$(OutDir)skia_images.lib</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\images;..\..\include\lazy;..\..\src\lazy;..\..\src\core;..\..\src\image;..\..\src\images;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\third_party\externals\libjpeg;..\..\third_party\externals\libwebp\src;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling />
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\include\images;..\..\include\lazy;..\..\src\lazy;..\..\src\core;..\..\src\image;..\..\src\images;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\third_party\externals\libjpeg;..\..\third_party\externals\libwebp\src;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Lib>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <OutputFile>$(OutDir)skia_images.lib</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\images\SkForceLinking.h" />
+    <ClInclude Include="..\..\include\images\SkImageRef.h" />
+    <ClInclude Include="..\..\include\images\SkImageRef_GlobalPool.h" />
+    <ClInclude Include="..\..\include\images\SkMovie.h" />
+    <ClInclude Include="..\..\include\images\SkPageFlipper.h" />
+    <ClInclude Include="..\..\src\images\bmpdecoderhelper.h" />
+    <ClInclude Include="..\..\src\images\SkDecodingImageGenerator.h" />
+    <ClInclude Include="..\..\src\images\SkImageRef_ashmem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\src\images\SkJpegUtility.h" />
+    <ClInclude Include="..\..\src\images\SkScaledBitmapSampler.h" />
+    <ClInclude Include="..\..\src\images\SkStreamHelpers.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\images\bmpdecoderhelper.cpp" />
+    <ClCompile Include="..\..\src\images\SkDecodingImageGenerator.cpp" />
+    <ClCompile Include="..\..\src\images\SkForceLinking.cpp" />
+    <ClCompile Include="..\..\src\images\SkImageDecoder.cpp" />
+    <ClCompile Include="..\..\src\images\SkImageDecoder_FactoryDefault.cpp" />
+    <ClCompile Include="..\..\src\images\SkImageDecoder_FactoryRegistrar.cpp" />
+    <ClCompile Include="..\..\src\images\SkImageDecoder_libbmp.cpp" />
+    <ClCompile Include="..\..\src\images\SkImageDecoder_libgif.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\images\SkImageDecoder_libico.cpp" />
+    <ClCompile Include="..\..\src\images\SkImageDecoder_libjpeg.cpp" />
+    <ClCompile Include="..\..\src\images\SkImageDecoder_libpng.cpp" />
+    <ClCompile Include="..\..\src\images\SkImageDecoder_libwebp.cpp" />
+    <ClCompile Include="..\..\src\images\SkImageDecoder_wbmp.cpp" />
+    <ClCompile Include="..\..\src\images\SkImageEncoder.cpp" />
+    <ClCompile Include="..\..\src\images\SkImageEncoder_argb.cpp" />
+    <ClCompile Include="..\..\src\images\SkImageEncoder_Factory.cpp" />
+    <ClCompile Include="..\..\src\images\SkImageRef_ashmem.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\images\SkJpegUtility.cpp" />
+    <ClCompile Include="..\..\src\images\SkMovie.cpp" />
+    <ClCompile Include="..\..\src\images\SkMovie_gif.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\images\SkPageFlipper.cpp" />
+    <ClCompile Include="..\..\src\images\SkScaledBitmapSampler.cpp" />
+    <ClCompile Include="..\..\src\images\SkStreamHelpers.cpp" />
+    <ClCompile Include="..\..\src\ports\SkImageDecoder_CG.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\gyp\images.gyp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="libjpeg.vcxproj">
+      <Project>{61d12d34-7889-b78c-43fb-fe4617c9477c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="libwebp.vcxproj">
+      <Project>{e58a818f-aa55-041c-ffa9-d55da56d32f6}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="third_party">
+      <UniqueIdentifier>{773ba439-dbf1-47f5-87af-9b2a516111c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\externals">
+      <UniqueIdentifier>{aa014364-8bac-49f3-8ab5-ef43562cf41a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\externals\libjpeg">
+      <UniqueIdentifier>{e57e9d18-af98-4561-91bc-d35a98e54ec8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gyp">
+      <UniqueIdentifier>{82a2e1c1-24ab-4853-afdb-269165f5fa2a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jsimd_none.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jcapimin.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jcapistd.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jccoefct.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jccolor.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jcdctmgr.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jchuff.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jcinit.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jcmainct.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jcmarker.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jcmaster.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jcomapi.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jcparam.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jcphuff.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jcprepct.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jcsample.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdapimin.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdapistd.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdatadst.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdatasrc.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdcoefct.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdcolor.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jddctmgr.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdhuff.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdinput.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdmainct.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdmarker.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdmaster.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdmerge.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdphuff.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdpostct.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jdsample.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jerror.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jfdctflt.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jfdctfst.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jfdctint.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jidctflt.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jidctfst.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jidctint.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jidctred.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jmemmgr.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jmemnobs.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jquant1.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jquant2.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libjpeg\jutils.c">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\third_party\externals\libjpeg\jchuff.h">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libjpeg\jconfig.h">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libjpeg\jdct.h">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libjpeg\jdhuff.h">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libjpeg\jerror.h">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libjpeg\jinclude.h">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libjpeg\jmemsys.h">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libjpeg\jmorecfg.h">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libjpeg\jpegint.h">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libjpeg\jpeglib.h">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libjpeg\jpeglibmangler.h">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libjpeg\jversion.h">
+      <Filter>third_party\externals\libjpeg</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\gyp\libjpeg.gyp">
+      <Filter>gyp</Filter>
+    </None>
+  </ItemGroup>
+</Project>

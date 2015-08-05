@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4b401c4e-78af-47b0-b666-583739450f81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\gpu">
+      <UniqueIdentifier>{0d663b67-eb21-4bbd-a265-cd107a17ebd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gyp">
+      <UniqueIdentifier>{023c14b1-28b5-444f-a965-93a8085a4724}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\gpu\GrTest.cpp">
+      <Filter>src\gpu</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\gpu\GrTest.h">
+      <Filter>src\gpu</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\gyp\gputest.gyp">
+      <Filter>gyp</Filter>
+    </None>
+  </ItemGroup>
+</Project>

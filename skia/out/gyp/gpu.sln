@@ -1,0 +1,58 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "angle", "angle.vcproj", "{0C3FA3E5-C787-6229-3759-F2BC95B456F4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "core", "core.vcproj", "{B7760B5E-BFA8-486B-ACFD-49E3A6DE8E76}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "edtaa", "edtaa.vcproj", "{CADCAFE1-606B-B535-3739-11526D49A01C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "skgpu", "skgpu.vcproj", "{585331D9-E789-1935-EE54-C3DC98B6BFE1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0C3FA3E5-C787-6229-3759-F2BC95B456F4} = {0C3FA3E5-C787-6229-3759-F2BC95B456F4}
+		{CADCAFE1-606B-B535-3739-11526D49A01C} = {CADCAFE1-606B-B535-3739-11526D49A01C}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utils", "utils.vcproj", "{E6DF5CC1-9BB3-8AB7-7CA5-731C89D769A0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release_Developer|Win32 = Release_Developer|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C3FA3E5-C787-6229-3759-F2BC95B456F4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0C3FA3E5-C787-6229-3759-F2BC95B456F4}.Debug|Win32.Build.0 = Debug|Win32
+		{0C3FA3E5-C787-6229-3759-F2BC95B456F4}.Release_Developer|Win32.ActiveCfg = Release_Developer|Win32
+		{0C3FA3E5-C787-6229-3759-F2BC95B456F4}.Release_Developer|Win32.Build.0 = Release_Developer|Win32
+		{0C3FA3E5-C787-6229-3759-F2BC95B456F4}.Release|Win32.ActiveCfg = Release|Win32
+		{0C3FA3E5-C787-6229-3759-F2BC95B456F4}.Release|Win32.Build.0 = Release|Win32
+		{585331D9-E789-1935-EE54-C3DC98B6BFE1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{585331D9-E789-1935-EE54-C3DC98B6BFE1}.Debug|Win32.Build.0 = Debug|Win32
+		{585331D9-E789-1935-EE54-C3DC98B6BFE1}.Release_Developer|Win32.ActiveCfg = Release_Developer|Win32
+		{585331D9-E789-1935-EE54-C3DC98B6BFE1}.Release_Developer|Win32.Build.0 = Release_Developer|Win32
+		{585331D9-E789-1935-EE54-C3DC98B6BFE1}.Release|Win32.ActiveCfg = Release|Win32
+		{585331D9-E789-1935-EE54-C3DC98B6BFE1}.Release|Win32.Build.0 = Release|Win32
+		{B7760B5E-BFA8-486B-ACFD-49E3A6DE8E76}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B7760B5E-BFA8-486B-ACFD-49E3A6DE8E76}.Debug|Win32.Build.0 = Debug|Win32
+		{B7760B5E-BFA8-486B-ACFD-49E3A6DE8E76}.Release_Developer|Win32.ActiveCfg = Release_Developer|Win32
+		{B7760B5E-BFA8-486B-ACFD-49E3A6DE8E76}.Release_Developer|Win32.Build.0 = Release_Developer|Win32
+		{B7760B5E-BFA8-486B-ACFD-49E3A6DE8E76}.Release|Win32.ActiveCfg = Release|Win32
+		{B7760B5E-BFA8-486B-ACFD-49E3A6DE8E76}.Release|Win32.Build.0 = Release|Win32
+		{CADCAFE1-606B-B535-3739-11526D49A01C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CADCAFE1-606B-B535-3739-11526D49A01C}.Debug|Win32.Build.0 = Debug|Win32
+		{CADCAFE1-606B-B535-3739-11526D49A01C}.Release_Developer|Win32.ActiveCfg = Release_Developer|Win32
+		{CADCAFE1-606B-B535-3739-11526D49A01C}.Release_Developer|Win32.Build.0 = Release_Developer|Win32
+		{CADCAFE1-606B-B535-3739-11526D49A01C}.Release|Win32.ActiveCfg = Release|Win32
+		{CADCAFE1-606B-B535-3739-11526D49A01C}.Release|Win32.Build.0 = Release|Win32
+		{E6DF5CC1-9BB3-8AB7-7CA5-731C89D769A0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E6DF5CC1-9BB3-8AB7-7CA5-731C89D769A0}.Debug|Win32.Build.0 = Debug|Win32
+		{E6DF5CC1-9BB3-8AB7-7CA5-731C89D769A0}.Release_Developer|Win32.ActiveCfg = Release_Developer|Win32
+		{E6DF5CC1-9BB3-8AB7-7CA5-731C89D769A0}.Release_Developer|Win32.Build.0 = Release_Developer|Win32
+		{E6DF5CC1-9BB3-8AB7-7CA5-731C89D769A0}.Release|Win32.ActiveCfg = Release|Win32
+		{E6DF5CC1-9BB3-8AB7-7CA5-731C89D769A0}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

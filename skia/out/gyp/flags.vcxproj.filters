@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="tools">
+      <UniqueIdentifier>{A0946190-5491-4D66-7E51-19400E36F078}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tools\flags">
+      <UniqueIdentifier>{AE6B5F0D-7224-08E4-A281-DBDFE70F9B8C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gyp">
+      <UniqueIdentifier>{30B32512-2E13-32EA-B437-6F75133648E3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\tools\flags\SkCommandLineFlags.h">
+      <Filter>tools\flags</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\tools\flags\SkCommandLineFlags.cpp">
+      <Filter>tools\flags</Filter>
+    </ClCompile>
+    <None Include="..\..\gyp\flags.gyp">
+      <Filter>gyp</Filter>
+    </None>
+  </ItemGroup>
+</Project>

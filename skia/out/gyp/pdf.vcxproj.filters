@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{18a750d0-8e0f-402b-8c71-6e758bd074af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\doc">
+      <UniqueIdentifier>{c16d5d0f-db26-44dd-aecc-015de6cd226c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\pdf">
+      <UniqueIdentifier>{dbca2cad-5323-4b60-8c7e-8d3075366828}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{ae1c229f-a9f6-4233-bb08-69179f8fe8ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\pdf">
+      <UniqueIdentifier>{c94aaed2-60d6-47d4-971b-f74a657e44bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gyp">
+      <UniqueIdentifier>{f3669d03-87da-475a-87c5-735a24b4089d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\doc\SkDocument_PDF.cpp">
+      <Filter>src\doc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFCatalog.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFDevice.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFDeviceFlattener.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFDocument.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFFont.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFFormXObject.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFGraphicState.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFImage.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFPage.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFResourceDict.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFShader.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFStream.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFTypes.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pdf\SkPDFUtils.cpp">
+      <Filter>src\pdf</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\pdf\SkPDFCatalog.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pdf\SkPDFDeviceFlattener.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pdf\SkPDFFont.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pdf\SkPDFFontImpl.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pdf\SkPDFFormXObject.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pdf\SkPDFGraphicState.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pdf\SkPDFImage.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pdf\SkPDFPage.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pdf\SkPDFResourceDict.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pdf\SkPDFShader.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pdf\SkPDFStream.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pdf\SkPDFTypes.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pdf\SkPDFUtils.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pdf\SkTSet.h">
+      <Filter>src\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\pdf\SkPDFDevice.h">
+      <Filter>include\pdf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\pdf\SkPDFDocument.h">
+      <Filter>include\pdf</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\gyp\pdf.gypi">
+      <Filter>gyp</Filter>
+    </None>
+    <None Include="..\..\gyp\pdf.gyp">
+      <Filter>gyp</Filter>
+    </None>
+  </ItemGroup>
+</Project>

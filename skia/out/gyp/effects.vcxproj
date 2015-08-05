@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Developer|Win32">
+      <Configuration>Release_Developer</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{6B5EE129-2990-5F4E-F3C4-E22A84454569}</ProjectGuid>
+    <RootNamespace>effects</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\effects;..\..\src\effects;..\..\src\opts;..\..\src\core;..\..\src\utils;..\..\include\gpu;..\..\src\gpu;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling />
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_DEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\include\effects;..\..\src\effects;..\..\src\opts;..\..\src\core;..\..\include\gpu;..\..\src\gpu;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_DEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)skia_effects.lib</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\effects;..\..\src\effects;..\..\src\opts;..\..\src\core;..\..\include\gpu;..\..\src\gpu;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling />
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\include\effects;..\..\src\effects;..\..\src\opts;..\..\src\core;..\..\include\gpu;..\..\src\gpu;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Lib>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <OutputFile>$(OutDir)skia_effects.lib</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\effects;..\..\src\effects;..\..\src\opts;..\..\src\core;..\..\include\gpu;..\..\src\gpu;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling />
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\include\effects;..\..\src\effects;..\..\src\opts;..\..\src\core;..\..\include\gpu;..\..\src\gpu;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Lib>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <OutputFile>$(OutDir)skia_effects.lib</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\effects\gradients\SkBitmapCache.cpp" />
+    <ClCompile Include="..\..\src\effects\gradients\SkClampRange.cpp" />
+    <ClCompile Include="..\..\src\effects\gradients\SkGradientShader.cpp" />
+    <ClCompile Include="..\..\src\effects\gradients\SkLinearGradient.cpp" />
+    <ClCompile Include="..\..\src\effects\gradients\SkRadialGradient.cpp" />
+    <ClCompile Include="..\..\src\effects\gradients\SkSweepGradient.cpp" />
+    <ClCompile Include="..\..\src\effects\gradients\SkTwoPointConicalGradient.cpp" />
+    <ClCompile Include="..\..\src\effects\gradients\SkTwoPointConicalGradient_gpu.cpp" />
+    <ClCompile Include="..\..\src\effects\gradients\SkTwoPointRadialGradient.cpp" />
+    <ClCompile Include="..\..\src\effects\Sk1DPathEffect.cpp" />
+    <ClCompile Include="..\..\src\effects\Sk2DPathEffect.cpp" />
+    <ClCompile Include="..\..\src\effects\SkAlphaThresholdFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkArithmeticMode.cpp" />
+    <ClCompile Include="..\..\src\effects\SkAvoidXfermode.cpp" />
+    <ClCompile Include="..\..\src\effects\SkBicubicImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkBitmapSource.cpp" />
+    <ClCompile Include="..\..\src\effects\SkBlurDrawLooper.cpp" />
+    <ClCompile Include="..\..\src\effects\SkBlurImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkBlurMask.cpp" />
+    <ClCompile Include="..\..\src\effects\SkBlurMaskFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkColorFilterImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkColorFilters.cpp" />
+    <ClCompile Include="..\..\src\effects\SkColorMatrix.cpp" />
+    <ClCompile Include="..\..\src\effects\SkColorMatrixFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkComposeImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkCornerPathEffect.cpp" />
+    <ClCompile Include="..\..\src\effects\SkDashPathEffect.cpp" />
+    <ClCompile Include="..\..\src\effects\SkDiscretePathEffect.cpp" />
+    <ClCompile Include="..\..\src\effects\SkDisplacementMapEffect.cpp" />
+    <ClCompile Include="..\..\src\effects\SkDropShadowImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkEmbossMask.cpp" />
+    <ClCompile Include="..\..\src\effects\SkEmbossMaskFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkGpuBlurUtils.cpp" />
+    <ClCompile Include="..\..\src\effects\SkLayerDrawLooper.cpp" />
+    <ClCompile Include="..\..\src\effects\SkLayerRasterizer.cpp" />
+    <ClCompile Include="..\..\src\effects\SkLerpXfermode.cpp" />
+    <ClCompile Include="..\..\src\effects\SkLightingImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkLumaColorFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkMagnifierImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkMatrixConvolutionImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkMatrixImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkMergeImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkMorphologyImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkOffsetImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkPaintFlagsDrawFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkPerlinNoiseShader.cpp" />
+    <ClCompile Include="..\..\src\effects\SkPictureImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkPixelXorXfermode.cpp" />
+    <ClCompile Include="..\..\src\effects\SkPorterDuff.cpp" />
+    <ClCompile Include="..\..\src\effects\SkRectShaderImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkStippleMaskFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkTableColorFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkTableMaskFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkTestImageFilters.cpp" />
+    <ClCompile Include="..\..\src\effects\SkTileImageFilter.cpp" />
+    <ClCompile Include="..\..\src\effects\SkTransparentShader.cpp" />
+    <ClCompile Include="..\..\src\effects\SkXfermodeImageFilter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\effects\Sk1DPathEffect.h" />
+    <ClInclude Include="..\..\include\effects\Sk2DPathEffect.h" />
+    <ClInclude Include="..\..\include\effects\SkArithmeticMode.h" />
+    <ClInclude Include="..\..\include\effects\SkAvoidXfermode.h" />
+    <ClInclude Include="..\..\include\effects\SkBitmapSource.h" />
+    <ClInclude Include="..\..\include\effects\SkBlurDrawLooper.h" />
+    <ClInclude Include="..\..\include\effects\SkBlurImageFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkBlurMaskFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkColorFilterImageFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkColorMatrix.h" />
+    <ClInclude Include="..\..\include\effects\SkColorMatrixFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkCornerPathEffect.h" />
+    <ClInclude Include="..\..\include\effects\SkDashPathEffect.h" />
+    <ClInclude Include="..\..\include\effects\SkDiscretePathEffect.h" />
+    <ClInclude Include="..\..\include\effects\SkDisplacementMapEffect.h" />
+    <ClInclude Include="..\..\include\effects\SkDrawExtraPathEffect.h" />
+    <ClInclude Include="..\..\include\effects\SkDropShadowImageFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkEmbossMaskFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkGradientShader.h" />
+    <ClInclude Include="..\..\include\effects\SkKernel33MaskFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkLayerDrawLooper.h" />
+    <ClInclude Include="..\..\include\effects\SkLayerRasterizer.h" />
+    <ClInclude Include="..\..\include\effects\SkLerpXfermode.h" />
+    <ClInclude Include="..\..\include\effects\SkLightingImageFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkLumaColorFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkMagnifierImageFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkMorphologyImageFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkOffsetImageFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkPaintFlagsDrawFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkPerlinNoiseShader.h" />
+    <ClInclude Include="..\..\include\effects\SkPixelXorXfermode.h" />
+    <ClInclude Include="..\..\include\effects\SkPorterDuff.h" />
+    <ClInclude Include="..\..\include\effects\SkRectShaderImageFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkStippleMaskFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkTableColorFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkTableMaskFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkTileImageFilter.h" />
+    <ClInclude Include="..\..\include\effects\SkTransparentShader.h" />
+    <ClInclude Include="..\..\include\effects\SkXfermodeImageFilter.h" />
+    <ClInclude Include="..\..\src\effects\gradients\SkBitmapCache.h" />
+    <ClInclude Include="..\..\src\effects\gradients\SkClampRange.h" />
+    <ClInclude Include="..\..\src\effects\gradients\SkGradientShaderPriv.h" />
+    <ClInclude Include="..\..\src\effects\gradients\SkLinearGradient.h" />
+    <ClInclude Include="..\..\src\effects\gradients\SkRadialGradient.h" />
+    <ClInclude Include="..\..\src\effects\gradients\SkRadialGradient_Table.h" />
+    <ClInclude Include="..\..\src\effects\gradients\SkSweepGradient.h" />
+    <ClInclude Include="..\..\src\effects\gradients\SkTwoPointConicalGradient.h" />
+    <ClInclude Include="..\..\src\effects\gradients\SkTwoPointRadialGradient.h" />
+    <ClInclude Include="..\..\src\effects\SkBlurMask.h" />
+    <ClInclude Include="..\..\src\effects\SkEmbossMask.h" />
+    <ClInclude Include="..\..\src\effects\SkEmbossMask_Table.h" />
+    <ClInclude Include="..\..\src\effects\SkGpuBlurUtils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\gyp\effects.gyp" />
+    <None Include="..\..\gyp\effects.gypi" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

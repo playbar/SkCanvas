@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="experimental">
+      <UniqueIdentifier>{BA17F945-8D93-BAFC-AAF4-450FDFAE676C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="experimental\PdfViewer">
+      <UniqueIdentifier>{BFA28D3F-ADEF-E8BF-2655-87B5AE23A7DF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gyp">
+      <UniqueIdentifier>{30B32512-2E13-32EA-B437-6F75133648E3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\experimental\PdfViewer\chop_transparency_main.cpp">
+      <Filter>experimental\PdfViewer</Filter>
+    </ClCompile>
+    <None Include="..\..\gyp\pdfviewer.gyp">
+      <Filter>gyp</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="third_party">
+      <UniqueIdentifier>{430521ab-dab0-441e-affc-8e04b23677f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\externals">
+      <UniqueIdentifier>{4744229b-633d-4f9a-9dad-d643f813abbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\externals\libwebp">
+      <UniqueIdentifier>{903919df-9252-4df1-b5a3-946f27df4e6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\externals\libwebp\src">
+      <UniqueIdentifier>{17a738e9-f887-4673-918c-be61300ff36f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\externals\libwebp\src\enc">
+      <UniqueIdentifier>{64599100-0ba2-4f13-8a6c-6270643f6317}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gyp">
+      <UniqueIdentifier>{cd2d1a14-b299-4555-96ea-7b7d5a09635c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\alpha.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\analysis.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\backward_references.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\config.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\cost.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\filter.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\frame.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\histogram.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\iterator.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\layer.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\picture.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\quant.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\syntax.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\token.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\tree.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\vp8l.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\enc\webpenc.c">
+      <Filter>third_party\externals\libwebp\src\enc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\gyp\libwebp.gyp">
+      <Filter>gyp</Filter>
+    </None>
+  </ItemGroup>
+</Project>

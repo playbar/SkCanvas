@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(generate_mocBeforeTargets)' == '' and '$(generate_mocAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <generate_mocBeforeTargets>Midl</generate_mocBeforeTargets>
+    <generate_mocAfterTargets>CustomBuild</generate_mocAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <generate_mocDependsOn Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(generate_mocDependsOn)</generate_mocDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <generate_moc>
+      <CommandLineTemplate>call C:\Qt\4.8.3\\bin\moc &quot;-DSK_SUPPORT_GPU=1&quot; &quot;%(FullPath)&quot; &quot;-o&quot; &quot;$(OutDir)obj\global_intermediate\debugger\QT\moc_%(Filename).cpp&quot;</CommandLineTemplate>
+      <Outputs>$(OutDir)obj\global_intermediate\debugger\QT\moc_%(Filename).cpp</Outputs>
+      <ExecutionDescription>Generating %(Filename).cpp.</ExecutionDescription>
+      <AdditionalDependencies></AdditionalDependencies>
+    </generate_moc>
+  </ItemDefinitionGroup>
+</Project>

@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{6789d0c9-0096-4f93-8ff4-e3746697fae0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\views">
+      <UniqueIdentifier>{d65c33da-f533-4fd3-a9b1-6dfb7ec8ad66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\views\SDL">
+      <UniqueIdentifier>{2bf04896-4eb6-4d1c-ae64-c59c80fe34b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\views\SDL\_excluded_files">
+      <UniqueIdentifier>{881f173e-f5b3-4a12-b469-5beecb2e8f22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\views\win">
+      <UniqueIdentifier>{85f16858-6f0f-41c0-aa7e-263bae05b8b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\views\mac">
+      <UniqueIdentifier>{65681235-cb51-44a1-9b38-82b467e91bd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\views\mac\_excluded_files">
+      <UniqueIdentifier>{90b7fba8-bc3c-4633-8d0d-1c071560a522}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\views\unix">
+      <UniqueIdentifier>{75e5e5a9-bb8b-4233-91d7-0e06c4c9ae8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\views\unix\_excluded_files">
+      <UniqueIdentifier>{7b3b85c7-e8b2-455e-ae91-9affad375606}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{0e729a9b-ccdf-40be-8c85-0cb006c292cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\views">
+      <UniqueIdentifier>{be4f57e5-5d43-4ef1-9322-d7281da53480}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gyp">
+      <UniqueIdentifier>{5e5be102-1486-4656-9088-6fbfceb43f7a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\views\SkBGViewArtist.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkEvent.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkEventSink.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkOSMenu.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkParsePaint.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkProgressView.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkStackViewLayout.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkTagList.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkTextBox.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkTouchGesture.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkView.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkViewInflate.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkViewPriv.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkWidgets.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SkWindow.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\SDL\SkOSWindow_SDL.cpp">
+      <Filter>src\views\SDL\_excluded_files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\win\SkOSWindow_win.cpp">
+      <Filter>src\views\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\win\skia_win.cpp">
+      <Filter>src\views\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\unix\SkOSWindow_Unix.cpp">
+      <Filter>src\views\unix\_excluded_files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\unix\keysym2ucs.c">
+      <Filter>src\views\unix\_excluded_files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\views\unix\skia_unix.cpp">
+      <Filter>src\views\unix\_excluded_files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\views\SkTagList.h">
+      <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\views\SkViewPriv.h">
+      <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkApplication.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkBGViewArtist.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkEvent.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkEventSink.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkKey.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkOSMenu.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkOSWindow_Mac.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkOSWindow_NaCl.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkOSWindow_SDL.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkOSWindow_Unix.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkOSWindow_Win.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkStackViewLayout.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkSystemEventTypes.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkTextBox.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkTouchGesture.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkView.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkViewInflate.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkWidget.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\views\SkWindow.h">
+      <Filter>include\views</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\views\mac\SkOSWindow_Mac.mm">
+      <Filter>src\views\mac\_excluded_files</Filter>
+    </None>
+    <None Include="..\..\src\views\mac\skia_mac.mm">
+      <Filter>src\views\mac\_excluded_files</Filter>
+    </None>
+    <None Include="..\..\gyp\views.gyp">
+      <Filter>gyp</Filter>
+    </None>
+  </ItemGroup>
+</Project>

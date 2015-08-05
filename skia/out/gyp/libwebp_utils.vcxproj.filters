@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="third_party">
+      <UniqueIdentifier>{d0e38a79-90b0-480d-aea0-3264f19a1da5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\externals">
+      <UniqueIdentifier>{702c9e28-35e4-488d-bd78-45efb3609400}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\externals\libwebp">
+      <UniqueIdentifier>{1b64794c-68a1-418a-a563-eb0c88c671dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\externals\libwebp\src">
+      <UniqueIdentifier>{ff76b993-f25b-41a6-b2f4-6d53a7caa07b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\externals\libwebp\src\utils">
+      <UniqueIdentifier>{7ce7806a-974d-4570-a31c-7f0f79330a2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gyp">
+      <UniqueIdentifier>{caa6a39d-0165-4284-957f-ee818dc134c5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\utils\bit_reader.c">
+      <Filter>third_party\externals\libwebp\src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\utils\bit_writer.c">
+      <Filter>third_party\externals\libwebp\src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\utils\color_cache.c">
+      <Filter>third_party\externals\libwebp\src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\utils\filters.c">
+      <Filter>third_party\externals\libwebp\src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\utils\huffman.c">
+      <Filter>third_party\externals\libwebp\src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\utils\huffman_encode.c">
+      <Filter>third_party\externals\libwebp\src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\utils\quant_levels.c">
+      <Filter>third_party\externals\libwebp\src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\utils\quant_levels_dec.c">
+      <Filter>third_party\externals\libwebp\src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\utils\rescaler.c">
+      <Filter>third_party\externals\libwebp\src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\utils\thread.c">
+      <Filter>third_party\externals\libwebp\src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libwebp\src\utils\utils.c">
+      <Filter>third_party\externals\libwebp\src\utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\gyp\libwebp.gyp">
+      <Filter>gyp</Filter>
+    </None>
+  </ItemGroup>
+</Project>

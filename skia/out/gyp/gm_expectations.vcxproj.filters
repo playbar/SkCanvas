@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="gm">
+      <UniqueIdentifier>{55E6DDB6-7E66-5A91-122B-06C3BC3C1B95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gyp">
+      <UniqueIdentifier>{30B32512-2E13-32EA-B437-6F75133648E3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\gm\gm_expectations.h">
+      <Filter>gm</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\gm\gm_expectations.cpp">
+      <Filter>gm</Filter>
+    </ClCompile>
+    <None Include="..\..\gyp\gm.gyp">
+      <Filter>gyp</Filter>
+    </None>
+  </ItemGroup>
+</Project>

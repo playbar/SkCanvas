@@ -1,0 +1,476 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{7a86f60b-62e2-4c72-815f-158db629b20a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\pipe">
+      <UniqueIdentifier>{b7afa559-8f0e-4b36-9c0f-927336358f3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\pipe\utils">
+      <UniqueIdentifier>{5a3ca4c4-6aea-4219-8a18-eb737155b1ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utils">
+      <UniqueIdentifier>{1ec88854-b16d-48b2-92b3-54e366980e49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utils\debugger">
+      <UniqueIdentifier>{c2e9a0a6-1522-44c0-bcbd-165ff2c9450a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gm">
+      <UniqueIdentifier>{2792588e-60b6-4e47-b77d-add36779fecc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gyp">
+      <UniqueIdentifier>{fcb2e497-6f16-485a-98db-cac40979e409}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="samplecode">
+      <UniqueIdentifier>{de7d4fd5-6c4e-4159-a557-40ae00c8e54b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="samplecode\_excluded_files">
+      <UniqueIdentifier>{ca110d25-880b-4b0c-a9a6-b55549d77e56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="png">
+      <UniqueIdentifier>{234313b7-cb77-48c7-a866-dcd561ac168b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zlib">
+      <UniqueIdentifier>{4d7811a1-2c3b-403b-b010-edc1ab9ed387}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\pipe\utils\SamplePipeControllers.h">
+      <Filter>src\pipe\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\utils\debugger\SkDrawCommand.h">
+      <Filter>src\utils\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\utils\debugger\SkDebugCanvas.h">
+      <Filter>src\utils\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\utils\debugger\SkObjectParser.h">
+      <Filter>src\utils\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gm\gm.h">
+      <Filter>gm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\samplecode\GMSampleView.h">
+      <Filter>samplecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\samplecode\OverView.h">
+      <Filter>samplecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\samplecode\SampleCode.h">
+      <Filter>samplecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\samplecode\TransitionView.h">
+      <Filter>samplecode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libpng\png.h">
+      <Filter>png</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libpng\pngconf.h">
+      <Filter>png</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\libpng\pngusr.h">
+      <Filter>png</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\zlib\crc32.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\zlib\deflate.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\zlib\gzguts.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\zlib\inffast.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\zlib\inffixed.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\zlib\inflate.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\zlib\inftrees.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\zlib\mozzconf.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\zlib\trees.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\zlib\zconf.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\zlib\zlib.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\externals\zlib\zutil.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\pipe\utils\SamplePipeControllers.cpp">
+      <Filter>src\pipe\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\SkLuaCanvas.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\SkLua.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\debugger\SkDrawCommand.cpp">
+      <Filter>src\utils\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\debugger\SkDebugCanvas.cpp">
+      <Filter>src\utils\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\debugger\SkObjectParser.cpp">
+      <Filter>src\utils\debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gm\gm.cpp">
+      <Filter>gm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\ClockFaceView.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\OverView.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\Sample2PtRadial.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleAAClip.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleAARects.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleAARectModes.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleAll.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleAnimBlur.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleApp.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleArc.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleAvoid.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleBigBlur.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleBigGradient.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleBitmapRect.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleBlur.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleCamera.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleChart.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleCircle.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleClock.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleClip.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleColorFilter.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleComplexClip.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleConcavePaths.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleCull.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleDegenerateTwoPtRadials.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleDither.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleDitherBitmap.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleEffects.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleEmboss.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleEmptyPath.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleFatBits.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleFillType.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleFilter2.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleFilterFuzz.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleFontScalerTest.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleFuzz.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleGradients.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleHairCurves.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleHairline.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleHairModes.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleLayerMask.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleLayers.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleLCD.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleLines.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleLua.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleManyRects.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleMeasure.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleMipMap.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleOvalTest.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SamplePatch.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SamplePath.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SamplePathClip.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SamplePathUtils.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SamplePathEffects.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SamplePicture.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SamplePictFile.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SamplePoints.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SamplePolyToPoly.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleRegion.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleRepeatTile.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleRotateCircles.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleShaders.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleShaderText.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleSlides.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleStringArt.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleStrokePath.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleText.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleTextAlpha.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleTextBox.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleTextOnPath.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleTextureDomain.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleTiling.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleTinyBitmap.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleVertices.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleXfermodesBlur.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\TransitionView.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleEncode.cpp">
+      <Filter>samplecode\_excluded_files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleFontCache.cpp">
+      <Filter>samplecode\_excluded_files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleSkLayer.cpp">
+      <Filter>samplecode\_excluded_files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleTests.cpp">
+      <Filter>samplecode\_excluded_files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\png.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngerror.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pnggccrd.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngget.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngmem.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngpread.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngread.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngrio.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngrtran.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngrutil.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngset.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngtrans.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngvcrd.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngwio.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngwrite.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngwtran.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\libpng\pngwutil.c">
+      <Filter>png</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\adler32.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\compress.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\crc32.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\deflate.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\gzclose.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\gzlib.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\gzread.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\gzwrite.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\infback.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\inffast.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\inflate.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\inftrees.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\trees.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\uncompr.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\externals\zlib\zutil.c">
+      <Filter>zlib</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\gyp\SampleApp.gyp">
+      <Filter>gyp</Filter>
+    </None>
+  </ItemGroup>
+</Project>

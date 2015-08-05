@@ -1,0 +1,492 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Developer|Win32">
+      <Configuration>Release_Developer</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{585331D9-E789-1935-EE54-C3DC98B6BFE1}</ProjectGuid>
+    <RootNamespace>skgpu</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\gpu;..\..\src\core;..\..\src\gpu;..\..\src\utils;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\include\effects;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling />
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;GR_CHROME_UTILS=1;SK_DEBUG;SK_DEVELOPER=1;SK_IGNORE_ETC1_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\include\gpu;..\..\src\core;..\..\src\gpu;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;GR_CHROME_UTILS=1;SK_DEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)skia_skgpu.lib</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\gpu;..\..\src\core;..\..\src\gpu;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling />
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;GR_CHROME_UTILS=1;SK_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\include\gpu;..\..\src\core;..\..\src\gpu;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;GR_CHROME_UTILS=1;SK_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Lib>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <OutputFile>$(OutDir)skia_skgpu.lib</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\gpu;..\..\src\core;..\..\src\gpu;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling />
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;GR_CHROME_UTILS=1;SK_RELEASE;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\include\gpu;..\..\src\core;..\..\src\gpu;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;GR_CHROME_UTILS=1;SK_RELEASE;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Lib>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <OutputFile>$(OutDir)skia_skgpu.lib</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\experimental\ChromeUtils\SkBorder.cpp" />
+    <ClCompile Include="..\..\src\effects\SkDashPathEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrBezierEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrBicubicEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrConfigConversionEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrConvexPolyEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrConvolutionEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrCustomCoordsTextureEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrDashingEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrDistanceFieldTextureEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrDitherEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrOvalEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrRRectEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrSimpleTextureEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrSingleTextureEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrTextureDomain.cpp" />
+    <ClCompile Include="..\..\src\gpu\effects\GrTextureStripAtlas.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\android\GrGLCreateNativeInterface_android.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\android\SkNativeGLContext_android.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\angle\GrGLCreateANGLEInterface.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\angle\SkANGLEGLContext.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\debug\GrBufferObj.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\debug\GrDebugGL.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\debug\GrFrameBufferObj.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\debug\GrGLCreateDebugInterface.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\debug\GrProgramObj.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\debug\GrShaderObj.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\debug\GrTextureObj.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\debug\GrTextureUnitObj.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\debug\SkDebugGLContext.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLAssembleInterface.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLBufferImpl.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLCaps.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLContext.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLCreateNativeInterface_none.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\GrGLCreateNullInterface.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLDefaultInterface_native.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLDefaultInterface_none.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\GrGLExtensions.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLIndexBuffer.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLInterface.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLNameAllocator.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLNoOpInterface.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLPath.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLProgram.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLProgramDesc.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLProgramEffects.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLRenderTarget.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLShaderBuilder.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLSL.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLStencilBuffer.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLTexture.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLUniformManager.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLUtil.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLVertexArray.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGLVertexBuffer.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGpuGL.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\GrGpuGL_program.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\iOS\GrGLCreateNativeInterface_iOS.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\mac\GrGLCreateNativeInterface_mac.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\mac\SkNativeGLContext_mac.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\mesa\GrGLCreateMesaInterface.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\mesa\SkMesaGLContext.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\nacl\SkNativeGLContext_nacl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\SkGLContextHelper.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\SkNullGLContext.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\unix\GrGLCreateNativeInterface_unix.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\unix\SkNativeGLContext_unix.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gpu\gl\win\GrGLCreateNativeInterface_win.cpp" />
+    <ClCompile Include="..\..\src\gpu\gl\win\SkNativeGLContext_win.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrAAConvexPathRenderer.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrAAHairLinePathRenderer.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrAARectRenderer.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrAddPathRenderers_default.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrAllocPool.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrAtlas.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrBitmapTextContext.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrBlend.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrBufferAllocPool.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrCacheable.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrCacheID.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrClipData.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrClipMaskCache.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrClipMaskManager.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrContext.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrDefaultPathRenderer.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrDistanceFieldTextContext.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrDrawState.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrDrawTarget.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrEffect.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrGpu.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrGpuFactory.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrGpuObject.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrInOrderDrawBuffer.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrLayerCache.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrMemoryPool.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrOvalRenderer.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrPaint.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrPath.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrPathRenderer.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrPathRendererChain.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrPathUtils.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrPictureUtils.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrRectanizer_skyline.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrReducedClip.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrRenderTarget.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrResourceCache.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrSoftwarePathRenderer.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrStencil.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrStencilAndCoverPathRenderer.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrStencilBuffer.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrSurface.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrSWMaskHelper.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrTextContext.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrTextStrike.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrTexture.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrTextureAccess.cpp" />
+    <ClCompile Include="..\..\src\gpu\GrTraceMarker.cpp" />
+    <ClCompile Include="..\..\src\gpu\SkGpuDevice.cpp" />
+    <ClCompile Include="..\..\src\gpu\SkGr.cpp" />
+    <ClCompile Include="..\..\src\gpu\SkGrFontScaler.cpp" />
+    <ClCompile Include="..\..\src\gpu\SkGrPixelRef.cpp" />
+    <ClCompile Include="..\..\src\gpu\SkGrTexturePixelRef.cpp" />
+    <ClCompile Include="..\..\src\image\SkImage_Gpu.cpp" />
+    <ClCompile Include="..\..\src\image\SkSurface_Gpu.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\experimental\ChromeUtils\SkBorder.h" />
+    <ClInclude Include="..\..\include\gpu\gl\GrGLConfig.h" />
+    <ClInclude Include="..\..\include\gpu\gl\GrGLExtensions.h" />
+    <ClInclude Include="..\..\include\gpu\gl\GrGLFunctions.h" />
+    <ClInclude Include="..\..\include\gpu\gl\GrGLInterface.h" />
+    <ClInclude Include="..\..\include\gpu\gl\SkANGLEGLContext.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gpu\gl\SkDebugGLContext.h" />
+    <ClInclude Include="..\..\include\gpu\gl\SkGLContextHelper.h" />
+    <ClInclude Include="..\..\include\gpu\gl\SkMesaGLContext.h" />
+    <ClInclude Include="..\..\include\gpu\gl\SkNativeGLContext.h" />
+    <ClInclude Include="..\..\include\gpu\gl\SkNullGLContext.h" />
+    <ClInclude Include="..\..\include\gpu\GrBackendEffectFactory.h" />
+    <ClInclude Include="..\..\include\gpu\GrBitmapTextContext.h" />
+    <ClInclude Include="..\..\include\gpu\GrClipData.h" />
+    <ClInclude Include="..\..\include\gpu\GrColor.h" />
+    <ClInclude Include="..\..\include\gpu\GrConfig.h" />
+    <ClInclude Include="..\..\include\gpu\GrContext.h" />
+    <ClInclude Include="..\..\include\gpu\GrContextFactory.h" />
+    <ClInclude Include="..\..\include\gpu\GrCoordTransform.h" />
+    <ClInclude Include="..\..\include\gpu\GrEffect.h" />
+    <ClInclude Include="..\..\include\gpu\GrEffectStage.h" />
+    <ClInclude Include="..\..\include\gpu\GrEffectUnitTest.h" />
+    <ClInclude Include="..\..\include\gpu\GrFontScaler.h" />
+    <ClInclude Include="..\..\include\gpu\GrGlyph.h" />
+    <ClInclude Include="..\..\include\gpu\GrKey.h" />
+    <ClInclude Include="..\..\include\gpu\GrPaint.h" />
+    <ClInclude Include="..\..\include\gpu\GrPathRendererChain.h" />
+    <ClInclude Include="..\..\include\gpu\GrPoint.h" />
+    <ClInclude Include="..\..\include\gpu\GrRect.h" />
+    <ClInclude Include="..\..\include\gpu\GrRenderTarget.h" />
+    <ClInclude Include="..\..\include\gpu\GrResource.h" />
+    <ClInclude Include="..\..\include\gpu\GrSurface.h" />
+    <ClInclude Include="..\..\include\gpu\GrTBackendEffectFactory.h" />
+    <ClInclude Include="..\..\include\gpu\GrTextContext.h" />
+    <ClInclude Include="..\..\include\gpu\GrTexture.h" />
+    <ClInclude Include="..\..\include\gpu\GrTextureAccess.h" />
+    <ClInclude Include="..\..\include\gpu\GrTypes.h" />
+    <ClInclude Include="..\..\include\gpu\GrUserConfig.h" />
+    <ClInclude Include="..\..\include\gpu\SkGpuDevice.h" />
+    <ClInclude Include="..\..\include\gpu\SkGr.h" />
+    <ClInclude Include="..\..\include\gpu\SkGrPixelRef.h" />
+    <ClInclude Include="..\..\include\gpu\SkGrTexturePixelRef.h" />
+    <ClInclude Include="..\..\src\gpu\effects\Gr1DKernelEffect.h" />
+    <ClInclude Include="..\..\src\gpu\effects\GrBezierEffect.h" />
+    <ClInclude Include="..\..\src\gpu\effects\GrBicubicEffect.h" />
+    <ClInclude Include="..\..\src\gpu\effects\GrConfigConversionEffect.h" />
+    <ClInclude Include="..\..\src\gpu\effects\GrConvolutionEffect.h" />
+    <ClInclude Include="..\..\src\gpu\effects\GrCustomCoordsTextureEffect.h" />
+    <ClInclude Include="..\..\src\gpu\effects\GrSimpleTextureEffect.h" />
+    <ClInclude Include="..\..\src\gpu\effects\GrSingleTextureEffect.h" />
+    <ClInclude Include="..\..\src\gpu\effects\GrTextureDomain.h" />
+    <ClInclude Include="..\..\src\gpu\effects\GrTextureStripAtlas.h" />
+    <ClInclude Include="..\..\src\gpu\gl\debug\GrBufferObj.h" />
+    <ClInclude Include="..\..\src\gpu\gl\debug\GrDebugGL.h" />
+    <ClInclude Include="..\..\src\gpu\gl\debug\GrFakeRefObj.h" />
+    <ClInclude Include="..\..\src\gpu\gl\debug\GrFBBindableObj.h" />
+    <ClInclude Include="..\..\src\gpu\gl\debug\GrFrameBufferObj.h" />
+    <ClInclude Include="..\..\src\gpu\gl\debug\GrProgramObj.h" />
+    <ClInclude Include="..\..\src\gpu\gl\debug\GrRenderBufferObj.h" />
+    <ClInclude Include="..\..\src\gpu\gl\debug\GrShaderObj.h" />
+    <ClInclude Include="..\..\src\gpu\gl\debug\GrTextureObj.h" />
+    <ClInclude Include="..\..\src\gpu\gl\debug\GrTextureUnitObj.h" />
+    <ClInclude Include="..\..\src\gpu\gl\debug\GrVertexArrayObj.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLBufferImpl.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLCaps.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLContext.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLDefines.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLEffect.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLIndexBuffer.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLIRect.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLNoOpInterface.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLPath.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLProgram.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLProgramDesc.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLProgramEffects.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLRenderTarget.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLShaderBuilder.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLShaderVar.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLSL.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLSL_impl.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLStencilBuffer.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLTexture.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLUniformHandle.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLUniformManager.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLUtil.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLVertexArray.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLVertexBuffer.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGLVertexEffect.h" />
+    <ClInclude Include="..\..\src\gpu\gl\GrGpuGL.h" />
+    <ClInclude Include="..\..\src\gpu\GrAAConvexPathRenderer.h" />
+    <ClInclude Include="..\..\src\gpu\GrAAHairLinePathRenderer.h" />
+    <ClInclude Include="..\..\src\gpu\GrAARectRenderer.h" />
+    <ClInclude Include="..\..\src\gpu\GrAllocator.h" />
+    <ClInclude Include="..\..\src\gpu\GrAllocPool.h" />
+    <ClInclude Include="..\..\src\gpu\GrAtlas.h" />
+    <ClInclude Include="..\..\src\gpu\GrBinHashKey.h" />
+    <ClInclude Include="..\..\src\gpu\GrBlend.h" />
+    <ClInclude Include="..\..\src\gpu\GrBufferAllocPool.h" />
+    <ClInclude Include="..\..\src\gpu\GrClipMaskCache.h" />
+    <ClInclude Include="..\..\src\gpu\GrClipMaskManager.h" />
+    <ClInclude Include="..\..\src\gpu\GrDefaultPathRenderer.h" />
+    <ClInclude Include="..\..\src\gpu\GrDrawState.h" />
+    <ClInclude Include="..\..\src\gpu\GrDrawTarget.h" />
+    <ClInclude Include="..\..\src\gpu\GrDrawTargetCaps.h" />
+    <ClInclude Include="..\..\src\gpu\GrGeometryBuffer.h" />
+    <ClInclude Include="..\..\src\gpu\GrGpu.h" />
+    <ClInclude Include="..\..\src\gpu\GrIndexBuffer.h" />
+    <ClInclude Include="..\..\src\gpu\GrInOrderDrawBuffer.h" />
+    <ClInclude Include="..\..\src\gpu\GrMemoryPool.h" />
+    <ClInclude Include="..\..\src\gpu\GrOvalRenderer.h" />
+    <ClInclude Include="..\..\src\gpu\GrPath.h" />
+    <ClInclude Include="..\..\src\gpu\GrPathRenderer.h" />
+    <ClInclude Include="..\..\src\gpu\GrPathUtils.h" />
+    <ClInclude Include="..\..\src\gpu\GrPlotMgr.h" />
+    <ClInclude Include="..\..\src\gpu\GrRectanizer.h" />
+    <ClInclude Include="..\..\src\gpu\GrRedBlackTree.h" />
+    <ClInclude Include="..\..\src\gpu\GrReducedClip.h" />
+    <ClInclude Include="..\..\src\gpu\GrResourceCache.h" />
+    <ClInclude Include="..\..\src\gpu\GrSoftwarePathRenderer.h" />
+    <ClInclude Include="..\..\src\gpu\GrStencil.h" />
+    <ClInclude Include="..\..\src\gpu\GrStencilAndCoverPathRenderer.h" />
+    <ClInclude Include="..\..\src\gpu\GrStencilBuffer.h" />
+    <ClInclude Include="..\..\src\gpu\GrSWMaskHelper.h" />
+    <ClInclude Include="..\..\src\gpu\GrTBSearch.h" />
+    <ClInclude Include="..\..\src\gpu\GrTemplates.h" />
+    <ClInclude Include="..\..\src\gpu\GrTextStrike.h" />
+    <ClInclude Include="..\..\src\gpu\GrTextStrike_impl.h" />
+    <ClInclude Include="..\..\src\gpu\GrTHashTable.h" />
+    <ClInclude Include="..\..\src\gpu\GrVertexBuffer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\gyp\gpu.gyp" />
+    <None Include="..\..\gyp\gpu.gypi" />
+    <None Include="..\..\src\gpu\gl\iOS\SkNativeGLContext_iOS.mm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="angle.vcxproj">
+      <Project>{0c3fa3e5-c787-6229-3759-f2bc95b456f4}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="edtaa.vcxproj">
+      <Project>{cadcafe1-606b-b535-3739-11526d49a01c}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

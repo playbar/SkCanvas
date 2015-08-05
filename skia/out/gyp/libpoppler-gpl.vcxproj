@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{27CC0A5A-2ADF-04FF-F08E-61BB254B419C}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>libpoppler-gpl</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="PropertySheets">
+    <Import Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <ExecutablePath>$(ExecutablePath);$(MSBuildProjectDirectory)\..\..\gyp\bin\;$(MSBuildProjectDirectory)\..\..\gyp\bin\</ExecutablePath>
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <TargetPath>$(OutDir)lib\$(ProjectName)$(TargetExt)</TargetPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\third_party\externals\poppler;..\..\third_party\externals\poppler\goo;..\..\third_party\poppler\config\windows;..\..\third_party\externals\freetype\include;..\..\third_party\externals\fontconfig;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling>false</ExceptionHandling>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_DEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)lib\$(ProjectName)$(TargetExt)</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\third_party\externals\poppler;..\..\third_party\externals\poppler\goo;..\..\third_party\poppler\config\windows;..\..\third_party\externals\freetype\include;..\..\third_party\externals\fontconfig;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_DEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\third_party\externals\poppler;..\..\third_party\externals\poppler\goo;..\..\third_party\poppler\config\windows;..\..\third_party\externals\freetype\include;..\..\third_party\externals\fontconfig;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling>false</ExceptionHandling>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Lib>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <OutputFile>$(OutDir)lib\$(ProjectName)$(TargetExt)</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\third_party\externals\poppler;..\..\third_party\externals\poppler\goo;..\..\third_party\poppler\config\windows;..\..\third_party\externals\freetype\include;..\..\third_party\externals\fontconfig;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\third_party\externals\poppler;..\..\third_party\externals\poppler\goo;..\..\third_party\poppler\config\windows;..\..\third_party\externals\freetype\include;..\..\third_party\externals\fontconfig;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling>false</ExceptionHandling>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Lib>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <OutputFile>$(OutDir)lib\$(ProjectName)$(TargetExt)</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\third_party\externals\poppler;..\..\third_party\externals\poppler\goo;..\..\third_party\poppler\config\windows;..\..\third_party\externals\freetype\include;..\..\third_party\externals\fontconfig;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\..\gyp\poppler.gyp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\FixedPoint.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\gfile.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\gmem.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\gmempp.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\GooHash.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\GooList.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\GooString.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\GooTimer.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\grandom.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\gstrtod.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\ImgWriter.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\JpegWriter.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\PNGWriter.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\goo\TiffWriter.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\Splash.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashBitmap.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashClip.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashFont.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashFontEngine.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashFontFile.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashFontFileID.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashFTFont.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashFTFontEngine.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashFTFontFile.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashPath.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashPattern.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashScreen.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashState.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashT1Font.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashT1FontEngine.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashT1FontFile.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashXPath.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\splash\SplashXPathScanner.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\fofi\FoFiBase.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\fofi\FoFiEncodings.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\fofi\FoFiIdentifier.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\fofi\FoFiTrueType.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\fofi\FoFiType1.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\fofi\FoFiType1C.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Annot.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Array.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\BuiltinFont.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\BuiltinFontTables.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\CachedFile.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Catalog.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\CharCodeToUnicode.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\CMap.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\DateInfo.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Decrypt.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Dict.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Error.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\FileSpec.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\FontEncodingTables.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\FontInfo.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Form.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Function.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Gfx.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\GfxFont.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\GfxState.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\GlobalParams.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Hints.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\JArithmeticDecoder.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\JBIG2Stream.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\JPXStream.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Lexer.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Linearization.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Link.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\LocalPDFDocBuilder.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Movie.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\NameToCharCode.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Object.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\OptionalContent.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Outline.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\OutputDev.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Page.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\PageLabelInfo.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\PageTransition.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Parser.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\PDFDoc.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\PDFDocEncoding.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\PDFDocFactory.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\PopplerCache.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\PreScanOutputDev.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\ProfileData.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\PSOutputDev.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\PSTokenizer.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Rendition.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\SecurityHandler.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Sound.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\SplashOutputDev.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\StdinCachedFile.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\StdinPDFDocBuilder.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\Stream.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\strtok_r.cpp" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\TextOutputDev.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\UnicodeMap.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\UnicodeTypeTable.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\UTF.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\ViewerPreferences.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\XpdfPluginAPI.cc" />
+    <ClCompile Include="..\..\third_party\externals\poppler\poppler\XRef.cc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

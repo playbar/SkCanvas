@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="debugger">
+      <UniqueIdentifier>{50FEAF01-EF8B-0322-F711-085031E1FA3C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="debugger\QT">
+      <UniqueIdentifier>{DEC5C50F-A692-714D-8B88-9E95226DD373}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gyp">
+      <UniqueIdentifier>{30B32512-2E13-32EA-B437-6F75133648E3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <generate_moc Include="..\..\debugger\QT\SkCanvasWidget.h">
+      <Filter>debugger\QT</Filter>
+    </generate_moc>
+    <generate_moc Include="..\..\debugger\QT\SkDebuggerGUI.h">
+      <Filter>debugger\QT</Filter>
+    </generate_moc>
+    <generate_moc Include="..\..\debugger\QT\SkInspectorWidget.h">
+      <Filter>debugger\QT</Filter>
+    </generate_moc>
+    <generate_moc Include="..\..\debugger\QT\SkSettingsWidget.h">
+      <Filter>debugger\QT</Filter>
+    </generate_moc>
+    <generate_moc Include="..\..\debugger\QT\SkRasterWidget.h">
+      <Filter>debugger\QT</Filter>
+    </generate_moc>
+    <generate_moc Include="..\..\debugger\QT\SkImageWidget.h">
+      <Filter>debugger\QT</Filter>
+    </generate_moc>
+    <generate_moc Include="..\..\debugger\QT\SkGLWidget.h">
+      <Filter>debugger\QT</Filter>
+    </generate_moc>
+    <None Include="..\..\gyp\debugger.gyp">
+      <Filter>gyp</Filter>
+    </None>
+  </ItemGroup>
+</Project>

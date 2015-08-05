@@ -1,0 +1,287 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Developer|Win32">
+      <Configuration>Release_Developer</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{E6DF5CC1-9BB3-8AB7-7CA5-731C89D769A0}</ProjectGuid>
+    <RootNamespace>utils</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">
+    <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\effects;..\..\include\images;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\include\utils;..\..\include\utils\win;..\..\include\xml;..\..\src\core;..\..\src\utils;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\gyp\ext;..\..\gyp\config\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ExceptionHandling />
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_DEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\include\effects;..\..\include\images;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\include\utils;..\..\include\utils\win;..\..\include\xml;..\..\src\core;..\..\src\utils;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\gyp\ext;..\..\gyp\config\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_DEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)skia_utils.lib</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\effects;..\..\include\images;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\include\utils;..\..\include\utils\win;..\..\include\xml;..\..\src\core;..\..\src\utils;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\gyp\ext;..\..\gyp\config\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling />
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\include\effects;..\..\include\images;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\include\utils;..\..\include\utils\win;..\..\include\xml;..\..\src\core;..\..\src\utils;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\gyp\ext;..\..\gyp\config\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Lib>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <OutputFile>$(OutDir)skia_utils.lib</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\include\effects;..\..\include\images;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\include\utils;..\..\include\utils\win;..\..\include\xml;..\..\src\core;..\..\src\utils;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\gyp\ext;..\..\gyp\config\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling />
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>Full</Optimization>
+      <PreprocessorDefinitions>NDEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>..\..\include\effects;..\..\include\images;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\include\utils;..\..\include\utils\win;..\..\include\xml;..\..\src\core;..\..\src\utils;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\gyp\ext;..\..\gyp\config\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_RELEASE;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Lib>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <OutputFile>$(OutDir)skia_utils.lib</OutputFile>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\fonts\SkGScalerContext.cpp" />
+    <ClCompile Include="..\..\src\utils\mac\SkCreateCGImageRef.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\SkBase64.cpp" />
+    <ClCompile Include="..\..\src\utils\SkBitmapHasher.cpp" />
+    <ClCompile Include="..\..\src\utils\SkBitSet.cpp" />
+    <ClCompile Include="..\..\src\utils\SkBoundaryPatch.cpp" />
+    <ClCompile Include="..\..\src\utils\SkCamera.cpp" />
+    <ClCompile Include="..\..\src\utils\SkCanvasStack.cpp" />
+    <ClCompile Include="..\..\src\utils\SkCanvasStateUtils.cpp" />
+    <ClCompile Include="..\..\src\utils\SkCondVar.cpp" />
+    <ClCompile Include="..\..\src\utils\SkCountdown.cpp" />
+    <ClCompile Include="..\..\src\utils\SkCubicInterval.cpp" />
+    <ClCompile Include="..\..\src\utils\SkCullPoints.cpp" />
+    <ClCompile Include="..\..\src\utils\SkDashPath.cpp" />
+    <ClCompile Include="..\..\src\utils\SkDeferredCanvas.cpp" />
+    <ClCompile Include="..\..\src\utils\SkDumpCanvas.cpp" />
+    <ClCompile Include="..\..\src\utils\SkEventTracer.cpp" />
+    <ClCompile Include="..\..\src\utils\SkFrontBufferedStream.cpp" />
+    <ClCompile Include="..\..\src\utils\SkInterpolator.cpp" />
+    <ClCompile Include="..\..\src\utils\SkLayer.cpp" />
+    <ClCompile Include="..\..\src\utils\SkMatrix22.cpp" />
+    <ClCompile Include="..\..\src\utils\SkMatrix44.cpp" />
+    <ClCompile Include="..\..\src\utils\SkMD5.cpp" />
+    <ClCompile Include="..\..\src\utils\SkMeshUtils.cpp" />
+    <ClCompile Include="..\..\src\utils\SkNinePatch.cpp" />
+    <ClCompile Include="..\..\src\utils\SkNullCanvas.cpp" />
+    <ClCompile Include="..\..\src\utils\SkNWayCanvas.cpp" />
+    <ClCompile Include="..\..\src\utils\SkOSFile.cpp" />
+    <ClCompile Include="..\..\src\utils\SkParse.cpp" />
+    <ClCompile Include="..\..\src\utils\SkParseColor.cpp" />
+    <ClCompile Include="..\..\src\utils\SkParsePath.cpp" />
+    <ClCompile Include="..\..\src\utils\SkPathUtils.cpp" />
+    <ClCompile Include="..\..\src\utils\SkPictureUtils.cpp" />
+    <ClCompile Include="..\..\src\utils\SkProxyCanvas.cpp" />
+    <ClCompile Include="..\..\src\utils\SkRTConf.cpp" />
+    <ClCompile Include="..\..\src\utils\SkSHA1.cpp" />
+    <ClCompile Include="..\..\src\utils\SkTextureCompressor.cpp" />
+    <ClCompile Include="..\..\src\utils\SkThreadUtils_pthread.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\SkThreadUtils_pthread_linux.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\SkThreadUtils_pthread_mach.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\SkThreadUtils_pthread_other.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\SkThreadUtils_win.cpp" />
+    <ClCompile Include="..\..\src\utils\win\SkAutoCoInitialize.cpp" />
+    <ClCompile Include="..\..\src\utils\win\SkDWriteFontFileStream.cpp" />
+    <ClCompile Include="..\..\src\utils\win\SkDWriteGeometrySink.cpp" />
+    <ClCompile Include="..\..\src\utils\win\SkHRESULT.cpp" />
+    <ClCompile Include="..\..\src\utils\win\SkIStream.cpp" />
+    <ClCompile Include="..\..\src\utils\win\SkWGL_win.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\utils\mac\SkCGUtils.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\include\utils\SkBoundaryPatch.h" />
+    <ClInclude Include="..\..\include\utils\SkCamera.h" />
+    <ClInclude Include="..\..\include\utils\SkCanvasStateUtils.h" />
+    <ClInclude Include="..\..\include\utils\SkCondVar.h" />
+    <ClInclude Include="..\..\include\utils\SkCountdown.h" />
+    <ClInclude Include="..\..\include\utils\SkCubicInterval.h" />
+    <ClInclude Include="..\..\include\utils\SkCullPoints.h" />
+    <ClInclude Include="..\..\include\utils\SkDebugUtils.h" />
+    <ClInclude Include="..\..\include\utils\SkDeferredCanvas.h" />
+    <ClInclude Include="..\..\include\utils\SkDumpCanvas.h" />
+    <ClInclude Include="..\..\include\utils\SkFrontBufferedStream.h" />
+    <ClInclude Include="..\..\include\utils\SkInterpolator.h" />
+    <ClInclude Include="..\..\include\utils\SkLayer.h" />
+    <ClInclude Include="..\..\include\utils\SkMatrix44.h" />
+    <ClInclude Include="..\..\include\utils\SkMeshUtils.h" />
+    <ClInclude Include="..\..\include\utils\SkNinePatch.h" />
+    <ClInclude Include="..\..\include\utils\SkNullCanvas.h" />
+    <ClInclude Include="..\..\include\utils\SkNWayCanvas.h" />
+    <ClInclude Include="..\..\include\utils\SkParse.h" />
+    <ClInclude Include="..\..\include\utils\SkParsePaint.h" />
+    <ClInclude Include="..\..\include\utils\SkParsePath.h" />
+    <ClInclude Include="..\..\include\utils\SkPictureUtils.h" />
+    <ClInclude Include="..\..\include\utils\SkProxyCanvas.h" />
+    <ClInclude Include="..\..\include\utils\SkRandom.h" />
+    <ClInclude Include="..\..\include\utils\SkRTConf.h" />
+    <ClInclude Include="..\..\include\utils\SkRunnable.h" />
+    <ClInclude Include="..\..\include\utils\SkThreadPool.h" />
+    <ClInclude Include="..\..\include\utils\SkUnitMappers.h" />
+    <ClInclude Include="..\..\include\utils\SkWGL.h" />
+    <ClInclude Include="..\..\include\utils\win\SkAutoCoInitialize.h" />
+    <ClInclude Include="..\..\include\utils\win\SkHRESULT.h" />
+    <ClInclude Include="..\..\include\utils\win\SkIStream.h" />
+    <ClInclude Include="..\..\include\utils\win\SkTScopedComPtr.h" />
+    <ClInclude Include="..\..\src\fonts\SkGScalerContext.h" />
+    <ClInclude Include="..\..\src\utils\SkBase64.h" />
+    <ClInclude Include="..\..\src\utils\SkBitmapHasher.h" />
+    <ClInclude Include="..\..\src\utils\SkBitSet.h" />
+    <ClInclude Include="..\..\src\utils\SkCanvasStack.h" />
+    <ClInclude Include="..\..\src\utils\SkFloatUtils.h" />
+    <ClInclude Include="..\..\src\utils\SkMD5.h" />
+    <ClInclude Include="..\..\src\utils\SkSHA1.h" />
+    <ClInclude Include="..\..\src\utils\SkTFitsIn.h" />
+    <ClInclude Include="..\..\src\utils\SkThreadUtils.h" />
+    <ClInclude Include="..\..\src\utils\SkThreadUtils_pthread.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\src\utils\SkThreadUtils_win.h" />
+    <ClInclude Include="..\..\src\utils\SkTLogic.h" />
+    <ClInclude Include="..\..\src\utils\win\SkDWriteFontFileStream.h" />
+    <ClInclude Include="..\..\src\utils\win\SkDWriteGeometrySink.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\gyp\utils.gyp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

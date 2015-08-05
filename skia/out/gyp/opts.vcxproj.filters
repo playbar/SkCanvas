@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{96765c2e-1a08-431d-88e2-6df9a07effab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\opts">
+      <UniqueIdentifier>{c1942e6d-c31f-4c47-bfbb-dfb09147f81d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gyp">
+      <UniqueIdentifier>{15ce5e98-3574-4efc-81e4-54f75b699422}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\opts\SkBitmapProcState_opts_SSE2.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\opts\SkBitmapFilter_opts_SSE2.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\opts\SkBlitRow_opts_SSE2.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\opts\SkBlitRect_opts_SSE2.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\opts\SkBlurImage_opts_SSE2.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\opts\SkMorphology_opts_SSE2.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\opts\SkUtils_opts_SSE2.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\opts\SkXfermode_opts_none.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\opts\SkMorphology_opts_none.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\opts\SkBlurImage_opts_none.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\opts\SkXfermode_opts_SSE2.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\opts\SkBitmapProcState_opts_none.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\opts\SkBlitRow_opts_none.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\opts\SkBlitMask_opts_none.cpp">
+      <Filter>src\opts</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\gyp\opts.gyp">
+      <Filter>gyp</Filter>
+    </None>
+  </ItemGroup>
+</Project>
