@@ -14,8 +14,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "edtaa", "edtaa.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "effects", "effects.vcxproj", "{6B5EE129-2990-5F4E-F3C4-E22A84454569}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "experimental", "experimental.vcxproj", "{B1F287C0-79AC-806B-6D10-4D695FA04340}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "images", "images.vcxproj", "{CE446A2D-AD49-080B-4842-A0C6705DBB5A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libjpeg", "libjpeg.vcxproj", "{61D12D34-7889-B78C-43FB-FE4617C9477C}"
@@ -126,15 +124,6 @@ Global
 		{6B5EE129-2990-5F4E-F3C4-E22A84454569}.Release|Win32.ActiveCfg = Release|Win32
 		{6B5EE129-2990-5F4E-F3C4-E22A84454569}.Release|Win32.Build.0 = Release|Win32
 		{6B5EE129-2990-5F4E-F3C4-E22A84454569}.Release|x64.ActiveCfg = Release|Win32
-		{B1F287C0-79AC-806B-6D10-4D695FA04340}.Debug|Win32.ActiveCfg = Debug|Win32
-		{B1F287C0-79AC-806B-6D10-4D695FA04340}.Debug|Win32.Build.0 = Debug|Win32
-		{B1F287C0-79AC-806B-6D10-4D695FA04340}.Debug|x64.ActiveCfg = Debug|Win32
-		{B1F287C0-79AC-806B-6D10-4D695FA04340}.Release_Developer|Win32.ActiveCfg = Release_Developer|Win32
-		{B1F287C0-79AC-806B-6D10-4D695FA04340}.Release_Developer|Win32.Build.0 = Release_Developer|Win32
-		{B1F287C0-79AC-806B-6D10-4D695FA04340}.Release_Developer|x64.ActiveCfg = Release_Developer|Win32
-		{B1F287C0-79AC-806B-6D10-4D695FA04340}.Release|Win32.ActiveCfg = Release|Win32
-		{B1F287C0-79AC-806B-6D10-4D695FA04340}.Release|Win32.Build.0 = Release|Win32
-		{B1F287C0-79AC-806B-6D10-4D695FA04340}.Release|x64.ActiveCfg = Release|Win32
 		{CE446A2D-AD49-080B-4842-A0C6705DBB5A}.Debug|Win32.ActiveCfg = Debug|Win32
 		{CE446A2D-AD49-080B-4842-A0C6705DBB5A}.Debug|Win32.Build.0 = Debug|Win32
 		{CE446A2D-AD49-080B-4842-A0C6705DBB5A}.Debug|x64.ActiveCfg = Debug|Win32

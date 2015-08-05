@@ -336,10 +336,6 @@
       <Project>{6b5ee129-2990-5f4e-f3c4-e22a84454569}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="experimental.vcxproj">
-      <Project>{b1f287c0-79ac-806b-6d10-4d695fa04340}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="images.vcxproj">
       <Project>{ce446a2d-ad49-080b-4842-a0c6705dbb5a}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

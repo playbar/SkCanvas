@@ -79,12 +79,6 @@
     <Filter Include="include\gpu\gl\_excluded_files">
       <UniqueIdentifier>{72a02a4b-1152-4d82-a3f0-e4262b751b92}</UniqueIdentifier>
     </Filter>
-    <Filter Include="experimental">
-      <UniqueIdentifier>{d061ad4c-07b3-4add-9006-334071761ced}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="experimental\ChromeUtils">
-      <UniqueIdentifier>{a2becffa-00f8-428d-b263-876bebb8681c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="gyp">
       <UniqueIdentifier>{2cd1b622-8e37-4764-8b2d-93f37f003705}</UniqueIdentifier>
     </Filter>
@@ -413,9 +407,6 @@
     </ClCompile>
     <ClCompile Include="..\..\src\image\SkSurface_Gpu.cpp">
       <Filter>src\image</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\experimental\ChromeUtils\SkBorder.cpp">
-      <Filter>experimental\ChromeUtils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\gpu\GrGpuObject.cpp">
       <Filter>src\gpu</Filter>
@@ -850,9 +841,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\gpu\gl\SkANGLEGLContext.h">
       <Filter>include\gpu\gl\_excluded_files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\experimental\ChromeUtils\SkBorder.h">
-      <Filter>experimental\ChromeUtils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -150,7 +150,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\experimental\ChromeUtils\SkBorder.cpp" />
     <ClCompile Include="..\..\src\effects\SkDashPathEffect.cpp" />
     <ClCompile Include="..\..\src\gpu\effects\GrBezierEffect.cpp" />
     <ClCompile Include="..\..\src\gpu\effects\GrBicubicEffect.cpp" />
@@ -333,7 +332,6 @@
     <ClCompile Include="..\..\src\image\SkSurface_Gpu.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\experimental\ChromeUtils\SkBorder.h" />
     <ClInclude Include="..\..\include\gpu\gl\GrGLConfig.h" />
     <ClInclude Include="..\..\include\gpu\gl\GrGLExtensions.h" />
     <ClInclude Include="..\..\include\gpu\gl\GrGLFunctions.h" />
