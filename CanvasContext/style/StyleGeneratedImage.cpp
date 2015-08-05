@@ -25,7 +25,7 @@
 #include "style/StyleGeneratedImage.h"
 
 #include "css/CSSImageGeneratorValue.h"
-#include "Platform/Length.h"
+#include "platform/Length.h"
 
 namespace WebCore {
 

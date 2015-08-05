@@ -96,12 +96,6 @@ bool get_gl_version_for_mesa(int mesaMajorVersion, int* major, int* minor) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-GrGLBinding GrGLGetBindingInUseFromString(const char* versionString)
-{
-	return kDesktop_GrGLBinding;
-	return kES_GrGLBinding;
-}
-
 bool GrGLIsMesaFromVersionString(const char* versionString) {
     int major, minor, mesaMajor, mesaMinor;
     int n = sscanf(versionString, "%d.%d Mesa %d.%d", &major, &minor, &mesaMajor, &mesaMinor);
@@ -176,13 +170,6 @@ uint32_t GrGLGetGLSLVersionFromString(const char* versionString) {
 #endif
 
     return 0;
-}
-
-GrGLBinding GrGLGetBindingInUse()
-{
-    const GLubyte* v;
-    v = glGetString(GL_VERSION);
-    return GrGLGetBindingInUseFromString((const char*) v);
 }
 
 uint32_t GrGLGetVersion()

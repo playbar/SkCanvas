@@ -20,13 +20,6 @@ class SkMatrix;
  * The Vendor and Renderer enum values are lazily updated as required.
  */
 
-enum GrGLBinding 
-{
-    kNone_GrGLBinding = 0x0,
-
-    kDesktop_GrGLBinding = 0x01,
-    kES_GrGLBinding = 0x02,  // ES2+ only
-};
 
 /* Path Rendering */
 // commands
@@ -95,13 +88,11 @@ enum GrGLBinding
 
 // these variants assume caller already has a string from glGetString()
 uint32_t GrGLGetVersionFromString(const char* versionString);
-GrGLBinding GrGLGetBindingInUseFromString(const char* versionString);
 uint32_t GrGLGetGLSLVersionFromString(const char* versionString);
 bool GrGLIsMesaFromVersionString(const char* versionString);
 bool GrGLIsChromiumFromRendererString(const char* rendererString);
 
 // these variants call glGetString()
-GrGLBinding GrGLGetBindingInUse();
 uint32_t GrGLGetVersion();
 uint32_t GrGLGetGLSLVersion();
 

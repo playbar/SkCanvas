@@ -37,7 +37,7 @@
 #include "css/StylePropertySet.h"
 //#include "css/CSSParserObserver.h"
 #include "css/CSSPropertyParser.h"
-#include "platform/graphics/Color.h"
+#include "platform/graphics/color.h"
 #include "wtf/HashSet.h"
 #include "wtf/OwnPtr.h"
 #include "wtf/Vector.h"

@@ -31,7 +31,7 @@
 #include "css/CSSImageSetValue.h"
 #include "css/CSSImageValue.h"
 #include "style/StyleImage.h"
-#include "platform/graphics/Image.h"
+#include "platform/graphics/image.h"
 
 namespace WebCore {
 

@@ -11,7 +11,10 @@
 #include "GrGLEffect.h"
 #include "SkRTConf.h"
 #include "SkTSearch.h"
-
+#ifdef __ANDROID__
+#include "EGTLog.h"
+#define LOG_TAG "GrGpuGL_program"
+#endif
 #ifdef PROGRAM_CACHE_STATS
 SK_CONF_DECLARE(bool, c_DisplayCache, "gpu.displayCache", false,
                 "Display program cache usage.");
@@ -249,6 +252,7 @@ bool GrGpuGL::flushGraphicsState(DrawType type, const GrDeviceCoordTexture* dstC
                                  coverageStages.begin(),
                                  dstCopy,
                                  &fSharedGLProgramState);
+        //LOGE("%s, %d", __FUNCTION__, __LINE__ );
     }
     this->flushStencil(type);
     this->flushScissor();

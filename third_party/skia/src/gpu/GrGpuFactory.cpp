@@ -18,7 +18,6 @@ GrGpu* GrGpu::Create( GrContext* context)
 {
 
 	GrGLContext ctx;
-	if (ctx.isInitialized())
 	{
 		return new GrGpuGL(ctx, context);
 	}

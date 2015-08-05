@@ -27,7 +27,7 @@
 #ifndef RGBColor_h
 #define RGBColor_h
 
-#include "platform/graphics/Color.h"
+#include "platform/graphics/color.h"
 #include "wtf/RefCounted.h"
 
 namespace WebCore {

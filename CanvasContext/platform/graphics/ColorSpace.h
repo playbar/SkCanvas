@@ -27,7 +27,7 @@
 #define ColorSpace_h
 
 #include "platform/PlatformExport.h"
-#include "platform/graphics/Color.h"
+#include "platform/graphics/color.h"
 
 namespace WebCore {
 

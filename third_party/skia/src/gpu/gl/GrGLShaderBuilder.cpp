@@ -37,11 +37,11 @@ inline const char* color_attribute_name() { return "aColor"; }
 inline const char* coverage_attribute_name() { return "aCoverage"; }
 inline const char* declared_color_output_name() { return "fsColorOut"; }
 inline const char* dual_source_output_name() { return "dualSourceOut"; }
-inline const char* sample_function_name(GrSLType type, GrGLSLGeneration glslGen) {
+inline const char* sample_function_name(GrSLType type ) {
     if (kVec2f_GrSLType == type) {
-        return glslGen >= k130_GrGLSLGeneration ? "texture" : "texture2D";
+        return "texture2D";
     } else {
-        return glslGen >= k130_GrGLSLGeneration ? "textureProj" : "texture2DProj";
+        return "texture2DProj";
     }
 }
 
@@ -53,7 +53,7 @@ void append_texture_lookup(SkString* out,
                            const char* swizzle,
                            GrSLType varyingType = kVec2f_GrSLType) {
     out->appendf("%s(%s, %s)",
-                 sample_function_name(varyingType, gpu->glslGeneration()),
+                 sample_function_name(varyingType ),
                  samplerName,
                  coordName);
 
@@ -161,12 +161,6 @@ GrGLShaderBuilder::GrGLShaderBuilder(GrGpuGL* gpu,
         fInputCoverage = GrGLSLExpr4(0);
     }
 
-    if (k110_GrGLSLGeneration != fGpu->glslGeneration()) {
-        fFSOutputs.push_back().set(kVec4f_GrSLType,
-                                   GrGLShaderVar::kOut_TypeModifier,
-                                   declared_color_output_name());
-        fHasCustomColorOutput = true;
-    }
 }
 
 bool GrGLShaderBuilder::enableFeature(GLSLFeature feature) {
@@ -175,10 +169,7 @@ bool GrGLShaderBuilder::enableFeature(GLSLFeature feature) {
             if (!fGpu->glCaps().shaderDerivativeSupport()) {
                 return false;
             }
-            if (kES_GrGLBinding == fGpu->glBinding()) {
-                this->addFSFeature(1 << kStandardDerivatives_GLSLFeature,
-                                   "GL_OES_standard_derivatives");
-            }
+
             return true;
         default:
             GrCrash("Unexpected GLSLFeature requested.");
@@ -192,10 +183,7 @@ bool GrGLShaderBuilder::enablePrivateFeature(GLSLPrivateFeature feature) {
             if (!fGpu->glCaps().fragCoordConventionsSupport()) {
                 return false;
             }
-            if (fGpu->glslGeneration() < k150_GrGLSLGeneration) {
-                this->addFSFeature(1 << kFragCoordConventions_GLSLPrivateFeature,
-                                   "GL_ARB_fragment_coord_conventions");
-            }
+ 
             return true;
         case kEXTShaderFramebufferFetch_GLSLPrivateFeature:
             if (GrGLCaps::kEXT_FBFetchType != fGpu->glCaps().fbFetchType()) {
@@ -456,10 +444,9 @@ void GrGLShaderBuilder::fsEmitFunction(GrSLType returnType,
 namespace {
 
 inline void append_default_precision_qualifier(GrGLShaderVar::Precision p,
-                                               GrGLBinding binding,
                                                SkString* str) {
     // Desktop GLSL has added precision qualifiers but they don't do anything.
-    if (kES_GrGLBinding == binding) {
+    {
         switch (p) {
             case GrGLShaderVar::kHigh_Precision:
                 str->append("precision highp float;\n");
@@ -632,6 +619,11 @@ static bool attach_shader(const GrGLContext& glCtx,
     const GLchar* sourceStr = shaderSrc.c_str();
     GLint sourceLength = static_cast<GLint>(shaderSrc.size());
     glShaderSource(shaderId, 1, &sourceStr, &sourceLength);
+#ifdef _WIN32
+	FILE *pfile = fopen("c://shader.txt", "wb");
+	fwrite(sourceStr, sourceLength, 1, pfile);
+	fclose(pfile);
+#endif
     glCompileShader(shaderId);
 
     // Calling GetShaderiv in Chromium is quite expensive. Assume success in release builds.
@@ -675,7 +667,6 @@ bool GrGLShaderBuilder::compileAndAttachShaders(GLuint programId) const {
     SkString fragShaderSrc(GrGetGLSLVersionDecl(this->ctxInfo()));
     fragShaderSrc.append(fFSExtensions);
     append_default_precision_qualifier(kDefaultFragmentPrecision,
-                                       fGpu->glBinding(),
                                        &fragShaderSrc);
     this->appendUniformDecls(kFragment_Visibility, &fragShaderSrc);
     this->appendDecls(fFSInputs, &fragShaderSrc);

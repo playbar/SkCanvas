@@ -31,7 +31,6 @@ typedef enum LogLevel{
 #define LOGI(...) egret_opensl::androidLog(egret_opensl::LogLevel_Debug, LOG_TAG, __VA_ARGS__)
 #define LOGW(...) egret_opensl::androidLog(egret_opensl::LogLevel_Warn, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) egret_opensl::androidLog(egret_opensl::LogLevel_Error, LOG_TAG, __VA_ARGS__)
-
 void androidLog(LogLevel level, const char *tag, const char *format, ...);
 
 } /* namespace egret_opensl */

@@ -25,7 +25,7 @@
  */
 
 #include "config.h"
-#include "platform/graphics/Image.h"
+#include "platform/graphics/image.h"
 
 #include "platform/Length.h"
 #include "platform/SharedBuffer.h"

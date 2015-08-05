@@ -32,7 +32,7 @@
 #include "platform/PlatformExport.h"
 #include "platform/graphics/DashArray.h"
 #include "platform/graphics/Gradient.h"
-#include "platform/graphics/GraphicsTypes.h"
+#include "platform/graphics/graphicstypes.h"
 #include "platform/graphics/Pattern.h"
 #include "SkColorPriv.h"
 #include "SkDashPathEffect.h"

@@ -10,9 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 GrGLContextInfo& GrGLContextInfo::operator= (const GrGLContextInfo& ctxInfo)
 {
-    fBindingInUse = ctxInfo.fBindingInUse;
     fGLVersion = ctxInfo.fGLVersion;
-    fGLSLGeneration = ctxInfo.fGLSLGeneration;
     fIsMesa = ctxInfo.fIsMesa;
     fIsChromium = ctxInfo.fIsChromium;
     *fGLCaps = *ctxInfo.fGLCaps.get();
@@ -33,13 +31,7 @@ bool GrGLContextInfo::initialize()
 
 	const char* renderer = reinterpret_cast<const char*>(rendererUByte);
 
-	GrGLBinding binding = GrGLGetBindingInUseFromString(ver);
-
-	fBindingInUse = binding;
-
 	fGLVersion = GrGLGetVersionFromString(ver);
-
-	fGLSLGeneration = GrGetGLSLGeneration(fBindingInUse);
 
 	fIsMesa = GrGLIsMesaFromVersionString(ver);
 
@@ -50,17 +42,10 @@ bool GrGLContextInfo::initialize()
 
 }
 
-bool GrGLContextInfo::isInitialized() const
-{
-    return kNone_GrGLBinding != fBindingInUse;
-}
-
 void GrGLContextInfo::reset()
 {
-    fBindingInUse = kNone_GrGLBinding;
 	bBindingInUse = false;
     fGLVersion = GL_VER(0, 0);
-    fGLSLGeneration = static_cast<GrGLSLGeneration>(0);
     fIsMesa = false;
     fIsChromium = false;
     fGLCaps->reset();
