@@ -177,30 +177,8 @@ public:
     virtual void setUpBackend(SampleWindow* win, int msaaSampleCount) {
         SkASSERT(kNone_BackEndType == fBackend);
 
-        fBackend = kNone_BackEndType;
+		fBackend = kNativeGL_BackEndType;
 
-#if SK_SUPPORT_GPU
-        switch (win->getDeviceType()) {
-            case kRaster_DeviceType:
-                // fallthrough
-            case kPicture_DeviceType:
-                // fallthrough
-            case kGPU_DeviceType:
-                // fallthrough
-            case kNullGPU_DeviceType:
-                // all these guys use the native backend
-                fBackend = kNativeGL_BackEndType;
-                break;
-#if SK_ANGLE
-            case kANGLE_DeviceType:
-                // ANGLE is really the only odd man out
-                fBackend = kANGLE_BackEndType;
-                break;
-#endif // SK_ANGLE
-            default:
-                SkASSERT(false);
-                break;
-        }
         AttachmentInfo attachmentInfo;
         bool result = win->attach(fBackend, msaaSampleCount, &attachmentInfo);
         if (!result) {
@@ -211,34 +189,15 @@ public:
 
         SkASSERT(NULL == fCurIntf);
         SkAutoTUnref<const GrGLInterface> glInterface;
-        switch (win->getDeviceType()) {
-            case kRaster_DeviceType:
-                // fallthrough
-            case kPicture_DeviceType:
-                // fallthrough
-            case kGPU_DeviceType:
-                // all these guys use the native interface
-                glInterface.reset(GrGLCreateNativeInterface());
-                break;
-#if SK_ANGLE
-            case kANGLE_DeviceType:
-                glInterface.reset(GrGLCreateANGLEInterface());
-                break;
-#endif // SK_ANGLE
-            case kNullGPU_DeviceType:
-                glInterface.reset(GrGLCreateNullInterface());
-                break;
-            default:
-                SkASSERT(false);
-                break;
-        }
+
 
         // Currently SampleApp does not use NVPR. TODO: Provide an NVPR device type that is skipped
         // when the driver doesn't support NVPR.
-        fCurIntf = GrGLInterfaceRemoveNVPR(glInterface.get());
+
+		glInterface.reset(GrGLCreateNativeInterface());
 
         SkASSERT(NULL == fCurContext);
-        fCurContext = GrContext::Create( (GrBackendContext) fCurIntf);
+		fCurContext = GrContext::Create((GrBackendContext)glInterface.get());
 
         if (NULL == fCurContext || NULL == fCurIntf) {
             // We need some context and interface to see results
@@ -250,7 +209,6 @@ public:
 
             win->detach();
         }
-#endif // SK_SUPPORT_GPU
         // call windowSizeChanged to create the render target
         this->windowSizeChanged(win);
     }
@@ -270,10 +228,10 @@ public:
         fBackend = kNone_BackEndType;
     }
 
-    virtual SkCanvas* createCanvas(SampleWindow::DeviceType dType,
+    virtual SkCanvas* createCanvas(
                                    SampleWindow* win) {
 #if SK_SUPPORT_GPU
-        if (IsGpuDeviceType(dType) && NULL != fCurContext) {
+        if ( NULL != fCurContext) {
             SkAutoTUnref<SkBaseDevice> device(new SkGpuDevice(fCurContext, fCurRenderTarget));
             return new SkCanvas(device);
         } else
@@ -283,25 +241,14 @@ public:
         }
     }
 
-    virtual void publishCanvas(SampleWindow::DeviceType dType,
+    virtual void publishCanvas(
                                SkCanvas* canvas,
                                SampleWindow* win) {
 #if SK_SUPPORT_GPU
         if (fCurContext) {
             // in case we have queued drawing calls
             fCurContext->flush();
-
-            if (!IsGpuDeviceType(dType)) {
-                // need to send the raster bits to the (gpu) window
-                fCurContext->setRenderTarget(fCurRenderTarget);
-                const SkBitmap& bm = win->getBitmap();
-                fCurRenderTarget->writePixels(0, 0, bm.width(), bm.height(),
-                                             SkImageInfo2GrPixelConfig(bm.colorType(),
-                                                                       bm.alphaType()),
-                                             bm.getPixels(),
-                                             bm.rowBytes());
-            }
-        }
+		}
 #endif
 
         win->present();
@@ -702,23 +649,6 @@ void SampleWindow::updatePointer(int x, int y)
         this->inval(NULL);
     }
 }
-
-static inline SampleWindow::DeviceType cycle_devicetype(SampleWindow::DeviceType ct) {
-    static const SampleWindow::DeviceType gCT[] = {
-        SampleWindow::kPicture_DeviceType,
-#if SK_SUPPORT_GPU
-        SampleWindow::kGPU_DeviceType,
-#if SK_ANGLE
-        SampleWindow::kANGLE_DeviceType,
-#endif // SK_ANGLE
-        SampleWindow::kRaster_DeviceType, // skip the null gpu device in normal cycling
-#endif // SK_SUPPORT_GPU
-        SampleWindow::kRaster_DeviceType
-    };
-    SK_COMPILE_ASSERT(SK_ARRAY_COUNT(gCT) == SampleWindow::kDeviceTypeCnt, array_size_mismatch);
-    return gCT[ct];
-}
-
 static SkString getSampleTitle(const SkViewFactory* sampleFactory) {
     SkView* view = (*sampleFactory)();
     SkString title;
@@ -824,7 +754,6 @@ SampleWindow::SampleWindow(void* hwnd, int argc, char** argv, DeviceManager* dev
     fclose(f);
 #endif
 
-	fDeviceType = kGPU_DeviceType;
 
 #if DEFAULT_TO_GPU
     fDeviceType = kGPU_DeviceType;
@@ -1146,7 +1075,7 @@ void SampleWindow::draw(SkCanvas* canvas) {
     }
 
     // do this last
-    fDevManager->publishCanvas(fDeviceType, canvas, this);
+    fDevManager->publishCanvas( canvas, this);
 }
 
 static float clipW = 200;
@@ -1293,15 +1222,8 @@ SkCanvas* SampleWindow::beforeChildren(SkCanvas* canvas) {
         fPdfCanvas = new SkCanvas(pdfDevice);
         pdfDevice->unref();
         canvas = fPdfCanvas;
-    } else if (kPicture_DeviceType == fDeviceType) {
-        canvas = fRecorder.beginRecording(9999, 9999, NULL, 0);
     } else {
-#if SK_SUPPORT_GPU
-        if (kNullGPU_DeviceType != fDeviceType)
-#endif
-        {
             canvas = this->INHERITED::beforeChildren(canvas);
-        }
     }
 
     if (fUseClip) {
@@ -1369,29 +1291,6 @@ void SampleWindow::afterChildren(SkCanvas* orig) {
             name.printf("sample_grab_%d.png", gSampleGrabCounter++);
             SkImageEncoder::EncodeFile(name.c_str(), bmp,
                                        SkImageEncoder::kPNG_Type, 100);
-        }
-    }
-
-    if (kPicture_DeviceType == fDeviceType) {
-        SkAutoTUnref<SkPicture> picture(fRecorder.endRecording());
-
-        if (true) {
-            SkPicture* pict = new SkPicture(*picture);
-            this->installDrawFilter(orig);
-            orig->drawPicture(pict);
-            pict->unref();
-        } else if (true) {
-            SkDynamicMemoryWStream ostream;
-            picture->serialize(&ostream);
-
-            SkAutoDataUnref data(ostream.copyToData());
-            SkMemoryStream istream(data->data(), data->size());
-            SkAutoTUnref<SkPicture> pict(SkPicture::CreateFromStream(&istream));
-            if (pict.get() != NULL) {
-                orig->drawPicture(pict.get());
-            }
-        } else {
-            picture->draw(orig);
         }
     }
 
@@ -1594,7 +1493,6 @@ bool SampleWindow::onEvent(const SkEvent& evt) {
     }
     int selected = -1;
     if (SkOSMenu::FindListIndex(evt, "Device Type", &selected)) {
-        this->setDeviceType((DeviceType)selected);
         return true;
     }
     if (SkOSMenu::FindTriState(evt, "Pipe", &fPipeState)) {
@@ -1674,20 +1572,6 @@ bool SampleWindow::onQuery(SkEvent* query) {
     }
     return this->INHERITED::onQuery(query);
 }
-
-#if 0 // UNUSED
-static void cleanup_for_filename(SkString* name) {
-    char* str = name->writable_str();
-    for (size_t i = 0; i < name->size(); i++) {
-        switch (str[i]) {
-            case ':': str[i] = '-'; break;
-            case '/': str[i] = '-'; break;
-            case ' ': str[i] = '_'; break;
-            default: break;
-        }
-    }
-}
-#endif
 
 bool SampleWindow::onHandleChar(SkUnichar uni) {
     {
@@ -1770,11 +1654,6 @@ bool SampleWindow::onHandleChar(SkUnichar uni) {
             this->updateTitle();
             return true;
 #if SK_SUPPORT_GPU
-        case '\\':
-            this->setDeviceType(kNullGPU_DeviceType);
-            this->inval(NULL);
-            this->updateTitle();
-            return true;
         case 'p':
             {
                 GrContext* grContext = this->getGrContext();
@@ -1799,13 +1678,9 @@ bool SampleWindow::onHandleChar(SkUnichar uni) {
     return this->INHERITED::onHandleChar(uni);
 }
 
-void SampleWindow::setDeviceType(DeviceType type) {
-    if (type == fDeviceType)
-        return;
-
+void SampleWindow::setDeviceType() 
+{
     fDevManager->tearDownBackend(this);
-
-    fDeviceType = type;
 
     fDevManager->setUpBackend(this, fMSAASampleCount);
 
@@ -1820,7 +1695,6 @@ void SampleWindow::toggleSlideshow() {
 }
 
 void SampleWindow::toggleRendering() {
-    this->setDeviceType(cycle_devicetype(fDeviceType));
     this->updateTitle();
     this->inval(NULL);
 }
@@ -1990,20 +1864,6 @@ void SampleWindow::loadView(SkView* view) {
     this->updateTitle();
 }
 
-static const char* gDeviceTypePrefix[] = {
-    "raster: ",
-    "picture: ",
-#if SK_SUPPORT_GPU
-    "opengl: ",
-#if SK_ANGLE
-    "angle: ",
-#endif // SK_ANGLE
-    "null-gl: "
-#endif // SK_SUPPORT_GPU
-};
-SK_COMPILE_ASSERT(SK_ARRAY_COUNT(gDeviceTypePrefix) == SampleWindow::kDeviceTypeCnt,
-                  array_size_mismatch);
-
 static const char* trystate_str(SkOSMenu::TriState state,
                                 const char trueStr[], const char falseStr[]) {
     if (SkOSMenu::kOnState == state) {
@@ -2021,8 +1881,6 @@ void SampleWindow::updateTitle() {
     if (!curr_title(this, &title)) {
         title.set("<unknown>");
     }
-
-    title.prepend(gDeviceTypePrefix[fDeviceType]);
 
     title.prepend(" ");
     //title.prepend(sk_tool_utils::colortype_name(this->getBitmap().colorType()));
@@ -2074,8 +1932,7 @@ void SampleWindow::updateTitle() {
     }
 
 #if SK_SUPPORT_GPU
-    if (IsGpuDeviceType(fDeviceType) &&
-        NULL != fDevManager &&
+    if ( NULL != fDevManager &&
         fDevManager->getGrRenderTarget() &&
         fDevManager->getGrRenderTarget()->numSamples() > 0) {
         title.appendf(" [MSAA: %d]",

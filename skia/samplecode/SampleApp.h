@@ -29,37 +29,8 @@ class SkViewFactory;
 class SampleWindow : public SkOSWindow {
     SkTDArray<const SkViewFactory*> fSamples;
 public:
-    enum DeviceType {
-        kRaster_DeviceType,
-        kPicture_DeviceType,
-#if SK_SUPPORT_GPU
-        kGPU_DeviceType,
-#if SK_ANGLE
-        kANGLE_DeviceType,
-#endif // SK_ANGLE
-        kNullGPU_DeviceType,
-#endif // SK_SUPPORT_GPU
 
-        kDeviceTypeCnt
-    };
-
-    static bool IsGpuDeviceType(DeviceType devType) {
-    #if SK_SUPPORT_GPU
-        switch (devType) {
-            case kGPU_DeviceType:
-    #if SK_ANGLE
-            case kANGLE_DeviceType:
-    #endif // SK_ANGLE
-            case kNullGPU_DeviceType:
-                return true;
-            default:
-                return false;
-        }
-    #endif // SK_SUPPORT_GPU
-        return false;
-    }
-
-    /**
+      /**
      * SampleApp ports can subclass this manager class if they want to:
      *      * filter the types of devices supported
      *      * customize plugging of SkBaseDevice objects into an SkCanvas
@@ -76,11 +47,11 @@ public:
 
         // called before drawing. should install correct device
         // type on the canvas. Will skip drawing if returns false.
-        virtual SkCanvas* createCanvas(DeviceType dType, SampleWindow* win) = 0;
+        virtual SkCanvas* createCanvas( SampleWindow* win) = 0;
 
         // called after drawing, should get the results onto the
         // screen.
-        virtual void publishCanvas(DeviceType dType,
+        virtual void publishCanvas(
                                    SkCanvas* canvas,
                                    SampleWindow* win) = 0;
 
@@ -103,7 +74,7 @@ public:
     virtual SkCanvas* createCanvas() SK_OVERRIDE {
         SkCanvas* canvas = NULL;
         if (fDevManager) {
-            canvas = fDevManager->createCanvas(fDeviceType, this);
+            canvas = fDevManager->createCanvas( this);
         }
         if (NULL == canvas) {
             canvas = this->INHERITED::createCanvas();
@@ -113,7 +84,7 @@ public:
 
     virtual void draw(SkCanvas* canvas);
 
-    void setDeviceType(DeviceType type);
+    void setDeviceType();
     void toggleRendering();
     void toggleSlideshow();
     void toggleFPS();
@@ -133,8 +104,6 @@ public:
     void saveToPdf();
     SkData* getPDFData() { return fPDFData; }
     void postInvalDelay();
-
-    DeviceType getDeviceType() const { return fDeviceType; }
 
 protected:
     virtual void onDraw(SkCanvas* canvas) SK_OVERRIDE;
@@ -168,7 +137,6 @@ private:
     SkScalar fZoomLevel;
     SkScalar fZoomScale;
 
-    DeviceType fDeviceType;
     DeviceManager* fDevManager;
 
     bool fSaveToPdf;
