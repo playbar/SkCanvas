@@ -138,6 +138,7 @@ SkScalerContext::~SkScalerContext() {
 SkScalerContext* SkScalerContext::allocNextContext() const {
 #ifdef SK_BUILD_FOR_ANDROID
 	//SkASSERT( false );
+	SkDebugf( "%s, %s maybe error", __FILENAME__, __FUNCTION__ );
 	return NULL;
 //    SkTypeface* newFace = SkAndroidNextLogicalTypeface(fRec.fFontID,
 //                                                       fRec.fOrigFontID,
