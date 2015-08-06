@@ -89,10 +89,10 @@ bool SkiaApp::createBitmap(const std::string &src){
 	SkFILEStream stream(src.c_str());
 	//SkImageDecoder::DecodeFile(src, &bitmap, SkBitmap::kARGB_8888_Config, SkImageDecoder::kDecodePixels_Mode);
 
-	SkImageDecoder *coder =CreatePNGImageDecoder();
-	delete coder;
-	coder = NULL;
-	coder = SkImageDecoder::Factory(&stream);
+	//SkImageDecoder *coder =CreatePNGImageDecoder();
+	//delete coder;
+	//coder = NULL;
+	SkImageDecoder *coder = SkImageDecoder::Factory(&stream);
 	if(!coder){
 		LOGE("%s:coder is null",__func__);
 		return false;

@@ -114,10 +114,12 @@ GrContext::GrContext() {
 bool GrContext::init(GrBackend backend, GrBackendContext backendContext) {
     SkASSERT(NULL == fGpu);
 
+    SkDebugf("%s, %d", __FUNCTION__, __LINE__ );
     fGpu = GrGpu::Create(backend, backendContext, this);
     if (NULL == fGpu) {
         return false;
     }
+    SkDebugf("%s, %d", __FUNCTION__, __LINE__ );
 
     fDrawState = SkNEW(GrDrawState);
     fGpu->setDrawState(fDrawState);

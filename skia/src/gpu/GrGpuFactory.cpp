@@ -19,7 +19,9 @@ GrGpu* GrGpu::Create(GrBackend backend, GrBackendContext backendContext, GrConte
     const GrGLInterface* glInterface = NULL;
     SkAutoTUnref<const GrGLInterface> glInterfaceUnref;
 
-    if (kOpenGL_GrBackend == backend) {
+    SkDebugf("%s, %d, %d", __FUNCTION__, __LINE__ , (int)backend );
+    //if (kOpenGL_GrBackend == backend)
+    {
         glInterface = reinterpret_cast<const GrGLInterface*>(backendContext);
         if (NULL == glInterface) {
             glInterface = GrGLDefaultInterface();
@@ -34,10 +36,14 @@ GrGpu* GrGpu::Create(GrBackend backend, GrBackendContext backendContext, GrConte
 #endif
             return NULL;
         }
+        SkDebugf("%s, %d, %d", __FUNCTION__, __LINE__, (int)glInterface );
         GrGLContext ctx(glInterface);
-        if (ctx.isInitialized()) {
+        if (ctx.isInitialized())
+        {
             return SkNEW_ARGS(GrGpuGL, (ctx, context));
         }
+        SkDebugf("%s, %d", __FUNCTION__, __LINE__ );
     }
+    SkDebugf("%s, %d", __FUNCTION__, __LINE__ );
     return NULL;
 }

@@ -82,10 +82,10 @@ LOCAL_SRC_FILES += $(MY_FILES)
 LOCAL_SRC_FILES	+=  ../../../skia/src/images/SkImageDecoder.cpp \
 					../../../skia/src/images/SkImageDecoder_FactoryDefault.cpp \
 					../../../skia/src/images/SkImageDecoder_FactoryRegistrar.cpp \
-					../../../skia/src/images/SkImageDecoder_libpng.cpp \
 					../../../skia/src/images/SkImageEncoder.cpp \
 					../../../skia/src/images/SkImageEncoder_Factory.cpp \
 					../../../skia/src/images/SkScaledBitmapSampler.cpp 
+					#../../../skia/src/images/SkImageDecoder_libpng.cpp \
 					
 #lazy
 LOCAL_SRC_FILES	+=  ../../../skia/src/lazy/SkCachingPixelRef.cpp \
