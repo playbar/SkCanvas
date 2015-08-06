@@ -138,14 +138,14 @@ bool GrGLIsChromiumFromRendererString(const char* rendererString) {
 }
 
 GrGLVersion GrGLGetVersionFromString(const char* versionString) {
-    if (NULL == versionString) {
+   if (NULL == versionString) {
         SkDebugf("NULL GL version string.");
         return GR_GL_INVALID_VER;
     }
 
     int major, minor;
 
-    // check for mesa
+    // check for mesad
     int mesaMajor, mesaMinor;
     int n = sscanf(versionString, "%d.%d Mesa %d.%d", &major, &minor, &mesaMajor, &mesaMinor);
     if (4 == n) {
