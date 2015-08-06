@@ -165,13 +165,6 @@ static inline int GrNextPow2(int n) {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Possible 3D APIs that may be used by Ganesh.
- */
-enum GrBackend {
-    kOpenGL_GrBackend,
-};
-
-/**
  * Backend-specific 3D context handle
  *      GrGLInterface* for OpenGL. If NULL will use the default GL interface.
  */

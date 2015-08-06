@@ -48,11 +48,11 @@ public:
         fSweep = SkIntToScalar(100);
         this->setBGColor(0xFFDDDDDD);
 		SkFILEStream stream("c:/test_ba.png");
-		//SkImageDecoder* dec = sk_libpng_dfactory(&stream);
+		SkImageDecoder* dec = sk_libpng_dfactory(&stream);
 		//delete dec;
 		SkImageDecoder *coder = SkImageDecoder::Factory(&stream);
 		coder->decode(&stream, &fbmp, SkColorType::kRGBA_8888_SkColorType, SkImageDecoder::kDecodePixels_Mode);
-		//delete dec;
+		delete dec;
     }
 
 protected:

@@ -52,7 +52,7 @@ public:
     /**
      * Creates a GrContext for a backend context.
      */
-    static GrContext* Create(GrBackend, GrBackendContext);
+    static GrContext* Create( GrBackendContext);
 
     virtual ~GrContext();
 
@@ -995,7 +995,7 @@ private:
     bool                            fGpuTracingEnabled;
 
     GrContext(); // init must be called after the constructor.
-    bool init(GrBackend, GrBackendContext);
+    bool init( GrBackendContext);
 
     void setupDrawBuffer();
 

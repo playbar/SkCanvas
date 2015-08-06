@@ -82,9 +82,9 @@ private:
     GrContext* fContext;
 };
 
-GrContext* GrContext::Create(GrBackend backend, GrBackendContext backendContext) {
+GrContext* GrContext::Create( GrBackendContext backendContext) {
     GrContext* context = SkNEW(GrContext);
-    if (context->init(backend, backendContext)) {
+    if (context->init( backendContext)) {
         return context;
     } else {
         context->unref();
@@ -111,10 +111,10 @@ GrContext::GrContext() {
     fGpuTracingEnabled = false;
 }
 
-bool GrContext::init(GrBackend backend, GrBackendContext backendContext) {
+bool GrContext::init( GrBackendContext backendContext) {
     SkASSERT(NULL == fGpu);
 
-    fGpu = GrGpu::Create(backend, backendContext, this);
+    fGpu = GrGpu::Create( backendContext, this);
     if (NULL == fGpu) {
         return false;
     }

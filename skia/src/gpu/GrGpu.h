@@ -44,7 +44,7 @@ public:
      * not supported (at compile-time or run-time) this returns NULL. The context will not be
      * fully constructed and should not be used by GrGpu until after this function returns.
      */
-    static GrGpu* Create(GrBackend, GrBackendContext, GrContext* context);
+    static GrGpu* Create( GrBackendContext, GrContext* context);
 
     ////////////////////////////////////////////////////////////////////////////
 

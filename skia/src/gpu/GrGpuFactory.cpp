@@ -14,12 +14,13 @@
 #include "GrGpu.h"
 #include "gl/GrGpuGL.h"
 
-GrGpu* GrGpu::Create(GrBackend backend, GrBackendContext backendContext, GrContext* context) {
+GrGpu* GrGpu::Create( GrBackendContext backendContext, GrContext* context) {
 
     const GrGLInterface* glInterface = NULL;
     SkAutoTUnref<const GrGLInterface> glInterfaceUnref;
 
-    if (kOpenGL_GrBackend == backend) {
+    //if (kOpenGL_GrBackend == backend)
+	{
         glInterface = reinterpret_cast<const GrGLInterface*>(backendContext);
         if (NULL == glInterface) {
             glInterface = GrGLDefaultInterface();

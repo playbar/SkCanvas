@@ -238,7 +238,7 @@ public:
         fCurIntf = GrGLInterfaceRemoveNVPR(glInterface.get());
 
         SkASSERT(NULL == fCurContext);
-        fCurContext = GrContext::Create(kOpenGL_GrBackend, (GrBackendContext) fCurIntf);
+        fCurContext = GrContext::Create( (GrBackendContext) fCurIntf);
 
         if (NULL == fCurContext || NULL == fCurIntf) {
             // We need some context and interface to see results
