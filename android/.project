@@ -7546,11 +7546,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/skia/src/gpu/gl/GrGLContext.h</locationURI>
 		</link>
 		<link>
-			<name>jni/skia/src/gpu/gl/GrGLCreateNativeInterface_none.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/skia/src/gpu/gl/GrGLCreateNativeInterface_none.cpp</locationURI>
-		</link>
-		<link>
 			<name>jni/skia/src/gpu/gl/GrGLCreateNullInterface.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/skia/src/gpu/gl/GrGLCreateNullInterface.cpp</locationURI>
@@ -7559,11 +7554,6 @@
 			<name>jni/skia/src/gpu/gl/GrGLDefaultInterface_native.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/skia/src/gpu/gl/GrGLDefaultInterface_native.cpp</locationURI>
-		</link>
-		<link>
-			<name>jni/skia/src/gpu/gl/GrGLDefaultInterface_none.cpp</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/skia/src/gpu/gl/GrGLDefaultInterface_none.cpp</locationURI>
 		</link>
 		<link>
 			<name>jni/skia/src/gpu/gl/GrGLDefines.h</name>

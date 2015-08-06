@@ -137,7 +137,7 @@ SkScalerContext::~SkScalerContext() {
 // there are no more entries in the fallback chain.
 SkScalerContext* SkScalerContext::allocNextContext() const {
 #ifdef SK_BUILD_FOR_ANDROID
-	SkASSERT( false );
+	//SkASSERT( false );
 	return NULL;
 //    SkTypeface* newFace = SkAndroidNextLogicalTypeface(fRec.fFontID,
 //                                                       fRec.fOrigFontID,

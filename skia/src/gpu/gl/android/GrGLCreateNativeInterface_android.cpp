@@ -33,7 +33,7 @@ static GrGLInterface* create_es_interface(GrGLVersion version,
     functions->fBindAttribLocation = glBindAttribLocation;
     functions->fBindBuffer = glBindBuffer;
     functions->fBindTexture = glBindTexture;
-    functions->fBindVertexArray = NULL; //glBindVertexArrayOES; // glBindVertexArrayOES;
+    functions->fBindVertexArray = (*(PFNGLBINDVERTEXARRAYOESPROC)eglGetProcAddress("glBindVertexArrayOES"));// glBindVertexArrayOES;
     functions->fBlendColor = glBlendColor;
     functions->fBlendFunc = glBlendFunc;
     functions->fBufferData = glBufferData;
@@ -53,7 +53,7 @@ static GrGLInterface* create_es_interface(GrGLVersion version,
     functions->fDeleteProgram = glDeleteProgram;
     functions->fDeleteShader = glDeleteShader;
     functions->fDeleteTextures = glDeleteTextures;
-    functions->fDeleteVertexArrays = NULL;// glDeleteVertexArraysOES;
+    functions->fDeleteVertexArrays = (*(PFNGLDELETEVERTEXARRAYSOESPROC)eglGetProcAddress("glDeleteVertexArraysOES"));
     functions->fDepthMask = glDepthMask;
     functions->fDisable = glDisable;
     functions->fDisableVertexAttribArray = glDisableVertexAttribArray;
@@ -67,7 +67,7 @@ static GrGLInterface* create_es_interface(GrGLVersion version,
     functions->fGenBuffers = glGenBuffers;
     functions->fGenerateMipmap = glGenerateMipmap;
     functions->fGenTextures = glGenTextures;
-    functions->fGenVertexArrays = NULL;// glGenVertexArraysOES;
+    functions->fGenVertexArrays = (*(PFNGLGENVERTEXARRAYSOESPROC)eglGetProcAddress("glGenVertexArraysOES"));
     functions->fGetBufferParameteriv = glGetBufferParameteriv;
     functions->fGetError = glGetError;
     functions->fGetIntegerv = glGetIntegerv;
@@ -118,7 +118,7 @@ static GrGLInterface* create_es_interface(GrGLVersion version,
     }
 
 #if GL_EXT_discard_framebuffer
-    functions->fDiscardFramebuffer = NULL;// glDiscardFramebufferEXT;
+    functions->fDiscardFramebuffer = (*(PFNGLDISCARDFRAMEBUFFEREXTPROC)eglGetProcAddress("glDiscardFramebufferEXT"));
 #endif
     functions->fUniform1f = glUniform1f;
     functions->fUniform1i = glUniform1i;
@@ -163,16 +163,16 @@ static GrGLInterface* create_es_interface(GrGLVersion version,
 
     if (extensions->has("GL_EXT_multisampled_render_to_texture")) {
 #if GL_EXT_multisampled_render_to_texture
-        functions->fFramebufferTexture2DMultisample = NULL; //glFramebufferTexture2DMultisampleEXT;
-        functions->fRenderbufferStorageMultisampleES2EXT = NULL;//glRenderbufferStorageMultisampleEXT;
+        functions->fFramebufferTexture2DMultisample = glFramebufferTexture2DMultisampleEXT;
+        functions->fRenderbufferStorageMultisampleES2EXT = glRenderbufferStorageMultisampleEXT;
 #else
         functions->fFramebufferTexture2DMultisample = (GrGLFramebufferTexture2DMultisampleProc) eglGetProcAddress("glFramebufferTexture2DMultisampleEXT");
         functions->fRenderbufferStorageMultisampleES2EXT = (GrGLRenderbufferStorageMultisampleProc) eglGetProcAddress("glRenderbufferStorageMultisampleEXT");
 #endif
     } else if (extensions->has("GL_IMG_multisampled_render_to_texture")) {
 #if GL_IMG_multisampled_render_to_texture
-        functions->fFramebufferTexture2DMultisample = NULL;// glFramebufferTexture2DMultisampleIMG;
-        functions->fRenderbufferStorageMultisampleES2EXT = NULL;// glRenderbufferStorageMultisampleIMG;
+        functions->fFramebufferTexture2DMultisample = (GrGLFramebufferTexture2DMultisampleProc) eglGetProcAddress("glFramebufferTexture2DMultisampleIMG");;
+        functions->fRenderbufferStorageMultisampleES2EXT = (GrGLRenderbufferStorageMultisampleProc) eglGetProcAddress("glRenderbufferStorageMultisampleIMG");
 #else
         functions->fFramebufferTexture2DMultisample = (GrGLFramebufferTexture2DMultisampleProc) eglGetProcAddress("glFramebufferTexture2DMultisampleIMG");
         functions->fRenderbufferStorageMultisampleES2EXT = (GrGLRenderbufferStorageMultisampleProc) eglGetProcAddress("glRenderbufferStorageMultisampleIMG");
@@ -253,7 +253,6 @@ const GrGLInterface* GrGLCreateNativeInterface() {
 
     const char* verStr = reinterpret_cast<const char*>(glGetString(GR_GL_VERSION));
     GrGLStandard standard = GrGLGetStandardInUseFromString(verStr);
-
     if (kGLES_GrGLStandard == standard) {
         GrGLVersion version = GrGLGetVersionFromString(verStr);
         GrGLExtensions extensions;
@@ -266,7 +265,7 @@ const GrGLInterface* GrGLCreateNativeInterface() {
         if (NULL != interface) {
             interface->fExtensions.swap(&extensions);
         }
-
+        SkDebugf( "%s, %d, %d", __FUNCTION__, __LINE__, standard );
         return interface;
     } else if (kGL_GrGLStandard == standard) {
         return create_desktop_interface();

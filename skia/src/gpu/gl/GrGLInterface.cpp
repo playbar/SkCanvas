@@ -123,11 +123,12 @@ GrGLInterface* GrGLInterface::NewClone(const GrGLInterface* interface) {
 #endif
 
 #define RETURN_FALSE_INTERFACE                                                                   \
-    if (kIsDebug) { SkDebugf("%s:%d GrGLInterface::validate() failed.\n", __FILE__, __LINE__); } \
+    if (kIsDebug) { SkDebugf("%s:%d GrGLInterface::validate() failed.\n", __FILENAME__, __LINE__); } \
     return false;
 
 bool GrGLInterface::validate() const {
 
+	//return true;
     if (kNone_GrGLStandard == fStandard) {
         RETURN_FALSE_INTERFACE
     }
@@ -233,6 +234,7 @@ bool GrGLInterface::validate() const {
     }
 
     GrGLVersion glVer = GrGLGetVersion(this);
+    SkDebugf( "%s, %d,%0x", __FUNCTION__, __LINE__, (int)glVer );
     if (GR_GL_INVALID_VER == glVer) {
         RETURN_FALSE_INTERFACE
     }
@@ -472,11 +474,19 @@ bool GrGLInterface::validate() const {
                 RETURN_FALSE_INTERFACE
             }
         }
-    } else {
-        if (glVer >= GR_GL_VER(3,0) || fExtensions.has("GL_OES_vertex_array_object")) {
-            if (NULL == fFunctions.fBindVertexArray ||
-                NULL == fFunctions.fDeleteVertexArrays ||
-                NULL == fFunctions.fGenVertexArrays) {
+    }
+    else
+    {
+        if (glVer >= GR_GL_VER(3,0) || fExtensions.has("GL_OES_vertex_array_object"))
+        {
+
+            if (NULL == fFunctions.fBindVertexArray)
+            	SkDebugf("fFunctions.fBindVertexArray is null");
+           if( NULL == fFunctions.fDeleteVertexArrays)
+        	   SkDebugf("fFunctions.fDeleteVertexArrays is null");
+            if(    NULL == fFunctions.fGenVertexArrays)
+            {
+
                 RETURN_FALSE_INTERFACE
             }
         }

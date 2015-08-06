@@ -87,9 +87,11 @@ inline void operator delete(void* p) {
 ///////////////////////////////////////////////////////////////////////////////
 
 #define SK_INIT_TO_AVOID_WARNING    = 0
-
+#define __FILENAME__ (strrchr(__FILE__, '/') + 1 )
 #ifndef SkDebugf
     void SkDebugf(const char format[], ...);
+//#define LOG_TAG (strrchr(__FILE__, '/') + 1 )
+//#define SkDebugf( ...)  __android_log_vprint(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__ );
 #endif
 
 #ifdef SK_DEBUG

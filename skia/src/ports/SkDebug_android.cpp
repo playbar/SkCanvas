@@ -12,7 +12,9 @@
 
 static const size_t kBufferSize = 256;
 
+//#define LOG_TAG (strrchr(__FILE__, '/') + 1 )
 #define LOG_TAG "skia"
+
 #include <android/log.h>
 
 static bool gSkDebugToStdOut = false;

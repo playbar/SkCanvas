@@ -54,13 +54,14 @@ void SkiaApp::windowChanged(int width,int height){
 	LOGD("%s:(%d,%d)",__func__,width,height);
 
 	glViewport(0,0,width,height);
-	SkAutoTUnref<const GrGLInterface> glInterface;
-	glInterface.reset( GrGLCreateNativeInterface() );
-	LOGE("%s, %d", __FUNCTION__, __LINE__ );
-	const GrGLInterface *fCurIntf = GrGLInterfaceRemoveNVPR( glInterface.get());
-	LOGE("%s, %d", __FUNCTION__, __LINE__ );
-	fCurContext = GrContext::Create( kOpenGL_GrBackend, (GrBackendContext) fCurIntf);
-	LOGE("%s, %d", __FUNCTION__, __LINE__ );
+	//SkAutoTUnref<const GrGLInterface> glInterface;
+	//glInterface.reset( GrGLCreateNativeInterface() );
+	//LOGE("%s, %d", __FUNCTION__, __LINE__ );
+	//const GrGLInterface *fCurIntf = GrGLInterfaceRemoveNVPR( glInterface.get());
+	//LOGE("%s, %d", __FUNCTION__, __LINE__ );
+	const GrGLInterface *fCurIntf = GrGLCreateNativeInterface();
+	fCurContext = GrContext::Create( (GrBackendContext) fCurIntf);
+	LOGE("%s, %d, %d", __FUNCTION__, __LINE__, (int)fCurContext );
 	GrBackendRenderTargetDesc desc;
 	desc.fWidth = SkScalarRoundToInt(width);
 	desc.fHeight = SkScalarRoundToInt(height);
@@ -179,7 +180,8 @@ void SkiaApp::TestDrawImage(SkCanvas *canvas )
 void SkiaApp::mainLoop(){
 	//canvas = createCanvas();
 	canvas->drawColor(0xff000000);
-	TestArc( canvas );
+	//TestArc( canvas );
+	DrawTest( canvas );
 	fCurContext->flush();
 }
 
