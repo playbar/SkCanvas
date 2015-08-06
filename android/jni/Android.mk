@@ -6,7 +6,8 @@ LOCAL_MODULE    := runtimecanvas
 
 LOCAL_ARM_MODE := arm
 
-LOCAL_CFLAGS    := -Werror
+LOCAL_CFLAGS    := -Werror \
+				-DSK_SUPPORT_GPU
 
 LOCAL_SRC_FILES := gl_code.cpp \
 				   GlesUtil.cpp \

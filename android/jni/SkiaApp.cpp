@@ -137,10 +137,15 @@ void SkiaApp::DrawTest(SkCanvas *canvas )
 		SkPaint paint;
 		paint.setColor(0xffff0000);
 		paint.setStrokeWidth( 10);
+		paint.setStyle( SkPaint::kStroke_Style );
 		canvas->drawColor( 0xff00ffff);
 		canvas->drawLine(0,0,100,100,paint);
 		canvas->drawText("test", 4, 200, 100, paint );
-		//canvas->drawArc()
+		canvas->drawCircle( 250, 250, 100, paint);
+		SkRect r;
+		r.set( 0, 0, 200, 200);
+		r.offset(20, 20);
+		canvas->drawArc( r, 0, 30, true, paint );
 		//canvas->drawColor( 0xff00ffff);
 		//glClearColor( 1.0f, 0.0f, 0.0f, 1.0f );
 		//glClear( GL_COLOR_BUFFER_BIT );
