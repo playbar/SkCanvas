@@ -8,7 +8,6 @@ LOCAL_ARM_MODE := arm
 LOCAL_MODULE := png
 
 LOCAL_CFLAGS += \
-				-DHB_NO_MT \
 				-fexceptions
 				
 LOCAL_C_INCLUDES := $../../skia/third_party/externals/libpng \

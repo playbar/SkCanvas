@@ -12,12 +12,12 @@ LOCAL_CFLAGS += \
 				-D_ARGB_PIXEL_  \
 				-DSK_SUPPORT_GPU \
 				-DSK_IGNORE_ETC1_SUPPORT \
+				-DGL_GLEXT_PROTOTYPES \
 				-fexceptions
 #				-fshort-wchar	
 #				-DGL_GLEXT_PROTOTYPES
 				
-LOCAL_LDLIBS    := -llog -lGLESv2 -ljnigraphics -lEGL -lz
-LOCAL_EXPORT_LDLIBS :=-lz
+LOCAL_LDLIBS    := -llog -lGLESv2 -lEGL -lz
 
 				
 LOCAL_C_INCLUDES := $../../skia/include/core \
@@ -37,6 +37,7 @@ LOCAL_C_INCLUDES := $../../skia/include/core \
 					$../../skia/src/utils \
 					$../../skia/include/images \
 					$../../skia/third_party/externals/libpng \
+					$../../skia/third_party/freetype/include \
 					$../../ \
 					
 					
@@ -64,6 +65,9 @@ LOCAL_SRC_FILES += $(MY_FILES)
 MY_FILES := $(wildcard $(LOCAL_PATH)/../../../skia/src/gpu/gl/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_FILES)
+
+LOCAL_SRC_FILES +=  ../../../skia/src/gpu/gl/android/GrGLCreateNativeInterface_android.cpp \
+					../../../skia/src/gpu/gl/android/SkNativeGLContext_android.cpp 
 
 MY_FILES := $(wildcard $(LOCAL_PATH)/../../../skia/src/gpu/*.cpp)
 MY_FILES := $(MY_FILES:$(LOCAL_PATH)/%=%)
@@ -108,7 +112,10 @@ LOCAL_SRC_FILES	+=  ../../../skia/src/ports/SkFontHost_none.cpp \
 					../../../skia/src/ports/SkOSFile_none.cpp \
 					../../../skia/src/ports/SkOSFile_stdio.cpp \
 					../../../skia/src/ports/SkTLS_none.cpp \
+					../../../skia/src/ports/SkMemory_malloc.cpp \
+					../../../skia/src/ports/SkDebug_android.cpp \
 					../../../skia/src/ports/SkGlobalInitialization_default.cpp
+					#../../../skia/src/ports/SkFontConfigInterface_android.cpp \
 
 #sfnt
 LOCAL_SRC_FILES	+=  ../../../skia/src/sfnt/SkOTTable_name.cpp \
@@ -128,7 +135,11 @@ LOCAL_SRC_FILES	+=  ../../../skia/src/utils/SkBase64.cpp \
 					../../../skia/src/utils/SkParseColor.cpp \
 					../../../skia/src/utils/SkPictureUtils.cpp \
 					../../../skia/src/utils/SkProxyCanvas.cpp \
-					../../../skia/src/utils/SkRTConf.cpp
+					../../../skia/src/utils/SkRTConf.cpp \
+					../../../skia/src/utils/SkDashPath.cpp \
+					../../../skia/src/utils/SkEventTracer.cpp \
+					../../../skia/src/utils/SkTextureCompressor.cpp \
+					
 
 #png
 #MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/libpng/*.c)

@@ -137,34 +137,36 @@ SkScalerContext::~SkScalerContext() {
 // there are no more entries in the fallback chain.
 SkScalerContext* SkScalerContext::allocNextContext() const {
 #ifdef SK_BUILD_FOR_ANDROID
-    SkTypeface* newFace = SkAndroidNextLogicalTypeface(fRec.fFontID,
-                                                       fRec.fOrigFontID,
-                                                       fPaintOptionsAndroid);
-    if (0 == newFace) {
-        return NULL;
-    }
-
-    SkAutoTUnref<SkTypeface> aur(newFace);
-    uint32_t newFontID = newFace->uniqueID();
-
-    SkWriteBuffer androidBuffer;
-    fPaintOptionsAndroid.flatten(androidBuffer);
-
-    SkAutoDescriptor    ad(sizeof(fRec) + androidBuffer.bytesWritten()
-                           + SkDescriptor::ComputeOverhead(2));
-    SkDescriptor*       desc = ad.getDesc();
-
-    desc->init();
-    SkScalerContext::Rec* newRec =
-    (SkScalerContext::Rec*)desc->addEntry(kRec_SkDescriptorTag,
-                                          sizeof(fRec), &fRec);
-    androidBuffer.writeToMemory(desc->addEntry(kAndroidOpts_SkDescriptorTag,
-                                               androidBuffer.bytesWritten(), NULL));
-
-    newRec->fFontID = newFontID;
-    desc->computeChecksum();
-
-    return newFace->createScalerContext(desc);
+	SkASSERT( false );
+	return NULL;
+//    SkTypeface* newFace = SkAndroidNextLogicalTypeface(fRec.fFontID,
+//                                                       fRec.fOrigFontID,
+//                                                       fPaintOptionsAndroid);
+//    if (0 == newFace) {
+//        return NULL;
+//    }
+//
+//    SkAutoTUnref<SkTypeface> aur(newFace);
+//    uint32_t newFontID = newFace->uniqueID();
+//
+//    SkWriteBuffer androidBuffer;
+//    fPaintOptionsAndroid.flatten(androidBuffer);
+//
+//    SkAutoDescriptor    ad(sizeof(fRec) + androidBuffer.bytesWritten()
+//                           + SkDescriptor::ComputeOverhead(2));
+//    SkDescriptor*       desc = ad.getDesc();
+//
+//    desc->init();
+//    SkScalerContext::Rec* newRec =
+//    (SkScalerContext::Rec*)desc->addEntry(kRec_SkDescriptorTag,
+//                                          sizeof(fRec), &fRec);
+//    androidBuffer.writeToMemory(desc->addEntry(kAndroidOpts_SkDescriptorTag,
+//                                               androidBuffer.bytesWritten(), NULL));
+//
+//    newRec->fFontID = newFontID;
+//    desc->computeChecksum();
+//
+//    return newFace->createScalerContext(desc);
 #else
     return NULL;
 #endif

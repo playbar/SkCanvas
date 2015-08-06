@@ -56,21 +56,25 @@ void SkiaApp::windowChanged(int width,int height){
 	glViewport(0,0,width,height);
 	SkAutoTUnref<const GrGLInterface> glInterface;
 	glInterface.reset( GrGLCreateNativeInterface() );
+	LOGE("%s, %d", __FUNCTION__, __LINE__ );
 	const GrGLInterface *fCurIntf = GrGLInterfaceRemoveNVPR( glInterface.get());
-		fCurContext = GrContext::Create( kOpenGL_GrBackend, (GrBackendContext) fCurIntf);
-			GrBackendRenderTargetDesc desc;
-			desc.fWidth = SkScalarRoundToInt(width);
-			desc.fHeight = SkScalarRoundToInt(height);
-			desc.fConfig = kSkia8888_GrPixelConfig;
-			desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
-			desc.fSampleCnt = 1;
-			desc.fStencilBits = 8;
-			GLint buffer;
-			glGetIntegerv(GL_FRAMEBUFFER_BINDING, &buffer);
-			desc.fRenderTargetHandle = buffer;
+	LOGE("%s, %d", __FUNCTION__, __LINE__ );
+	fCurContext = GrContext::Create( kOpenGL_GrBackend, (GrBackendContext) fCurIntf);
+	LOGE("%s, %d", __FUNCTION__, __LINE__ );
+	GrBackendRenderTargetDesc desc;
+	desc.fWidth = SkScalarRoundToInt(width);
+	desc.fHeight = SkScalarRoundToInt(height);
+	desc.fConfig = kSkia8888_GrPixelConfig;
+	desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
+	desc.fSampleCnt = 1;
+	desc.fStencilBits = 8;
+	GLint buffer;
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &buffer);
+	desc.fRenderTargetHandle = buffer;
 
-			SkSafeUnref(fCurRenderTarget);
-			fCurRenderTarget = fCurContext->wrapBackendRenderTarget(desc);
+	SkSafeUnref(fCurRenderTarget);
+	fCurRenderTarget = fCurContext->wrapBackendRenderTarget(desc);
+	LOGE("%s, %d", __FUNCTION__, __LINE__ );
 
 }
 
