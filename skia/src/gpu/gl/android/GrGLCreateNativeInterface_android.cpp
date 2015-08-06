@@ -33,7 +33,7 @@ static GrGLInterface* create_es_interface(GrGLVersion version,
     functions->fBindAttribLocation = glBindAttribLocation;
     functions->fBindBuffer = glBindBuffer;
     functions->fBindTexture = glBindTexture;
-    functions->fBindVertexArray = glBindVertexArrayOES;
+    functions->fBindVertexArray = NULL; //glBindVertexArrayOES; // glBindVertexArrayOES;
     functions->fBlendColor = glBlendColor;
     functions->fBlendFunc = glBlendFunc;
     functions->fBufferData = glBufferData;
@@ -53,7 +53,7 @@ static GrGLInterface* create_es_interface(GrGLVersion version,
     functions->fDeleteProgram = glDeleteProgram;
     functions->fDeleteShader = glDeleteShader;
     functions->fDeleteTextures = glDeleteTextures;
-    functions->fDeleteVertexArrays = glDeleteVertexArraysOES;
+    functions->fDeleteVertexArrays = NULL;// glDeleteVertexArraysOES;
     functions->fDepthMask = glDepthMask;
     functions->fDisable = glDisable;
     functions->fDisableVertexAttribArray = glDisableVertexAttribArray;
@@ -67,7 +67,7 @@ static GrGLInterface* create_es_interface(GrGLVersion version,
     functions->fGenBuffers = glGenBuffers;
     functions->fGenerateMipmap = glGenerateMipmap;
     functions->fGenTextures = glGenTextures;
-    functions->fGenVertexArrays = glGenVertexArraysOES;
+    functions->fGenVertexArrays = NULL;// glGenVertexArraysOES;
     functions->fGetBufferParameteriv = glGetBufferParameteriv;
     functions->fGetError = glGetError;
     functions->fGetIntegerv = glGetIntegerv;
@@ -118,7 +118,7 @@ static GrGLInterface* create_es_interface(GrGLVersion version,
     }
 
 #if GL_EXT_discard_framebuffer
-    functions->fDiscardFramebuffer = glDiscardFramebufferEXT;
+    functions->fDiscardFramebuffer = NULL;// glDiscardFramebufferEXT;
 #endif
     functions->fUniform1f = glUniform1f;
     functions->fUniform1i = glUniform1i;
@@ -163,16 +163,16 @@ static GrGLInterface* create_es_interface(GrGLVersion version,
 
     if (extensions->has("GL_EXT_multisampled_render_to_texture")) {
 #if GL_EXT_multisampled_render_to_texture
-        functions->fFramebufferTexture2DMultisample = glFramebufferTexture2DMultisampleEXT;
-        functions->fRenderbufferStorageMultisampleES2EXT = glRenderbufferStorageMultisampleEXT;
+        functions->fFramebufferTexture2DMultisample = NULL; //glFramebufferTexture2DMultisampleEXT;
+        functions->fRenderbufferStorageMultisampleES2EXT = NULL;//glRenderbufferStorageMultisampleEXT;
 #else
         functions->fFramebufferTexture2DMultisample = (GrGLFramebufferTexture2DMultisampleProc) eglGetProcAddress("glFramebufferTexture2DMultisampleEXT");
         functions->fRenderbufferStorageMultisampleES2EXT = (GrGLRenderbufferStorageMultisampleProc) eglGetProcAddress("glRenderbufferStorageMultisampleEXT");
 #endif
     } else if (extensions->has("GL_IMG_multisampled_render_to_texture")) {
 #if GL_IMG_multisampled_render_to_texture
-        functions->fFramebufferTexture2DMultisample = glFramebufferTexture2DMultisampleIMG;
-        functions->fRenderbufferStorageMultisampleES2EXT = glRenderbufferStorageMultisampleIMG;
+        functions->fFramebufferTexture2DMultisample = NULL;// glFramebufferTexture2DMultisampleIMG;
+        functions->fRenderbufferStorageMultisampleES2EXT = NULL;// glRenderbufferStorageMultisampleIMG;
 #else
         functions->fFramebufferTexture2DMultisample = (GrGLFramebufferTexture2DMultisampleProc) eglGetProcAddress("glFramebufferTexture2DMultisampleIMG");
         functions->fRenderbufferStorageMultisampleES2EXT = (GrGLRenderbufferStorageMultisampleProc) eglGetProcAddress("glRenderbufferStorageMultisampleIMG");

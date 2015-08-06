@@ -11,6 +11,7 @@ LOCAL_CFLAGS += \
 				-fexceptions
 				
 LOCAL_C_INCLUDES := $../../skia/third_party/externals/libpng \
+				
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)	
 
