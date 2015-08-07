@@ -141,11 +141,30 @@ protected:
         SkPaint paint;
 
         paint.setAntiAlias(true);
-        paint.setStrokeWidth(SkIntToScalar(2));
         paint.setStyle(SkPaint::kStroke_Style);
 
-        r.set(0, 0, SkIntToScalar(200), SkIntToScalar(200));
-        r.offset(SkIntToScalar(20), SkIntToScalar(20));
+        r.set(0, 0, 200, 200);
+        r.offset(100, 100);
+		paint.setColor(0x800000FF);
+		paint.setStrokeWidth( 10 );
+		paint.setStyle(SkPaint::kStroke_Style);
+		//canvas->drawRect(r, paint);
+		//canvas->drawCircle(200, 200, 100, paint);
+		paint.setStrokeJoin(SkPaint::kMiter_Join);
+		SkPath path;
+		path.moveTo(100, 100);
+		path.lineTo(100, 200);
+		path.lineTo(150, 200);
+		canvas->drawPath(path, paint);
+		return;
+		canvas->save();
+		paint.setColor(0x80ff0000);
+		canvas->drawLine(200, 200, 100, 200, paint);
+		canvas->restore();
+		//canvas->drawLine(100, 200, 200, 200, paint);
+		canvas->drawArc(r, 0, 90, true, paint);
+		return;
+
 
         if (true )
 		{
@@ -157,13 +176,23 @@ protected:
 			paint.setStyle(SkPaint::kStroke_Style);
 			paint.setTextSize(40);
 			//canvas->drawText("test", 4, 100, 100, paint );
-			int fx = rand();
-			int fy = rand();
-			canvas->drawBitmap(fbmp, fx % 500, fy % 300, &paint);
+			for (int i = 0; i < 1000; i++ )
+			{
+				int fx = rand();
+				int fy = rand();
+				canvas->drawBitmap(fbmp, fx % 500, fy % 300, &paint);
+			}
+			
+	
 			//drawArcs(canvas);
 			paint.setStrokeWidth(0);
 			paint.setColor(SK_ColorBLUE);
 			canvas->drawArc(r, 0, fSweep, false, paint);
+			paint.setStyle(SkPaint::kStroke_Style);
+			canvas->drawCircle(250, 250, 100, paint);
+			//paint.setStyle(SkPaint::kFill_Style);
+			paint.setColor(0x800000FF);
+			canvas->drawArc(r, 0, fSweep, true, paint);
 			this->inval(NULL);
             return;
         }

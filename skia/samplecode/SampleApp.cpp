@@ -196,10 +196,12 @@ public:
 
 		glInterface.reset(GrGLCreateNativeInterface());
 
+		fCurIntf = GrGLInterfaceRemoveNVPR(glInterface.get());
+
         SkASSERT(NULL == fCurContext);
 		fCurContext = GrContext::Create((GrBackendContext)glInterface.get());
 
-        if (NULL == fCurContext || NULL == fCurIntf) {
+        if (NULL == fCurContext || fCurIntf == NULL ) {
             // We need some context and interface to see results
             SkSafeUnref(fCurContext);
             SkSafeUnref(fCurIntf);

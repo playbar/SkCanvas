@@ -59,3 +59,4 @@ CanvasContext.rar
 build/
 RuntimeCanvas.rar
 skia/out/gyp/Debug/
+*.exe
