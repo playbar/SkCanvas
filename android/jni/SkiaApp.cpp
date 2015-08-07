@@ -17,6 +17,9 @@
 #include "SkBitmap.h"
 #include "SkRefCnt.h"
 #include "GrGLInterface.h"
+#include "SkGradientShader.h"
+#include "SkBlurDrawLooper.h"
+#include "SkBlurMask.h"
 
 #include <string>
 #define LOG_TAG "SkiaApp"
@@ -166,9 +169,9 @@ void SkiaApp::TestArc(SkCanvas *canvas )
 
 void SkiaApp::TestDrawImage(SkCanvas *canvas )
 {
-	SkMatrix mat;
-	mat.setAll( 1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0 );
-	canvas->concat( mat );
+	//SkMatrix mat;
+	//mat.setAll( 1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0 );
+	//canvas->concat( mat );
 	if(canvas){
 		//LOGD("%s:",__func__);
 		//canvas->drawColor(0xff00ff00,SkXfermode::Mode::kColor_Mode);
@@ -188,11 +191,167 @@ void SkiaApp::TestDrawImage(SkCanvas *canvas )
 	}
 }
 
+struct GradData {
+    int             fCount;
+    const SkColor*  fColors;
+    const SkScalar* fPos;
+};
+
+void SkiaApp::TestFillStyle( SkCanvas *canvas )
+{
+	SkMatrix mat;
+	mat.setAll( 1.0, 0, 0, 0, 1.0, 0, 0, 0, 1.0 );
+	canvas->concat( mat );
+	canvas->save();
+	 SkPaint paint;
+	paint.setAntiAlias(true);
+	paint.setStyle(SkPaint::kStroke_Style);
+	paint.setStrokeWidth(SkScalarHalf(SkIntToScalar(20)));
+	//paint.setStyle(SkPaint::kFill_Style);
+
+	SkPoint p = SkPoint::Make(0,0);
+	SkPoint q = SkPoint::Make(0,100);
+	SkPoint pts[] = {p, q};
+
+	SkScalar t, temp, x, y;
+	SkColor gColors[] = {
+		SK_ColorRED, SK_ColorGREEN, SK_ColorBLUE, SK_ColorWHITE, SK_ColorBLACK
+	};
+	t =   2;
+	temp = 1;
+	SkScalar step = SK_ScalarPI / (10);
+	SkScalar angle = t * step;
+	x =  SkScalarSinCos(angle, &y);
+	SkScalar colorPositions[] = { 0.0f, (float)(0.1 + x), (float)(0.4 + y), (float)(0.9 - x + y), 1.0};
+	GradData data = { 5, gColors, colorPositions };
+
+
+    SkRect r = { 0, 0, SkIntToScalar(170), SkIntToScalar(170) };
+    SkShader* shader1 = SkGradientShader::CreateLinear(
+                       pts, data.fColors, data.fPos,data.fCount,
+                       SkShader::kMirror_TileMode);
+    paint.setShader(shader1)->unref();
+
+    canvas->drawRect(r, paint);
+
+
+//	SkPoint s = SkPoint::Make(100,100);
+//	SkShader* shader2 = SkGradientShader::CreateRadial(
+//					   s, 100, data.fColors, data.fPos, data.fCount,
+//					   SkShader::kMirror_TileMode);
+//	paint.setShader(shader2)->unref();
+//	canvas->translate(250, 0);
+//	canvas->drawRect(r, paint);
+//
+//	SkShader* shader3 = SkGradientShader::CreateTwoPointRadial(
+//					   p, 0, q, 100, data.fColors, data.fPos, data.fCount,
+//					   SkShader::kMirror_TileMode);
+//	paint.setShader(shader3)->unref();
+//	canvas->translate(0, 250);
+//	canvas->drawRect(r, paint);
+//
+//	SkShader* shader4 = SkGradientShader::CreateSweep(
+//						100, 100, data.fColors, data.fPos, data.fCount);
+//
+//	paint.setShader(shader4)->unref();
+//	canvas->translate(-250, 0);
+//	canvas->drawRect(r, paint);
+	canvas->restore();
+	return;
+}
+
+static void setup(SkPaint* paint, SkColor c, SkScalar strokeWidth) {
+    paint->setColor(c);
+    if (strokeWidth < 0) {
+        paint->setStyle(SkPaint::kFill_Style);
+    } else {
+        paint->setStyle(SkPaint::kStroke_Style);
+        paint->setStrokeWidth(strokeWidth);
+    }
+}
+
+void SkiaApp::TestShadow( SkCanvas *canvas )
+{
+	SkRect fRect;
+    fRect.set(SkIntToScalar(10), SkIntToScalar(10),
+              SkIntToScalar(30), SkIntToScalar(30));
+    SkPath fCirclePath;
+    fCirclePath.addCircle(SkIntToScalar(20), SkIntToScalar(20), SkIntToScalar(10) );
+	SkBlurDrawLooper* shadowLoopers[5];
+	    shadowLoopers[0] =
+	        SkBlurDrawLooper::Create(SK_ColorBLUE,
+	                                 SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(10)),
+	                                 SkIntToScalar(5), SkIntToScalar(10),
+	                                 SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
+	                                 SkBlurDrawLooper::kOverrideColor_BlurFlag |
+	                                 SkBlurDrawLooper::kHighQuality_BlurFlag);
+	    SkAutoUnref aurL0(shadowLoopers[0]);
+	    shadowLoopers[1] =
+	        SkBlurDrawLooper::Create(SK_ColorBLUE,
+	                                 SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(10)),
+	                                 SkIntToScalar(5), SkIntToScalar(10),
+	                                 SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
+	                                 SkBlurDrawLooper::kOverrideColor_BlurFlag);
+	    SkAutoUnref aurL1(shadowLoopers[1]);
+	    shadowLoopers[2] =
+	        SkBlurDrawLooper::Create(SK_ColorBLACK,
+	                                 SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(5)),
+	                                 SkIntToScalar(5),
+	                                 SkIntToScalar(10),
+	                                 SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
+	                                 SkBlurDrawLooper::kHighQuality_BlurFlag);
+	    SkAutoUnref aurL2(shadowLoopers[2]);
+	    shadowLoopers[3] =
+	        SkBlurDrawLooper::Create(0x7FFF0000,
+	                                 SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(5)),
+	                                 SkIntToScalar(-5), SkIntToScalar(-10),
+	                                 SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
+	                                 SkBlurDrawLooper::kOverrideColor_BlurFlag |
+	                                 SkBlurDrawLooper::kHighQuality_BlurFlag);
+	    SkAutoUnref aurL3(shadowLoopers[3]);
+	    shadowLoopers[4] =
+	        SkBlurDrawLooper::Create(SK_ColorBLACK, SkIntToScalar(0),
+	                                 SkIntToScalar(5), SkIntToScalar(5),
+	                                 SkBlurDrawLooper::kIgnoreTransform_BlurFlag |
+	                                 SkBlurDrawLooper::kOverrideColor_BlurFlag |
+	                                 SkBlurDrawLooper::kHighQuality_BlurFlag);
+	    SkAutoUnref aurL4(shadowLoopers[4]);
+
+	    static const struct {
+	        SkColor fColor;
+	        SkScalar fStrokeWidth;
+	    } gRec[] = {
+	        { SK_ColorRED,      -SK_Scalar1 },
+	        { SK_ColorGREEN,    SkIntToScalar(4) },
+	        { SK_ColorBLUE,     SkIntToScalar(0)},
+	    };
+
+	    SkPaint paint;
+	    paint.setAntiAlias(true);
+	    for (size_t i = 0; i < SK_ARRAY_COUNT(shadowLoopers); ++i) {
+	        SkAutoCanvasRestore acr(canvas, true);
+
+	        paint.setLooper(shadowLoopers[i]);
+
+	        canvas->translate(SkIntToScalar((unsigned int)i*40), SkIntToScalar(0));
+	        setup(&paint, gRec[0].fColor, gRec[0].fStrokeWidth);
+	        canvas->drawRect(fRect, paint);
+
+	        canvas->translate(SkIntToScalar(0), SkIntToScalar(40));
+	        setup(&paint, gRec[1].fColor, gRec[1].fStrokeWidth);
+	        canvas->drawPath(fCirclePath, paint);
+
+	        canvas->translate(SkIntToScalar(0), SkIntToScalar(40));
+	        setup(&paint, gRec[2].fColor, gRec[2].fStrokeWidth);
+	        canvas->drawPath(fCirclePath, paint);
+	    }
+}
+
 void SkiaApp::mainLoop(){
 	//canvas = createCanvas();
-	canvas->drawColor(0xff000000);
+	canvas->drawColor(0xffffffff);
 	//TestArc( canvas );
-	DrawTest( canvas );
+	TestShadow( canvas );
 	fCurContext->flush();
 }
 

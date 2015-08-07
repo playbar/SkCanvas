@@ -35,6 +35,7 @@ LOCAL_C_INCLUDES := $../../skia/include/core \
 					$../../skia/src/opts \
 					$../../skia/src/sfnt \
 					$../../skia/src/utils \
+					$../../skia/src/effects \
 					$../../skia/include/images \
 					$../../skia/third_party/externals/libpng \
 					$../../skia/third_party/freetype/include \
