@@ -89,7 +89,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\opts;..\..\include\utils;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\opts;..\..\include\utils;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\include\effects;..\..\gyp\ext;..\..\gyp\config\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>

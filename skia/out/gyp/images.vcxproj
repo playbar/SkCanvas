@@ -89,7 +89,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\include\images;..\..\include\lazy;..\..\src\lazy;..\..\src\core;..\..\src\image;..\..\src\images;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\third_party\externals\libjpeg;..\..\third_party\externals\libwebp\src;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include\images;..\..\include\lazy;..\..\src\lazy;..\..\src\core;..\..\src\image;..\..\src\images;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\third_party\externals\libjpeg;..\..\third_party\externals\libwebp\src;..\..\third_party\externals\libpng;..\..\third_party\externals\zlib;..\..\include\utils;..\..\include\utils\win;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
@@ -100,7 +100,7 @@
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>

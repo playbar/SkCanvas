@@ -248,8 +248,8 @@
     <ClCompile Include="..\..\samplecode\SampleAnimatedGradient.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\gm\shadows.cpp">
-      <Filter>gm</Filter>
+    <ClCompile Include="..\..\samplecode\SampleArc.cpp">
+      <Filter>samplecode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

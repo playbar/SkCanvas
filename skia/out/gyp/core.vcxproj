@@ -90,7 +90,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\include\ports;..\..\include\utils;..\..\include\xml;..\..\src\core;..\..\src\opts;..\..\src\image;..\..\gyp\config\win;..\..\include\gpu;..\..\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\include\ports;..\..\include\utils;..\..\include\xml;..\..\src\core;..\..\src\opts;..\..\src\image;..\..\src\sfnt;..\..\gyp\config\win;..\..\include\gpu;..\..\src\gpu;..\..\src\utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4244;4267;4345;4390;4554;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>

@@ -11,6 +11,7 @@
 #include "SampleCode.h"
 #include "SamplePipeControllers.h"
 #include "SkCanvas.h"
+#include "SkDeferredCanvas.h"
 //#include "SkCommandLineFlags.h"
 #include "SkData.h"
 #include "SkDevice.h"
@@ -235,7 +236,8 @@ public:
 #if SK_SUPPORT_GPU
         if ( NULL != fCurContext) {
             SkAutoTUnref<SkBaseDevice> device(new SkGpuDevice(fCurContext, fCurRenderTarget));
-            return new SkCanvas(device);
+			//return SkDeferredCanvas::Create(device);
+			return new SkCanvas(device);
         } else
 #endif
         {

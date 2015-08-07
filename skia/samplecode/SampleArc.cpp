@@ -132,49 +132,69 @@ protected:
         canvas->restore();
     }
 
-    virtual void onDrawContent(SkCanvas* canvas) {
-        fSweep = SampleCode::GetAnimScalar(SkIntToScalar(360)/24,
-                                           SkIntToScalar(360));
-//        fSweep = 359.99f;
+    virtual void onDrawContent(SkCanvas* canvas) 
+	{
+		static long preMillis = 0;
+		static int icou = 0;
+		static long totalTime = 0;
 
-        SkRect  r;
-        SkPaint paint;
+		long currentMillis = GetTickCount();
+		if ( icou == 0 )
+		{
+			long dur = currentMillis - preMillis;
+			long FPS = (1000 * 5) / (dur);
+			preMillis = currentMillis;
+			SkDebugf("FPS:%d", FPS);
+		}
+		if ( icou ++ > 4 )
+		{
+			icou = 0;
+		}
+		
+		
 
-        paint.setAntiAlias(true);
-        paint.setStyle(SkPaint::kStroke_Style);
-
-        r.set(0, 0, 200, 200);
-        r.offset(100, 100);
-		paint.setColor(0x800000FF);
-		paint.setStrokeWidth( 10 );
-		paint.setStyle(SkPaint::kStroke_Style);
-		//canvas->drawRect(r, paint);
-		//canvas->drawCircle(200, 200, 100, paint);
-		paint.setStrokeJoin(SkPaint::kMiter_Join);
-		SkPath path;
-		path.moveTo(100, 100);
-		path.lineTo(100, 200);
-		path.lineTo(150, 200);
-		canvas->drawPath(path, paint);
-		return;
-		canvas->save();
-		paint.setColor(0x80ff0000);
-		canvas->drawLine(200, 200, 100, 200, paint);
-		canvas->restore();
-		//canvas->drawLine(100, 200, 200, 200, paint);
-		canvas->drawArc(r, 0, 90, true, paint);
-		return;
+//        fSweep = SampleCode::GetAnimScalar(SkIntToScalar(360)/24,
+//                                           SkIntToScalar(360));
+////        fSweep = 359.99f;
+//
+//        SkRect  r;
+		SkPaint paint;
+//
+//        paint.setAntiAlias(true);
+//        paint.setStyle(SkPaint::kStroke_Style);
+//
+//        r.set(0, 0, 200, 200);
+//        r.offset(100, 100);
+//		paint.setColor(0x800000FF);
+//		paint.setStrokeWidth( 10 );
+//		paint.setStyle(SkPaint::kStroke_Style);
+//		//canvas->drawRect(r, paint);
+//		//canvas->drawCircle(200, 200, 100, paint);
+//		paint.setStrokeJoin(SkPaint::kMiter_Join);
+//		SkPath path;
+//		path.moveTo(100, 100);
+//		path.lineTo(100, 200);
+//		path.lineTo(150, 200);
+//		canvas->drawPath(path, paint);
+		//return;
+		//canvas->save();
+		//paint.setColor(0x80ff0000);
+		//canvas->drawLine(200, 200, 100, 200, paint);
+		//canvas->restore();
+		////canvas->drawLine(100, 200, 200, 200, paint);
+		//canvas->drawArc(r, 0, 90, true, paint);
+		//return;
 
 
         if (true )
 		{
-            const SkScalar d = SkIntToScalar(3);
-            const SkScalar rad[] = { d, d, d, d, d, d, d, d };
-            SkPath path;
-            path.addRoundRect(r, rad);
-            //canvas->drawPath(path, paint);
-			paint.setStyle(SkPaint::kStroke_Style);
-			paint.setTextSize(40);
+   //         const SkScalar d = SkIntToScalar(3);
+   //         const SkScalar rad[] = { d, d, d, d, d, d, d, d };
+   //         SkPath path;
+   //         path.addRoundRect(r, rad);
+   //         //canvas->drawPath(path, paint);
+			//paint.setStyle(SkPaint::kStroke_Style);
+			//paint.setTextSize(40);
 			//canvas->drawText("test", 4, 100, 100, paint );
 			for (int i = 0; i < 1000; i++ )
 			{
@@ -184,38 +204,38 @@ protected:
 			}
 			
 	
-			//drawArcs(canvas);
-			paint.setStrokeWidth(0);
-			paint.setColor(SK_ColorBLUE);
-			canvas->drawArc(r, 0, fSweep, false, paint);
-			paint.setStyle(SkPaint::kStroke_Style);
-			canvas->drawCircle(250, 250, 100, paint);
-			//paint.setStyle(SkPaint::kFill_Style);
-			paint.setColor(0x800000FF);
-			canvas->drawArc(r, 0, fSweep, true, paint);
+			////drawArcs(canvas);
+			//paint.setStrokeWidth(0);
+			//paint.setColor(SK_ColorBLUE);
+			//canvas->drawArc(r, 0, fSweep, false, paint);
+			//paint.setStyle(SkPaint::kStroke_Style);
+			//canvas->drawCircle(250, 250, 100, paint);
+			////paint.setStyle(SkPaint::kFill_Style);
+			//paint.setColor(0x800000FF);
+			//canvas->drawArc(r, 0, fSweep, true, paint);
 			this->inval(NULL);
             return;
         }
 
-        drawRectWithLines(canvas, r, paint);
+        //drawRectWithLines(canvas, r, paint);
 
    //     printf("----- sweep %g %X\n", SkScalarToFloat(fSweep), SkDegreesToRadians(fSweep));
 
 
-        paint.setStyle(SkPaint::kFill_Style);
-        paint.setColor(0x800000FF);
-        canvas->drawArc(r, 0, fSweep, true, paint);
+        //paint.setStyle(SkPaint::kFill_Style);
+        //paint.setColor(0x800000FF);
+        //canvas->drawArc(r, 0, fSweep, true, paint);
 
-        paint.setColor(0x800FF000);
-        canvas->drawArc(r, 0, fSweep, false, paint);
+        //paint.setColor(0x800FF000);
+        //canvas->drawArc(r, 0, fSweep, false, paint);
 
-        paint.setStyle(SkPaint::kStroke_Style);
-        paint.setColor(SK_ColorRED);
-        canvas->drawArc(r, 0, fSweep, true, paint);
+        //paint.setStyle(SkPaint::kStroke_Style);
+        //paint.setColor(SK_ColorRED);
+        //canvas->drawArc(r, 0, fSweep, true, paint);
 
-        paint.setStrokeWidth(0);
-        paint.setColor(SK_ColorBLUE);
-        canvas->drawArc(r, 0, fSweep, false, paint);
+        //paint.setStrokeWidth(0);
+        //paint.setColor(SK_ColorBLUE);
+        //canvas->drawArc(r, 0, fSweep, false, paint);
 
         //drawArcs(canvas);
         this->inval(NULL);

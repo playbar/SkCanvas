@@ -88,7 +88,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\effects;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\include\utils\win;..\..\include\gpu;..\..\include\views;..\..\include\animator;..\..\include\xml;..\..\experimental;..\..\include\pdf;..\..\include\views\animated;..\..\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\effects;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\third_party\externals\zlib;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\include\utils\win;..\..\include\gpu;..\..\include\views;..\..\include\animator;..\..\include\xml;..\..\experimental;..\..\include\pdf;..\..\include\views\animated;..\..\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
@@ -99,7 +99,7 @@
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
@@ -177,10 +177,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\gm\gm.cpp" />
-    <ClCompile Include="..\..\gm\shadows.cpp" />
     <ClCompile Include="..\..\samplecode\OverView.cpp" />
     <ClCompile Include="..\..\samplecode\SampleAnimatedGradient.cpp" />
     <ClCompile Include="..\..\samplecode\SampleApp.cpp" />
+    <ClCompile Include="..\..\samplecode\SampleArc.cpp" />
     <ClCompile Include="..\..\samplecode\SampleEncode.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>

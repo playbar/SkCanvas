@@ -529,6 +529,12 @@ SkDeferredCanvas* SkDeferredCanvas::Create(SkSurface* surface) {
     return SkNEW_ARGS(SkDeferredCanvas, (deferredDevice));
 }
 
+SkDeferredCanvas* SkDeferredCanvas::Create(SkBaseDevice* device)
+{
+	return NULL;
+}
+
+
 SkDeferredCanvas::SkDeferredCanvas(SkDeferredDevice* device) : SkCanvas (device) {
     this->init();
 }
