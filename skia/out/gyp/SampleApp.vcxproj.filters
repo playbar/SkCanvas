@@ -248,6 +248,9 @@
     <ClCompile Include="..\..\samplecode\SampleAnimatedGradient.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\gm\shadows.cpp">
+      <Filter>gm</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\gyp\SampleApp.gyp">

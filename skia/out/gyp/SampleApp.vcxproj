@@ -177,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\gm\gm.cpp" />
+    <ClCompile Include="..\..\gm\shadows.cpp" />
     <ClCompile Include="..\..\samplecode\OverView.cpp" />
     <ClCompile Include="..\..\samplecode\SampleAnimatedGradient.cpp" />
     <ClCompile Include="..\..\samplecode\SampleApp.cpp" />
