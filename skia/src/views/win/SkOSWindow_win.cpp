@@ -32,7 +32,7 @@
 
 #endif
 
-#define INVALIDATE_DELAY_MS 16
+#define INVALIDATE_DELAY_MS 15
 
 static SkOSWindow* gCurrOSWin;
 static HWND gEventTarget;

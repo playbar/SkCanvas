@@ -136,21 +136,28 @@ protected:
 	{
 		static long preMillis = 0;
 		static int icou = 0;
-		static long totalTime = 0;
+		static char szTmp[20];
 
-		long currentMillis = GetTickCount();
+		SYSTEMTIME systime;
+		GetSystemTime(&systime);
+		long currentMillis = systime.wSecond * 1000 + systime.wMilliseconds;
 		if ( icou == 0 )
 		{
 			long dur = currentMillis - preMillis;
 			long FPS = (1000 * 5) / (dur);
 			preMillis = currentMillis;
-			SkDebugf("FPS:%d", FPS);
+			sprintf(szTmp, "FPS:%d", FPS);
 		}
 		if ( icou ++ > 4 )
 		{
 			icou = 0;
 		}
 		
+		SkPaint paint;
+		paint.setTextSize(20);
+		paint.setColor(0xFF008000);
+		canvas->drawText(szTmp, strlen( szTmp), 700, 50, paint);
+
 		
 
 //        fSweep = SampleCode::GetAnimScalar(SkIntToScalar(360)/24,
@@ -158,7 +165,7 @@ protected:
 ////        fSweep = 359.99f;
 //
 //        SkRect  r;
-		SkPaint paint;
+		//SkPaint paint;
 //
 //        paint.setAntiAlias(true);
 //        paint.setStyle(SkPaint::kStroke_Style);
@@ -196,7 +203,7 @@ protected:
 			//paint.setStyle(SkPaint::kStroke_Style);
 			//paint.setTextSize(40);
 			//canvas->drawText("test", 4, 100, 100, paint );
-			for (int i = 0; i < 1000; i++ )
+			for (int i = 0; i < 2000; i++ )
 			{
 				int fx = rand();
 				int fy = rand();
