@@ -723,7 +723,7 @@ SampleWindow::SampleWindow(void* hwnd, int argc, char** argv, DeviceManager* dev
     //if (!FLAGS_slide.isEmpty())
 	{
         //fCurrIndex = findByTitle(FLAGS_slide[0]);
-		fCurrIndex = 5;
+		fCurrIndex = 0;
         //if (fCurrIndex < 0) {
         //    //fprintf(stderr, "Unknown sample \"%s\"\n", FLAGS_slide[0]);
         //    listTitles();

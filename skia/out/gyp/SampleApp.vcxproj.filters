@@ -57,9 +57,6 @@
     <ClInclude Include="..\..\samplecode\OverView.h">
       <Filter>samplecode</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\samplecode\SampleCode.h">
-      <Filter>samplecode</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\samplecode\TransitionView.h">
       <Filter>samplecode</Filter>
     </ClInclude>
@@ -131,229 +128,10 @@
     <ClCompile Include="..\..\gm\gm.cpp">
       <Filter>gm</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\samplecode\ClockFaceView.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\samplecode\OverView.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\samplecode\Sample2PtRadial.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleAAClip.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleAARects.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleAARectModes.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleAll.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleAnimBlur.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\samplecode\SampleApp.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleArc.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleAvoid.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleBigBlur.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleBigGradient.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleBitmapRect.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleBlur.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleCamera.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleChart.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleCircle.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleClock.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleClip.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleColorFilter.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleComplexClip.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleConcavePaths.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleCull.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleDegenerateTwoPtRadials.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleDither.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleDitherBitmap.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleEffects.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleEmboss.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleEmptyPath.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleFatBits.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleFillType.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleFilter2.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleFilterFuzz.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleFontScalerTest.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleFuzz.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleGradients.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleHairCurves.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleHairline.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleHairModes.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleLayerMask.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleLayers.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleLCD.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleLines.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleLua.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleManyRects.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleMeasure.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleMipMap.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleOvalTest.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SamplePatch.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SamplePath.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SamplePathClip.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SamplePathUtils.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SamplePathEffects.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SamplePicture.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SamplePictFile.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SamplePoints.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SamplePolyToPoly.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleRegion.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleRepeatTile.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleRotateCircles.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleShaders.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleShaderText.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleSlides.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleStringArt.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleStrokePath.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleText.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleTextAlpha.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleTextBox.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleTextOnPath.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleTextureDomain.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleTiling.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleTinyBitmap.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleVertices.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleXfermodesBlur.cpp">
       <Filter>samplecode</Filter>
     </ClCompile>
     <ClCompile Include="..\..\samplecode\TransitionView.cpp">
@@ -466,6 +244,9 @@
     </ClCompile>
     <ClCompile Include="..\..\third_party\externals\zlib\zutil.c">
       <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleAnimatedGradient.cpp">
+      <Filter>samplecode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

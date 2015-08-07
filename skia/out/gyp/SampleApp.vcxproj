@@ -154,7 +154,6 @@
     <ClInclude Include="..\..\gm\gm.h" />
     <ClInclude Include="..\..\samplecode\GMSampleView.h" />
     <ClInclude Include="..\..\samplecode\OverView.h" />
-    <ClInclude Include="..\..\samplecode\SampleCode.h" />
     <ClInclude Include="..\..\samplecode\TransitionView.h" />
     <ClInclude Include="..\..\src\pipe\utils\SamplePipeControllers.h" />
     <ClInclude Include="..\..\src\utils\debugger\SkDebugCanvas.h" />
@@ -178,101 +177,29 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\gm\gm.cpp" />
-    <ClCompile Include="..\..\samplecode\ClockFaceView.cpp" />
     <ClCompile Include="..\..\samplecode\OverView.cpp" />
-    <ClCompile Include="..\..\samplecode\Sample2PtRadial.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleAAClip.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleAARectModes.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleAARects.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleAll.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleAnimBlur.cpp" />
+    <ClCompile Include="..\..\samplecode\SampleAnimatedGradient.cpp" />
     <ClCompile Include="..\..\samplecode\SampleApp.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleArc.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleAvoid.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleBigBlur.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleBigGradient.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleBitmapRect.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleBlur.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleCamera.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleChart.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleCircle.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleClip.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleClock.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleColorFilter.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleComplexClip.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleConcavePaths.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleCull.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleDegenerateTwoPtRadials.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleDither.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleDitherBitmap.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleEffects.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleEmboss.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleEmptyPath.cpp" />
     <ClCompile Include="..\..\samplecode\SampleEncode.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleFatBits.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleFillType.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleFilter2.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleFilterFuzz.cpp" />
     <ClCompile Include="..\..\samplecode\SampleFontCache.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleFontScalerTest.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleFuzz.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleGradients.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleHairCurves.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleHairline.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleHairModes.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleLayerMask.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleLayers.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleLCD.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleLines.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleLua.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleManyRects.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleMeasure.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleMipMap.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleOvalTest.cpp" />
-    <ClCompile Include="..\..\samplecode\SamplePatch.cpp" />
-    <ClCompile Include="..\..\samplecode\SamplePath.cpp" />
-    <ClCompile Include="..\..\samplecode\SamplePathClip.cpp" />
-    <ClCompile Include="..\..\samplecode\SamplePathEffects.cpp" />
-    <ClCompile Include="..\..\samplecode\SamplePathUtils.cpp" />
-    <ClCompile Include="..\..\samplecode\SamplePictFile.cpp" />
-    <ClCompile Include="..\..\samplecode\SamplePicture.cpp" />
-    <ClCompile Include="..\..\samplecode\SamplePoints.cpp" />
-    <ClCompile Include="..\..\samplecode\SamplePolyToPoly.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleRegion.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleRepeatTile.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleRotateCircles.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleShaders.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleShaderText.cpp" />
     <ClCompile Include="..\..\samplecode\SampleSkLayer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleSlides.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleStringArt.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleStrokePath.cpp" />
     <ClCompile Include="..\..\samplecode\SampleTests.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleText.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleTextAlpha.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleTextBox.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleTextOnPath.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleTextureDomain.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleTiling.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleTinyBitmap.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleVertices.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleXfermodesBlur.cpp" />
     <ClCompile Include="..\..\samplecode\TransitionView.cpp" />
     <ClCompile Include="..\..\src\pipe\utils\SamplePipeControllers.cpp" />
     <ClCompile Include="..\..\src\utils\debugger\SkDebugCanvas.cpp" />

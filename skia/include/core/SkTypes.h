@@ -87,7 +87,11 @@ inline void operator delete(void* p) {
 ///////////////////////////////////////////////////////////////////////////////
 
 #define SK_INIT_TO_AVOID_WARNING    = 0
+#ifdef _WIN32
+#define __FILENAME__ (strrchr(__FILE__, '\\') + 1 )
+#else
 #define __FILENAME__ (strrchr(__FILE__, '/') + 1 )
+#endif
 #ifndef SkDebugf
     void SkDebugf(const char format[], ...);
 //#define LOG_TAG (strrchr(__FILE__, '/') + 1 )

@@ -44,8 +44,8 @@ protected:
         SkColor gColors[] = {
             SK_ColorRED, SK_ColorGREEN, SK_ColorBLUE, SK_ColorWHITE, SK_ColorBLACK
         };
-        t =    SampleCode::GetAnimScalar(SkIntToScalar(2), SkIntToScalar(20));
-        temp = SampleCode::GetAnimScalar(SkIntToScalar(1), SkIntToScalar(8));
+		t = 1;//  SampleCode::GetAnimScalar(SkIntToScalar(2), SkIntToScalar(20));
+		temp = 2;// SampleCode::GetAnimScalar(SkIntToScalar(1), SkIntToScalar(8));
         SkScalar step = SK_ScalarPI / (10);
         SkScalar angle = t * step;
         x =  SkScalarSinCos(angle, &y);

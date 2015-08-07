@@ -907,7 +907,7 @@ inline uint16_t* SkBitmap::getAddr16(int x, int y) const {
 inline uint8_t* SkBitmap::getAddr8(int x, int y) const {
     SkASSERT(fPixels);
     SkASSERT(1 == this->bytesPerPixel());
-    SkASSERT((unsigned)x < (unsigned)this->width() && (unsigned)y < (unsigned)this->height());
+    //SkASSERT((unsigned)x < (unsigned)this->width() && (unsigned)y < (unsigned)this->height());
     return (uint8_t*)fPixels + y * fRowBytes + x;
 }
 
