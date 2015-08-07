@@ -118,7 +118,7 @@ public:
                   GrDrawTarget* target,
                   bool antiAlias) {
         SkASSERT(!path.isEmpty());
-        SkASSERT(this->canDrawPath(path, stroke, target, antiAlias));
+        //SkASSERT(this->canDrawPath(path, stroke, target, antiAlias));
         SkASSERT(target->drawState()->getStencil().isDisabled() ||
                  kNoRestriction_StencilSupport == this->getStencilSupport(path, stroke, target));
         return this->onDrawPath(path, stroke, target, antiAlias);

@@ -1769,15 +1769,18 @@ GrPathRenderer* GrContext::getPathRenderer(const SkPath& path,
         fPathRendererChain = SkNEW_ARGS(GrPathRendererChain, (this));
     }
 
-    GrPathRenderer* pr = fPathRendererChain->getPathRenderer(path,
-                                                             stroke,
-                                                             target,
-                                                             drawType,
-                                                             stencilSupport);
-
-    if (NULL == pr && allowSW) {
+    GrPathRenderer* pr = NULL;
+//    GrPathRenderer* pr = fPathRendererChain->getPathRenderer(path,
+//                                                             stroke,
+//                                                             target,
+//                                                             drawType,
+//                                                             stencilSupport);
+   SkDebugf("File:%s, L:%d, pt:%d", __FILENAME__, __LINE__, (int)pr );
+   if (NULL == pr && allowSW)
+    {
         if (NULL == fSoftwarePathRenderer) {
             fSoftwarePathRenderer = SkNEW_ARGS(GrSoftwarePathRenderer, (this));
+            SkDebugf("File:%s, L:%d", __FILENAME__, __LINE__ );
         }
         pr = fSoftwarePathRenderer;
     }

@@ -269,13 +269,13 @@ void SkPathStroker::quad_to(const SkPoint pts[3],
         normalB = pts[2] - pts[0];
         normalB.rotateCCW();
         SkScalar dot = SkPoint::DotProduct(unitNormalAB, *unitNormalBC);
-        SkAssertResult(normalB.setLength(SkScalarDiv(fRadius,
-                                     SkScalarSqrt((SK_Scalar1 + dot)/2))));
+        SkAssertResult(normalB.setLength(SkScalarDiv(fRadius, SkScalarSqrt((SK_Scalar1 + dot)/2))));
 
         fOuter.quadTo(  pts[1].fX + normalB.fX, pts[1].fY + normalB.fY,
                         pts[2].fX + normalBC->fX, pts[2].fY + normalBC->fY);
         fInner.quadTo(  pts[1].fX - normalB.fX, pts[1].fY - normalB.fY,
                         pts[2].fX - normalBC->fX, pts[2].fY - normalBC->fY);
+
     }
 }
 
@@ -406,8 +406,7 @@ void SkPathStroker::quadTo(const SkPoint& pt1, const SkPoint& pt2) {
                               kMaxQuadSubdivide);
                 SkVector n = normalBC;
                 SkVector u = unitBC;
-                this->quad_to(&tmp[2], n, u, &normalBC, &unitBC,
-                              kMaxQuadSubdivide);
+                this->quad_to(&tmp[2], n, u, &normalBC, &unitBC, kMaxQuadSubdivide);
             }
         } else {
             this->quad_to(pts, normalAB, unitAB, &normalBC, &unitBC,
