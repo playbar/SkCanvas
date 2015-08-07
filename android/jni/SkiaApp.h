@@ -38,6 +38,7 @@ public:
 
 	void DrawTest(SkCanvas *canvas );
 	void TestArc(SkCanvas *canvas );
+	void TestFillStyle( SkCanvas *canvas );
 	void TestDrawImage(SkCanvas *canvas );
 
 	void mainLoop();
