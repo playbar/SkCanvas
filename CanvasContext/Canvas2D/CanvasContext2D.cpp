@@ -283,11 +283,29 @@ void CanvasContext2D::closePath()
 
 void CanvasContext2D::moveTo(float x, float y)
 {
-
+	if (!std::isfinite(x) || !std::isfinite(y))
+		return;
+	if (!isTransformInvertible())
+		return;
+	m_path.moveTo(x, y);
 }
 
 void CanvasContext2D::lineTo(float x, float y)
 {
+	if (!std::isfinite(x) || !std::isfinite(y))
+		return;
+	if (!isTransformInvertible())
+		return;
+	SkPoint p1 = SkPoint::Make(x, y);
+	if (! hasCurrentPoint())
+	{
+		m_path.moveTo(x, y);
+	}
+	else if (p1 != currentPoint())
+	{
+		m_path.lineTo(x, y);
+	}
+
 
 }
 
@@ -300,9 +318,32 @@ void CanvasContext2D::bezierCurveTo(float cp1x, float cp1y, float cp2x, float cp
 
 }
 
-void CanvasContext2D::arcTo(float x0, float y0, float x1, float y1, float radius)
+void CanvasContext2D::arcTo(float x1, float y1, float x2, float y2, float radius)
 {
+	if (!std::isfinite(x1) || !std::isfinite(y1) || !std::isfinite(x2) || !std::isfinite(y2) || !std::isfinite(radius))
+		return;
 
+	if (radius< 0) {
+		return;
+	}
+
+	if (!isTransformInvertible())
+		return;
+
+	SkPoint p1 = SkPoint::Make(x1, y1);
+	SkPoint p2 = SkPoint::Make(x2, y2);
+	if ( ! hasCurrentPoint() )
+	{
+		m_path.moveTo(x1, y1);
+	}
+	else if (p1 == currentPoint() || p1 == p2 || !radius)
+	{
+		lineTo(x1, y1);
+	}
+	else
+	{
+		m_path.arcTo(x1, y1, x2, y2, radius);
+	}
 }
 
 void CanvasContext2D::arc(float x, float y, float radius, float startAngle, float endAngle, bool anticlockwise)
@@ -385,6 +426,22 @@ bool CanvasContext2D::isAccelerated() const
 	return true;
 }
 
+bool CanvasContext2D::hasCurrentPoint() const
+{
+	return m_path.getPoints(0, 0);
+}
+
+SkPoint CanvasContext2D::currentPoint() const
+{
+	if ( m_path.countPoints() > 0 )
+	{
+		SkPoint skResult;
+		m_path.getLastPt(&skResult);
+		return skResult;
+	}
+	float quietNan = std::numeric_limits<float>::quiet_NaN();
+	return SkPoint::Make(quietNan, quietNan);
+}
 
 CanvasContext2D::State::State()
 	: m_unrealizedSaveCount(0)	

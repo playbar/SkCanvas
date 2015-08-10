@@ -102,7 +102,7 @@ public:
 	void lineTo(float x, float y);
 	void quadraticCurveTo(float cpx, float cpy, float x, float y);
 	void bezierCurveTo(float cp1x, float cp1y, float cp2x, float cp2y, float x, float y);
-	void arcTo(float x0, float y0, float x1, float y1, float radius);
+	void arcTo(float x1, float y1, float x2, float y2, float radius);
 	void arc(float x, float y, float radius, float startAngle, float endAngle, bool anticlockwise);
 	void ellipse(float x, float y, float radiusX, float radiusY, float rotation, float startAngle, float endAngle, bool anticlockwise);
 	void rect(float x, float y, float width, float height);
@@ -192,6 +192,8 @@ public:
 	//bool drawCustomFocusRing(Element*);
 
 private:
+	bool hasCurrentPoint() const;
+	SkPoint currentPoint() const;
 	struct State
 	{
 		State();
