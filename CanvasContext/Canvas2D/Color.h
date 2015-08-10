@@ -9,7 +9,7 @@ namespace WebCore
 
 class Color;
 
-typedef unsigned RGBA32; // RGBA quadruplet
+typedef unsigned RGBA32;
 
  RGBA32 makeRGB(int r, int g, int b);
  RGBA32 makeRGBA(int r, int g, int b, int a);
