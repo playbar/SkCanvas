@@ -88,20 +88,23 @@ void SkiaApp::setFilesDir(const std::string &filesDir){
 	LOGD("%s:filesDir = %s",__func__,SkiaApp::filesDir.c_str());
 }
 
+SkImageDecoder *sk_libpng_dfactory( SkStreamRewindable *stream );
+
 bool SkiaApp::createBitmap(const std::string &src){
 	LOGD("%s:src = %s",__func__,src.c_str());
 	SkFILEStream stream(src.c_str());
+
 	//SkImageDecoder::DecodeFile(src, &bitmap, SkBitmap::kARGB_8888_Config, SkImageDecoder::kDecodePixels_Mode);
 
-	//SkImageDecoder *coder =CreatePNGImageDecoder();
-	//delete coder;
-	//coder = NULL;
+	//SkImageDecoder *coder1 =sk_libpng_dfactory(&stream);
+	//delete coder1;
+	//coder1 = NULL;
 	SkImageDecoder *coder = SkImageDecoder::Factory(&stream);
 	if(!coder){
 		LOGE("%s:coder is null",__func__);
 		return false;
 	}
-	//bool ret = coder->decode(&stream, &bitmap, SkBitmap::kARGB_8888_Config,SkImageDecoder::kDecodePixels_Mode);
+	bool ret = coder->decode(&stream, &bitmap, SkColorType::kRGB_565_SkColorType,SkImageDecoder::kDecodePixels_Mode);
 	//LOGD("%s:ret = %d,config=%d",__func__,ret,bitmap.getConfig());
 	//return ret;
 	return true;
@@ -115,9 +118,32 @@ SkCanvas* SkiaApp::createCanvas()
 	return new SkCanvas(device);
 }
 
+static void draw_checks(SkCanvas* canvas, int width, int height) {
+    SkPaint paint;
+    paint.setColor(SK_ColorRED);
+    canvas->drawRectCoords(SkIntToScalar(0), SkIntToScalar(0),
+        SkIntToScalar(width / 2), SkIntToScalar(height / 2), paint);
+    paint.setColor(SK_ColorGREEN);
+    canvas->drawRectCoords(SkIntToScalar(width / 2), SkIntToScalar(0),
+        SkIntToScalar(width), SkIntToScalar(height / 2), paint);
+    paint.setColor(SK_ColorBLUE);
+    canvas->drawRectCoords(SkIntToScalar(0), SkIntToScalar(height / 2),
+        SkIntToScalar(width / 2), SkIntToScalar(height), paint);
+    paint.setColor(SK_ColorYELLOW);
+    canvas->drawRectCoords(SkIntToScalar(width / 2), SkIntToScalar(height / 2),
+        SkIntToScalar(width), SkIntToScalar(height), paint);
+}
+
 void SkiaApp::initApp(int width , int height){
+	//width = 480;
+	//height = 800;
 	windowChanged(width,height);
 	//createBitmap(filesDir+IMG_NAME);
+
+	bitmap.allocN32Pixels(64, 64);
+	SkCanvas canvasTmp(bitmap);
+	draw_checks(&canvasTmp, 64, 64);
+
 	canvas = createCanvas();
 }
 
@@ -175,19 +201,26 @@ void SkiaApp::TestDrawImage(SkCanvas *canvas )
 	if(canvas){
 		//LOGD("%s:",__func__);
 		//canvas->drawColor(0xff00ff00,SkXfermode::Mode::kColor_Mode);
-		SkPaint paint;
-		paint.setColor(0xffff0000);
-		paint.setStrokeWidth( 10);
-		canvas->drawColor( 0xff00ffff);
-		canvas->drawLine(0,0,100,100,paint);
+//		SkPaint paint;
+//		paint.setColor(0xffff0000);
+//		paint.setStrokeWidth( 10);
+//		canvas->drawColor( 0xff00ffff);
+//		canvas->drawLine(0,0,100,100,paint);
 
 		SkPaint bitmappaint;
-		canvas->drawBitmap(bitmap,200,400,&bitmappaint);
+
+		for( int i = 0; i < 1500; i++ )
+		{
+			int fx = rand();
+			int fy = rand();
+
+			canvas->drawBitmap(bitmap, fx % 480, fy % 800,&bitmappaint);
+		}
 		//canvas->drawArc()
 		//canvas->drawColor( 0xff00ffff);
 		//glClearColor( 1.0f, 0.0f, 0.0f, 1.0f );
 		//glClear( GL_COLOR_BUFFER_BIT );
-		fCurContext->flush();
+
 	}
 }
 
@@ -327,6 +360,9 @@ void SkiaApp::TestShadow( SkCanvas *canvas )
 	    };
 
 	    SkPaint paint;
+	    SkRect rect = SkRect::MakeXYWH( 0, 0, 100, 100 );
+	    canvas->save();
+	    canvas->clipRect( rect );
 	    paint.setAntiAlias(true);
 	    for (size_t i = 0; i < SK_ARRAY_COUNT(shadowLoopers); ++i) {
 	        SkAutoCanvasRestore acr(canvas, true);
@@ -345,14 +381,147 @@ void SkiaApp::TestShadow( SkCanvas *canvas )
 	        setup(&paint, gRec[2].fColor, gRec[2].fStrokeWidth);
 	        canvas->drawPath(fCirclePath, paint);
 	    }
+	    canvas->restore();
+}
+
+void SkiaApp::TestScale(SkCanvas *canvas )
+{
+	 canvas->scale(SkIntToScalar(3)/2, SkIntToScalar(3)/2);
+
+	        const SkScalar w = 480;
+	        const SkScalar h = SkIntToScalar(800);
+	        SkRect r = { -w, -h, w*2, h*2 };
+
+	        static const SkShader::TileMode gModes[] = {
+	            SkShader::kClamp_TileMode, SkShader::kRepeat_TileMode, SkShader::kMirror_TileMode
+	        };
+	        static const char* gModeNames[] = {
+	            "Clamp", "Repeat", "Mirror"
+	        };
+
+	        SkScalar y = SkIntToScalar(24);
+	        SkScalar x = SkIntToScalar(66);
+
+	        SkPaint p;
+	        p.setAntiAlias(true);
+	        p.setTextAlign(SkPaint::kCenter_Align);
+
+	        for (size_t kx = 0; kx < SK_ARRAY_COUNT(gModes); kx++) {
+	            SkString str(gModeNames[kx]);
+	            canvas->drawText(str.c_str(), str.size(), x + r.width()/2, y, p);
+	            x += r.width() * 4 / 3;
+	        }
+
+	        y += SkIntToScalar(16) + h;
+	        p.setTextAlign(SkPaint::kRight_Align);
+
+	        for (size_t ky = 0; ky < SK_ARRAY_COUNT(gModes); ky++) {
+	            x = SkIntToScalar(16) + w;
+
+	            SkString str(gModeNames[ky]);
+	            canvas->drawText(str.c_str(), str.size(), x, y + h/2, p);
+
+	            x += SkIntToScalar(50);
+	            for (size_t kx = 0; kx < SK_ARRAY_COUNT(gModes); kx++) {
+	                SkPaint paint;
+	                //paint.setShader(fProc(gModes[kx], gModes[ky]))->unref();
+
+	                canvas->save();
+	                canvas->translate(x, y);
+	                canvas->drawRect(r, paint);
+	                canvas->restore();
+
+	                x += r.width() * 4 / 3;
+	            }
+	            y += r.height() * 4 / 3;
+	        }
+
+}
+
+static const char* gColorTypeNames[] = {
+    "unknown",
+    "A8",
+    "565",
+    "4444",
+    "8888",
+    "8888",
+    "Index8",
+};
+
+static const SkColorType gColorTypes[] = {
+    kRGB_565_SkColorType,
+    kARGB_4444_SkColorType,
+    kN32_SkColorType,
+};
+
+#define NUM_CONFIGS SK_ARRAY_COUNT(gColorTypes)
+
+void SkiaApp::TestCopyBitmap( SkCanvas *canvas )
+{
+	SkBitmap    fDst[NUM_CONFIGS];
+	SkPaint paint;
+	SkScalar horizMargin = 10;
+	SkScalar vertMargin = 10;
+
+	SkBitmap src;
+	src.allocN32Pixels(40, 40);
+	SkCanvas canvasTmp(src);
+
+	draw_checks(&canvasTmp, 40, 40);
+
+	for (unsigned i = 0; i < NUM_CONFIGS; ++i) {
+		src.copyTo(&fDst[i], gColorTypes[i]);
+	}
+
+
+	canvas->drawBitmap(fDst[0], 40, 0, &paint);
+
+//	canvas->clear(0xFFDDDDDD);
+//	paint.setAntiAlias(true);
+//	SkScalar width = SkIntToScalar(40);
+//	SkScalar height = SkIntToScalar(40);
+//	if (paint.getFontSpacing() > height) {
+//		height = paint.getFontSpacing();
+//	}
+//	for (unsigned i = 0; i < NUM_CONFIGS; i++) {
+//		const char* name = gColorTypeNames[src.colorType()];
+//		SkScalar textWidth = paint.measureText(name, strlen(name));
+//		if (textWidth > width) {
+//			width = textWidth;
+//		}
+//	}
+//	SkScalar horizOffset = width + horizMargin;
+//	SkScalar vertOffset = height + vertMargin;
+//	canvas->translate(SkIntToScalar(20), SkIntToScalar(20));
+//
+//	for (unsigned i = 0; i < NUM_CONFIGS; i++) {
+//		canvas->save();
+//		// Draw destination config name
+//		const char* name = gColorTypeNames[fDst[i].colorType()];
+//		SkScalar textWidth = paint.measureText(name, strlen(name));
+//		SkScalar x = (width - textWidth) / SkScalar(2);
+//		SkScalar y = paint.getFontSpacing() / SkScalar(2);
+//		//canvas->drawText(name, strlen(name), x, y, paint);
+//
+//		// Draw destination bitmap
+//		canvas->translate(0, vertOffset);
+//		x = (width - 40) / SkScalar(2);
+//		canvas->drawBitmap(fDst[i], x, 0, &paint);
+//		canvas->restore();
+//
+//		canvas->translate(horizOffset, 0);
+//	}
 }
 
 void SkiaApp::mainLoop(){
 	//canvas = createCanvas();
 	canvas->drawColor(0xffffffff);
 	//TestArc( canvas );
-	TestShadow( canvas );
+	LOGE("begin TestDrawImage------>");
+	TestDrawImage( canvas );
+	LOGE("End TestDrawImage, begin flush------->");
 	fCurContext->flush();
+	LOGE("End Flush");
 }
 
 } /* namespace egret */

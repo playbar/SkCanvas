@@ -40,6 +40,8 @@ public:
 	void TestArc(SkCanvas *canvas );
 	void TestFillStyle( SkCanvas *canvas );
 	void TestShadow( SkCanvas *canvas );
+	void TestScale(SkCanvas *canvas );
+	void TestCopyBitmap( SkCanvas *canvas );
 	void TestDrawImage(SkCanvas *canvas );
 
 	void mainLoop();

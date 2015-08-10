@@ -331,7 +331,7 @@ class GL2JNIView extends GLSurfaceView
         	if( icou == 0 )
         	{
         		long FPS = (1000*5 ) / (currentMillis - preMillis );
-            //	Log.e("FPS", "FPS--->" + FPS );
+            	Log.e("FPS", "FPS--->" + FPS );
         		preMillis = currentMillis;
         	}
         	if( icou ++ > 4 )
