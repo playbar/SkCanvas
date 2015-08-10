@@ -29,41 +29,39 @@
 #include "config.h"
 #include "CanvasStyle.h"
 
-//#include "CSSPropertyNames.h"
-#include "css/BisonCSSParser.h"
-//#include "core/css/StylePropertySet.h"
-//#include "core/html/HTMLCanvasElement.h"
+//#include "css/BisonCSSParser.h"
 #include "CanvasGradient.h"
 #include "CanvasPattern.h"
-#include "platform/graphics/GraphicsContext.h"
-#include "wtf/PassRefPtr.h"
+#include "PassRefPtr.h"
+#include "CanvasContext2D.h"
 
 namespace WebCore {
 
 enum ColorParseResult { ParsedRGBA, ParsedCurrentColor, ParsedSystemColor, ParseFailed };
 
-static ColorParseResult parseColor(RGBA32& parsedColor, const String& colorString)
+static ColorParseResult parseColor(RGBA32& parsedColor, const std::string& colorString)
 {
-	if (equalIgnoringCase(colorString, "currentcolor"))
-        return ParsedCurrentColor;
-	//ASSERT(false);
-	if (BisonCSSParser::parseColor(parsedColor, colorString))
-		return ParsedRGBA;
-	if (BisonCSSParser::parseSystemColor(parsedColor, colorString))
-		return ParsedSystemColor;
+	SkASSERT(false);
+	//if (equalIgnoringCase(colorString, "currentcolor"))
+ //       return ParsedCurrentColor;
+	////ASSERT(false);
+	//if (BisonCSSParser::parseColor(parsedColor, colorString))
+	//	return ParsedRGBA;
+	//if (BisonCSSParser::parseSystemColor(parsedColor, colorString))
+	//	return ParsedSystemColor;
 
     return ParseFailed;
 }
 
 RGBA32 currentColor()
 {
-	ASSERT(false);
+	SkASSERT(false);
     RGBA32 rgba = Color::black;
     //BisonCSSParser::parseColor(rgba, canvas->inlineStyle()->getPropertyValue(CSSPropertyColor));
     return rgba;
 }
 
-bool parseColorOrCurrentColor(RGBA32& parsedColor, const String& colorString )
+bool parseColorOrCurrentColor(RGBA32& parsedColor, const std::string& colorString )
 {
     ColorParseResult parseResult = parseColor(parsedColor, colorString);
     switch (parseResult) {
@@ -76,7 +74,6 @@ bool parseColorOrCurrentColor(RGBA32& parsedColor, const String& colorString )
     case ParseFailed:
         return false;
     default:
-        ASSERT_NOT_REACHED();
         return false;
     }
 }
@@ -114,17 +111,17 @@ CanvasStyle::CanvasStyle(float c, float m, float y, float k, float a)
 
 CanvasStyle::CanvasStyle(PassRefPtr<CanvasGradient> gradient)
     : m_type(Gradient)
-    , m_gradient(gradient)
 {
+	m_gradient = gradient;
 }
 
 CanvasStyle::CanvasStyle(PassRefPtr<CanvasPattern> pattern)
     : m_type(ImagePattern)
-    , m_pattern(pattern)
 {
+	m_pattern = (pattern);
 }
 
-PassRefPtr<CanvasStyle> CanvasStyle::createFromString(const String& color)
+PassRefPtr<CanvasStyle> CanvasStyle::createFromString(const std::string& color)
 {
     RGBA32 rgba;
     ColorParseResult parseResult = parseColor(rgba, color);
@@ -137,12 +134,11 @@ PassRefPtr<CanvasStyle> CanvasStyle::createFromString(const String& color)
     case ParseFailed:
         return nullptr;
     default:
-        ASSERT_NOT_REACHED();
         return nullptr;
     }
 }
 
-PassRefPtr<CanvasStyle> CanvasStyle::createFromStringWithOverrideAlpha(const String& color, float alpha)
+PassRefPtr<CanvasStyle> CanvasStyle::createFromStringWithOverrideAlpha(const std::string& color, float alpha)
 {
     RGBA32 rgba;
     ColorParseResult parseResult = parseColor(rgba, color);
@@ -154,7 +150,6 @@ PassRefPtr<CanvasStyle> CanvasStyle::createFromStringWithOverrideAlpha(const Str
     case ParseFailed:
         return nullptr;
     default:
-        ASSERT_NOT_REACHED();
         return nullptr;
     }
 }
@@ -194,7 +189,6 @@ bool CanvasStyle::isEquivalentColor(const CanvasStyle& other) const
         return false;
     }
 
-    ASSERT_NOT_REACHED();
     return false;
 }
 
@@ -218,7 +212,7 @@ bool CanvasStyle::isEquivalentCMYKA(float c, float m, float y, float k, float a)
         && a == m_cmyka.a;
 }
 
-void CanvasStyle::applyStrokeColor(GraphicsContext* context)
+void CanvasStyle::applyStrokeColor(CanvasContext2D* context)
 {
     if (!context)
         return;
@@ -240,12 +234,11 @@ void CanvasStyle::applyStrokeColor(GraphicsContext* context)
         break;
     case CurrentColor:
     case CurrentColorWithOverrideAlpha:
-        ASSERT_NOT_REACHED();
         break;
     }
 }
 
-void CanvasStyle::applyFillColor(GraphicsContext* context)
+void CanvasStyle::applyFillColor(CanvasContext2D* context)
 {
     if (!context)
         return;
@@ -267,7 +260,6 @@ void CanvasStyle::applyFillColor(GraphicsContext* context)
         break;
     case CurrentColor:
     case CurrentColorWithOverrideAlpha:
-        ASSERT_NOT_REACHED();
         break;
     }
 }

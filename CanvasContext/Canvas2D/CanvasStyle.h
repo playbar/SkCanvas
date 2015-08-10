@@ -7,11 +7,12 @@
 #include "RefPtr.h"
 #include "string"
 
+class CanvasContext2D;
+
 namespace WebCore {
 
     class CanvasGradient;
     class CanvasPattern;
-    class GraphicsContext;
 
 	class CanvasStyle : public RefCounted<CanvasStyle> {
     public:
@@ -32,8 +33,8 @@ namespace WebCore {
         CanvasGradient* canvasGradient() const { return m_gradient.get(); }
         CanvasPattern* canvasPattern() const { return m_pattern.get(); }
 
-        void applyFillColor(GraphicsContext*);
-        void applyStrokeColor(GraphicsContext*);
+		void applyFillColor(CanvasContext2D*);
+		void applyStrokeColor(CanvasContext2D*);
 
         bool isEquivalentColor(const CanvasStyle&) const;
         bool isEquivalentRGBA(float r, float g, float b, float a) const;
