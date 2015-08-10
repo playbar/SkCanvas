@@ -167,6 +167,7 @@
     <ClInclude Include="..\..\..\CanvasContext\utils\RefPtr.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\SkiaUtils.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\TransformationMatrix.h" />
+    <ClInclude Include="..\..\..\CanvasContext\utils\TypeTraits.h" />
     <ClInclude Include="..\..\gm\gm.h" />
     <ClInclude Include="..\..\samplecode\GMSampleView.h" />
     <ClInclude Include="..\..\samplecode\OverView.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="..\..\..\CanvasContext\utils\AffineTransform.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\utils\SkiaUtils.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\utils\TransformationMatrix.cpp" />
+    <ClCompile Include="..\..\..\CanvasContext\utils\TypeTraits.cpp" />
     <ClCompile Include="..\..\gm\gm.cpp" />
     <ClCompile Include="..\..\samplecode\OverView.cpp" />
     <ClCompile Include="..\..\samplecode\SampleAnimatedGradient.cpp" />

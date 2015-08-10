@@ -11,6 +11,11 @@
 #include "SkDevice.h"
 #include "SkPaint.h"
 
+#include "CanvasContext2D.h"
+#include "PassOwnPtr.h"
+
+using namespace WTF;
+
 // ensure that we don't accidentally screw up the bounds when the oval is
 // fractional, and the impl computes the center and radii, and uses them to
 // reconstruct the edges of the circle.
@@ -94,6 +99,10 @@ protected:
     }
 
     virtual void onDrawContent(SkCanvas* canvas) {
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+
+		return;
+
         SkPaint paint;
         paint.setAntiAlias(true);
         paint.setStyle(SkPaint::kStroke_Style);

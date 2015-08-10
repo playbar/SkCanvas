@@ -8,8 +8,8 @@
 #include "passrefptr.h"
 #include "graphicstypes.h"
 #include "Color.h"
-#include "RefPtr.h"
 #include "CanvasStyle.h"
+#include "passownptr.h"
 
 using namespace WebCore;
 
@@ -17,7 +17,7 @@ class CanvasContext2D
 {
 public:
 	void deref() {};
-	static PassRefPtr<CanvasContext2D> create(SkCanvas *canvas)
+	static PassOwnPtr<CanvasContext2D> create(SkCanvas *canvas)
 	{
 		return adoptRef(new CanvasContext2D(canvas));
 	}
