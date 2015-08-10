@@ -23,7 +23,7 @@
 #ifndef FloatPoint3D_h
 #define FloatPoint3D_h
 
-#include "SkPoint.h"
+#include "FloatPoint.h"
 
 namespace WebCore {
 
@@ -43,7 +43,7 @@ public:
     {
     }
 
-	FloatPoint3D(const SkPoint& p)
+    FloatPoint3D(const FloatPoint& p)
         : m_x(p.x())
         , m_y(p.y())
         , m_z(0)

@@ -226,12 +226,13 @@ void CanvasStyle::applyStrokeColor(CanvasContext2D* context)
         context->setStrokeColor(m_rgba);
         break;
     }
-    case Gradient:
-        context->setStrokeGradient(canvasGradient()->gradient());
-        break;
-    case ImagePattern:
-        context->setStrokePattern(canvasPattern()->pattern());
-        break;
+				SkASSERT(false);
+    //case Gradient:
+    //    context->setStrokeGradient(canvasGradient()->gradient());
+    //    break;
+    //case ImagePattern:
+    //    context->setStrokePattern(canvasPattern()->pattern());
+    //    break;
     case CurrentColor:
     case CurrentColorWithOverrideAlpha:
         break;
@@ -252,12 +253,14 @@ void CanvasStyle::applyFillColor(CanvasContext2D* context)
         context->setFillColor(m_rgba);
         break;
     }
-    case Gradient:
-        context->setFillGradient(canvasGradient()->gradient());
-        break;
-    case ImagePattern:
-        context->setFillPattern(canvasPattern()->pattern());
-        break;
+				SkASSERT(false);
+	//case Gradient:
+	//	context->setFillGradient(canvasGradient()->gradient());
+	//	break;
+	//case ImagePattern:
+	//	context->setFillPattern(canvasPattern()->pattern());
+	//	break;
+
     case CurrentColor:
     case CurrentColorWithOverrideAlpha:
         break;

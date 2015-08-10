@@ -9,7 +9,7 @@
 
 namespace WebCore {
 
-Gradient::Gradient(const FloatPoint& p0, const FloatPoint& p1)
+Gradient::Gradient(const SkPoint& p0, const SkPoint& p1)
     : m_p0(p0)
     , m_p1(p1)
     , m_r0(0)
@@ -22,7 +22,7 @@ Gradient::Gradient(const FloatPoint& p0, const FloatPoint& p1)
 {
 }
 
-Gradient::Gradient(const FloatPoint& p0, float r0, const FloatPoint& p1, float r1, float aspectRatio)
+Gradient::Gradient(const SkPoint& p0, float r0, const SkPoint& p1, float r1, float aspectRatio)
     : m_p0(p0)
     , m_p1(p1)
     , m_r0(r0)
@@ -227,9 +227,9 @@ SkShader* Gradient::shader()
         if (aspectRatio() != 1) {
             // CSS3 elliptical gradients: apply the elliptical scaling at the
             // gradient center point.
-            m_gradientSpaceTransformation.translate(m_p0.x(), m_p0.y());
+            m_gradientSpaceTransformation.translate(m_p0.fX, m_p0.fY);
             m_gradientSpaceTransformation.scale(1, 1 / aspectRatio());
-            m_gradientSpaceTransformation.translate(-m_p0.x(), -m_p0.y());
+            m_gradientSpaceTransformation.translate(-m_p0.fX, -m_p0.fY);
         }
     } 
 	else

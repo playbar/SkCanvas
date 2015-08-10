@@ -28,11 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "config.h"
-#include "platform/geometry/LayoutRect.h"
+#include "LayoutRect.h"
 
-#include "platform/LayoutUnit.h"
-#include "platform/geometry/FloatRect.h"
+#include "LayoutUnit.h"
+#include "FloatRect.h"
 #include <algorithm>
 
 namespace WebCore {
@@ -118,7 +117,7 @@ void LayoutRect::scale(float xAxisScale, float yAxisScale)
     m_size.scale(xAxisScale, yAxisScale);
 }
 
-LayoutRect unionRect(const Vector<LayoutRect>& rects)
+LayoutRect unionRect(const std::vector<LayoutRect>& rects)
 {
     LayoutRect result;
 

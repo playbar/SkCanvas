@@ -46,7 +46,7 @@ inline bool WebCoreFloatNearlyEqual(float a, float b)
 }
 
 // Determine if a given WebKit point is contained in a path
-bool  SkPathContainsPoint(const SkPath&, const FloatPoint&, SkPath::FillType);
+bool  SkPathContainsPoint(const SkPath&, const SkPoint&, SkPath::FillType);
 
 SkMatrix  affineTransformToSkMatrix(const AffineTransform&);
 

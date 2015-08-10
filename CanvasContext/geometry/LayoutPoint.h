@@ -33,6 +33,7 @@
 
 #include "FloatPoint.h"
 #include "LayoutSize.h"
+#include "MathExtras.h"
 
 namespace WebCore {
 

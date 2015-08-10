@@ -27,7 +27,7 @@
 #include "config.h"
 #include "Color.h"
 #include "MathExtras.h"
-
+#include <algorithm>
 using namespace std;
 
 namespace WebCore {

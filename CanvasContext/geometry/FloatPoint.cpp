@@ -88,7 +88,7 @@ FloatPoint::operator SkPoint() const
 
 FloatPoint FloatPoint::narrowPrecision(double x, double y)
 {
-    return FloatPoint((float)(x), (float)(y));
+    return FloatPoint((x), (y));
 }
 
 float findSlope(const FloatPoint& p1, const FloatPoint& p2, float& c)

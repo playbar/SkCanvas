@@ -557,7 +557,7 @@ FloatPoint TransformationMatrix::projectPoint(const FloatPoint& p, bool* clamped
     if (m33() == 0) {
         // In this case, the projection plane is parallel to the ray we are trying to
         // trace, and there is no well-defined value for the projection.
-        return FloatPoint();
+		return FloatPoint();
     }
 
     double x = p.x();
@@ -583,7 +583,7 @@ FloatPoint TransformationMatrix::projectPoint(const FloatPoint& p, bool* clamped
         outY /= w;
     }
 
-    return FloatPoint(static_cast<float>(outX), static_cast<float>(outY));
+	return FloatPoint(static_cast<float>(outX), static_cast<float>(outY));
 }
 
 FloatQuad TransformationMatrix::projectQuad(const FloatQuad& q, bool* clamped) const
@@ -641,7 +641,7 @@ LayoutRect TransformationMatrix::clampedBoundsOfProjectedQuad(const FloatQuad& q
 FloatPoint TransformationMatrix::mapPoint(const FloatPoint& p) const
 {
     if (isIdentityOrTranslation())
-        return FloatPoint(p.x() + static_cast<float>(m_matrix[3][0]), p.y() + static_cast<float>(m_matrix[3][1]));
+		return FloatPoint(p.x() + static_cast<float>(m_matrix[3][0]), p.y() + static_cast<float>(m_matrix[3][1]));
 
     return internalMapPoint(p);
 }
@@ -678,10 +678,10 @@ FloatRect TransformationMatrix::mapRect(const FloatRect& r) const
 
     float maxX = r.maxX();
     float maxY = r.maxY();
-    result.setP1(internalMapPoint(FloatPoint(r.x(), r.y())));
-    result.setP2(internalMapPoint(FloatPoint(maxX, r.y())));
-    result.setP3(internalMapPoint(FloatPoint(maxX, maxY)));
-    result.setP4(internalMapPoint(FloatPoint(r.x(), maxY)));
+	result.setP1(internalMapPoint(FloatPoint(r.x(), r.y())));
+	result.setP2(internalMapPoint(FloatPoint(maxX, r.y())));
+	result.setP3(internalMapPoint(FloatPoint(maxX, maxY)));
+	result.setP4(internalMapPoint(FloatPoint(r.x(), maxY)));
 
     return result.boundingBox();
 }

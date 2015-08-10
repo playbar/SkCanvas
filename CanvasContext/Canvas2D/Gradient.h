@@ -20,11 +20,11 @@ class IntSize;
 
 class Gradient : public RefCounted<Gradient> {
 public:
-    static Gradient *create(const FloatPoint& p0, const FloatPoint& p1)
+    static Gradient *create(const SkPoint& p0, const SkPoint& p1)
     {
         return (new Gradient(p0, p1));
     }
-    static Gradient *create(const FloatPoint& p0, float r0, const FloatPoint& p1, float r1, float aspectRatio = 1)
+    static Gradient *create(const SkPoint& p0, float r0, const SkPoint& p1, float r1, float aspectRatio = 1)
     {
         return (new Gradient(p0, r0, p1, r1, aspectRatio));
     }
@@ -52,7 +52,7 @@ public:
 	const SkPoint& p0() const { return m_p0; }
 	const SkPoint& p1() const { return m_p1; }
 
-    void setP0(const FloatPoint& p)
+    void setP0(const SkPoint& p)
     {
         if (m_p0 == p)
             return;
@@ -60,7 +60,7 @@ public:
         m_p0 = p;
     }
 
-    void setP1(const FloatPoint& p)
+    void setP1(const SkPoint& p)
     {
         if (m_p1 == p)
             return;
@@ -101,8 +101,8 @@ public:
     AffineTransform gradientSpaceTransform() { return m_gradientSpaceTransformation; }
 
 private:
-    Gradient(const FloatPoint& p0, const FloatPoint& p1);
-    Gradient(const FloatPoint& p0, float r0, const FloatPoint& p1, float r1, float aspectRatio);
+    Gradient(const SkPoint& p0, const SkPoint& p1);
+    Gradient(const SkPoint& p0, float r0, const SkPoint& p1, float r1, float aspectRatio);
 
     void destroyShader();
 

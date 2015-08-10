@@ -32,18 +32,15 @@
 
 struct SkRect;
 
-namespace WebCore 
-{
+namespace WebCore {
 
 class LayoutRect;
 class IntRect;
 class IntPoint;
 
-class FloatRect 
-{
+class FloatRect {
 public:
-    enum ContainsMode
-	{
+    enum ContainsMode {
         InsideOrOnStroke,
         InsideButNotOnStroke
     };

@@ -29,12 +29,11 @@
 
 #include "TransformationMatrix.h"
 
-#include "FloatPoint.h"
+#include "SkPoint.h"
 #include <string.h> // for memcpy
 
 namespace WebCore {
 
-class FloatPoint;
 class FloatQuad;
 class FloatRect;
 class IntPoint;
@@ -56,7 +55,7 @@ public:
     // Rounds the mapped point to the nearest integer value.
     IntPoint mapPoint(const IntPoint&) const;
 
-    FloatPoint mapPoint(const FloatPoint&) const;
+	FloatPoint mapPoint(const FloatPoint&) const;
 
     IntSize mapSize(const IntSize&) const;
 

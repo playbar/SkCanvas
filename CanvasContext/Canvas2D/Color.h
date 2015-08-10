@@ -31,7 +31,10 @@ struct NamedColor {
     unsigned ARGBValue;
 };
 
-const NamedColor* findColor(register const char* str, register unsigned len);
+inline const NamedColor* findColor(register const char* str, register unsigned len)
+{
+	return NULL;
+}
 
 class Color {
 public:

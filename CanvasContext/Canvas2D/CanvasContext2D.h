@@ -5,14 +5,18 @@
 #include "string"
 #include "vector"
 #include "AffineTransform.h"
+#include "passrefptr.h"
+#include "graphicstypes.h"
+#include "Color.h"
+#include "RefPtr.h"
+#include "CanvasStyle.h"
 
 using namespace WebCore;
-
-class CanvasStyle;
 
 class CanvasContext2D
 {
 public:
+	void deref() {};
 	static PassRefPtr<CanvasContext2D> create(SkCanvas *canvas)
 	{
 		return adoptRef(new CanvasContext2D(canvas));
@@ -62,7 +66,7 @@ public:
 	std::string globalCompositeOperation() const;
 	void setGlobalCompositeOperation(const std::string&);
 
-	void save() { ++m_stateStack.last().m_unrealizedSaveCount; }
+	void save();
 	void restore();
 
 	PassRefPtr<AffineTransform> currentTransform() const
@@ -78,93 +82,93 @@ public:
 	void setTransform(float m11, float m12, float m21, float m22, float dx, float dy);
 	void resetTransform();
 
-	void setStrokeColor(const String& color);
+	void setStrokeColor(const std::string& color);
 	void setStrokeColor(float grayLevel);
-	void setStrokeColor(const String& color, float alpha);
+	void setStrokeColor(const std::string& color, float alpha);
 	void setStrokeColor(float grayLevel, float alpha);
 	void setStrokeColor(float r, float g, float b, float a);
 	void setStrokeColor(float c, float m, float y, float k, float a);
 
-	void setFillColor(const String& color);
+	void setFillColor(const std::string &color);
 	void setFillColor(float grayLevel);
-	void setFillColor(const String& color, float alpha);
+	void setFillColor(const std::string& color, float alpha);
 	void setFillColor(float grayLevel, float alpha);
 	void setFillColor(float r, float g, float b, float a);
 	void setFillColor(float c, float m, float y, float k, float a);
 
-	void beginPath();
+	//void beginPath();
 
-	PassRefPtr<Path2D> currentPath();
-	void setCurrentPath(Path2D*);
-	void fill(const String& winding = "nonzero");
-	void fill(Path2D*);
-	void fill(Path2D*, const String& winding);
-	void stroke();
-	void stroke(Path2D*);
-	void clip(const String& winding = "nonzero");
-	void clip(Path2D*);
-	void clip(Path2D*, const String& winding);
+	//PassRefPtr<Path2D> currentPath();
+	//void setCurrentPath(Path2D*);
+	//void fill(const String& winding = "nonzero");
+	//void fill(Path2D*);
+	//void fill(Path2D*, const String& winding);
+	//void stroke();
+	//void stroke(Path2D*);
+	//void clip(const String& winding = "nonzero");
+	//void clip(Path2D*);
+	//void clip(Path2D*, const String& winding);
 
-	bool isPointInPath(const float x, const float y, const String& winding = "nonzero");
-	bool isPointInPath(Path2D*, const float x, const float y);
-	bool isPointInPath(Path2D*, const float x, const float y, const String& winding);
-	bool isPointInStroke(const float x, const float y);
-	bool isPointInStroke(Path2D*, const float x, const float y);
+	//bool isPointInPath(const float x, const float y, const String& winding = "nonzero");
+	//bool isPointInPath(Path2D*, const float x, const float y);
+	//bool isPointInPath(Path2D*, const float x, const float y, const String& winding);
+	//bool isPointInStroke(const float x, const float y);
+	//bool isPointInStroke(Path2D*, const float x, const float y);
 
-	void clearRect(float x, float y, float width, float height);
-	void fillRect(float x, float y, float width, float height);
-	void strokeRect(float x, float y, float width, float height);
+	//void clearRect(float x, float y, float width, float height);
+	//void fillRect(float x, float y, float width, float height);
+	//void strokeRect(float x, float y, float width, float height);
 
-	void setShadow(float width, float height, float blur);
-	void setShadow(float width, float height, float blur, const String& color);
-	void setShadow(float width, float height, float blur, float grayLevel);
-	void setShadow(float width, float height, float blur, const String& color, float alpha);
-	void setShadow(float width, float height, float blur, float grayLevel, float alpha);
-	void setShadow(float width, float height, float blur, float r, float g, float b, float a);
-	void setShadow(float width, float height, float blur, float c, float m, float y, float k, float a);
+	//void setShadow(float width, float height, float blur);
+	//void setShadow(float width, float height, float blur, const String& color);
+	//void setShadow(float width, float height, float blur, float grayLevel);
+	//void setShadow(float width, float height, float blur, const String& color, float alpha);
+	//void setShadow(float width, float height, float blur, float grayLevel, float alpha);
+	//void setShadow(float width, float height, float blur, float r, float g, float b, float a);
+	//void setShadow(float width, float height, float blur, float c, float m, float y, float k, float a);
 
-	void clearShadow();
+	//void clearShadow();
 
-	void drawImage(Image*, float x, float y);
-	void drawImage(CanvasImageSource*, float x, float y, float width, float height);
-	void drawImage(CanvasImageSource*, float sx, float sy, float sw, float sh, float dx, float dy, float dw, float dh);
+	//void drawImage(Image*, float x, float y);
+	//void drawImage(CanvasImageSource*, float x, float y, float width, float height);
+	//void drawImage(CanvasImageSource*, float sx, float sy, float sw, float sh, float dx, float dy, float dw, float dh);
 
-	void setAlpha(float);
+	//void setAlpha(float);
 
-	void setCompositeOperation(const String&);
+	//void setCompositeOperation(const String&);
 
-	PassRefPtr<CanvasGradient> createLinearGradient(float x0, float y0, float x1, float y1);
-	PassRefPtr<CanvasGradient> createRadialGradient(float x0, float y0, float r0, float x1, float y1, float r1);
-	PassRefPtr<CanvasPattern> createPattern(CanvasImageSource*, const String& repetitionType);
+	//PassRefPtr<CanvasGradient> createLinearGradient(float x0, float y0, float x1, float y1);
+	//PassRefPtr<CanvasGradient> createRadialGradient(float x0, float y0, float r0, float x1, float y1, float r1);
+	//PassRefPtr<CanvasPattern> createPattern(CanvasImageSource*, const String& repetitionType);
 
-	PassRefPtr<ImageData> createImageData(PassRefPtr<ImageData>) const;
-	PassRefPtr<ImageData> createImageData(float width, float height) const;
-	PassRefPtr<ImageData> getImageData(float sx, float sy, float sw, float sh) const;
-	void putImageData(ImageData*, float dx, float dy);
-	void putImageData(ImageData*, float dx, float dy, float dirtyX, float dirtyY, float dirtyWidth, float dirtyHeight);
+	//PassRefPtr<ImageData> createImageData(PassRefPtr<ImageData>) const;
+	//PassRefPtr<ImageData> createImageData(float width, float height) const;
+	//PassRefPtr<ImageData> getImageData(float sx, float sy, float sw, float sh) const;
+	//void putImageData(ImageData*, float dx, float dy);
+	//void putImageData(ImageData*, float dx, float dy, float dirtyX, float dirtyY, float dirtyWidth, float dirtyHeight);
 
-	// Slated for deprecation:
-	void webkitPutImageDataHD(ImageData* image, float dx, float dy) { putImageData(image, dx, dy); }
-	void webkitPutImageDataHD(ImageData* image, float dx, float dy, float dirtyX, float dirtyY, float dirtyWidth, float dirtyHeight) { putImageData(image, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight); }
-	PassRefPtr<ImageData> webkitGetImageDataHD(float sx, float sy, float sw, float sh) const;
-	float webkitBackingStorePixelRatio() const { return 1; }
+	//// Slated for deprecation:
+	//void webkitPutImageDataHD(ImageData* image, float dx, float dy) { putImageData(image, dx, dy); }
+	//void webkitPutImageDataHD(ImageData* image, float dx, float dy, float dirtyX, float dirtyY, float dirtyWidth, float dirtyHeight) { putImageData(image, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight); }
+	//PassRefPtr<ImageData> webkitGetImageDataHD(float sx, float sy, float sw, float sh) const;
+	//float webkitBackingStorePixelRatio() const { return 1; }
 
 	void reset();
 
-	String font() const;
-	void setFont(const String&);
+	//String font() const;
+	//void setFont(const String&);
 
-	String textAlign() const;
-	void setTextAlign(const String&);
+	//String textAlign() const;
+	//void setTextAlign(const String&);
 
-	String textBaseline() const;
-	void setTextBaseline(const String&);
+	//String textBaseline() const;
+	//void setTextBaseline(const String&);
 
-	void fillText(const String& text, float x, float y);
-	void fillText(const String& text, float x, float y, float maxWidth);
-	void strokeText(const String& text, float x, float y);
-	void strokeText(const String& text, float x, float y, float maxWidth);
-	PassRefPtr<TextMetrics> measureText(const String& text);
+	//void fillText(const String& text, float x, float y);
+	//void fillText(const String& text, float x, float y, float maxWidth);
+	//void strokeText(const String& text, float x, float y);
+	//void strokeText(const String& text, float x, float y, float maxWidth);
+	//PassRefPtr<TextMetrics> measureText(const String& text);
 
 	LineCap getLineCap() const { return state().m_lineCap; }
 	LineJoin getLineJoin() const { return state().m_lineJoin; }
@@ -172,10 +176,9 @@ public:
 	bool imageSmoothingEnabled() const;
 	void setImageSmoothingEnabled(bool);
 
-	PassRefPtr<Canvas2DContextAttributes> getContextAttributes() const;
 
-	void drawSystemFocusRing(Element*);
-	bool drawCustomFocusRing(Element*);
+	//void drawSystemFocusRing(Element*);
+	//bool drawCustomFocusRing(Element*);
 
 private:
 	struct State
@@ -187,12 +190,11 @@ private:
 		State& operator=(const State&);
 
 		// CSSFontSelectorClient implementation
-		virtual void fontsNeedUpdate(FontSelector*);
 
 		unsigned m_unrealizedSaveCount;
 
-		String m_unparsedStrokeColor;
-		String m_unparsedFillColor;
+		std::string m_unparsedStrokeColor;
+		std::string m_unparsedFillColor;
 		RefPtr<CanvasStyle> m_strokeStyle;
 		RefPtr<CanvasStyle> m_fillStyle;
 		float m_lineWidth;
@@ -204,10 +206,10 @@ private:
 		RGBA32 m_shadowColor;
 		float m_globalAlpha;
 		CompositeOperator m_globalComposite;
-		blink::WebBlendMode m_globalBlend;
+		WebBlendMode m_globalBlend;
 		AffineTransform m_transform;
 		bool m_invertibleCTM;
-		Vector<float> m_lineDash;
+		std::vector<float> m_lineDash;
 		float m_lineDashOffset;
 		bool m_imageSmoothingEnabled;
 
@@ -215,47 +217,47 @@ private:
 		TextAlign m_textAlign;
 		TextBaseline m_textBaseline;
 
-		String m_unparsedFont;
-		Font m_font;
+		std::string m_unparsedFont;
+		//Font m_font;
 		bool m_realizedFont;
 	};
 
-	CanvasRenderingContext2D(SkCanvas*, const Canvas2DContextAttributes* attrs, bool usesCSSCompatibilityParseMode);
+	CanvasContext2D(SkCanvas* );
 
-	State& modifiableState() { return m_stateStack.last(); }
-	const State& state() const { return m_stateStack.last(); }
+	//State& modifiableState() { return m_stateStack.last(); }
+	const State& state() const { return m_stateStack.back(); }
 
-	void applyLineDash();
-	void setShadow(const FloatSize& offset, float blur, RGBA32 color);
-	void applyShadow();
-	bool shouldDrawShadows() const;
+	//void applyLineDash();
+	//void setShadow(const FloatSize& offset, float blur, RGBA32 color);
+	//void applyShadow();
+	//bool shouldDrawShadows() const;
 
-	bool computeDirtyRect(const FloatRect& localBounds, FloatRect*);
-	bool computeDirtyRect(const FloatRect& localBounds, const FloatRect& transformedClipBounds, FloatRect*);
-	void didDraw(const FloatRect&);
+	//bool computeDirtyRect(const FloatRect& localBounds, FloatRect*);
+	//bool computeDirtyRect(const FloatRect& localBounds, const FloatRect& transformedClipBounds, FloatRect*);
+	//void didDraw(const FloatRect&);
 
-	//GraphicsContext* drawingContext() const;
+	////GraphicsContext* drawingContext() const;
 
-	void unwindStateStack();
-	void realizeSaves();
+	//void unwindStateStack();
+	//void realizeSaves();
 
-	void applyStrokePattern();
-	void applyFillPattern();
+	//void applyStrokePattern();
+	//void applyFillPattern();
 
-	void drawImageInternal(CanvasImageSource*, float sx, float sy, float sw, float sh, float dx, float dy, float dw, float dh, CompositeOperator, blink::WebBlendMode);
-	//void drawVideo(HTMLVideoElement*, FloatRect srcRect, FloatRect dstRect);
+	//void drawImageInternal(CanvasImageSource*, float sx, float sy, float sw, float sh, float dx, float dy, float dw, float dh, CompositeOperator, blink::WebBlendMode);
+	////void drawVideo(HTMLVideoElement*, FloatRect srcRect, FloatRect dstRect);
 
-	void fillInternal(const Path&, const String& windingRuleString);
-	void strokeInternal(const Path&);
-	void clipInternal(const Path&, const String& windingRuleString);
+	//void fillInternal(const Path&, const String& windingRuleString);
+	//void strokeInternal(const Path&);
+	//void clipInternal(const Path&, const String& windingRuleString);
 
-	bool isPointInPathInternal(const Path&, const float x, const float y, const String& windingRuleString);
-	bool isPointInStrokeInternal(const Path&, const float x, const float y);
+	//bool isPointInPathInternal(const Path&, const float x, const float y, const String& windingRuleString);
+	//bool isPointInStrokeInternal(const Path&, const float x, const float y);
 
-	void drawTextInternal(const String& text, float x, float y, bool fill, float maxWidth = 0, bool useMaxWidth = false);
+	//void drawTextInternal(const String& text, float x, float y, bool fill, float maxWidth = 0, bool useMaxWidth = false);
 
-	const Font& accessFont();
-	int getFontBaseline(const FontMetrics&) const;
+	//const Font& accessFont();
+	//int getFontBaseline(const FontMetrics&) const;
 
 	void clearCanvas();
 	bool rectContainsTransformedRect(const FloatRect&, const FloatRect&) const;
@@ -265,9 +267,9 @@ private:
 	template<class T> void fullCanvasCompositedFill(const T&);
 	//template<class T> void fullCanvasCompositedDrawImage(T*, const FloatRect&, const FloatRect&, CompositeOperator);
 
-	bool focusRingCallIsValid(const Path&, Element*);
-	void updateFocusRingAccessibility(const Path&, Element*);
-	void drawFocusRing(const Path&);
+	//bool focusRingCallIsValid(const Path&, Element*);
+	//void updateFocusRingAccessibility(const Path&, Element*);
+	//void drawFocusRing(const Path&);
 
 	virtual bool is2d() const { return true; }
 	virtual bool isAccelerated() const;
@@ -275,10 +277,10 @@ private:
 
 	virtual bool isTransformInvertible() const { return state().m_invertibleCTM; }
 
-	Vector<State, 1> m_stateStack;
+	std::vector<State> m_stateStack;
 	bool m_usesCSSCompatibilityParseMode;
 	bool m_hasAlpha;
-	MutableStylePropertyMap m_fetchedFonts;
+	//MutableStylePropertyMap m_fetchedFonts;
 
 
 };

@@ -38,11 +38,11 @@ class ExceptionState;
 
 class CanvasGradient : public RefCounted<CanvasGradient> {
 public:
-    static PassRefPtr<CanvasGradient> create(const FloatPoint& p0, const FloatPoint& p1)
+    static PassRefPtr<CanvasGradient> create(const SkPoint& p0, const SkPoint& p1)
     {
         return adoptRef(new CanvasGradient(p0, p1));
     }
-    static PassRefPtr<CanvasGradient> create(const FloatPoint& p0, float r0, const FloatPoint& p1, float r1)
+    static PassRefPtr<CanvasGradient> create(const SkPoint& p0, float r0, const SkPoint& p1, float r1)
     {
         return adoptRef(new CanvasGradient(p0, r0, p1, r1));
     }
@@ -52,8 +52,8 @@ public:
     void addColorStop(float value, const std::string& color );
 
 private:
-    CanvasGradient(const FloatPoint& p0, const FloatPoint& p1);
-    CanvasGradient(const FloatPoint& p0, float r0, const FloatPoint& p1, float r1);
+    CanvasGradient(const SkPoint& p0, const SkPoint& p1);
+    CanvasGradient(const SkPoint& p0, float r0, const SkPoint& p1, float r1);
 
     RefPtr<Gradient> m_gradient;
 };

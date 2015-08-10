@@ -24,9 +24,9 @@
  */
 
 #include "config.h"
-#include "IntRect.h"
+#include "platform/geometry/IntRect.h"
 
-#include "FloatRect.h"
+#include "platform/geometry/FloatRect.h"
 #include "platform/geometry/LayoutRect.h"
 #include "SkRect.h"
 

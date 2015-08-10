@@ -28,6 +28,7 @@
 
 #include "IntPoint.h"
 #include "vector"
+#include <algorithm>
 
 
 struct SkRect;
@@ -38,8 +39,7 @@ namespace WebCore {
 class FloatRect;
 class LayoutRect;
 
-class  IntRect
-{
+class  IntRect {
 public:
     IntRect() { }
     IntRect(const IntPoint& location, const IntSize& size)

@@ -159,20 +159,6 @@
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Gradient.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\graphicstypes.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Pattern.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\FloatPoint.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\FloatPoint3D.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\FloatQuad.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\FloatRect.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\FloatSize.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\IntPoint.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\IntRect.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\IntRectExtent.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\IntSize.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\IntSizeHash.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\LayoutPoint.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\LayoutRect.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\LayoutSize.h" />
-    <ClInclude Include="..\..\..\CanvasContext\geometry\RoundedRect.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\AffineTransform.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\MathExtras.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\PassRefPtr.h" />
@@ -214,13 +200,10 @@
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Gradient.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Pattern.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatPoint.cpp" />
-    <ClCompile Include="..\..\..\CanvasContext\geometry\FloatPoint3D.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatQuad.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatRect.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatSize.cpp" />
-    <ClCompile Include="..\..\..\CanvasContext\geometry\IntRect.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\LayoutRect.cpp" />
-    <ClCompile Include="..\..\..\CanvasContext\geometry\RoundedRect.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\utils\AffineTransform.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\utils\SkiaUtils.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\utils\TransformationMatrix.cpp" />
@@ -244,6 +227,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleTestCanvas.cpp" />
     <ClCompile Include="..\..\samplecode\SampleTests.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>

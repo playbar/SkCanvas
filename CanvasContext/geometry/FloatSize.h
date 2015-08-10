@@ -29,6 +29,7 @@
 #define FloatSize_h
 
 #include "IntPoint.h"
+#include "MathExtras.h"
 
 namespace WebCore {
 

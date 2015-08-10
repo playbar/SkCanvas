@@ -29,17 +29,8 @@
 
 #include "FloatSize.h"
 #include "IntPoint.h"
+#include "MathExtras.h"
 #include <algorithm>
-
-#if OS(MACOSX)
-typedef struct CGPoint CGPoint;
-
-#ifdef NSGEOMETRY_TYPES_SAME_AS_CGGEOMETRY_TYPES
-typedef struct CGPoint NSPoint;
-#else
-typedef struct _NSPoint NSPoint;
-#endif
-#endif
 
 struct SkPoint;
 
@@ -229,10 +220,10 @@ inline FloatSize toFloatSize(const FloatPoint& a)
     return FloatSize(a.x(), a.y());
 }
 
-float findSlope(const FloatPoint& p1, const FloatPoint& p2, float& c);
+ float findSlope(const FloatPoint& p1, const FloatPoint& p2, float& c);
 
 // Find point where lines through the two pairs of points intersect. Returns false if the lines don't intersect.
-bool findIntersection(const FloatPoint& p1, const FloatPoint& p2, const FloatPoint& d1, const FloatPoint& d2, FloatPoint& intersection);
+ bool findIntersection(const FloatPoint& p1, const FloatPoint& p2, const FloatPoint& d1, const FloatPoint& d2, FloatPoint& intersection);
 
 }
 

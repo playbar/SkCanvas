@@ -2,7 +2,7 @@
 #define AnimationUtilities_h
 
 #include "LayoutUnit.h"
-#include "FloatPoint.h"
+#include "SkPoint.h"
 #include "IntPoint.h"
 
 namespace WebCore {
@@ -39,9 +39,9 @@ inline IntPoint blend(const IntPoint& from, const IntPoint& to, double progress)
     return IntPoint(blend(from.x(), to.x(), progress), blend(from.y(), to.y(), progress));
 }
 
-inline FloatPoint blend(const FloatPoint& from, const FloatPoint& to, double progress)
+inline SkPoint blend(const SkPoint& from, const SkPoint& to, double progress)
 {
-    return FloatPoint(blend(from.x(), to.x(), progress), blend(from.y(), to.y(), progress));
+    return SkPoint::Make(blend(from.x(), to.x(), progress), blend(from.y(), to.y(), progress));
 }
 
 // Calculates the accuracy for evaluating a timing function for an animation with the specified duration.

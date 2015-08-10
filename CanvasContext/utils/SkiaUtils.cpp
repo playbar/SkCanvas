@@ -124,7 +124,7 @@ SkColor SkPMColorToColor(SkPMColor pm)
                           InvScaleByte(SkGetPackedB32(pm), scale));
 }
 
-bool SkPathContainsPoint(const SkPath& originalPath, const FloatPoint& point, SkPath::FillType ft)
+bool SkPathContainsPoint(const SkPath& originalPath, const SkPoint& point, SkPath::FillType ft)
 {
     SkRect bounds = originalPath.getBounds();
 

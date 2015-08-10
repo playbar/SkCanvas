@@ -24,7 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "config.h"
 #include "FloatRect.h"
 
 #include "IntRect.h"
@@ -51,7 +50,7 @@ FloatRect::FloatRect(const SkRect& r) : m_location(r.fLeft, r.fTop), m_size(r.wi
 
 FloatRect FloatRect::narrowPrecision(double x, double y, double width, double height)
 {
-    return FloatRect(narrowPrecisionToFloat(x), narrowPrecisionToFloat(y), narrowPrecisionToFloat(width), narrowPrecisionToFloat(height));
+    return FloatRect((x), (y), (width), (height));
 }
 
 bool FloatRect::isExpressibleAsIntRect() const
@@ -154,7 +153,7 @@ void FloatRect::scale(float sx, float sy)
     m_size.setHeight(height() * sy);
 }
 
-FloatRect unionRect(const Vector<FloatRect>& rects)
+FloatRect unionRect(const std::vector<FloatRect>& rects)
 {
     FloatRect result;
 

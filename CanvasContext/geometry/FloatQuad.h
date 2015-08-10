@@ -29,6 +29,7 @@
 #ifndef FloatQuad_h
 #define FloatQuad_h
 
+#include "FloatPoint.h"
 #include "FloatRect.h"
 #include "IntRect.h"
 

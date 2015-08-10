@@ -106,7 +106,7 @@ public:
 
     // Map a 2D point through the transform, returning a 2D point.
     // Note that this ignores the z component, effectively projecting the point into the z=0 plane.
-	SkPoint mapPoint(const SkPoint&) const;
+	FloatPoint mapPoint(const FloatPoint&) const;
 
     // Like the version above, except that it rounds the mapped point to the nearest integer value.
     IntPoint mapPoint(const IntPoint& p) const
@@ -132,7 +132,7 @@ public:
     // a ray perpendicular to the source plane and computing
     // the local x,y position of the point where that ray intersects
     // with the destination plane.
-	SkPoint projectPoint(const SkPoint&, bool* clamped = 0) const;
+	FloatPoint projectPoint(const FloatPoint&, bool* clamped = 0) const;
     // Projects the four corners of the quad
     FloatQuad projectQuad(const FloatQuad&,  bool* clamped = 0) const;
     // Projects the four corners of the quad and takes a bounding box,
@@ -318,12 +318,12 @@ public:
 private:
     // multiply passed 2D point by matrix (assume z=0)
     void multVecMatrix(double x, double y, double& dstX, double& dstY) const;
-	SkPoint internalMapPoint(const SkPoint& sourcePoint) const
+	FloatPoint internalMapPoint(const FloatPoint& sourcePoint) const
     {
         double resultX;
         double resultY;
         multVecMatrix(sourcePoint.x(), sourcePoint.y(), resultX, resultY);
-        return SkPoint::Make((float)(resultX), (float)(resultY));
+		return FloatPoint((float)(resultX), (float)(resultY));
     }
 
     // multiply passed 3D point by matrix

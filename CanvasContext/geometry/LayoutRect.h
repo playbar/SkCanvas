@@ -177,7 +177,7 @@ inline LayoutRect unionRect(const LayoutRect& a, const LayoutRect& b)
     return c;
 }
 
- LayoutRect unionRect(const std::vector<LayoutRect>&);
+LayoutRect unionRect(const std::vector<LayoutRect>&);
 
 inline bool operator==(const LayoutRect& a, const LayoutRect& b)
 {

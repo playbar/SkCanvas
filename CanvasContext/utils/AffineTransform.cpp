@@ -248,7 +248,7 @@ FloatPoint AffineTransform::mapPoint(const FloatPoint& point) const
     double x2, y2;
     map(point.x(), point.y(), x2, y2);
 
-    return FloatPoint((float)(x2), (float)(y2));
+	return FloatPoint((float)(x2), (float)(y2));
 }
 
 IntSize AffineTransform::mapSize(const IntSize& size) const
@@ -285,9 +285,9 @@ FloatRect AffineTransform::mapRect(const FloatRect& rect) const
 
     FloatQuad result;
     result.setP1(mapPoint(rect.location()));
-    result.setP2(mapPoint(FloatPoint(rect.maxX(), rect.y())));
-    result.setP3(mapPoint(FloatPoint(rect.maxX(), rect.maxY())));
-    result.setP4(mapPoint(FloatPoint(rect.x(), rect.maxY())));
+	result.setP2(mapPoint(FloatPoint(rect.maxX(), rect.y())));
+	result.setP3(mapPoint(FloatPoint(rect.maxX(), rect.maxY())));
+	result.setP4(mapPoint(FloatPoint(rect.x(), rect.maxY())));
     return result.boundingBox();
 }
 
