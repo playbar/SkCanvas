@@ -34,6 +34,18 @@
     <Filter Include="zlib">
       <UniqueIdentifier>{4d7811a1-2c3b-403b-b010-edc1ab9ed387}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CanvasContext">
+      <UniqueIdentifier>{3757ba10-33df-408f-89a3-66eaf894098c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CanvasContext\Canvas2D">
+      <UniqueIdentifier>{909679f7-0dce-4dfe-a9e6-5da1857e489d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CanvasContext\utils">
+      <UniqueIdentifier>{cbdbef2e-77c2-4a7c-867f-c236f4663f49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CanvasContext\geometry">
+      <UniqueIdentifier>{ca1dd851-ba68-4f9e-8fdc-acb53520ac26}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\pipe\utils\SamplePipeControllers.h">
@@ -104,6 +116,87 @@
     </ClInclude>
     <ClInclude Include="..\..\third_party\externals\zlib\zutil.h">
       <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\utils\RawPtr.h">
+      <Filter>CanvasContext\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\utils\RefCounted.h">
+      <Filter>CanvasContext\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\utils\RefPtr.h">
+      <Filter>CanvasContext\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Gradient.h">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\CanvasContext2D.h">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\CanvasGradient.h">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\CanvasPattern.h">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\utils\MathExtras.h">
+      <Filter>CanvasContext\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\graphicstypes.h">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\utils\AffineTransform.h">
+      <Filter>CanvasContext\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\utils\TransformationMatrix.h">
+      <Filter>CanvasContext\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\FloatPoint.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\FloatPoint3D.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\FloatQuad.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\FloatRect.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\FloatSize.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\IntPoint.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\IntRect.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\IntRectExtent.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\IntSize.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\IntSizeHash.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\LayoutPoint.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\LayoutRect.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\LayoutSize.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\geometry\RoundedRect.h">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Color.h">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\utils\SkiaUtils.h">
+      <Filter>CanvasContext\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +343,54 @@
     </ClCompile>
     <ClCompile Include="..\..\samplecode\SampleArc.cpp">
       <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CanvasContext2D.cpp">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CanvasGradient.cpp">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CanvasPattern.cpp">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Gradient.cpp">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\utils\AffineTransform.cpp">
+      <Filter>CanvasContext\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\utils\TransformationMatrix.cpp">
+      <Filter>CanvasContext\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\geometry\FloatPoint.cpp">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\geometry\FloatPoint3D.cpp">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\geometry\FloatQuad.cpp">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\geometry\FloatRect.cpp">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\geometry\FloatSize.cpp">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\geometry\IntRect.cpp">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\geometry\LayoutRect.cpp">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\geometry\RoundedRect.cpp">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Color.cpp">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\utils\SkiaUtils.cpp">
+      <Filter>CanvasContext\utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

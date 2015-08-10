@@ -82,6 +82,11 @@ public:
         }
     }
 
+	void deref() const
+	{
+		unref();
+	}
+
 #ifdef SK_DEBUG
     void validate() const {
         SkASSERT(fRefCnt > 0);

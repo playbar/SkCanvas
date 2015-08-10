@@ -91,14 +91,14 @@ public:
         return CreateRadial(center, radius, colors, pos, count, mode, 0, NULL);
     }
 
-#ifdef SK_SUPPORT_LEGACY_GRADIENT_FACTORIES
+//#ifdef SK_SUPPORT_LEGACY_GRADIENT_FACTORIES
     static SkShader* CreateRadial(const SkPoint& center, SkScalar radius,
                                   const SkColor colors[], const SkScalar pos[], int count,
                                   SkShader::TileMode mode, void* ignored,
                                   uint32_t flags, const SkMatrix* localMatrix) {
         return CreateRadial(center, radius, colors, pos, count, mode, flags, localMatrix);
     }
-#endif
+//#endif
 
     /** Returns a shader that generates a radial gradient given the start position, start radius, end position and end radius.
         <p />

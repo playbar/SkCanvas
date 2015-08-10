@@ -43,7 +43,7 @@ public:
      *  Returns the local matrix.
      */
     const SkMatrix& getLocalMatrix() const { return fLocalMatrix; }
-
+	void setLocalMatrix(const SkMatrix& localM) { fLocalMatrix = localM; }
     /**
      *  Returns true if the local matrix is not an identity matrix.
      */
@@ -54,7 +54,7 @@ public:
      *  Set the shader's local matrix.
      *  @param localM   The shader's new local matrix.
      */
-    void setLocalMatrix(const SkMatrix& localM) { fLocalMatrix = localM; }
+
 
     /**
      *  Reset the shader's local matrix to identity.

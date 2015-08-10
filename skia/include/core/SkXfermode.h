@@ -30,7 +30,9 @@ class SkString;
  */
 class SK_API SkXfermode : public SkFlattenable {
 public:
-    SK_DECLARE_INST_COUNT(SkXfermode)
+	SK_DECLARE_INST_COUNT(SkXfermode);
+
+	void deref(){};
 
     virtual void xfer32(SkPMColor dst[], const SkPMColor src[], int count,
                         const SkAlpha aa[]) const;
