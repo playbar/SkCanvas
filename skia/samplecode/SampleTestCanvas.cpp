@@ -100,7 +100,11 @@ protected:
 
     virtual void onDrawContent(SkCanvas* canvas) {
 		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
-
+		ctx->beginPath();
+		ctx->setLineWidth(5);
+		ctx->setStrokeColor("#ff00ff");
+		ctx->arc(100, 75, 50, 0, 2 * M_PI, false);
+		ctx->stroke();
 		return;
 
         SkPaint paint;

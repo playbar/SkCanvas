@@ -27,8 +27,8 @@
 #ifndef WTF_PassOwnPtr_h
 #define WTF_PassOwnPtr_h
 
-#include "wtf/NullPtr.h"
-#include "wtf/OwnPtrCommon.h"
+#include "NullPtr.h"
+#include "OwnPtrCommon.h"
 
 namespace WTF {
 
@@ -56,10 +56,10 @@ namespace WTF {
 
         PtrType get() const { return m_ptr; }
 
-        PtrType leakPtr() const WARN_UNUSED_RETURN;
+        PtrType leakPtr() const;
 
-        ValueType& operator*() const { ASSERT(m_ptr); return *m_ptr; }
-        PtrType operator->() const { ASSERT(m_ptr); return m_ptr; }
+        ValueType& operator*() const {return *m_ptr; }
+        PtrType operator->() const { return m_ptr; }
 
         bool operator!() const { return !m_ptr; }
 

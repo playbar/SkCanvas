@@ -19,7 +19,7 @@ public:
 	void deref() {};
 	static PassOwnPtr<CanvasContext2D> create(SkCanvas *canvas)
 	{
-		return adoptRef(new CanvasContext2D(canvas));
+		return adoptPtr(new CanvasContext2D(canvas));
 	}
 
 	virtual ~CanvasContext2D();
@@ -96,14 +96,25 @@ public:
 	void setFillColor(float r, float g, float b, float a);
 	void setFillColor(float c, float m, float y, float k, float a);
 
-	//void beginPath();
+	void beginPath();
+	void closePath();
+	void moveTo(float x, float y);
+	void lineTo(float x, float y);
+	void quadraticCurveTo(float cpx, float cpy, float x, float y);
+	void bezierCurveTo(float cp1x, float cp1y, float cp2x, float cp2y, float x, float y);
+	void arcTo(float x0, float y0, float x1, float y1, float radius);
+	void arc(float x, float y, float radius, float startAngle, float endAngle, bool anticlockwise);
+	void ellipse(float x, float y, float radiusX, float radiusY, float rotation, float startAngle, float endAngle, bool anticlockwise);
+	void rect(float x, float y, float width, float height);
+
+	void addEllipse(const FloatPoint&, float radiusX, float radiusY, float startAngle, float endAngle, bool anticlockwise);
 
 	//PassRefPtr<Path2D> currentPath();
 	//void setCurrentPath(Path2D*);
 	//void fill(const String& winding = "nonzero");
 	//void fill(Path2D*);
 	//void fill(Path2D*, const String& winding);
-	//void stroke();
+	void stroke();
 	//void stroke(Path2D*);
 	//void clip(const String& winding = "nonzero");
 	//void clip(Path2D*);
@@ -281,6 +292,13 @@ private:
 	bool m_usesCSSCompatibilityParseMode;
 	bool m_hasAlpha;
 	//MutableStylePropertyMap m_fetchedFonts;
+
+	// add by hgl
+	SkCanvas *m_pCanvas;
+
+	SkPath m_path;
+	SkPaint m_strokePaint;
+	SkPaint m_fillPaint;
 
 
 };

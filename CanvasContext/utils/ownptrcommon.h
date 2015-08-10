@@ -46,8 +46,6 @@ template <typename T>
 struct OwnedPtrDeleter {
     static void deletePtr(T* ptr)
     {
-        COMPILE_ASSERT(!IsRefCounted<T>::value, UseRefPtrForRefCountedObjects);
-        COMPILE_ASSERT(sizeof(T) > 0, TypeMustBeComplete);
         delete ptr;
     }
 };
