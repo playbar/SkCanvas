@@ -215,7 +215,7 @@ SkShader* Gradient::shader()
         // Since the two-point radial gradient is slower than the plain radial,
         // only use it if we have to.
         if (m_p0 == m_p1 && m_r0 <= 0.0f) {
-            m_gradient = (SkGradientShader::CreateRadial(m_p1, m_r1, colors, pos, static_cast<int>(countUsed), tile, 0, shouldDrawInPMColorSpace, NULL));
+			m_gradient = (SkGradientShader::CreateRadial(m_p1, m_r1, colors, pos, static_cast<int>(countUsed), tile, 0, shouldDrawInPMColorSpace, NULL));
         } else {
             // The radii we give to Skia must be positive. If we're given a
             // negative radius, ask for zero instead.

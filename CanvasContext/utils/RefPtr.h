@@ -111,14 +111,14 @@ namespace WTF {
 
     template<typename T> inline RefPtr<T>& RefPtr<T>::operator=(const PassRefPtr<T>& o)
     {
-        RefPtr ptr = o;
+        RefPtr ptr = o.get();
         swap(ptr);
         return *this;
     }
 
     template<typename T> template<typename U> inline RefPtr<T>& RefPtr<T>::operator=(const PassRefPtr<U>& o)
     {
-        RefPtr ptr = o;
+        RefPtr ptr = o.get();
         swap(ptr);
         return *this;
     }

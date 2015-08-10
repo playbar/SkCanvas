@@ -27,6 +27,7 @@
 #ifndef FloatRect_h
 #define FloatRect_h
 
+#include "FloatPoint.h"
 #include "vector"
 
 struct SkRect;

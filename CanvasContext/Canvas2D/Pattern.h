@@ -1,6 +1,8 @@
 /*
  * Copyright (C) 2006, 2007, 2008 Apple Computer, Inc.  All rights reserved.
- * Copyright (C) 2007 Alp Toker <alp@atoker.com>
+ * Copyright (C) 2008 Eric Seidel <eric@webkit.org>
+ * Copyright (C) 2007-2008 Torch Mobile, Inc.
+ * Copyright (C) 2013 Google, Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -24,38 +26,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CanvasGradient_h
-#define CanvasGradient_h
+#ifndef Pattern_h
+#define Pattern_h
 
-#include "Gradient.h"
+#include "SkShader.h"
+//#include "platform/graphics/image.h"
+#include "SkBitmap.h"
+#include "AffineTransform.h"
+
 #include "PassRefPtr.h"
 #include "RefCounted.h"
-#include "string"
+#include "RefPtr.h"
 
 namespace WebCore {
+	 
+class AffineTransform;
 
-class ExceptionState;
-
-class CanvasGradient : public RefCounted<CanvasGradient> {
+class Pattern : public RefCounted<Pattern> {
 public:
-    static PassRefPtr<CanvasGradient> create(const FloatPoint& p0, const FloatPoint& p1)
+    static PassRefPtr<Pattern> create(PassRefPtr<SkBitmap> tileImage, bool repeatX, bool repeatY)
     {
-        return adoptRef(new CanvasGradient(p0, p1));
+        return adoptRef(new Pattern(tileImage, repeatX, repeatY));
     }
-    static PassRefPtr<CanvasGradient> create(const FloatPoint& p0, float r0, const FloatPoint& p1, float r1)
-    {
-        return adoptRef(new CanvasGradient(p0, r0, p1, r1));
-    }
+    ~Pattern();
 
-    Gradient* gradient() const { return m_gradient.get(); }
+    SkShader* shader();
 
-    void addColorStop(float value, const std::string& color );
+    void setPatternSpaceTransform(const AffineTransform& patternSpaceTransformation);
+    const AffineTransform& getPatternSpaceTransform() { return m_patternSpaceTransformation; };
+
+    bool repeatX() const { return m_repeatX; }
+    bool repeatY() const { return m_repeatY; }
 
 private:
-    CanvasGradient(const FloatPoint& p0, const FloatPoint& p1);
-    CanvasGradient(const FloatPoint& p0, float r0, const FloatPoint& p1, float r1);
+	Pattern(PassRefPtr<SkBitmap>, bool repeatX, bool repeatY);
 
-    RefPtr<Gradient> m_gradient;
+    RefPtr<SkBitmap> m_tileImage;
+    bool m_repeatX;
+    bool m_repeatY;
+    AffineTransform m_patternSpaceTransformation;
+    RefPtr<SkShader> m_pattern;
+    int m_externalMemoryAllocated;
 };
 
 } //namespace

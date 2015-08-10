@@ -34,8 +34,9 @@ class GrTexture;
     the constness is considered to apply to the bitmap's configuration, not
     its contents.
 */
-class SK_API SkBitmap {
+class SK_API SkBitmap :public SkRefCnt {
 public:
+	void deref(){};
     class SK_API Allocator;
 
 #ifdef SK_SUPPORT_LEGACY_BITMAP_CONFIG

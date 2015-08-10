@@ -157,6 +157,7 @@
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Color.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Gradient.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\graphicstypes.h" />
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Pattern.h" />
     <ClInclude Include="..\..\..\CanvasContext\geometry\FloatPoint.h" />
     <ClInclude Include="..\..\..\CanvasContext\geometry\FloatPoint3D.h" />
     <ClInclude Include="..\..\..\CanvasContext\geometry\FloatQuad.h" />
@@ -173,6 +174,7 @@
     <ClInclude Include="..\..\..\CanvasContext\geometry\RoundedRect.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\AffineTransform.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\MathExtras.h" />
+    <ClInclude Include="..\..\..\CanvasContext\utils\PassRefPtr.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\RawPtr.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\RefCounted.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\RefPtr.h" />
@@ -208,6 +210,7 @@
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CanvasPattern.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Color.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Gradient.cpp" />
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Pattern.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatPoint.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatPoint3D.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatQuad.cpp" />

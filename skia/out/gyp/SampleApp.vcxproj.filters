@@ -198,6 +198,12 @@
     <ClInclude Include="..\..\..\CanvasContext\utils\SkiaUtils.h">
       <Filter>CanvasContext\utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\utils\PassRefPtr.h">
+      <Filter>CanvasContext\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Pattern.h">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\pipe\utils\SamplePipeControllers.cpp">
@@ -391,6 +397,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\CanvasContext\utils\SkiaUtils.cpp">
       <Filter>CanvasContext\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Pattern.cpp">
+      <Filter>CanvasContext\Canvas2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
