@@ -115,7 +115,8 @@ protected:
 	{
 		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
 		ctx->beginPath();
-		ctx->setLineWidth(2);
+		ctx->setStrokeColor("green");
+		ctx->setLineWidth(8);
 		ctx->moveTo(20, 20);
 		ctx->lineTo(100, 20);
 		ctx->arcTo(150, 20, 150, 70, 50);
@@ -321,15 +322,19 @@ protected:
 		ctx->fillRect(10, 10, 100, 50);
 	}
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestTranslate(canvas);
-		return;
+		//TestArcTo(canvas);
+		//return;
 		SkPaint paint;
-		paint.setStyle(SkPaint::kFill_Style);
-		paint.setColor(0xff00ff00);
+		paint.setStyle(SkPaint::kStroke_Style);
+		paint.setColor(0xff008000);
+		paint.setStrokeWidth(8);
 		paint.setShader(0);
 		//SkRect r = SkRect::MakeXYWH(200, 200, 100, 100);
 		SkPath path;
-		path.addRect( 200, 200, 300, 300);
+		path.moveTo(10, 10);
+		path.lineTo(100, 50);
+		path.addCircle(200, 200, 50);
+		//path.addRect( 200, 200, 300, 300);
 		canvas->drawPath(path, paint);
 		//this->inval(NULL);
 		return;
