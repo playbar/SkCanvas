@@ -542,11 +542,24 @@ void SkiaApp::TestAddColorStop( SkCanvas *canvas )
 	return;
 }
 
+void SkiaApp::TestArcTo( SkCanvas *canvas )
+{
+	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
+	ctx->beginPath();
+	ctx->setStrokeColor( "green");
+	ctx->setLineWidth( 8 );
+	ctx->moveTo( 20, 20 );
+	ctx->lineTo( 100, 20 );
+	ctx->arcTo( 150, 20, 150, 70, 50 );
+	ctx->lineTo( 150, 120 );
+	ctx->stroke();
+}
+
 void SkiaApp::mainLoop(){
 	//canvas = createCanvas();
 	canvas->drawColor(0xffffffff);
 	//TestArc( canvas );
-	TestAddColorStop( canvas );
+	TestArcTo( canvas );
 	fCurContext->flush();
 }
 

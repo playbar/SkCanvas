@@ -45,7 +45,7 @@ public:
 	void TestDrawImage(SkCanvas *canvas );
 	void TestFill( SkCanvas *canvas);
 	void TestAddColorStop( SkCanvas *canvas );
-
+	void TestArcTo( SkCanvas *canvas );
 	void mainLoop();
 
 	void windowChanged(int width,int height);
