@@ -59,18 +59,69 @@ CanvasStyle *CanvasContext2D::strokeStyle() const
 	return NULL;
 }
 
-void CanvasContext2D::setStrokeStyle(PassRefPtr<CanvasStyle>)
+void CanvasContext2D::setStrokeStyle(PassRefPtr<CanvasStyle>prpStyle)
 {
 
+}
+
+void CanvasContext2D::applyStokeColor(PassRefPtr<CanvasStyle>style)
+{
+	switch (style->getType())
+	{
+	case CanvasStyle::RGBA:
+		m_strokePaint.setColor(style->getRgba());
+		break;
+	case CanvasStyle::CMYKA:
+		m_strokePaint.setColor(style->getRgba());
+		break;
+	case CanvasStyle::Gradient:
+		m_strokePaint.setColor(0xff000000);
+		m_strokePaint.setShader(style->canvasGradient()->gradient()->shader());
+		break;
+	case  CanvasStyle::ImagePattern:
+		m_strokePaint.setColor(0xff000000);
+		m_strokePaint.setShader(style->canvasPattern()->pattern()->shader());
+		break;
+	default:
+		break;
+	}
 }
 
 CanvasStyle* CanvasContext2D::fillStyle() const
 {
 	return NULL;
 }
-void CanvasContext2D::setFillStyle(PassRefPtr<CanvasStyle>)
+void CanvasContext2D::setFillStyle(PassRefPtr<CanvasStyle> prpStyle)
 {
+	RefPtr <CanvasStyle> style = prpStyle;
+	if ( !style )
+	{
+		return;
+	}
+	applyFillColor(style);
+}
 
+void CanvasContext2D::applyFillColor(PassRefPtr<CanvasStyle> style )
+{
+	switch (style->getType())
+	{
+	case CanvasStyle::RGBA:
+		m_fillPaint.setColor(style->getRgba());
+		break;
+	case CanvasStyle::CMYKA:
+		m_fillPaint.setColor(style->getRgba());
+		break;
+	case CanvasStyle::Gradient:
+		m_fillPaint.setColor(0xff000000);
+		m_fillPaint.setShader(style->canvasGradient()->gradient()->shader());
+		break;
+	case  CanvasStyle::ImagePattern:
+		m_fillPaint.setColor(0xff000000);
+		m_fillPaint.setShader(style->canvasPattern()->pattern()->shader());
+		break;
+	default:
+		break;
+	}
 }
 
 float CanvasContext2D::lineWidth() const
@@ -281,27 +332,7 @@ void CanvasContext2D::setFillColor(const std::string &color)
 	{
 		return;
 	}
-	switch (style->getType() )
-	{
-	case CanvasStyle::RGBA:
-		m_fillPaint.setColor(style->getRgba());
-		break;
-	case CanvasStyle::CMYKA:
-		m_fillPaint.setColor(style->getRgba());
-		break;
-	case CanvasStyle::Gradient:
-		m_fillPaint.setColor(0xff000000);
-		m_fillPaint.setShader(style->canvasGradient()->gradient()->shader());
-		break;
-	case  CanvasStyle::ImagePattern:
-		m_fillPaint.setColor(0xff000000);
-		m_fillPaint.setShader(style->canvasPattern()->pattern()->shader());
-		break;
-	default:
-		break;
-	}
-	//m_fillPaint.setColor(col);
-	//m_fillPaint.setShader(0);
+	applyFillColor(style);
 }
 void CanvasContext2D::setFillColor(float grayLevel)
 {

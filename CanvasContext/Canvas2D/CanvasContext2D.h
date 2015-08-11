@@ -26,9 +26,11 @@ public:
 
 	CanvasStyle *strokeStyle() const;
 	void setStrokeStyle(PassRefPtr<CanvasStyle>);
-
+	void applyStokeColor(PassRefPtr<CanvasStyle>);
+	
 	CanvasStyle* fillStyle() const;
 	void setFillStyle(PassRefPtr<CanvasStyle>);
+	void applyFillColor(PassRefPtr<CanvasStyle>);
 
 	float lineWidth() const;
 	void setLineWidth(float);
