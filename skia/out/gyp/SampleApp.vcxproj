@@ -204,10 +204,13 @@
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\GraphicsTypes.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Pattern.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatPoint.cpp" />
+    <ClCompile Include="..\..\..\CanvasContext\geometry\FloatPoint3D.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatQuad.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatRect.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatSize.cpp" />
+    <ClCompile Include="..\..\..\CanvasContext\geometry\IntRect.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\LayoutRect.cpp" />
+    <ClCompile Include="..\..\..\CanvasContext\geometry\RoundedRect.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\utils\AffineTransform.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\utils\SkiaUtils.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\utils\TransformationMatrix.cpp" />

@@ -23,11 +23,9 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "config.h"
-#include "platform/geometry/IntRect.h"
-
-#include "platform/geometry/FloatRect.h"
-#include "platform/geometry/LayoutRect.h"
+#include "IntRect.h"
+#include "FloatRect.h"
+#include "LayoutRect.h"
 #include "SkRect.h"
 
 #include <algorithm>
@@ -160,7 +158,7 @@ IntRect::operator SkRect() const
     return rect;
 }
 
-IntRect unionRect(const Vector<IntRect>& rects)
+IntRect unionRect(const std::vector<IntRect>& rects)
 {
     IntRect result;
 

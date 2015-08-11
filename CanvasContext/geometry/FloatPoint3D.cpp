@@ -19,9 +19,7 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "config.h"
-
-#include "platform/geometry/FloatPoint3D.h"
+#include "FloatPoint3D.h"
 
 #include <math.h>
 

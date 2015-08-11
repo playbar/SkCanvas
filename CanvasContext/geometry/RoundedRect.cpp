@@ -25,10 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "config.h"
-#include "platform/geometry/RoundedRect.h"
-
-#include "wtf/Assertions.h"
+#include "RoundedRect.h"
 #include <algorithm>
 
 using namespace std;
@@ -153,7 +150,6 @@ RoundedRect::RoundedRect(const IntRect& rect, const IntSize& topLeft, const IntS
 
 IntRect RoundedRect::radiusCenterRect() const
 {
-    ASSERT(isRenderable());
     int minX = m_rect.x() + max(m_radii.topLeft().width(), m_radii.bottomLeft().width());
     int minY = m_rect.y() + max(m_radii.topLeft().height(), m_radii.topRight().height());
     int maxX = m_rect.maxX() - max(m_radii.topRight().width(), m_radii.bottomRight().width());

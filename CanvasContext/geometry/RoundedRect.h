@@ -27,17 +27,17 @@
 #ifndef RoundedRect_h
 #define RoundedRect_h
 
-#include "platform/geometry/FloatQuad.h"
-#include "platform/geometry/IntRect.h"
+#include "FloatQuad.h"
+#include "IntRect.h"
 
 namespace WebCore {
 
 // This class is used to represent rectangles with rounded corners. It is only
 // used for painting. It uses integer units because using layout units leads to
 // blurry rounded corners.
-class PLATFORM_EXPORT RoundedRect {
+class  RoundedRect {
 public:
-    class PLATFORM_EXPORT Radii {
+    class  Radii {
     public:
         Radii() { }
         Radii(const IntSize& topLeft, const IntSize& topRight, const IntSize& bottomLeft, const IntSize& bottomRight)

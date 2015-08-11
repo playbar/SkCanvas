@@ -374,6 +374,15 @@
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\ColorData.cpp">
       <Filter>CanvasContext\Canvas2D</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\geometry\FloatPoint3D.cpp">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\geometry\RoundedRect.cpp">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\geometry\IntRect.cpp">
+      <Filter>CanvasContext\geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\gyp\SampleApp.gyp">
