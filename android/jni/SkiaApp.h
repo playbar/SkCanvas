@@ -44,6 +44,7 @@ public:
 	void TestCopyBitmap( SkCanvas *canvas );
 	void TestDrawImage(SkCanvas *canvas );
 	void TestFill( SkCanvas *canvas);
+	void TestAddColorStop( SkCanvas *canvas );
 
 	void mainLoop();
 
