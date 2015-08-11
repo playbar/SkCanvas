@@ -284,8 +284,44 @@ protected:
 		ctx->fillRect(10, 10, 150, 100);
 	}
 
+	void TestBezierCurveTo(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->beginPath();
+		ctx->setLineWidth(4);
+		ctx->setStrokeColor("red");
+		ctx->moveTo(20, 20);
+		ctx->bezierCurveTo(20, 100, 200, 100, 200, 20);
+		ctx->stroke();
+	}
+
+	void TestClearRect(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->setFillColor("red");
+		ctx->fillRect(0, 0, 300, 150);
+		ctx->clearRect( 20, 20 , 100, 50 );
+	}
+
+	void TestClip(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->rect(50, 20, 200, 100);
+		ctx->stroke();
+		ctx->clip();
+		ctx->setFillColor("green");
+		ctx->fillRect(0, 0, 150, 100);
+	}
+
+	void TestTranslate(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->fillRect(10, 10, 100, 50);
+		ctx->translate(70, 70);
+		ctx->fillRect(10, 10, 100, 50);
+	}
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestAddColorStop(canvas);
+		TestTranslate(canvas);
 		return;
 		SkPaint paint;
 		paint.setStyle(SkPaint::kFill_Style);

@@ -7,6 +7,12 @@
 namespace WebCore
 {
 
+	enum WindRule 
+	{
+		RULE_NONZERO = 0,
+		RULE_EVENODD = 1
+	};
+
 	enum WebBlendMode {
 		WebBlendModeNormal,
 		WebBlendModeMultiply,

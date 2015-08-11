@@ -8,6 +8,18 @@ static const int defaultFontSize = 30;
 static const char defaultFontFamily[] = "sans-serif";
 static const char defaultFont[] = "10px sans-serif";
 
+static bool parseWinding(const std::string& windingRuleString, WindRule& windRule)
+{
+	if (windingRuleString == "nonzero")
+		windRule = RULE_NONZERO;
+	else if (windingRuleString == "evenodd")
+		windRule = RULE_EVENODD;
+	else
+		return false;
+
+	return true;
+}
+
 void canonicalizeAngle(float* startAngle, float* endAngle)
 {
 	// Make 0 <= startAngle < 2*PI
@@ -283,7 +295,7 @@ void CanvasContext2D::rotate(float angleInRadians)
 
 void CanvasContext2D::translate(float tx, float ty)
 {
-
+	m_pCanvas->translate(tx, ty);
 }
 void CanvasContext2D::transform(float m11, float m12, float m21, float m22, float dx, float dy)
 {
@@ -300,9 +312,12 @@ void CanvasContext2D::resetTransform()
 
 void CanvasContext2D::setStrokeColor(const std::string& color)
 {
-	SkColor col = 0xFF00FF00;
-	m_strokePaint.setColor(col);
-	m_strokePaint.setShader(0);
+	RefPtr<CanvasStyle> style = CanvasStyle::createFromString(color);
+	if (!style)
+	{
+		return;
+	}
+	applyStokeColor(style);;
 }
 void CanvasContext2D::setStrokeColor(float grayLevel)
 {
@@ -414,7 +429,20 @@ void CanvasContext2D::quadraticCurveTo(float cpx, float cpy, float x, float y)
 }
 void CanvasContext2D::bezierCurveTo(float cp1x, float cp1y, float cp2x, float cp2y, float x, float y)
 {
-
+	if (!std::isfinite(cp1x) || !std::isfinite(cp1y) || !std::isfinite(cp2x) || !std::isfinite(cp2y) || !std::isfinite(x) || !std::isfinite(y))
+		return;
+	if ( ! hasCurrentPoint() )
+	{
+		m_path.moveTo(cp1x, cp1y);
+	}
+	SkPoint p1 = SkPoint::Make(x, y);
+	SkPoint cp1 = SkPoint::Make(cp1x, cp1y);
+	SkPoint cp2 = SkPoint::Make(cp2x, cp2y);
+	if ( p1 != currentPoint() || p1 != cp1 || p1 != cp2 )
+	{
+		m_path.cubicTo(cp1, cp2, p1);
+	}
+	return;
 }
 
 void CanvasContext2D::arcTo(float x1, float y1, float x2, float y2, float radius)
@@ -535,9 +563,33 @@ void CanvasContext2D::stroke()
 	m_pCanvas->drawPath(m_path, m_strokePaint);
 }
 
+void CanvasContext2D::clip(const std::string& winding)
+{
+	WindRule newWindRule = RULE_NONZERO;
+	if ( ! parseWinding( winding, newWindRule ))
+	{
+		return;
+	}
+	SkPath::FillType previousFillType = m_path.getFillType();
+	SkPath::FillType temporaryFillType = newWindRule == RULE_EVENODD ? SkPath::kEvenOdd_FillType : SkPath::kWinding_FillType;
+	m_path.setFillType(temporaryFillType);
+	m_pCanvas->clipPath(m_path);
+	m_path.setFillType(previousFillType);
+	return;
+}
+
 bool CanvasContext2D::isPointInPath(const float x, const float y, const std::string& winding)
 {
 	return true;
+}
+
+void CanvasContext2D::clearRect(float x, float y, float width, float height)
+{
+	SkRect r = SkRect::MakeXYWH(x, y, width, height);
+	SkPaint paint(m_fillPaint);
+	paint.setXfermodeMode(SkXfermode::kClear_Mode);
+	m_pCanvas->drawRect(r, paint);
+
 }
 
 void CanvasContext2D::fillRect(float x, float y, float width, float height)

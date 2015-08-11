@@ -118,7 +118,7 @@ public:
 	//void fill(Path2D*, const String& winding);
 	void stroke();
 	//void stroke(Path2D*);
-	//void clip(const String& winding = "nonzero");
+	void clip(const std::string& winding = "nonzero");
 	//void clip(Path2D*);
 	//void clip(Path2D*, const String& winding);
 
@@ -128,7 +128,7 @@ public:
 	//bool isPointInStroke(const float x, const float y);
 	//bool isPointInStroke(Path2D*, const float x, const float y);
 
-	//void clearRect(float x, float y, float width, float height);
+	void clearRect(float x, float y, float width, float height);
 	void fillRect(float x, float y, float width, float height);
 	void strokeRect(float x, float y, float width, float height);
 
