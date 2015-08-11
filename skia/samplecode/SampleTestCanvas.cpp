@@ -14,7 +14,9 @@
 #include "CanvasContext2D.h"
 #include "PassOwnPtr.h"
 #include "SkiaUtils.h"
+#include "CanvasGradient.h"
 
+using namespace WebCore;
 using namespace WTF;
 
 // ensure that we don't accidentally screw up the bounds when the oval is
@@ -263,8 +265,23 @@ protected:
 		ctx->fill();
 	}
 
+	void TestAddColorStop(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		PassRefPtr<CanvasGradient> grd = ctx->createLinearGradient(0, 0, 170, 0);
+		grd->addColorStop(0, "black");
+		grd->addColorStop(0.3, "magenta");
+		grd->addColorStop(0.5, "blue");
+		grd->addColorStop(0.6, "green");
+		grd->addColorStop(0.8, "yellow");
+		grd->addColorStop(1, "red");
+		RefPtr<CanvasStyle> style = CanvasStyle::createFromGradient(grd);
+		ctx->setFillStyle(style);
+		ctx->fillRect(10, 10, 150, 100);
+	}
+
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestFill(canvas);
+		TestAddColorStop(canvas);
 		return;
 		SkPaint paint;
 		paint.setStyle(SkPaint::kFill_Style);

@@ -11,7 +11,7 @@ class CanvasContext2D;
 
 namespace WebCore {
 
-    class CanvasGradient;
+	class CanvasGradient;
     class CanvasPattern;
 
 	class CanvasStyle : public RefCounted<CanvasStyle> {

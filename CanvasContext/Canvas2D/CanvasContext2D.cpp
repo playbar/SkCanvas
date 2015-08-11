@@ -1,6 +1,7 @@
 #include "CanvasContext2D.h"
 #include "SkiaUtils.h"
 #include "graphicstypes.h"
+#include "CanvasGradient.h"
 
 static const int defaultFontSize = 30;
 static const char defaultFontFamily[] = "sans-serif";
@@ -495,6 +496,12 @@ void CanvasContext2D::strokeRect(float x, float y, float width, float height)
 {
 	SkRect r = SkRect::MakeXYWH(x, y, width, height);
 	m_pCanvas->drawRect(r, m_strokePaint);
+}
+
+PassRefPtr<CanvasGradient> CanvasContext2D::createLinearGradient(float x0, float y0, float x1, float y1)
+{
+	RefPtr< CanvasGradient> gradient = CanvasGradient::create(SkPoint::Make(x0, y0), SkPoint::Make(x1, y1));
+	return gradient.release();
 }
 
 bool CanvasContext2D::isAccelerated() const

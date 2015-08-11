@@ -148,7 +148,7 @@ public:
 
 	//void setCompositeOperation(const String&);
 
-	//PassRefPtr<CanvasGradient> createLinearGradient(float x0, float y0, float x1, float y1);
+	PassRefPtr<CanvasGradient> createLinearGradient(float x0, float y0, float x1, float y1);
 	//PassRefPtr<CanvasGradient> createRadialGradient(float x0, float y0, float r0, float x1, float y1, float r1);
 	//PassRefPtr<CanvasPattern> createPattern(CanvasImageSource*, const String& repetitionType);
 
