@@ -2,6 +2,7 @@
 #include "SkiaUtils.h"
 #include "graphicstypes.h"
 #include "CanvasGradient.h"
+#include "CanvasPattern.h"
 
 static const int defaultFontSize = 30;
 static const char defaultFontFamily[] = "sans-serif";
@@ -275,8 +276,31 @@ void CanvasContext2D::setStrokeColor(float c, float m, float y, float k, float a
 
 void CanvasContext2D::setFillColor(const std::string &color)
 {
-	SkColor col = 0xFFFF00FF;
-	m_fillPaint.setColor(col);
+	RefPtr<CanvasStyle> style = CanvasStyle::createFromString(color);
+	if ( !style )
+	{
+		return;
+	}
+	switch (style->getType() )
+	{
+	case CanvasStyle::RGBA:
+		m_fillPaint.setColor(style->getRgba());
+		break;
+	case CanvasStyle::CMYKA:
+		m_fillPaint.setColor(style->getRgba());
+		break;
+	case CanvasStyle::Gradient:
+		m_fillPaint.setColor(0xff000000);
+		m_fillPaint.setShader(style->canvasGradient()->gradient()->shader());
+		break;
+	case  CanvasStyle::ImagePattern:
+		m_fillPaint.setColor(0xff000000);
+		m_fillPaint.setShader(style->canvasPattern()->pattern()->shader());
+		break;
+	default:
+		break;
+	}
+	//m_fillPaint.setColor(col);
 	//m_fillPaint.setShader(0);
 }
 void CanvasContext2D::setFillColor(float grayLevel)

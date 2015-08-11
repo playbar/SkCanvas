@@ -160,6 +160,7 @@
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\graphicstypes.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Pattern.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\AffineTransform.h" />
+    <ClInclude Include="..\..\..\CanvasContext\utils\ASCIICType.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\MathExtras.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\PassRefPtr.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\RawPtr.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CanvasPattern.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CanvasStyle.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Color.cpp" />
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\ColorData.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Gradient.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\GraphicsTypes.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Pattern.cpp" />

@@ -26,6 +26,8 @@
 #include "SkTypes.h"
 #include "config.h"
 #include "Color.h"
+#include "ASCIICType.h"
+
 #include "MathExtras.h"
 #include <algorithm>
 using namespace std;
@@ -110,16 +112,15 @@ RGBA32 makeRGBAFromCMYKA(float c, float m, float y, float k, float a)
 template <typename CharacterType>
 static inline bool parseHexColorInternal(const CharacterType* name, unsigned length, RGBA32& rgb)
 {
-	SkASSERT(false);
     if (length != 3 && length != 6)
         return false;
     unsigned value = 0;
-    //for (unsigned i = 0; i < length; ++i) {
-    //    if (!isASCIIHexDigit(name[i]))
-    //        return false;
-    //    value <<= 4;
-    //    value |= toASCIIHexValue(name[i]);
-    //}
+	for (unsigned i = 0; i < length; ++i) {
+		if (!isASCIIHexDigit(name[i]))
+			return false;
+		value <<= 4;
+		value |= toASCIIHexValue(name[i]);
+	}
     if (length == 6) {
         rgb = 0xFF000000 | value;
         return true;
@@ -245,17 +246,16 @@ std::string Color::nameForRenderTreeAsText() const
 
 static inline const NamedColor* findNamedColor(const std::string& name)
 {
-	SkASSERT(false);
     char buffer[64]; // easily big enough for the longest color name
     unsigned length = name.length();
     if (length > sizeof(buffer) - 1)
         return 0;
-    //for (unsigned i = 0; i < length; ++i) {
-    //    UChar c = name[i];
-    //    if (!c || c > 0x7F)
-    //        return 0;
-    //    buffer[i] = toASCIILower(static_cast<char>(c));
-    //}
+	for (unsigned i = 0; i < length; ++i) {
+		char c = name[i];
+		if (!c || c > 0x7F)
+			return 0;
+		buffer[i] = toASCIILower(static_cast<char>(c));
+	}
     buffer[length] = '\0';
     return findColor(buffer, length);
 }

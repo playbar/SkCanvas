@@ -14,8 +14,11 @@ namespace WebCore {
 	class CanvasGradient;
     class CanvasPattern;
 
-	class CanvasStyle : public RefCounted<CanvasStyle> {
+	class CanvasStyle : public RefCounted<CanvasStyle> 
+	{
     public:
+		enum Type { RGBA, CMYKA, Gradient, ImagePattern, CurrentColor, CurrentColorWithOverrideAlpha };
+
         static PassRefPtr<CanvasStyle> createFromRGBA(RGBA32 rgba) { return adoptRef(new CanvasStyle(rgba)); }
         static PassRefPtr<CanvasStyle> createFromString(const std::string& color);
         static PassRefPtr<CanvasStyle> createFromStringWithOverrideAlpha(const std::string& color, float alpha);
@@ -39,12 +42,11 @@ namespace WebCore {
         bool isEquivalentColor(const CanvasStyle&) const;
         bool isEquivalentRGBA(float r, float g, float b, float a) const;
         bool isEquivalentCMYKA(float c, float m, float y, float k, float a) const;
-
+		Type getType() { return m_type; }
+		RGBA32 getRgba() { return m_rgba; }
 		void deref() {}
 
-    private:
-        enum Type { RGBA, CMYKA, Gradient, ImagePattern, CurrentColor, CurrentColorWithOverrideAlpha };
-
+    private: 
         CanvasStyle(Type, float overrideAlpha = 0);
         CanvasStyle(RGBA32 rgba);
         CanvasStyle(float grayLevel, float alpha);

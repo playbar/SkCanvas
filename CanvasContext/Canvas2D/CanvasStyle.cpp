@@ -1,9 +1,9 @@
-#include "config.h"
 #include "CanvasStyle.h"
 #include "CanvasGradient.h"
 #include "CanvasPattern.h"
 #include "PassRefPtr.h"
 #include "CanvasContext2D.h"
+#include "Color.h"
 
 namespace WebCore {
 
@@ -15,14 +15,31 @@ static ColorParseResult parseColor(RGBA32& parsedColor, const std::string& color
 	{
 		return ParsedCurrentColor;
 	}
-        
-	////ASSERT(false);
-	//if (BisonCSSParser::parseColor(parsedColor, colorString))
-	//	return ParsedRGBA;
-	//if (BisonCSSParser::parseSystemColor(parsedColor, colorString))
-	//	return ParsedSystemColor;
-
-    return ParseFailed;
+	unsigned int ilen = colorString.length();
+    if ( ilen >= 3 )
+    {
+		if ( colorString[0] == '#')
+		{
+			if (Color::parseHexColor(colorString.c_str() + 1, ilen - 1, parsedColor));
+			{
+				return ParsedRGBA;
+			}
+		}
+		else
+		{
+			if (Color::parseHexColor(colorString, parsedColor ))
+			{
+				return ParsedRGBA;
+			}
+		}
+    }
+	Color tc;
+	if (!tc.setNamedColor(colorString))
+	{
+		return ParseFailed;
+	}
+	parsedColor = tc.rgb();
+	return ParsedRGBA;
 }
 
 RGBA32 currentColor()

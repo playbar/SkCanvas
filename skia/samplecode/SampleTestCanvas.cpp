@@ -259,17 +259,21 @@ protected:
 
 	void TestFill(SkCanvas *canvas)
 	{
+		SkPaint paint;
+		//paint.setColor(0xFF008000);
+		//canvas->drawRectCoords(0, 0, 100, 100, paint);
 		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
 		ctx->rect(5, 5, 50, 50);
-		ctx->setFillColor("green");
+		ctx->setFillColor("blue");
 		ctx->fill();
+
 	}
 
 	void TestAddColorStop(SkCanvas *canvas)
 	{
 		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
 		PassRefPtr<CanvasGradient> grd = ctx->createLinearGradient(0, 0, 170, 0);
-		grd->addColorStop(0, "black");
+		grd->addColorStop(0, "red");
 		grd->addColorStop(0.3, "magenta");
 		grd->addColorStop(0.5, "blue");
 		grd->addColorStop(0.6, "green");
@@ -281,7 +285,7 @@ protected:
 	}
 
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestAddColorStop(canvas);
+		TestFill(canvas);
 		return;
 		SkPaint paint;
 		paint.setStyle(SkPaint::kFill_Style);

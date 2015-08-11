@@ -24,9 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "config.h"
 #include "CanvasGradient.h"
-
+#include "CanvasStyle.h"
 #include "Color.h"
 
 namespace WebCore {
@@ -52,10 +51,9 @@ void CanvasGradient::addColorStop(float value, const std::string& color)
     }
 
     RGBA32 rgba = 0;
-	SkASSERT(false);
-    //if (!parseColorOrCurrentColor(rgba, color )) {
-    //    return;
-    //}
+	if (!parseColorOrCurrentColor(rgba, color)) {
+		return;
+	}
 
     m_gradient->addColorStop(value, Color(rgba));
 }
