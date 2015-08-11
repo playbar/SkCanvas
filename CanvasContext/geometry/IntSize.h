@@ -102,16 +102,6 @@ public:
         return IntSize(m_height, m_width);
     }
 
-#if OS(MACOSX)
-    explicit IntSize(const CGSize&); // don't do this implicitly since it's lossy
-    operator CGSize() const;
-
-#if !defined(NSGEOMETRY_TYPES_SAME_AS_CGGEOMETRY_TYPES)
-    explicit IntSize(const NSSize &); // don't do this implicitly since it's lossy
-    operator NSSize() const;
-#endif
-#endif
-
 private:
     int m_width, m_height;
 };

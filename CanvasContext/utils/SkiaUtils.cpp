@@ -28,13 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "config.h"
 
 #include "SkiaUtils.h"
 
 #include "SkColorPriv.h"
 #include "SkRegion.h"
-#include "assert.h"
 
 namespace WebCore {
 
@@ -111,7 +109,8 @@ SkColor SkPMColorToColor(SkPMColor pm)
         // A zero alpha value when there are non-zero R, G, or B channels is an
         // invalid premultiplied color (since all channels should have been
         // multiplied by 0 if a=0).
-        assert(false);
+        //assert(false);
+    	SkASSERT( false );
         // In production, return 0 to protect against division by zero.
         return 0;
     }

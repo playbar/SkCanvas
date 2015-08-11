@@ -58,23 +58,6 @@ inline float log2f(float num)
 // VS2013 has most of the math functions now, but we still need to work
 // around various differences in behavior of Inf.
 
-#if _MSC_VER < 1800
-
-namespace std {
-
-inline bool isinf(double num) { return !_finite(num) && !_isnan(num); }
-inline bool isnan(double num) { return !!_isnan(num); }
-inline bool isfinite(double x) { return _finite(x); }
-inline bool signbit(double num) { return _copysign(1.0, num) < 0; }
-
-} // namespace std
-
-inline double nextafter(double x, double y) { return _nextafter(x, y); }
-inline float nextafterf(float x, float y) { return x > y ? x - FLT_EPSILON : x + FLT_EPSILON; }
-
-inline double copysign(double x, double y) { return _copysign(x, y); }
-
-#endif // _MSC_VER
 
 // Work around a bug in Win, where atan2(+-infinity, +-infinity) yields NaN instead of specific values.
 inline double wtf_atan2(double x, double y)
@@ -115,13 +98,6 @@ inline double wtf_pow(double x, double y) { return y == 0 ? 1 : pow(x, y); }
 inline long int lrint(double flt)
 {
     int64_t intgr;
-#if CPU(X86)
-    __asm {
-        fld flt
-        fistp intgr
-    };
-#else
-    ASSERT(std::isfinite(flt));
     double rounded = round(flt);
     intgr = static_cast<int64_t>(rounded);
     // If the fractional part is exactly 0.5, we need to check whether
@@ -129,7 +105,6 @@ inline long int lrint(double flt)
     // negative values and subtract one from positive values.
     if ((fabs(intgr - flt) == 0.5) & intgr)
         intgr -= ((intgr >> 62) | 1); // 1 with the sign of result, i.e. -1 or 1.
-#endif
     return static_cast<long int>(intgr);
 }
 
@@ -208,14 +183,6 @@ inline bool isWithinIntRange(float x)
 {
     return x > static_cast<float>(std::numeric_limits<int>::min()) && x < static_cast<float>(std::numeric_limits<int>::max());
 }
-
-#ifndef UINT64_C
-#if COMPILER(MSVC)
-#define UINT64_C(c) c ## ui64
-#else
-#define UINT64_C(c) c ## ull
-#endif
-#endif
 
 // Calculate d % 2^{64}.
 inline void doubleToInteger(double d, unsigned long long& value)

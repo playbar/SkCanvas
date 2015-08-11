@@ -74,14 +74,14 @@ namespace WTF {
     private:
         explicit PassOwnPtr(PtrType ptr) : m_ptr(ptr) { }
 
-        PassOwnPtr& operator=(const PassOwnPtr&) { COMPILE_ASSERT(!sizeof(T*), PassOwnPtr_should_never_be_assigned_to); return *this; }
+        PassOwnPtr& operator=(const PassOwnPtr&) { return *this; }
 
         // We should never have two OwnPtrs for the same underlying object (otherwise we'll get
         // double-destruction), so these equality operators should never be needed.
-        template<typename U> bool operator==(const PassOwnPtr<U>&) const { COMPILE_ASSERT(!sizeof(U*), OwnPtrs_should_never_be_equal); return false; }
-        template<typename U> bool operator!=(const PassOwnPtr<U>&) const { COMPILE_ASSERT(!sizeof(U*), OwnPtrs_should_never_be_equal); return false; }
-        template<typename U> bool operator==(const OwnPtr<U>&) const { COMPILE_ASSERT(!sizeof(U*), OwnPtrs_should_never_be_equal); return false; }
-        template<typename U> bool operator!=(const OwnPtr<U>&) const { COMPILE_ASSERT(!sizeof(U*), OwnPtrs_should_never_be_equal); return false; }
+        template<typename U> bool operator==(const PassOwnPtr<U>&) const { return false; }
+        template<typename U> bool operator!=(const PassOwnPtr<U>&) const {  return false; }
+        template<typename U> bool operator==(const OwnPtr<U>&) const {  return false; }
+        template<typename U> bool operator!=(const OwnPtr<U>&) const {  return false; }
 
         mutable PtrType m_ptr;
     };
@@ -89,7 +89,6 @@ namespace WTF {
     template<typename T> template<typename U> inline PassOwnPtr<T>::PassOwnPtr(const PassOwnPtr<U>& o, EnsurePtrConvertibleArgDefn(U, T))
         : m_ptr(o.leakPtr())
     {
-        COMPILE_ASSERT(!IsArray<T>::value, Pointers_to_array_must_never_be_converted);
     }
 
     template<typename T> inline typename PassOwnPtr<T>::PtrType PassOwnPtr<T>::leakPtr() const
@@ -131,7 +130,6 @@ namespace WTF {
 
     template<typename T, typename U> inline PassOwnPtr<T> static_pointer_cast(const PassOwnPtr<U>& p)
     {
-        COMPILE_ASSERT(!IsArray<T>::value, Pointers_to_array_must_never_be_converted);
         return adoptPtr(static_cast<T*>(p.leakPtr()));
     }
 

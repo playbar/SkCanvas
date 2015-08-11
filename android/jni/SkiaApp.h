@@ -43,6 +43,7 @@ public:
 	void TestScale(SkCanvas *canvas );
 	void TestCopyBitmap( SkCanvas *canvas );
 	void TestDrawImage(SkCanvas *canvas );
+	void TestFill( SkCanvas *canvas);
 
 	void mainLoop();
 

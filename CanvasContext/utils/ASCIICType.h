@@ -117,7 +117,6 @@ template<typename CharType> inline bool isASCIIAlphaCaselessEqual(CharType cssCh
 {
 	// This function compares a (preferrably) constant ASCII
 	// lowercase letter to any input character.
-	ASSERT(character >= 'a' && character <= 'z');
 	return LIKELY(toASCIILowerUnchecked(cssCharacter) == character);
 }
 

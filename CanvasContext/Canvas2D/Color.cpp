@@ -24,7 +24,6 @@
  */
 
 #include "SkTypes.h"
-#include "config.h"
 #include "Color.h"
 #include "ASCIICType.h"
 

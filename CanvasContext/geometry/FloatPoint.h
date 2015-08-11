@@ -120,15 +120,6 @@ public:
         return FloatPoint(m_y, m_x);
     }
 
-#if OS(MACOSX)
-    FloatPoint(const CGPoint&);
-    operator CGPoint() const;
-#if !defined(NSGEOMETRY_TYPES_SAME_AS_CGGEOMETRY_TYPES)
-    FloatPoint(const NSPoint&);
-    operator NSPoint() const;
-#endif
-#endif
-
     operator SkPoint() const;
 
 private:

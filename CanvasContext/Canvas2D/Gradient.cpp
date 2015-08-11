@@ -188,14 +188,16 @@ SkShader* Gradient::shader()
 
     sortStopsIfNecessary();
 
-    size_t countUsed = totalStopsNeeded(m_stops.data(), m_stops.size());
+    //size_t countUsed = totalStopsNeeded(m_stops.data(), m_stops.size());
 
+    const Gradient::ColorStop *dat = &(m_stops[0]);
+    size_t countUsed = totalStopsNeeded(dat, m_stops.size());
     // FIXME: Why is all this manual pointer math needed?!
     SkAutoMalloc storage(countUsed * (sizeof(SkColor) + sizeof(SkScalar)));
     SkColor* colors = (SkColor*)storage.get();
     SkScalar* pos = (SkScalar*)(colors + countUsed);
 
-    fillStops(m_stops.data(), m_stops.size(), pos, colors);
+    fillStops(dat, m_stops.size(), pos, colors);
 
     SkShader::TileMode tile = SkShader::kClamp_TileMode;
     switch (m_spreadMethod) {

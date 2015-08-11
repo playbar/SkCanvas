@@ -4,14 +4,37 @@
 #include "PassRefPtr.h"
 #include "CanvasContext2D.h"
 #include "Color.h"
+#include <ctype.h>
+#include <string.h>
 
 namespace WebCore {
+
+#ifdef __ANDROID__
+
+int stricmp(const char* dst, const char* src)
+{
+	int f, l;
+
+    do
+    {
+        if ( ((f = (unsigned char)(*(dst++))) >= 'A') && (f <= 'Z') )
+            f -= 'A' - 'a';
+        if ( ((l = (unsigned char)(*(src++))) >= 'A') && (l <= 'Z') )
+            l -= 'A' - 'a';
+    }
+    while ( f && (f == l) );
+
+    return(f - l);
+//	return strnicmp(lhs, rhs, 0);
+}
+
+#endif
 
 enum ColorParseResult { ParsedRGBA, ParsedCurrentColor, ParsedSystemColor, ParseFailed };
 
 static ColorParseResult parseColor(RGBA32& parsedColor, const std::string& colorString)
 {
-	if (stricmp(colorString.c_str(), "currentcolor") == 0)
+	if (stricmp(colorString.c_str(), "currentcolor" ) == 0)
 	{
 		return ParsedCurrentColor;
 	}

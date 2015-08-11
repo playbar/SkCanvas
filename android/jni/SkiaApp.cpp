@@ -21,6 +21,9 @@
 #include "SkBlurDrawLooper.h"
 #include "SkBlurMask.h"
 
+#include "CanvasContext2D.h"
+#include "PassOwnPtr.h"
+
 #include <string>
 #define LOG_TAG "SkiaApp"
 
@@ -513,15 +516,20 @@ void SkiaApp::TestCopyBitmap( SkCanvas *canvas )
 //	}
 }
 
+void SkiaApp::TestFill( SkCanvas *canvas)
+{
+	PassOwnPtr<CanvasContext2D>ctx = CanvasContext2D::create( canvas );
+	ctx->rect( 5, 5, 50, 50 );
+	ctx->setFillColor( "blue");
+	ctx->fill();
+}
+
 void SkiaApp::mainLoop(){
 	//canvas = createCanvas();
 	canvas->drawColor(0xffffffff);
 	//TestArc( canvas );
-	LOGE("begin TestDrawImage------>");
-	TestDrawImage( canvas );
-	LOGE("End TestDrawImage, begin flush------->");
+	TestFill( canvas );
 	fCurContext->flush();
-	LOGE("End Flush");
 }
 
 } /* namespace egret */

@@ -1,6 +1,10 @@
 #ifndef TypeTraits_h
 #define TypeTraits_h
 
+#ifdef __ANDROID__
+
+#endif
+
 namespace WTF {
 
     // The following are provided in this file:
@@ -38,9 +42,6 @@ namespace WTF {
     template<> struct IsInteger<unsigned long>      { static const bool value = true; };
     template<> struct IsInteger<long long>          { static const bool value = true; };
     template<> struct IsInteger<unsigned long long> { static const bool value = true; };
-#if !COMPILER(MSVC) || defined(_NATIVE_WCHAR_T_DEFINED)
-    template<> struct IsInteger<wchar_t>            { static const bool value = true; };
-#endif
 
     template<typename T> struct IsFloatingPoint     { static const bool value = false; };
     template<> struct IsFloatingPoint<float>        { static const bool value = true; };
@@ -104,7 +105,7 @@ namespace WTF {
         static const bool value = true;
     };
 
-    template <class T, size_t N> struct IsArray<T[N]> {
+    template <class T, unsigned int N> struct IsArray<T[N]> {
         static const bool value = true;
     };
 
@@ -143,13 +144,13 @@ namespace WTF {
         static const bool value = sizeof(subclassCheck(t)) == sizeof(YesType);
     };
 
-    template <typename T, template<class V, size_t W> class U> class IsSubclassOfTemplateTypenameSize {
+    template <typename T, template<class V, unsigned int W> class U> class IsSubclassOfTemplateTypenameSize {
         typedef char YesType;
         struct NoType {
             char padding[8];
         };
 
-        template<typename X, size_t Y> static YesType subclassCheck(U<X, Y>*);
+        template<typename X, unsigned int Y> static YesType subclassCheck(U<X, Y>*);
         static NoType subclassCheck(...);
         static T* t;
     public:
@@ -234,7 +235,7 @@ namespace WTF {
         typedef T Type;
     };
 
-    template <typename T, size_t N> struct RemoveExtent<T[N]> {
+    template <typename T, unsigned int N> struct RemoveExtent<T[N]> {
         typedef T Type;
     };
 
@@ -269,12 +270,8 @@ class NeedsTracing {
         char padding[8];
     } NoType;
 
-#if COMPILER(MSVC)
-    template<typename V> static YesType checkHasTraceMethod(char[&V::trace != 0]);
-#else
-    template<size_t> struct HasMethod;
+    template<unsigned int> struct HasMethod;
     template<typename V> static YesType checkHasTraceMethod(HasMethod<sizeof(&V::trace)>*);
-#endif // COMPILER(MSVC)
     template<typename V> static NoType checkHasTraceMethod(...);
 public:
     static const bool value = sizeof(YesType) == sizeof(checkHasTraceMethod<T>(0));
