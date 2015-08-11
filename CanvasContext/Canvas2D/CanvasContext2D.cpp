@@ -57,7 +57,9 @@ CanvasContext2D::CanvasContext2D(SkCanvas*canvas )
 	m_pCanvas = canvas;
 	m_stateStack.resize(1);
 	m_strokePaint.setStyle(SkPaint::kStroke_Style);
+	m_strokePaint.setAntiAlias(true);
 	m_fillPaint.setStyle(SkPaint::kFill_Style);
+	m_fillPaint.setAntiAlias(true);
 
 }
 

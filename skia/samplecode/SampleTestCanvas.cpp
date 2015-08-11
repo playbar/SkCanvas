@@ -322,9 +322,10 @@ protected:
 		ctx->fillRect(10, 10, 100, 50);
 	}
     virtual void onDrawContent(SkCanvas* canvas) {
-		//TestArcTo(canvas);
-		//return;
+		TestArcTo(canvas);
+		return;
 		SkPaint paint;
+		//paint.setAntiAlias(true);
 		paint.setStyle(SkPaint::kStroke_Style);
 		paint.setColor(0xff008000);
 		paint.setStrokeWidth(8);
