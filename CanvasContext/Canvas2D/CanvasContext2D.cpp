@@ -1,4 +1,6 @@
 #include "CanvasContext2D.h"
+#include "SkiaUtils.h"
+#include "graphicstypes.h"
 
 static const int defaultFontSize = 30;
 static const char defaultFontFamily[] = "sans-serif";
@@ -82,27 +84,45 @@ std::string CanvasContext2D::lineCap() const
 {
 	return "";
 }
-void CanvasContext2D::setLineCap(const std::string&)
+void CanvasContext2D::setLineCap(const std::string& s)
 {
-
+	LineCap cap;
+	if ( !parseLineCap( s, cap ))
+	{
+		return;
+	}
+	if ( m_strokePaint.getStrokeCap() == cap )
+	{
+		return;
+	}
+	m_strokePaint.setStrokeCap((SkPaint::Cap)cap);
 }
 
 std::string CanvasContext2D::lineJoin() const
 {
 	return "";
 }
-void CanvasContext2D::setLineJoin(const std::string&)
+void CanvasContext2D::setLineJoin(const std::string&s)
 {
-
+	LineJoin join;
+	if ( !parseLineJoin( s, join ))
+	{
+		return;
+	}
+	if ( m_strokePaint.getStrokeJoin() == join )
+	{
+		return;
+	}
+	m_strokePaint.setStrokeJoin((SkPaint::Join)join);
 }
 
 float CanvasContext2D::miterLimit() const
 {
 	return 0.0f;
 }
-void CanvasContext2D::setMiterLimit(float)
+void CanvasContext2D::setMiterLimit(float miterLimit)
 {
-
+	m_strokePaint.setStrokeMiter(miterLimit);
 }
 
 const std::vector<float>& CanvasContext2D::getLineDash() const
@@ -196,7 +216,13 @@ void CanvasContext2D::setCurrentTransform(PassRefPtr<AffineTransform>)
 
 void CanvasContext2D::scale(float sx, float sy)
 {
-
+	if ( !std::isfinite( sx) | ! std::isfinite( sy ))
+	{
+		return;
+	}
+	SkMatrix mat = affineTransformToSkMatrix(AffineTransform().scaleNonUniform(1.0f / sx, 1.0f / sy));
+	m_path.transform(mat);
+	m_pCanvas->scale(sx, sy);
 }
 
 void CanvasContext2D::rotate(float angleInRadians)
@@ -248,7 +274,9 @@ void CanvasContext2D::setStrokeColor(float c, float m, float y, float k, float a
 
 void CanvasContext2D::setFillColor(const std::string &color)
 {
-
+	SkColor col = 0xFFFF00FF;
+	m_fillPaint.setColor(col);
+	//m_fillPaint.setShader(0);
 }
 void CanvasContext2D::setFillColor(float grayLevel)
 {
@@ -278,7 +306,11 @@ void CanvasContext2D::beginPath()
 
 void CanvasContext2D::closePath()
 {
-
+	if ( m_path.isEmpty() )
+	{
+		return;
+	}
+	m_path.close();
 }
 
 void CanvasContext2D::moveTo(float x, float y)
@@ -311,7 +343,18 @@ void CanvasContext2D::lineTo(float x, float y)
 
 void CanvasContext2D::quadraticCurveTo(float cpx, float cpy, float x, float y)
 {
-
+	if (!std::isfinite(cpx) || !std::isfinite(cpy) || !std::isfinite(x) || !std::isfinite(y))
+		return;
+	if ( !hasCurrentPoint() )
+	{
+		m_path.moveTo(cpx, cpy);
+	}
+	SkPoint p1 = SkPoint::Make(x, y);
+	SkPoint cp = SkPoint::Make(cpx, cpy);
+	if ( p1 != currentPoint()  || p1 != cp )
+	{
+		m_path.quadTo(cp, p1);
+	}
 }
 void CanvasContext2D::bezierCurveTo(float cp1x, float cp1y, float cp2x, float cp2y, float x, float y)
 {
@@ -377,7 +420,13 @@ void CanvasContext2D::ellipse(float x, float y, float radiusX, float radiusY, fl
 
 void CanvasContext2D::rect(float x, float y, float width, float height)
 {
-
+	if (!std::isfinite(x) || !std::isfinite(y) || !std::isfinite(width) || !std::isfinite(height))
+		return;
+	if ( !width && !height )
+	{
+		m_path.moveTo(x, y);
+	}
+	m_path.addRect(x, y, x + width, y + height);
 }
 
 
@@ -415,10 +464,37 @@ void CanvasContext2D::addEllipse(const FloatPoint& p, float radiusX, float radiu
 	m_path.arcTo(oval, startDegrees, sweepDegrees, false);
 }
 
+void CanvasContext2D::fill(const std::string& winding)
+{
+	if ( m_path.isEmpty())
+	{
+		return;
+	}
+	m_pCanvas->drawPath(m_path, m_fillPaint);
+}
+
 
 void CanvasContext2D::stroke()
 {
 	m_pCanvas->drawPath(m_path, m_strokePaint);
+}
+
+bool CanvasContext2D::isPointInPath(const float x, const float y, const std::string& winding)
+{
+	return true;
+}
+
+void CanvasContext2D::fillRect(float x, float y, float width, float height)
+{
+	SkRect r = SkRect::MakeXYWH(x, y, width, height);
+	m_pCanvas->drawRect(r, m_fillPaint );
+	return;
+}
+
+void CanvasContext2D::strokeRect(float x, float y, float width, float height)
+{
+	SkRect r = SkRect::MakeXYWH(x, y, width, height);
+	m_pCanvas->drawRect(r, m_strokePaint);
 }
 
 bool CanvasContext2D::isAccelerated() const

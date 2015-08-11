@@ -13,6 +13,7 @@
 
 #include "CanvasContext2D.h"
 #include "PassOwnPtr.h"
+#include "SkiaUtils.h"
 
 using namespace WTF;
 
@@ -118,28 +119,163 @@ protected:
 		ctx->arcTo(150, 20, 150, 70, 50);
 		ctx->lineTo(150, 120);
 		ctx->stroke();
+		return;
+	}
+
+	// todo 
+	void TestFillStyle(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->setFillColor("#0000ff");
+		ctx->fillRect(20, 20, 150, 100);
+	}
+
+	void TestBeginPath(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->beginPath();
+		ctx->setLineWidth(4);
+		ctx->setStrokeColor("#0000ff");
+		ctx->moveTo(0, 75);
+		ctx->lineTo(250, 75);
+		ctx->stroke();
+
+		ctx->beginPath();
+		ctx->setStrokeColor("#00ff00");
+		ctx->setLineWidth(10);
+		ctx->moveTo(50, 0);
+		ctx->lineTo(150, 130);
+		ctx->stroke();
+	}
+
+	void TestQuadraticCureTo(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->beginPath();
+		ctx->setLineWidth(4);
+		ctx->moveTo(20, 20);
+		ctx->quadraticCurveTo(20, 100, 200, 20);
+		ctx->stroke();
+	}
+
+	void TestStrokeStyle(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->setLineWidth(6);
+		ctx->setStrokeColor("#00ff00");
+		ctx->strokeRect(20, 20, 150, 100);
+	}
+
+	void TestStroke(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->beginPath();
+		ctx->setLineWidth(5);
+		ctx->moveTo(20, 20);
+		ctx->lineTo(20, 100);
+		ctx->lineTo(70, 100);
+		ctx->closePath();
+		ctx->setStrokeColor("green");
+		ctx->stroke();
+	}
+
+	void TestScale(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->beginPath();
+		ctx->strokeRect(5, 5, 25, 15);
+		ctx->scale(2, 2);
+		ctx->strokeRect(5, 5, 15, 15);
+	}
+
+	void TestRect(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->beginPath();
+		ctx->setLineWidth(6);
+		ctx->setStrokeColor("red");
+		ctx->rect(5, 5, 290, 140);
+		ctx->stroke();
+
+		ctx->beginPath();
+		ctx->setLineWidth(4);
+		ctx->setStrokeColor("green");
+		ctx->rect(30, 30, 50, 50);
+		ctx->stroke();
+
+		ctx->beginPath();
+		ctx->setLineWidth(10);
+		ctx->setStrokeColor("blue");
+		ctx->rect(50, 50, 150, 80);
+		ctx->stroke();
+	}
+	void TestMiterLimit(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->beginPath();
+		ctx->setLineWidth(10);
+		ctx->setLineJoin("miter");
+		ctx->setMiterLimit(5);
+		ctx->moveTo(20, 20);
+		ctx->lineTo(50, 27);
+		ctx->lineTo(20, 34);
+		ctx->stroke();
+	}
+
+	void TestLineCap(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->beginPath();
+		ctx->setLineCap("butt");
+		ctx->setLineWidth(10);
+		ctx->moveTo(20, 20);
+		ctx->lineTo(200, 20);
+		ctx->stroke();
+
+		ctx->beginPath();
+		ctx->setLineCap("round");
+		ctx->moveTo(20, 40);
+		ctx->lineTo(200, 40);
+		ctx->stroke();
+
+		ctx->beginPath();
+		ctx->setLineCap("square");
+		ctx->moveTo(20, 60);
+		ctx->lineTo(200, 60);
+		ctx->stroke();
+	}
+
+	void TestIsPointInPath(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->rect(20, 20, 150, 100);
+		//if ( ctx->isPoint)
+		//{
+		//}
+		
+	}
+
+	void TestFill(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->rect(5, 5, 50, 50);
+		ctx->setFillColor("green");
+		ctx->fill();
 	}
 
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestArcTo(canvas);
+		TestFill(canvas);
 		return;
-
-        SkPaint paint;
-        paint.setAntiAlias(true);
-        paint.setStyle(SkPaint::kStroke_Style);
-//        canvas->drawCircle(250, 250, 220, paint);
-        SkMatrix matrix;
-        matrix.setScale(SkIntToScalar(100), SkIntToScalar(100));
-        matrix.postTranslate(SkIntToScalar(200), SkIntToScalar(200));
-        canvas->concat(matrix);
-        for (int n = 3; n < 20; n++) {
-            SkPath path;
-            make_poly(&path, n);
-            SkAutoCanvasRestore acr(canvas, true);
-            canvas->rotate(SkIntToScalar(10) * (n - 3));
-            canvas->translate(-SK_Scalar1, 0);
-            canvas->drawPath(path, paint);
-        }
+		SkPaint paint;
+		paint.setStyle(SkPaint::kFill_Style);
+		paint.setColor(0xff00ff00);
+		paint.setShader(0);
+		//SkRect r = SkRect::MakeXYWH(200, 200, 100, 100);
+		SkPath path;
+		path.addRect( 200, 200, 300, 300);
+		canvas->drawPath(path, paint);
+		//this->inval(NULL);
+		return;
     }
 
 private:

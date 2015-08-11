@@ -1914,7 +1914,8 @@ void SkCanvas::drawRect(const SkRect& r, const SkPaint& paint) {
 
     LOOPER_BEGIN(paint, SkDrawFilter::kRect_Type, bounds)
 
-    while (iter.next()) {
+    while (iter.next())
+	{
         iter.fDevice->drawRect(iter, r, looper.paint());
     }
 

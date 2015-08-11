@@ -308,12 +308,6 @@
     <ClCompile Include="..\..\third_party\externals\zlib\zutil.c">
       <Filter>zlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleAnimatedGradient.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\samplecode\SampleArc.cpp">
-      <Filter>samplecode</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CanvasContext2D.cpp">
       <Filter>CanvasContext\Canvas2D</Filter>
     </ClCompile>
@@ -364,6 +358,15 @@
     </ClCompile>
     <ClCompile Include="..\..\..\CanvasContext\utils\TypeTraits.cpp">
       <Filter>CanvasContext\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gm\bigblurs.cpp">
+      <Filter>gm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\samplecode\SampleCull.cpp">
+      <Filter>samplecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\GraphicsTypes.cpp">
+      <Filter>CanvasContext\Canvas2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -111,7 +111,7 @@ public:
 
 	//PassRefPtr<Path2D> currentPath();
 	//void setCurrentPath(Path2D*);
-	//void fill(const String& winding = "nonzero");
+	void fill(const std::string& winding = "nonzero");
 	//void fill(Path2D*);
 	//void fill(Path2D*, const String& winding);
 	void stroke();
@@ -120,15 +120,15 @@ public:
 	//void clip(Path2D*);
 	//void clip(Path2D*, const String& winding);
 
-	//bool isPointInPath(const float x, const float y, const String& winding = "nonzero");
+	bool isPointInPath(const float x, const float y, const std::string& winding = "nonzero");
 	//bool isPointInPath(Path2D*, const float x, const float y);
 	//bool isPointInPath(Path2D*, const float x, const float y, const String& winding);
 	//bool isPointInStroke(const float x, const float y);
 	//bool isPointInStroke(Path2D*, const float x, const float y);
 
 	//void clearRect(float x, float y, float width, float height);
-	//void fillRect(float x, float y, float width, float height);
-	//void strokeRect(float x, float y, float width, float height);
+	void fillRect(float x, float y, float width, float height);
+	void strokeRect(float x, float y, float width, float height);
 
 	//void setShadow(float width, float height, float blur);
 	//void setShadow(float width, float height, float blur, const String& color);

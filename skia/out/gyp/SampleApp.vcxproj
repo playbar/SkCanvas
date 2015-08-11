@@ -199,6 +199,7 @@
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CanvasStyle.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Color.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Gradient.cpp" />
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\GraphicsTypes.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Pattern.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatPoint.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatQuad.cpp" />
@@ -209,11 +210,11 @@
     <ClCompile Include="..\..\..\CanvasContext\utils\SkiaUtils.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\utils\TransformationMatrix.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\utils\TypeTraits.cpp" />
+    <ClCompile Include="..\..\gm\bigblurs.cpp" />
     <ClCompile Include="..\..\gm\gm.cpp" />
     <ClCompile Include="..\..\samplecode\OverView.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleAnimatedGradient.cpp" />
     <ClCompile Include="..\..\samplecode\SampleApp.cpp" />
-    <ClCompile Include="..\..\samplecode\SampleArc.cpp" />
+    <ClCompile Include="..\..\samplecode\SampleCull.cpp" />
     <ClCompile Include="..\..\samplecode\SampleEncode.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Developer|Win32'">true</ExcludedFromBuild>
