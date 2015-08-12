@@ -34,7 +34,7 @@
 #include "SkBitmap.h"
 #include "AffineTransform.h"
 
-#include "PassRefPtr.h"
+#include "passrefptr.h"
 #include "RefCounted.h"
 #include "RefPtr.h"
 

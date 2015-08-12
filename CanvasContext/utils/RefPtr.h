@@ -25,7 +25,7 @@
 
 #include <algorithm>
 #include "HashTableDeletedValueType.h"
-#include "PassRefPtr.h"
+#include "passrefptr.h"
 #include "RawPtr.h"
 #include "TypeTraits.h"
 

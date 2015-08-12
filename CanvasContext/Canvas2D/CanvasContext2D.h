@@ -9,7 +9,7 @@
 #include "graphicstypes.h"
 #include "Color.h"
 #include "CanvasStyle.h"
-#include "passownptr.h"
+#include "PassOwnPtr.h"
 
 using namespace WebCore;
 

@@ -28,7 +28,7 @@
 #define CanvasGradient_h
 
 #include "Gradient.h"
-#include "PassRefPtr.h"
+#include "passrefptr.h"
 #include "RefCounted.h"
 #include "string"
 

@@ -27,7 +27,7 @@
 #define CanvasPattern_h
 
 #include "Pattern.h"
-#include "PassRefPtr.h"
+#include "passrefptr.h"
 #include "RefCounted.h"
 #include "string"
 #include "SkBitmap.h"

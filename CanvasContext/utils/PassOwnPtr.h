@@ -28,7 +28,7 @@
 #define WTF_PassOwnPtr_h
 
 #include "NullPtr.h"
-#include "OwnPtrCommon.h"
+#include "ownptrcommon.h"
 
 namespace WTF {
 
