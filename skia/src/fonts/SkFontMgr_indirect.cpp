@@ -274,6 +274,7 @@ SkTypeface* SkFontMgr_Indirect::onCreateFromData(SkData* data, int ttcIndex) con
 
 SkTypeface* SkFontMgr_Indirect::onLegacyCreateTypeface(const char familyName[],
                                                        unsigned styleBits) const {
+	SkDebugf("%s, %d", __FILENAME__, __LINE__ );
     bool bold = SkToBool(styleBits & SkTypeface::kBold);
     bool italic = SkToBool(styleBits & SkTypeface::kItalic);
     SkFontStyle style = SkFontStyle(bold ? SkFontStyle::kBold_Weight

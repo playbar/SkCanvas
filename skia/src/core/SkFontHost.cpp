@@ -195,6 +195,7 @@ SkTypeface* SkFontMgr::createFromFile(const char path[], int ttcIndex) const {
 
 SkTypeface* SkFontMgr::legacyCreateTypeface(const char familyName[],
                                             unsigned styleBits) const {
+	SkDebugf( "%s, %d", __FILENAME__, __LINE__ );
     return this->onLegacyCreateTypeface(familyName, styleBits);
 }
 
@@ -231,6 +232,7 @@ static SkFontStyle TypefaceStyleBitsToFontStyle(SkTypeface::Style styleBits) {
 SkTypeface* SkFontHost::CreateTypeface(const SkTypeface* familyFace,
                                        const char familyName[],
                                        SkTypeface::Style style) {
+
     SkAutoTUnref<SkFontMgr> fm(SkFontMgr::RefDefault());
     if (familyFace) {
         bool bold = style & SkTypeface::kBold;
@@ -242,6 +244,7 @@ SkTypeface* SkFontHost::CreateTypeface(const SkTypeface* familyFace,
                                                   : SkFontStyle::kUpright_Slant);
         return fm->matchFaceStyle(familyFace, newStyle);
     } else {
+    	SkDebugf( "%s, %d", __FILENAME__, __LINE__ );
         return fm->legacyCreateTypeface(familyName, style);
     }
 }

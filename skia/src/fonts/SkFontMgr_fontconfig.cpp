@@ -323,6 +323,7 @@ protected:
     virtual SkTypeface* onLegacyCreateTypeface(const char familyName[],
                                                unsigned styleBits) const SK_OVERRIDE {
         FCLocker lock;
+        SkDebugf("%s, %d", __FILENAME__, __LINE__ );
         return FontConfigTypeface::LegacyCreateTypeface(NULL, familyName,
                                                   (SkTypeface::Style)styleBits);
     }
