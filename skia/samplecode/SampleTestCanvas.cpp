@@ -321,8 +321,26 @@ protected:
 		ctx->translate(70, 70);
 		ctx->fillRect(10, 10, 100, 50);
 	}
+
+	void TestFont(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+
+	}
+
+	void TestAlign(SkCanvas *canvas)
+	{
+		SkPaint paint;
+		paint.setAntiAlias(true);
+		paint.setColor(0xff008000);
+		paint.setTextSize(50);
+		paint.setStyle(SkPaint::kStroke_Style);
+		paint.setStrokeWidth(2);
+		canvas->drawText("test", 4, 150, 60, paint);
+	}
+
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestArcTo(canvas);
+		TestAlign(canvas);
 		return;
 		SkPaint paint;
 		//paint.setAntiAlias(true);

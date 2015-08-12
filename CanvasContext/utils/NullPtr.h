@@ -1,8 +1,7 @@
 #ifndef NullPtr_h
 #define NullPtr_h
 
-#ifndef __WIN32
-
+#ifndef _WIN32
 namespace std{
 class nullptr_t{};
 }
