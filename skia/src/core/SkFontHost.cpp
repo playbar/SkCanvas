@@ -195,20 +195,17 @@ SkTypeface* SkFontMgr::createFromFile(const char path[], int ttcIndex) const {
 
 SkTypeface* SkFontMgr::legacyCreateTypeface(const char familyName[],
                                             unsigned styleBits) const {
-	SkDebugf( "%s, %d", __FILENAME__, __LINE__ );
     return this->onLegacyCreateTypeface(familyName, styleBits);
 }
 
 SkFontMgr* SkFontMgr::CreateDefault() {
     SkFontMgr* fm = SkFontMgr::Factory();
-    SkDebugf( "%s, %d, %d", __FILENAME__, __LINE__, (int)fm );
     return fm ? fm : SkNEW(SkEmptyFontMgr);
 }
 
 SkFontMgr* SkFontMgr::RefDefault() {
-	SkDebugf( "%s, %d", __FILENAME__, __LINE__ );
-    //SK_DECLARE_STATIC_LAZY_PTR(SkFontMgr, singleton, CreateDefault);
-    static Private::SkLazyPtr<SkFontMgr, CreateDefault> singleton;
+    SK_DECLARE_STATIC_LAZY_PTR(SkFontMgr, singleton, CreateDefault);
+    //static Private::SkLazyPtr<SkFontMgr, CreateDefault> singleton;
     return SkRef(singleton.get());
 }
 
