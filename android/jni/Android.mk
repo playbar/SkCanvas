@@ -15,7 +15,7 @@ LOCAL_SRC_FILES := gl_code.cpp \
 				   JniShell.cpp \
 				   EGTLog.cpp \
 				   StdC.cpp
-				   
+		   
 LOCAL_SRC_FILES	+=  \
 					../../skia/third_party/externals/zlib/adler32.c \
 					../../skia/third_party/externals/zlib/compress.c \

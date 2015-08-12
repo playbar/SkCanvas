@@ -787,7 +787,7 @@ SampleWindow::SampleWindow(void* hwnd, int argc, char** argv, DeviceManager* dev
 
     fMouseX = fMouseY = 0;
     fFatBitsScale = 8;
-    fTypeface = SkTypeface::CreateFromTypeface(NULL, SkTypeface::kBold);
+    //fTypeface = SkTypeface::CreateFromTypeface(NULL, SkTypeface::kBold);
     fShowZoomer = false;
 
     fZoomLevel = 0;

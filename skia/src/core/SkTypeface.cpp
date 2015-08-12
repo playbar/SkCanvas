@@ -105,7 +105,7 @@ SkTypeface* SkTypeface::GetDefaultTypeface(Style style) {
     SK_DECLARE_STATIC_MUTEX(mutex);
     SkAutoMutexAcquire lock(&mutex);
 
-    SkDebugf("%s, %d", __FILENAME__, __LINE__ );
+    //SkDebugf("%s, %d", __FILENAME__, __LINE__ );
 
     SkTypeface* t = SkFontHost::CreateTypeface(NULL, NULL, (Style)style);
     return t ? t : SkEmptyTypeface::Create();
