@@ -20,6 +20,7 @@
 #include "SkGradientShader.h"
 #include "SkBlurDrawLooper.h"
 #include "SkBlurMask.h"
+#include "SkTypeface.h"
 
 #include "CanvasContext2D.h"
 #include "PassOwnPtr.h"
@@ -555,11 +556,27 @@ void SkiaApp::TestArcTo( SkCanvas *canvas )
 	ctx->stroke();
 }
 
+void SkiaApp::TestText( SkCanvas *canvas )
+{
+	//SkTypeface *font = SkTypeface::CreateFromFile("NotoSansHans-Regular.otf");
+	//if( !font )
+	//	return;
+	SkPaint paint;
+	paint.setAntiAlias( true );
+	paint.setColor( 0xFF008000);
+	//paint.setTypeface( font );
+	paint.setTextSize( 50 );
+	paint.setStyle( SkPaint::kStroke_Style );
+	paint.setStrokeWidth( 2 );
+	canvas->drawLine( 10, 10, 100, 10, paint );
+	canvas->drawText( "test", 4, 150, 60, paint );
+}
+
 void SkiaApp::mainLoop(){
 	//canvas = createCanvas();
 	canvas->drawColor(0xffffffff);
 	//TestArc( canvas );
-	TestArcTo( canvas );
+	TestText( canvas );
 	fCurContext->flush();
 }
 

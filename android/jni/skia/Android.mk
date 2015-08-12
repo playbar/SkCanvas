@@ -39,6 +39,7 @@ LOCAL_C_INCLUDES := $../../skia/include/core \
 					$../../skia/include/images \
 					$../../skia/third_party/externals/libpng \
 					$../../skia/third_party/freetype/include \
+					$../../skia/third_party/expat \
 					$../../ \
 					
 					
@@ -85,8 +86,8 @@ LOCAL_SRC_FILES	+=  ../../../skia/src/images/SkImageDecoder.cpp \
 					../../../skia/src/images/SkImageDecoder_FactoryRegistrar.cpp \
 					../../../skia/src/images/SkImageEncoder.cpp \
 					../../../skia/src/images/SkImageEncoder_Factory.cpp \
-					../../../skia/src/images/SkScaledBitmapSampler.cpp 
-					#../../../skia/src/images/SkImageDecoder_libpng.cpp \
+					../../../skia/src/images/SkScaledBitmapSampler.cpp \
+					../../../skia/src/images/SkImageDecoder_libpng.cpp \
 					
 #lazy
 LOCAL_SRC_FILES	+=  ../../../skia/src/lazy/SkCachingPixelRef.cpp \
@@ -115,8 +116,12 @@ LOCAL_SRC_FILES	+=  ../../../skia/src/ports/SkFontHost_none.cpp \
 					../../../skia/src/ports/SkTLS_none.cpp \
 					../../../skia/src/ports/SkMemory_malloc.cpp \
 					../../../skia/src/ports/SkDebug_android.cpp \
-					../../../skia/src/ports/SkGlobalInitialization_default.cpp
-					#../../../skia/src/ports/SkFontConfigInterface_android.cpp \
+					../../../skia/src/ports/SkFontHost_FreeType.cpp \
+					../../../skia/src/ports/SkFontHost_FreeType_common.cpp \
+					../../../skia/src/ports/SkFontHost_fontconfig.cpp \
+					../../../skia/src/ports/SkGlobalInitialization_default.cpp \
+					../../../skia/src/ports/SkFontConfigInterface_android.cpp \
+					../../../skia/src/ports/SkFontConfigParser_android.cpp \
 
 #sfnt
 LOCAL_SRC_FILES	+=  ../../../skia/src/sfnt/SkOTTable_name.cpp \
