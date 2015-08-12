@@ -1583,7 +1583,6 @@ void SkScalerContext::MakeRec(const SkPaint& paint,
     SkTypeface* typeface = paint.getTypeface();
     if (NULL == typeface) {
         typeface = SkTypeface::GetDefaultTypeface();
-        SkDebugf("%s, %d", __FILENAME__, __LINE__ );
     }
     rec->fOrigFontID = typeface->uniqueID();
     rec->fFontID = rec->fOrigFontID;

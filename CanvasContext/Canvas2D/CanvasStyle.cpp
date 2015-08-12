@@ -1,7 +1,7 @@
 #include "CanvasStyle.h"
 #include "CanvasGradient.h"
 #include "CanvasPattern.h"
-#include "PassRefPtr.h"
+#include "passrefptr.h"
 #include "CanvasContext2D.h"
 #include "Color.h"
 #include <ctype.h>

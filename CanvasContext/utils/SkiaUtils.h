@@ -9,7 +9,7 @@
 #include "graphicstypes.h"
 #include "AffineTransform.h"
 #include "MathExtras.h"
-#include "PassRefPtr.h"
+#include "passrefptr.h"
 
 class SkCanvas;
 class SkRegion;

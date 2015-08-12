@@ -1,7 +1,7 @@
 #include "Gradient.h"
 
 #include "FloatRect.h"
-#include "color.h"
+#include "Color.h"
 #include "SkColorShader.h"
 #include "SkShader.h"
 #include "SkGradientShader.h"
