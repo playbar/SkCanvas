@@ -11,11 +11,10 @@ LOCAL_CFLAGS += -DUSE_MMAP\
 				-fexceptions
 				
 LOCAL_C_INCLUDES := $../../skia/third_party/externals/zlib \
-				
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)	
 
-#harfbuzz
+
 LOCAL_SRC_FILES	+=  \
 					../../../skia/third_party/externals/zlib/adler32.c \
 					../../../skia/third_party/externals/zlib/compress.c \
@@ -26,6 +25,7 @@ LOCAL_SRC_FILES	+=  \
 					../../../skia/third_party/externals/zlib/gzread.c \
 					../../../skia/third_party/externals/zlib/gzwrite.c \
 					../../../skia/third_party/externals/zlib/infback.c \
+					../../../skia/third_party/externals/zlib/inflate.c \
 					../../../skia/third_party/externals/zlib/inftrees.c \
 					../../../skia/third_party/externals/zlib/inffast.c \
 					../../../skia/third_party/externals/zlib/trees.c \

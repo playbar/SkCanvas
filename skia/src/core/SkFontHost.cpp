@@ -199,7 +199,7 @@ SkTypeface* SkFontMgr::legacyCreateTypeface(const char familyName[],
 }
 
 SkFontMgr* SkFontMgr::CreateDefault() {
-    SkFontMgr* fm = SkFontMgr::Factory();
+	SkFontMgr* fm = SkFontMgr::Factory();
     return fm ? fm : SkNEW(SkEmptyFontMgr);
 }
 

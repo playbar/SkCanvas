@@ -200,8 +200,6 @@ template<typename D, typename S> struct SkTFitsIn {
 
 /** Returns true if the integer source value 's' will fit in the integer destination type 'D'. */
 template <typename D, typename S> inline bool SkTFitsIn(S s) {
-    SK_COMPILE_ASSERT(std::numeric_limits<S>::is_integer, SkTFitsIn_source_must_be_integer);
-    SK_COMPILE_ASSERT(std::numeric_limits<D>::is_integer, SkTFitsIn_destination_must_be_integer);
 
     return !sktfitsin::Private::SkTFitsIn<D, S>::type::OutOfRange(s);
 }

@@ -11,11 +11,12 @@ LOCAL_CFLAGS += \
 				-fexceptions
 				
 LOCAL_C_INCLUDES := $../../skia/third_party/externals/libpng \
+					$../../skia/third_party/externals/zlib \
 				
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)	
 
-#harfbuzz
+#libpng
 LOCAL_SRC_FILES	+=  ../../../skia/third_party/externals/libpng/png.c \
 					../../../skia/third_party/externals/libpng/pngerror.c \
 					../../../skia/third_party/externals/libpng/pngget.c \
@@ -31,7 +32,8 @@ LOCAL_SRC_FILES	+=  ../../../skia/third_party/externals/libpng/png.c \
 					../../../skia/third_party/externals/libpng/pngwrite.c \
 					../../../skia/third_party/externals/libpng/pngwtran.c \
 					../../../skia/third_party/externals/libpng/pngwutil.c \
-					
+
+			
 				
 #LOCAL_LDLIBS := $(MY_LIBRARY)
 

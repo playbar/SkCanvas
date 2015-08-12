@@ -84,6 +84,8 @@ SkTypeface* SkTypeface::CreateDefault(int style) {
     SK_DECLARE_STATIC_MUTEX(mutex);
     SkAutoMutexAcquire lock(&mutex);
 
+    SkDebugf("%s, %d", __FILENAME__, __LINE__ );
+
     SkTypeface* t = SkFontHost::CreateTypeface(NULL, NULL, (Style)style);
     return t ? t : SkEmptyTypeface::Create();
 }
@@ -96,10 +98,17 @@ void SkTypeface::DeleteDefault(SkTypeface* t) {
 }
 
 SkTypeface* SkTypeface::GetDefaultTypeface(Style style) {
-    SK_DECLARE_STATIC_LAZY_PTR_ARRAY(SkTypeface, defaults, 4, CreateDefault, DeleteDefault);
+    //SK_DECLARE_STATIC_LAZY_PTR_ARRAY(SkTypeface, defaults, 4, CreateDefault, DeleteDefault);
 
-    SkASSERT((int)style < 4);
-    return defaults[style];
+    //SkASSERT((int)style < 4);
+    //return defaults[style];
+    SK_DECLARE_STATIC_MUTEX(mutex);
+    SkAutoMutexAcquire lock(&mutex);
+
+    SkDebugf("%s, %d", __FILENAME__, __LINE__ );
+
+    SkTypeface* t = SkFontHost::CreateTypeface(NULL, NULL, (Style)style);
+    return t ? t : SkEmptyTypeface::Create();
 }
 
 SkTypeface* SkTypeface::RefDefault(Style style) {
