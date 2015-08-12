@@ -40,11 +40,11 @@ LOCAL_C_INCLUDES := $../../skia/include/core \
 					$../../skia/src/utils \
 					$../../skia/src/effects \
 					$../../skia/src/lazy \
-					$../../skia/third_party/externals/libpng \
-					$../../skia/third_party/freetype/include \
 					$../../skia/third_party/expat \
 					$../../skia/third_party/etc1 \
 					$../../skia/third_party/ktx \
+					$../../skia/third_party/externals/libpng \
+					$../../skia/third_party/freetype/include \
 					$../../ \
 					
 					
@@ -301,7 +301,6 @@ LOCAL_SRC_FILES	+=  \
 	../../../skia/src/images/SkImageDecoder_FactoryDefault.cpp \
 	../../../skia/src/images/SkImageDecoder_FactoryRegistrar.cpp \
 	../../../skia/src/images/SkImageDecoder_wbmp.cpp \
-	../../../skia/src/images/SkImageDecoder_libpng.cpp \
 	../../../skia/src/images/SkImageEncoder.cpp \
 	../../../skia/src/images/SkImageEncoder_Factory.cpp \
 	../../../skia/src/images/SkImageEncoder_argb.cpp \
@@ -478,31 +477,24 @@ LOCAL_SRC_FILES	+=  \
 	../../../skia/src/gpu/gl/SkNullGLContext.cpp \
 	../../../skia/third_party/etc1/etc1.cpp \
 	../../../skia/third_party/ktx/ktx.cpp \
-	../../../skia/src/core/SkFlate.cpp
+	../../../skia/src/core/SkFlate.cpp \
+	../../../skia/third_party/expat/xmlparse.c \
+	../../../skia/third_party/expat/xmlrole.c \
+	../../../skia/third_party/expat/xmltok.c
+	
+	#../../../skia/src/images/SkImageDecoder_libpng.cpp \
 					
 
-LOCAL_SRC_FILES_arm += \
-	../../../skia/src/core/SkUtilsArm.cpp \
-	../../../skia/src/opts/memset.arm.S \
-	../../../skia/src/opts/SkBitmapProcState_opts_arm.cpp \
-	../../../skia/src/opts/SkBlitMask_opts_arm.cpp \
-	../../../skia/src/opts/SkBlitRow_opts_arm.cpp \
-	../../../skia/src/opts/SkBlurImage_opts_arm.cpp \
-	../../../skia/src/opts/SkMorphology_opts_arm.cpp \
-	../../../skia/src/opts/SkUtils_opts_arm.cpp \
-	../../../skia/src/opts/SkXfermode_opts_arm.cpp
+LOCAL_SRC_FILES += \
+	../../../skia/src/opts/SkBitmapProcState_opts_none.cpp \
+	../../../skia/src/opts/SkBlitMask_opts_none.cpp \
+	../../../skia/src/opts/SkBlitRow_opts_none.cpp \
+	../../../skia/src/opts/SkBlurImage_opts_none.cpp \
+	../../../skia/src/opts/SkMorphology_opts_none.cpp \
+	../../../skia/src/opts/SkUtils_opts_none.cpp \
+	../../../skia/src/opts/SkXfermode_opts_none.cpp
 	
-
-LOCAL_SRC_FILES_arm += \
-	../../../skia/src/opts/memset16_neon.S \
-	../../../skia/src/opts/memset32_neon.S \
-	../../../skia/src/opts/SkBitmapProcState_arm_neon.cpp \
-	../../../skia/src/opts/SkBitmapProcState_matrixProcs_neon.cpp \
-	../../../skia/src/opts/SkBlitMask_opts_arm_neon.cpp \
-	../../../skia/src/opts/SkBlitRow_opts_arm_neon.cpp \
-	../../../skia/src/opts/SkBlurImage_opts_neon.cpp \
-	../../../skia/src/opts/SkMorphology_opts_neon.cpp \
-	../../../skia/src/opts/SkXfermode_opts_arm_neon.cpp
+	
 
 #png
 #MY_FILES := $(wildcard $(LOCAL_PATH)/../../../third_party/libpng/*.c)
@@ -514,6 +506,4 @@ LOCAL_SRC_FILES_arm += \
 
 include $(BUILD_STATIC_LIBRARY)
 $(call import-add-path,$(LOCAL_PATH)/..)
-
-#$(call import-module,../../android/jni/png/prebuilt/android)
 
