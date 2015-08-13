@@ -680,6 +680,21 @@ void CanvasContext2D::setTextAlign(const std::string& s)
 	modifiableState().m_textAlign = align;
 }
 
+void CanvasContext2D::setTextBaseline(const std::string& s)
+{
+	TextBaseline baseline;
+	if ( !parseTextBaseline( s, baseline ))
+	{
+		return;
+	}
+	if ( state().m_textBaseline == baseline )
+	{
+		return;
+	}
+	modifiableState().m_textBaseline = baseline;
+}
+
+
 void CanvasContext2D::fillText(const char *text, float x, float y)
 {
 	const FontDescription &fontDes = state().m_FontDescription;
@@ -688,7 +703,7 @@ void CanvasContext2D::fillText(const char *text, float x, float y)
 	//m_strokePaint.setVerticalText(true);
 	//m_strokePaint.setUnderlineText(true);
 	int ilen = strlen(text);
-	m_pCanvas->drawText(text, ilen, x, y, m_fillPaint);
+	m_pCanvas->drawText(text, ilen, x, y +getFontBaseline(m_fillPaint), m_fillPaint);
 }
 
 void CanvasContext2D::strokeText(const char* text, float x, float y)
@@ -698,7 +713,32 @@ void CanvasContext2D::strokeText(const char* text, float x, float y)
 	//m_strokePaint.setVerticalText(true);
 	//m_strokePaint.setUnderlineText(true);
 	int ilen = strlen(text);
-	m_pCanvas->drawText(text, ilen, x, y, m_strokePaint );
+	m_pCanvas->drawText(text, ilen, x, y + getFontBaseline(m_fillPaint), m_strokePaint);
+}
+
+int CanvasContext2D::getFontBaseline(const SkPaint& paint) const
+{
+	SkPaint::FontMetrics fontmet;
+	paint.getFontMetrics(&fontmet, 0.0);
+
+	switch (state().m_textBaseline) {
+	case TopTextBaseline:
+		return -fontmet.fAscent;
+	case HangingTextBaseline:
+		// According to http://wiki.apache.org/xmlgraphics-fop/LineLayout/AlignmentHandling
+		// "FOP (Formatting Objects Processor) puts the hanging baseline at 80% of the ascender height"
+		return -(fontmet.fAscent * 4) / 5;
+	case BottomTextBaseline:
+	case IdeographicTextBaseline:
+		return -fontmet.fDescent;
+	case MiddleTextBaseline:
+		return  fontmet.fXHeight / 2;
+	case AlphabeticTextBaseline:
+	default:
+		// Do nothing.
+		break;
+	}
+	return 0;
 }
 
 bool CanvasContext2D::isAccelerated() const

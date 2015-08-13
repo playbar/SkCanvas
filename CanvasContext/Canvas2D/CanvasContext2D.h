@@ -176,7 +176,7 @@ public:
 	void setTextAlign(const std::string&);
 
 	//String textBaseline() const;
-	//void setTextBaseline(const String&);
+	void setTextBaseline(const std::string&);
 
 	void fillText(const char* text, float x, float y);
 	//void fillText(const String& text, float x, float y, float maxWidth);
@@ -273,7 +273,7 @@ private:
 	//void drawTextInternal(const String& text, float x, float y, bool fill, float maxWidth = 0, bool useMaxWidth = false);
 
 	//const Font& accessFont();
-	//int getFontBaseline(const FontMetrics&) const;
+	int getFontBaseline(const SkPaint&) const;
 
 	void clearCanvas();
 	bool rectContainsTransformedRect(const FloatRect&, const FloatRect&) const;

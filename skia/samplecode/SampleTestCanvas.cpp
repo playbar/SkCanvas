@@ -406,8 +406,35 @@ protected:
 
 	}
 
+	void TestBaseLine(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->setStrokeColor("blue");
+		ctx->moveTo(5, 100);
+		ctx->lineTo(395, 100);
+		ctx->stroke();
+
+		ctx->setFont("20px Arial");
+		ctx->setTextBaseline("top");
+		ctx->fillText("Top", 5, 100);
+
+		ctx->setTextBaseline("bottom");
+		ctx->fillText("bottom", 50, 100);
+
+		ctx->setTextBaseline("middle");
+		ctx->fillText("middle", 120, 100);
+
+		ctx->setTextBaseline("alphabetic");
+		ctx->fillText("alphabetic", 190, 100);
+
+		ctx->setTextBaseline("hanging");
+		ctx->fillText("Hanging", 290, 100);
+
+
+	}
+
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestTextAlign(canvas);
+		TestBaseLine(canvas);
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);
