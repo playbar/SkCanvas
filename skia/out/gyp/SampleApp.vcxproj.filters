@@ -171,6 +171,9 @@
     <ClInclude Include="..\..\..\CanvasContext\utils\ASCIICType.h">
       <Filter>CanvasContext\utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\FontDescription.h">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\pipe\utils\SamplePipeControllers.cpp">
@@ -382,6 +385,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\CanvasContext\geometry\IntRect.cpp">
       <Filter>CanvasContext\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\FontDescription.cpp">
+      <Filter>CanvasContext\Canvas2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

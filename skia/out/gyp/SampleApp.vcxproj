@@ -156,6 +156,7 @@
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\CanvasPattern.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\CanvasStyle.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Color.h" />
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\FontDescription.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Gradient.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\graphicstypes.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Pattern.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CanvasStyle.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Color.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\ColorData.cpp" />
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\FontDescription.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Gradient.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\GraphicsTypes.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Pattern.cpp" />

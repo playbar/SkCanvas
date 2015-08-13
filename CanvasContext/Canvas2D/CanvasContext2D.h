@@ -10,6 +10,7 @@
 #include "Color.h"
 #include "CanvasStyle.h"
 #include "PassOwnPtr.h"
+#include "FontDescription.h"
 
 using namespace WebCore;
 
@@ -169,7 +170,7 @@ public:
 	void reset();
 
 	//String font() const;
-	//void setFont(const String&);
+	void setFont(const std::string&);
 
 	//String textAlign() const;
 	//void setTextAlign(const String&);
@@ -179,7 +180,7 @@ public:
 
 	//void fillText(const String& text, float x, float y);
 	//void fillText(const String& text, float x, float y, float maxWidth);
-	//void strokeText(const String& text, float x, float y);
+	void strokeText( const char* text, float x, float y);
 	//void strokeText(const String& text, float x, float y, float maxWidth);
 	//PassRefPtr<TextMetrics> measureText(const String& text);
 
@@ -233,7 +234,7 @@ private:
 		TextBaseline m_textBaseline;
 
 		std::string m_unparsedFont;
-		//Font m_font;
+		FontDescription m_FontDescription;
 		bool m_realizedFont;
 	};
 

@@ -325,7 +325,8 @@ protected:
 	void TestFont(SkCanvas *canvas)
 	{
 		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
-
+		ctx->setFont("12");
+		ctx->strokeText("Hello", 10, 50);
 	}
 
 	void TestAlign(SkCanvas *canvas)
@@ -377,14 +378,25 @@ protected:
 		return;
 	}
 
+	void TestTextAlign(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->beginPath();
+		ctx->setStrokeColor("blue");
+		ctx->setLineWidth(0.5);
+		ctx->moveTo(150, 20);
+		ctx->lineTo(150, 170);
+		ctx->stroke();
+	}
+
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestSetTransform(canvas);
+		TestTextAlign(canvas);
 		return;
 		SkPaint paint;
-		//paint.setAntiAlias(true);
+		paint.setAntiAlias(true);
 		paint.setStyle(SkPaint::kStroke_Style);
 		paint.setColor(0xff008000);
-		paint.setStrokeWidth(8);
+		paint.setStrokeWidth(0.5);
 		paint.setShader(0);
 		//SkRect r = SkRect::MakeXYWH(200, 200, 100, 100);
 		SkPath path;

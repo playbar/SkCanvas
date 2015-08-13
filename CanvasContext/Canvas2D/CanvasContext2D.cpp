@@ -60,6 +60,7 @@ CanvasContext2D::CanvasContext2D(SkCanvas*canvas )
 	m_strokePaint.setAntiAlias(true);
 	m_fillPaint.setStyle(SkPaint::kFill_Style);
 	m_fillPaint.setAntiAlias(true);
+	m_strokePaint.setStrokeWidth(1);
 
 }
 
@@ -602,6 +603,7 @@ void CanvasContext2D::fill(const std::string& winding)
 
 void CanvasContext2D::stroke()
 {
+	m_path.moveTo(-10, -10);
 	m_pCanvas->drawPath(m_path, m_strokePaint);
 }
 
@@ -651,6 +653,27 @@ PassRefPtr<CanvasGradient> CanvasContext2D::createLinearGradient(float x0, float
 {
 	RefPtr< CanvasGradient> gradient = CanvasGradient::create(SkPoint::Make(x0, y0), SkPoint::Make(x1, y1));
 	return gradient.release();
+}
+
+void CanvasContext2D::setFont(const std::string&)
+{
+	FontDescription &fontDes = modifiableState().m_FontDescription;
+	fontDes.setSpecifiedSize(30);
+	fontDes.setComputedSize(30);
+	fontDes.setStyle(FontStyleNormal);
+	fontDes.setVariant(FontVariantNormal);
+	fontDes.setSyntheticBold(false);
+	return;
+}
+
+void CanvasContext2D::strokeText(const char* text, float x, float y)
+{
+	const FontDescription &fontDes = state().m_FontDescription;
+	m_strokePaint.setTextSize(fontDes.specifiedSize());
+	//m_strokePaint.setVerticalText(true);
+	//m_strokePaint.setUnderlineText(true);
+	int ilen = strlen(text);
+	m_pCanvas->drawText(text, ilen, x, y, m_strokePaint );
 }
 
 bool CanvasContext2D::isAccelerated() const
