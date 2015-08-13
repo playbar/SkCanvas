@@ -293,15 +293,39 @@ void CanvasContext2D::scale(float sx, float sy)
 }
 
 void CanvasContext2D::rotate(float angleInRadians)
-{}
+{
+	AffineTransform newTransform = state().m_transform;
+	newTransform.rotateRadians(angleInRadians);
+	if ( state().m_transform == newTransform )
+	{
+		return;
+	}
+	modifiableState().m_transform = newTransform;
+	m_pCanvas->rotate(angleInRadians * ( 180 / M_PI));
+	AffineTransform trans = AffineTransform().rotateRadians(-angleInRadians);
+	m_path.transform(affineTransformToSkMatrix(trans));
+	return;
+}
 
 void CanvasContext2D::translate(float tx, float ty)
 {
+
 	m_pCanvas->translate(tx, ty);
 }
 void CanvasContext2D::transform(float m11, float m12, float m21, float m22, float dx, float dy)
 {
-
+	if (!std::isfinite(m11) | !std::isfinite(m21) | !std::isfinite(dx) | !std::isfinite(m12) | !std::isfinite(m22) | !std::isfinite(dy))
+		return;
+	AffineTransform transform(m11, m12, m21, m22, dx, dy);
+	AffineTransform newTransform = state().m_transform * transform;
+	if ( state().m_transform == newTransform )
+	{
+		return;
+	}
+	modifiableState().m_transform = newTransform;
+	m_pCanvas->concat(affineTransformToSkMatrix(transform));
+	m_path.transform(affineTransformToSkMatrix(transform.inverse()));
+	return;
 }
 void CanvasContext2D::setTransform(float m11, float m12, float m21, float m22, float dx, float dy)
 {

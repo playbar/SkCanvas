@@ -339,8 +339,30 @@ protected:
 		canvas->drawText("test", 4, 150, 60, paint);
 	}
 
+	void TestRotate(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->rotate(20 * M_PI / 180);
+		ctx->fillRect(50, 20, 100, 50);
+	}
+
+	void TestTransform(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->setFillColor("yellow");
+		ctx->fillRect(0, 0, 250, 100);
+
+		ctx->transform(1, 0.5, -0.5, 1, 30, 10);
+		ctx->setFillColor("red");
+		ctx->fillRect(0, 0, 250, 100);
+
+		ctx->transform(1, 0.5, -0.5, 1, 30, 10);
+		ctx->setFillColor("blue");
+		ctx->fillRect(0, 0, 250, 100);
+	}
+
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestAlign(canvas);
+		TestTransform(canvas);
 		return;
 		SkPaint paint;
 		//paint.setAntiAlias(true);

@@ -239,7 +239,7 @@ private:
 
 	CanvasContext2D(SkCanvas* );
 
-	//State& modifiableState() { return m_stateStack.last(); }
+	State& modifiableState() { return m_stateStack.back(); }
 	const State& state() const { return m_stateStack.back(); }
 
 	//void applyLineDash();
