@@ -468,8 +468,19 @@ protected:
 		ctx->fillRect(20, 20, 150, 100);
 	}
 
+	void TestShadowOffset(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->setShadowBlur(10);
+		ctx->setShadowOffsetX(20);
+		ctx->setShadowOffsetY(40);
+		ctx->setShadowColor("black");
+		ctx->setFillColor("blue");
+		ctx->fillRect(20, 20, 100, 80);
+	}
+
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestShadowColor(canvas);
+		TestShadowOffset(canvas);
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);

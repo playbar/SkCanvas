@@ -225,21 +225,39 @@ void CanvasContext2D::setLineDashOffset(float)
 
 float CanvasContext2D::shadowOffsetX() const
 {
-	return 0.0f;
+	return state().m_shadowOffset.width();
 }
-void CanvasContext2D::setShadowOffsetX(float)
+void CanvasContext2D::setShadowOffsetX(float x)
 {
-
+	if (!std::isfinite(x))
+	{
+		return;
+	}
+	if (state().m_shadowOffset.width() == x)
+	{
+		return;
+	}
+	modifiableState().m_shadowOffset.setWidth(x);
+	applyShadow();
 }
 
 float CanvasContext2D::shadowOffsetY() const
 {
-	return 0.0f;
+	return state().m_shadowOffset.height();
 }
 
-void CanvasContext2D::setShadowOffsetY(float)
+void CanvasContext2D::setShadowOffsetY(float y)
 {
-
+	if (!std::isfinite(y))
+	{
+		return;
+	}
+	if ( state().m_shadowOffset.height() == y )
+	{
+		return;
+	}
+	modifiableState().m_shadowOffset.setHeight(y);
+	applyShadow();
 }
 
 float CanvasContext2D::shadowBlur() const
