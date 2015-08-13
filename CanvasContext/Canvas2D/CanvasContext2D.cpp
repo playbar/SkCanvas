@@ -3,10 +3,17 @@
 #include "graphicstypes.h"
 #include "CanvasGradient.h"
 #include "CanvasPattern.h"
+#include "SkColorPriv.h"
 
 static const int defaultFontSize = 30;
 static const char defaultFontFamily[] = "sans-serif";
 static const char defaultFont[] = "10px sans-serif";
+
+//static SkColor applyAlpha(SkColor c) const
+//{
+//	int a = SkAlphaMul(SkColorGetA(c), m_alpha);
+//	return (c & 0x00FFFFFF) | (a << 24);
+//}
 
 static bool parseWinding(const std::string& windingRuleString, WindRule& windRule)
 {
@@ -53,7 +60,7 @@ float adjustEndAngle(float startAngle, float endAngle, bool anticlockwise)
 //////////////////////////////////////////////////////////////////////////
 
 CanvasContext2D::CanvasContext2D(SkCanvas*canvas )
-{
+{	
 	m_pCanvas = canvas;
 	m_stateStack.resize(1);
 	m_strokePaint.setStyle(SkPaint::kStroke_Style);
@@ -61,6 +68,7 @@ CanvasContext2D::CanvasContext2D(SkCanvas*canvas )
 	m_fillPaint.setStyle(SkPaint::kFill_Style);
 	m_fillPaint.setAntiAlias(true);
 	m_strokePaint.setStrokeWidth(1);
+	modifiableState().m_globalAlpha = 256;
 
 }
 
@@ -81,6 +89,7 @@ void CanvasContext2D::setStrokeStyle(PassRefPtr<CanvasStyle>prpStyle)
 
 void CanvasContext2D::applyStokeColor(PassRefPtr<CanvasStyle>style)
 {
+	m_strokeColor = style->getRgba();
 	switch (style->getType())
 	{
 	case CanvasStyle::RGBA:
@@ -118,13 +127,14 @@ void CanvasContext2D::setFillStyle(PassRefPtr<CanvasStyle> prpStyle)
 
 void CanvasContext2D::applyFillColor(PassRefPtr<CanvasStyle> style )
 {
+	m_fillColor = style->getRgba();
 	switch (style->getType())
 	{
-	case CanvasStyle::RGBA:
-		m_fillPaint.setColor(style->getRgba());
+	case CanvasStyle::RGBA:	
+		m_fillPaint.setColor(applyAlpha(style->getRgba()));
 		break;
 	case CanvasStyle::CMYKA:
-		m_fillPaint.setColor(style->getRgba());
+		m_fillPaint.setColor(applyAlpha(style->getRgba()));
 		break;
 	case CanvasStyle::Gradient:
 		m_fillPaint.setColor(0xff000000);
@@ -254,9 +264,30 @@ float CanvasContext2D::globalAlpha() const
 {
 	return 0.0f;
 }
-void CanvasContext2D::setGlobalAlpha(float)
+void CanvasContext2D::setGlobalAlpha(float alpha)
 {
+	if (!(alpha >= 0 && alpha <= 1))
+	{
+		return;
+	}
+	if ( state().m_globalAlpha == alpha )
+	{
+		return;
+	}
 
+	modifiableState().m_globalAlpha = roundf(alpha * 256 );
+
+	float fa = modifiableState().m_globalAlpha;
+	fa += 0;
+
+	SkColor strokeColor = applyAlpha(m_strokeColor.rgb());
+	m_strokePaint.setColor(strokeColor);
+
+	SkColor fillColor = applyAlpha(m_fillColor.rgb());
+	m_fillPaint.setColor(fillColor);
+
+	
+	 
 }
 
 std::string CanvasContext2D::globalCompositeOperation() const
@@ -734,7 +765,6 @@ int CanvasContext2D::getFontBaseline(const SkPaint& paint) const
 	case TopTextBaseline:
 		return -fontmet.fAscent;
 	case HangingTextBaseline:
-		// According to http://wiki.apache.org/xmlgraphics-fop/LineLayout/AlignmentHandling
 		// "FOP (Formatting Objects Processor) puts the hanging baseline at 80% of the ascender height"
 		return -(fontmet.fAscent * 4) / 5;
 	case BottomTextBaseline:
@@ -770,6 +800,12 @@ SkPoint CanvasContext2D::currentPoint() const
 	}
 	float quietNan = std::numeric_limits<float>::quiet_NaN();
 	return SkPoint::Make(quietNan, quietNan);
+}
+
+SkColor CanvasContext2D::applyAlpha(SkColor c) const
+{
+	int a = SkAlphaMul(SkColorGetA(c), state().m_globalAlpha);
+	return (c & 0x00FFFFFF) | (a << 24);
 }
 
 CanvasContext2D::State::State()

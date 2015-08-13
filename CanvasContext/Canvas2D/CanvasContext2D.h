@@ -197,6 +197,8 @@ public:
 private:
 	bool hasCurrentPoint() const;
 	SkPoint currentPoint() const;
+	SkColor applyAlpha(SkColor c) const;
+
 	struct State
 	{
 		State();
@@ -302,6 +304,8 @@ private:
 	SkCanvas *m_pCanvas;
 
 	SkPath m_path;
+	Color m_fillColor;
+	Color m_strokeColor;
 	SkPaint m_strokePaint;
 	SkPaint m_fillPaint;
 

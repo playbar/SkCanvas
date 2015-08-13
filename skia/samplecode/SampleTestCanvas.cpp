@@ -435,8 +435,21 @@ protected:
 
 	}
 
+	void TestGlobalAlpha(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->setFillColor("red");
+		ctx->fillRect(20, 20, 75, 50);
+
+		ctx->setGlobalAlpha(0.2);
+		ctx->setFillColor("green");
+		ctx->fillRect(50, 50, 75, 50);
+		ctx->setFillColor("blue");
+		ctx->fillRect(80, 80, 75, 50);
+	}
+
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestBaseLine(canvas);
+		TestGlobalAlpha(canvas);
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);
