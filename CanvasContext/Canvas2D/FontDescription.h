@@ -5,6 +5,7 @@
 #include "MathExtras.h"
 
 #include "RefPtr.h"
+#include "string"
 
 namespace WebCore {
 
@@ -170,14 +171,14 @@ public:
     void setStretch(FontStretch s) { m_stretch = s; }
     void setGenericFamily(GenericFamilyType genericFamily) { m_genericFamily = genericFamily; }
     void setUsePrinterFont(bool p) { m_usePrinterFont = p; }
-    void setKerning(Kerning kerning) { m_kerning = kerning; updateTypesettingFeatures(); }
-    void setCommonLigaturesState(LigaturesState commonLigaturesState) { m_commonLigaturesState = commonLigaturesState; updateTypesettingFeatures(); }
-    void setDiscretionaryLigaturesState(LigaturesState discretionaryLigaturesState) { m_discretionaryLigaturesState = discretionaryLigaturesState; updateTypesettingFeatures(); }
-    void setHistoricalLigaturesState(LigaturesState historicalLigaturesState) { m_historicalLigaturesState = historicalLigaturesState; updateTypesettingFeatures(); }
-    void setContextualLigaturesState(LigaturesState contextualLigaturesState) { m_contextualLigaturesState = contextualLigaturesState; updateTypesettingFeatures(); }
+    void setKerning(Kerning kerning) { m_kerning = kerning; }
+    void setCommonLigaturesState(LigaturesState commonLigaturesState) { m_commonLigaturesState = commonLigaturesState; }
+    void setDiscretionaryLigaturesState(LigaturesState discretionaryLigaturesState) { m_discretionaryLigaturesState = discretionaryLigaturesState;  }
+    void setHistoricalLigaturesState(LigaturesState historicalLigaturesState) { m_historicalLigaturesState = historicalLigaturesState;  }
+    void setContextualLigaturesState(LigaturesState contextualLigaturesState) { m_contextualLigaturesState = contextualLigaturesState;  }
     void setKeywordSize(unsigned s) { m_keywordSize = s; }
     void setFontSmoothing(FontSmoothingMode smoothing) { m_fontSmoothing = smoothing; }
-    void setTextRendering(TextRenderingMode rendering) { m_textRendering = rendering; updateTypesettingFeatures(); }
+    void setTextRendering(TextRenderingMode rendering) { m_textRendering = rendering; }
     void setIsSpecifiedFont(bool isSpecifiedFont) { m_isSpecifiedFont = isSpecifiedFont; }
     void setOrientation(FontOrientation orientation) { m_orientation = orientation; }
     void setNonCJKGlyphOrientation(NonCJKGlyphOrientation orientation) { m_nonCJKGlyphOrientation = orientation; }
@@ -191,11 +192,10 @@ public:
     static void setSubpixelPositioning(bool b) { s_useSubpixelTextPositioning = b; }
     static bool subpixelPositioning() { return s_useSubpixelTextPositioning; }
 
-
+	void parseFontDes(const std::string &newFont);
 private:
 
-    void updateTypesettingFeatures() const;
-
+	std::string m_fontName;
     float m_specifiedSize;   // Specified CSS value. Independent of rendering issues such as integer
                              // rounding, minimum font sizes, and zooming.
     float m_computedSize;    // Computed size adjusted for the minimum font size and the zoom factor.

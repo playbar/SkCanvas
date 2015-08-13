@@ -5,6 +5,7 @@
 #include "CanvasPattern.h"
 #include "SkColorPriv.h"
 #include "DrawLooperBuilder.h"
+#include "SkTypeface.h"
 
 static const int defaultFontSize = 30;
 static const char defaultFontFamily[] = "sans-serif";
@@ -734,14 +735,10 @@ PassRefPtr<CanvasGradient> CanvasContext2D::createLinearGradient(float x0, float
 	return gradient.release();
 }
 
-void CanvasContext2D::setFont(const std::string&)
+void CanvasContext2D::setFont(const std::string& newFont)
 {
 	FontDescription &fontDes = modifiableState().m_FontDescription;
-	fontDes.setSpecifiedSize(30);
-	fontDes.setComputedSize(30);
-	fontDes.setStyle(FontStyleNormal);
-	fontDes.setVariant(FontVariantNormal);
-	fontDes.setSyntheticBold(false);
+	fontDes.parseFontDes(newFont);
 	return;
 }
 
@@ -777,8 +774,12 @@ void CanvasContext2D::setTextBaseline(const std::string& s)
 void CanvasContext2D::fillText(const char *text, float x, float y)
 {
 	const FontDescription &fontDes = state().m_FontDescription;
+	
+	SkTypeface *face = SkTypeface::RefDefault();
+
 	m_fillPaint.setTextSize(fontDes.specifiedSize());
 	m_fillPaint.setTextAlign((SkPaint::Align)(state().m_textAlign));
+	
 	//m_strokePaint.setVerticalText(true);
 	//m_strokePaint.setUnderlineText(true);
 	int ilen = strlen(text);

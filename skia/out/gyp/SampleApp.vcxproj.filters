@@ -177,6 +177,15 @@
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\DrawLooperBuilder.h">
       <Filter>CanvasContext\Canvas2D</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\CSSValueKeywords.h">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\CSSParserMode.h">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\HashTools.h">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\pipe\utils\SamplePipeControllers.cpp">
@@ -393,6 +402,12 @@
       <Filter>CanvasContext\Canvas2D</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\DrawLooperBuilder.cpp">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CSSValueKeywords.cpp">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CSSParserMode.cpp">
       <Filter>CanvasContext\Canvas2D</Filter>
     </ClCompile>
   </ItemGroup>

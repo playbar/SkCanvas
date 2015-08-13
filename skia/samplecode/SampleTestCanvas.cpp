@@ -15,6 +15,7 @@
 #include "PassOwnPtr.h"
 #include "SkiaUtils.h"
 #include "CanvasGradient.h"
+#include "SkTypeface.h"
 
 using namespace WebCore;
 using namespace WTF;
@@ -414,7 +415,7 @@ protected:
 		ctx->lineTo(395, 100);
 		ctx->stroke();
 
-		ctx->setFont("20px Arial");
+		ctx->setFont("italic small-caps bold 20px arial");
 		ctx->setTextBaseline("top");
 		ctx->fillText("Top", 5, 100);
 
@@ -478,9 +479,34 @@ protected:
 		ctx->setFillColor("blue");
 		ctx->fillRect(20, 20, 100, 80);
 	}
-
+	void TestSkPaint(SkCanvas *canvas)
+	{
+		SkTypeface *typeface = SkTypeface::RefDefault(SkTypeface::kBold);
+		SkPaint paint;
+		if ( typeface )
+		{
+			paint.setTypeface(typeface);
+		}
+		paint.setAntiAlias(true);
+		paint.setTextSize(80);
+		paint.setDither(true);
+		paint.setLinearText(true);
+		paint.setLCDRenderText(true);
+		//paint.setVerticalText(true);
+		paint.setDevKernText(true);
+		paint.setFilterLevel(SkPaint::kHigh_FilterLevel);
+		//paint.setTextSkewX(1);
+		paint.setStyle(SkPaint::kStroke_Style);
+		//canvas->drawText("abcd", 4, 200, 300, paint);
+		SkPoint pt[2];
+		pt[0] = SkPoint::Make(200, 300);
+		pt[1] = SkPoint::Make(300, 300);
+		canvas->drawPosText("ABCD", 4, pt, paint);
+		//canvas->
+		
+	}
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestShadowOffset(canvas);
+		TestBaseLine(canvas);
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);
