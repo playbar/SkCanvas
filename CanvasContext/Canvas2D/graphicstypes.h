@@ -97,7 +97,14 @@ enum TextBaseline
 	HangingTextBaseline 
 };
 
-enum TextAlign { StartTextAlign, EndTextAlign, LeftTextAlign, CenterTextAlign, RightTextAlign };
+enum TextAlign 
+{
+	StartTextAlign = SkPaint::kLeft_Align,
+	EndTextAlign  = SkPaint::kRight_Align, 
+	LeftTextAlign = SkPaint::kLeft_Align,
+	CenterTextAlign = SkPaint::kCenter_Align,
+	RightTextAlign =SkPaint::kRight_Align 
+};
 
 enum TextDrawingMode {
     TextModeFill      = 1 << 0,

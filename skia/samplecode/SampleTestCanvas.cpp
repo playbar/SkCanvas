@@ -387,6 +387,23 @@ protected:
 		ctx->moveTo(150, 20);
 		ctx->lineTo(150, 170);
 		ctx->stroke();
+
+		ctx->setFont("15px Arial");
+		ctx->setTextAlign("start");
+		ctx->fillText("textAlign=start", 150, 60);
+
+		ctx->setTextAlign("end");
+		ctx->fillText("testAlign=end", 150, 80);
+
+		ctx->setTextAlign("left");
+		ctx->fillText("testAlign=left", 150, 100);
+
+		ctx->setTextAlign("center");
+		ctx->fillText("testAlign=center", 150, 120);
+
+		ctx->setTextAlign("right");
+		ctx->fillText("testAlign=right", 150, 140);
+
 	}
 
     virtual void onDrawContent(SkCanvas* canvas) {

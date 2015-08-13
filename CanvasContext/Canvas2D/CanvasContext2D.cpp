@@ -666,6 +666,31 @@ void CanvasContext2D::setFont(const std::string&)
 	return;
 }
 
+void CanvasContext2D::setTextAlign(const std::string& s)
+{
+	TextAlign align;
+	if ( ! parseTextAlign( s, align ))
+	{
+		return;
+	}
+	if ( state().m_textAlign == align )
+	{
+		return;
+	}
+	modifiableState().m_textAlign = align;
+}
+
+void CanvasContext2D::fillText(const char *text, float x, float y)
+{
+	const FontDescription &fontDes = state().m_FontDescription;
+	m_fillPaint.setTextSize(fontDes.specifiedSize());
+	m_fillPaint.setTextAlign((SkPaint::Align)(state().m_textAlign));
+	//m_strokePaint.setVerticalText(true);
+	//m_strokePaint.setUnderlineText(true);
+	int ilen = strlen(text);
+	m_pCanvas->drawText(text, ilen, x, y, m_fillPaint);
+}
+
 void CanvasContext2D::strokeText(const char* text, float x, float y)
 {
 	const FontDescription &fontDes = state().m_FontDescription;

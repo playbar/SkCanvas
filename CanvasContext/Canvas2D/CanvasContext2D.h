@@ -173,12 +173,12 @@ public:
 	void setFont(const std::string&);
 
 	//String textAlign() const;
-	//void setTextAlign(const String&);
+	void setTextAlign(const std::string&);
 
 	//String textBaseline() const;
 	//void setTextBaseline(const String&);
 
-	//void fillText(const String& text, float x, float y);
+	void fillText(const char* text, float x, float y);
 	//void fillText(const String& text, float x, float y, float maxWidth);
 	void strokeText( const char* text, float x, float y);
 	//void strokeText(const String& text, float x, float y, float maxWidth);
