@@ -15,8 +15,8 @@
 
 class SK_API SkLayerDrawLooper : public SkDrawLooper {
 public:
-    SK_DECLARE_INST_COUNT(SkLayerDrawLooper)
-
+	SK_DECLARE_INST_COUNT(SkLayerDrawLooper);
+	SkLayerDrawLooper();
     virtual ~SkLayerDrawLooper();
 
     /**
@@ -86,8 +86,6 @@ public:
     static SkFlattenable* CreateProc(SkReadBuffer& buffer);
 
 protected:
-    SkLayerDrawLooper();
-
     virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
 
 private:

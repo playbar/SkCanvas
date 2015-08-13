@@ -247,8 +247,8 @@ private:
 
 	//void applyLineDash();
 	//void setShadow(const FloatSize& offset, float blur, RGBA32 color);
-	//void applyShadow();
-	//bool shouldDrawShadows() const;
+	void applyShadow();
+	bool shouldDrawShadows() const;
 
 	//bool computeDirtyRect(const FloatRect& localBounds, FloatRect*);
 	//bool computeDirtyRect(const FloatRect& localBounds, const FloatRect& transformedClipBounds, FloatRect*);

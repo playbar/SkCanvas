@@ -4,6 +4,7 @@
 #include "CanvasGradient.h"
 #include "CanvasPattern.h"
 #include "SkColorPriv.h"
+#include "DrawLooperBuilder.h"
 
 static const int defaultFontSize = 30;
 static const char defaultFontFamily[] = "sans-serif";
@@ -246,18 +247,37 @@ float CanvasContext2D::shadowBlur() const
 	return 0.0f;
 }
 
-void CanvasContext2D::setShadowBlur(float)
+void CanvasContext2D::setShadowBlur(float blur)
 {
-
+	if ( !(std::isfinite( blur) && blur >= 0 ))
+	{
+		return;
+	}
+	if ( state().m_shadowBlur == blur )
+	{
+		return;
+	}
+	modifiableState().m_shadowBlur = blur;
+	applyShadow();
 }
 
 std::string CanvasContext2D::shadowColor() const
 {
 	return "";
 }
-void CanvasContext2D::setShadowColor(const std::string&)
+void CanvasContext2D::setShadowColor(const std::string& color )
 {
-
+	RGBA32 rgba;
+	if (!parseColorOrCurrentColor(rgba, color))
+	{
+		return;
+	}
+	if ( state().m_shadowColor == rgba )
+	{
+		return;
+	}
+	modifiableState().m_shadowColor = rgba;
+	applyShadow();
 }
 
 float CanvasContext2D::globalAlpha() const
@@ -292,11 +312,21 @@ void CanvasContext2D::setGlobalAlpha(float alpha)
 
 std::string CanvasContext2D::globalCompositeOperation() const
 {
-	return "";
+	return compositeOperatorName(state().m_globalComposite, state().m_globalBlend);
 }
-void CanvasContext2D::setGlobalCompositeOperation(const std::string&)
+void CanvasContext2D::setGlobalCompositeOperation(const std::string&operation)
 {
-
+	CompositeOperator op = CompositeSourceOver;
+	WebBlendMode blendMode =WebBlendModeNormal;
+	if (!parseCompositeAndBlendOperator(operation, op, blendMode))
+		return;
+	if ((state().m_globalComposite == op) && (state().m_globalBlend == blendMode))
+		return;
+	modifiableState().m_globalComposite = op;
+	modifiableState().m_globalBlend = blendMode;
+	RefPtr<SkXfermode>xferMode = WebCoreCompositeToSkiaComposite(op, blendMode);
+	m_strokePaint.setXfermode(xferMode.get());
+	m_fillPaint.setXfermode(xferMode.get());
 }
 
 void CanvasContext2D::save()
@@ -806,6 +836,30 @@ SkColor CanvasContext2D::applyAlpha(SkColor c) const
 {
 	int a = SkAlphaMul(SkColorGetA(c), state().m_globalAlpha);
 	return (c & 0x00FFFFFF) | (a << 24);
+}
+
+void CanvasContext2D::applyShadow()
+{
+	if (shouldDrawShadows())
+	{
+		DrawLooperBuilder drawLooper;
+		drawLooper.addShadow(state().m_shadowOffset, state().m_shadowBlur, state().m_shadowColor,
+			DrawLooperBuilder::ShadowIgnoresTransforms, DrawLooperBuilder::ShadowRespectsAlpha);
+		drawLooper.addUnmodifiedContent();
+		RefPtr<SkDrawLooper> looper = drawLooper.detachDrawLooper();
+		m_strokePaint.setLooper(looper.get());
+		m_fillPaint.setLooper(looper.get());
+	}
+	else
+	{
+		m_strokePaint.setLooper(0);
+		m_fillPaint.setLooper(0);
+	}
+}
+
+bool CanvasContext2D::shouldDrawShadows() const
+{
+	return alphaChannel(state().m_shadowColor) && (state().m_shadowBlur || !state().m_shadowOffset.isZero());
 }
 
 CanvasContext2D::State::State()

@@ -448,8 +448,28 @@ protected:
 		ctx->fillRect(80, 80, 75, 50);
 	}
 
+	void TestGlobalCompositeOperation( SkCanvas *canvas )
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->setFillColor("red");
+		ctx->fillRect(20, 20, 75, 50);
+		ctx->setGlobalCompositeOperation("destination-over");
+		ctx->setFillColor("blue");
+		ctx->fillRect(50, 50, 75, 50);
+
+	}
+
+	void TestShadowColor(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->setShadowBlur(20);
+		ctx->setShadowColor("black");
+		ctx->setFillColor("blue");
+		ctx->fillRect(20, 20, 150, 100);
+	}
+
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestGlobalAlpha(canvas);
+		TestShadowColor(canvas);
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);

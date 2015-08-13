@@ -174,6 +174,9 @@
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\FontDescription.h">
       <Filter>CanvasContext\Canvas2D</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\DrawLooperBuilder.h">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\pipe\utils\SamplePipeControllers.cpp">
@@ -387,6 +390,9 @@
       <Filter>CanvasContext\geometry</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\FontDescription.cpp">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\DrawLooperBuilder.cpp">
       <Filter>CanvasContext\Canvas2D</Filter>
     </ClCompile>
   </ItemGroup>
