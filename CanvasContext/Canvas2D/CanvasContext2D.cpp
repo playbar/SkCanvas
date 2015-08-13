@@ -329,11 +329,27 @@ void CanvasContext2D::transform(float m11, float m12, float m21, float m22, floa
 }
 void CanvasContext2D::setTransform(float m11, float m12, float m21, float m22, float dx, float dy)
 {
+	if (!std::isfinite(m11) | !std::isfinite(m21) | !std::isfinite(dx) | !std::isfinite(m12) | !std::isfinite(m22) | !std::isfinite(dy))
+		return;
 
+	resetTransform();
+	transform(m11, m12, m21, m22, dx, dy);
+	return;
 }
 void CanvasContext2D::resetTransform()
 {
-
+	AffineTransform ctm = state().m_transform;
+	bool invertribleCTM = state().m_invertibleCTM;
+	if (ctm.isIdentity())
+	{
+		return;
+	}
+	modifiableState().m_transform.makeIdentity();
+	m_pCanvas->setMatrix(affineTransformToSkMatrix(AffineTransform()));
+	if (invertribleCTM)
+	{
+		m_path.transform(affineTransformToSkMatrix(ctm));
+	}
 }
 
 void CanvasContext2D::setStrokeColor(const std::string& color)
