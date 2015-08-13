@@ -430,6 +430,8 @@ protected:
 		ctx->setTextBaseline("hanging");
 		ctx->fillText("Hanging", 290, 100);
 
+		float re = ctx->measureText("test");
+		re += 0;
 
 	}
 

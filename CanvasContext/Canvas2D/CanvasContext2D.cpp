@@ -716,6 +716,15 @@ void CanvasContext2D::strokeText(const char* text, float x, float y)
 	m_pCanvas->drawText(text, ilen, x, y + getFontBaseline(m_fillPaint), m_strokePaint);
 }
 
+float CanvasContext2D::measureText(const std::string& text)
+{
+	const FontDescription &fontDes = state().m_FontDescription;
+	SkPaint paint;
+	paint.setTextSize(fontDes.specifiedSize());
+	float re = paint.measureText(text.c_str(), text.length());
+	return re;
+}
+
 int CanvasContext2D::getFontBaseline(const SkPaint& paint) const
 {
 	SkPaint::FontMetrics fontmet;

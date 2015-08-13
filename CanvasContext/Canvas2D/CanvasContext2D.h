@@ -182,7 +182,7 @@ public:
 	//void fillText(const String& text, float x, float y, float maxWidth);
 	void strokeText( const char* text, float x, float y);
 	//void strokeText(const String& text, float x, float y, float maxWidth);
-	//PassRefPtr<TextMetrics> measureText(const String& text);
+	float measureText(const std::string& text);
 
 	LineCap getLineCap() const { return state().m_lineCap; }
 	LineJoin getLineJoin() const { return state().m_lineJoin; }
