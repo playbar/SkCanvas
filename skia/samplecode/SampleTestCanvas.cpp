@@ -16,6 +16,9 @@
 #include "SkiaUtils.h"
 #include "CanvasGradient.h"
 #include "SkTypeface.h"
+#include "SkStream.h"
+#include "SkImageDecoder.h"
+#include "SkForceLinking.h"
 
 using namespace WebCore;
 using namespace WTF;
@@ -24,6 +27,11 @@ using namespace WTF;
 // fractional, and the impl computes the center and radii, and uses them to
 // reconstruct the edges of the circle.
 // see bug# 1504910
+
+//static SkImageDecoder_DecodeReg gDReg(sk_libpng_dfactory);
+//static SkImageDecoder_FormatReg gFormatReg(get_format_png);
+//static SkImageEncoder_EncodeReg gEReg(sk_libpng_efactory);
+
 static void test_circlebounds(SkCanvas*) {
     SkRect r = { 1.39999998f, 1, 21.3999996f, 21 };
     SkPath p;
@@ -37,10 +45,16 @@ public:
     static const SkScalar ANIM_DY;
     static const SkScalar ANIM_RAD;
     SkScalar fDX, fDY, fRAD;
+	SkBitmap fbmp;
 
     CanvasTestView() {
+		SkForceLinking(false);
         fDX = fDY = fRAD = 0;
         fN = 3;
+		SkFILEStream stream("c:/test_ba.png");
+		SkImageDecoder * code = SkImageDecoder::Factory(&stream);
+		code->decode(&stream, &fbmp, SkColorType::kRGBA_8888_SkColorType, SkImageDecoder::kDecodePixels_Mode);
+
     }
 
 protected:
@@ -523,14 +537,27 @@ protected:
 		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
 		PassRefPtr<CanvasGradient> grd = ctx->createRadialGradient(75, 50, 5, 90, 60, 100);
 		grd->addColorStop(0, "red");
-		grd->addColorStop(1, "green");
+		grd->addColorStop(1, "white");
 		RefPtr<CanvasStyle> style = CanvasStyle::createFromGradient(grd);
 		ctx->setFillStyle(style);
 		ctx->fillRect(10, 10, 150, 100);
 	}
 
+
+	void TestDrawImage(SkCanvas *canvas)
+	{
+		//PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+
+		SkPaint paint;
+		paint.setColor(0xFF00ff00);
+		int fx = rand();
+		int fy = rand();
+		canvas->drawBitmap(fbmp, fx % 500, fy % 300, &paint);
+		this->inval(NULL);
+	}
+
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestCreateRadialGradient(canvas);
+		TestDrawImage(canvas);
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);

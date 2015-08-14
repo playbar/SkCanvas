@@ -20,19 +20,8 @@ template <typename T> class SkTRegistry : SkNoncopyable {
 public:
     typedef T Factory;
 
-    explicit SkTRegistry(T fact) : fFact(fact) {
-#ifdef SK_BUILD_FOR_ANDROID
-        // work-around for double-initialization bug
-        {
-            SkTRegistry* reg = gHead;
-            while (reg) {
-                if (reg == this) {
-                    return;
-                }
-                reg = reg->fChain;
-            }
-        }
-#endif
+    explicit SkTRegistry(T fact) : fFact(fact) 
+	{
         fChain = gHead;
         gHead  = this;
     }

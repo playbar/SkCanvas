@@ -1267,7 +1267,7 @@ static bool is_png(SkStreamRewindable* stream) {
 }
 
 SkImageDecoder* sk_libpng_dfactory(SkStreamRewindable* stream) {
-    //if (is_png(stream))
+    if (is_png(stream))
 	{
         return SkNEW(SkPNGImageDecoder);
     }

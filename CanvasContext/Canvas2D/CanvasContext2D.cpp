@@ -76,7 +76,7 @@ CanvasContext2D::CanvasContext2D(SkCanvas*canvas )
 
 CanvasContext2D::~CanvasContext2D()
 {
-
+	m_path.reset();
 }
 
 CanvasStyle *CanvasContext2D::strokeStyle() const
