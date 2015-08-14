@@ -503,10 +503,22 @@ protected:
 		pt[1] = SkPoint::Make(300, 300);
 		canvas->drawPosText("ABCD", 4, pt, paint);
 		//canvas->
-		
+	}
+
+	void TestLineJoin(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		ctx->beginPath();
+		ctx->setLineWidth(10);
+		ctx->setLineJoin("round");
+		ctx->setStrokeColor("red");
+		ctx->moveTo(20, 20);
+		ctx->lineTo(100, 50);
+		ctx->lineTo(20, 100);
+		ctx->stroke();
 	}
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestBaseLine(canvas);
+		TestLineJoin(canvas);
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);

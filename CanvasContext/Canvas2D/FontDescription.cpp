@@ -48,8 +48,6 @@ FontWeight FontDescription::lighterWeight(void) const
 
         case FontWeight600:
         case FontWeight700:
-            return FontWeight400;
-
         case FontWeight800:
         case FontWeight900:
             return FontWeight700;

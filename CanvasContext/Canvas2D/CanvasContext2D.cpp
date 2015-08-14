@@ -775,8 +775,21 @@ void CanvasContext2D::fillText(const char *text, float x, float y)
 {
 	const FontDescription &fontDes = state().m_FontDescription;
 	
-	SkTypeface *face = SkTypeface::RefDefault();
+	int style = 0;
+	if (fontDes.style() == FontStyleItalic )
+	{
+		style |= SkTypeface::Style::kItalic;
+	}
+	if (fontDes.lighterWeight() != FontWeightNormal)
+	{
+		style |= SkTypeface::Style::kBold;
+	}
 
+	SkTypeface *face = SkTypeface::RefDefault((SkTypeface::Style)style);
+	if ( face )
+	{
+		m_fillPaint.setTypeface(face);
+	}
 	m_fillPaint.setTextSize(fontDes.specifiedSize());
 	m_fillPaint.setTextAlign((SkPaint::Align)(state().m_textAlign));
 	
