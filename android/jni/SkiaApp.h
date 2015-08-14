@@ -47,6 +47,7 @@ public:
 	void TestAddColorStop( SkCanvas *canvas );
 	void TestArcTo( SkCanvas *canvas );
 	void TestText( SkCanvas *canvas );
+	void TestGetImageData( SkCanvas *canvas);
 	void mainLoop();
 
 	void windowChanged(int width,int height);

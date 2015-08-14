@@ -569,14 +569,38 @@ void SkiaApp::TestText( SkCanvas *canvas )
 	paint.setStyle( SkPaint::kStroke_Style );
 	paint.setStrokeWidth( 2 );
 	canvas->drawLine( 10, 10, 100, 10, paint );
+	paint.setColor( 0xffff0000);
 	canvas->drawText( "test", 4, 150, 60, paint );
+}
+
+void SkiaApp::TestGetImageData( SkCanvas *canvas)
+{
+	if(canvas){
+		SkPaint paint;
+		paint.setStrokeWidth( 2);
+		paint.setStyle( SkPaint::kStroke_Style );
+		paint.setColor( 0xFF00FF00 );
+		SkPath path;
+		path.moveTo( 10, 10 );
+		path.lineTo( 50, 50 );
+		canvas->drawBitmap(bitmap, 10, 10,&paint);
+		canvas->drawPath( path, paint );
+
+		SkBitmap dstBmp;
+		SkImageInfo info = SkImageInfo::MakeN32Premul( 64, 64  );
+		dstBmp.allocPixels( info );
+		canvas->readPixels(&dstBmp, 10, 10);
+		canvas->writePixels( dstBmp, 100, 200 );
+
+	}
 }
 
 void SkiaApp::mainLoop(){
 	//canvas = createCanvas();
 	canvas->drawColor(0xffffffff);
 	//TestArc( canvas );
-	TestText( canvas );
+	//TestText( canvas );
+	TestGetImageData( canvas );
 	fCurContext->flush();
 }
 
