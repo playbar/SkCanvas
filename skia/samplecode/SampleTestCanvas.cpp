@@ -19,6 +19,7 @@
 #include "SkStream.h"
 #include "SkImageDecoder.h"
 #include "SkForceLinking.h"
+#include "BitmapImage.h"
 
 using namespace WebCore;
 using namespace WTF;
@@ -544,7 +545,7 @@ protected:
 	}
 
 
-	void TestDrawImage(SkCanvas *canvas)
+	void TestDrawImage1(SkCanvas *canvas)
 	{
 		//PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
 
@@ -569,6 +570,14 @@ protected:
 		canvas->writePixels(destBitmap, 400, 200);
 		//canvas->drawBitmap(destBitmap, 400, 200, &paint);
 		//this->inval(NULL);
+	}
+
+	void TestDrawImage(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		RefPtr<BitmapImage> img = BitmapImage::create();
+		img->src("c:/test_ba.png");
+		ctx->drawImage(img.get(), 100, 10);
 	}
 
     virtual void onDrawContent(SkCanvas* canvas) {

@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\BitmapImage.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\CanvasContext2D.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\CanvasGradient.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\CanvasPattern.h" />
@@ -199,6 +200,7 @@
     <ClInclude Include="..\..\third_party\externals\zlib\zutil.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\BitmapImage.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CanvasContext2D.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CanvasGradient.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\CanvasPattern.cpp" />

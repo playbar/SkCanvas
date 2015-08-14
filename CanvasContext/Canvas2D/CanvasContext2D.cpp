@@ -6,6 +6,7 @@
 #include "SkColorPriv.h"
 #include "DrawLooperBuilder.h"
 #include "SkTypeface.h"
+#include "BitmapImage.h"
 
 static const int defaultFontSize = 30;
 static const char defaultFontFamily[] = "sans-serif";
@@ -727,6 +728,11 @@ void CanvasContext2D::strokeRect(float x, float y, float width, float height)
 {
 	SkRect r = SkRect::MakeXYWH(x, y, width, height);
 	m_pCanvas->drawRect(r, m_strokePaint);
+}
+
+void CanvasContext2D::drawImage(BitmapImage* image, float x, float y)
+{
+	m_pCanvas->drawBitmap(image->bitmap(), x, y, NULL);
 }
 
 PassRefPtr<CanvasGradient> CanvasContext2D::createLinearGradient(float x0, float y0, float x1, float y1)

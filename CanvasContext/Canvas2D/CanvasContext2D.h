@@ -13,6 +13,7 @@
 #include "FontDescription.h"
 
 using namespace WebCore;
+class BitmapImage;
 
 class CanvasContext2D
 {
@@ -143,7 +144,7 @@ public:
 
 	//void clearShadow();
 
-	//void drawImage(Image*, float x, float y);
+	void drawImage(BitmapImage*, float x, float y);
 	//void drawImage(CanvasImageSource*, float x, float y, float width, float height);
 	//void drawImage(CanvasImageSource*, float sx, float sy, float sw, float sh, float dx, float dy, float dw, float dh);
 
