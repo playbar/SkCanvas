@@ -592,8 +592,8 @@ protected:
 			data->data()[i + 2] = 255;
 			data->data()[i + 3] = 255;
 		}
-		ctx->putImageData(data.get(), 10, 10);
-		this->inval(NULL);
+		ctx->putImageData(data.get(), 100, 10);
+		//this->inval(NULL);
 	}
 
 	void TestCreatePattern(SkCanvas *canvas)
@@ -605,7 +605,18 @@ protected:
 		ctx->rect(0, 0, 800, 600);
 		RefPtr<CanvasStyle> style = CanvasStyle::createFromPattern(pattern);
 		ctx->setFillStyle(style);
+		//////////////////////////////////////////////////////////////////////////
+		ctx->setShadowBlur(10);
+		ctx->setShadowOffsetX(20);
+		//ctx->setShadowOffsetY(20);
+		ctx->setShadowColor("#00ff00");
 		ctx->fill();
+		ctx->save();
+		ctx->beginPath();
+		ctx->moveTo(100, 100);
+		ctx->lineTo(200, 200);
+		ctx->stroke();
+		ctx->restore();
 	}
 
     virtual void onDrawContent(SkCanvas* canvas) {

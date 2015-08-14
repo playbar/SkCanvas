@@ -352,10 +352,11 @@ void CanvasContext2D::setGlobalCompositeOperation(const std::string&operation)
 
 void CanvasContext2D::save()
 {
+	m_pCanvas->save();
 }
 void CanvasContext2D::restore()
 {
-
+	m_pCanvas->restore();
 }
 
 
@@ -685,7 +686,11 @@ void CanvasContext2D::fill(const std::string& winding)
 
 void CanvasContext2D::stroke()
 {
-	m_path.moveTo(-10, -10);
+	//m_path.moveTo(-10, -10);
+	if (m_path.isEmpty())
+	{
+		return;
+	}
 	m_pCanvas->drawPath(m_path, m_strokePaint);
 }
 
@@ -785,6 +790,11 @@ void CanvasContext2D::putImageData(PassRefPtr<ImageData> data , float dx, float 
 	m_pCanvas->writePixels(destBitmap, dx, dy);
 	//m_pCanvas->writePixels(info, data->data(), data->length(), dx, dy);
 	return;
+}
+
+void CanvasContext2D::reset()
+{
+
 }
 
 void CanvasContext2D::setFont(const std::string& newFont)
