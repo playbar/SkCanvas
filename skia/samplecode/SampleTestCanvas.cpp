@@ -550,10 +550,25 @@ protected:
 
 		SkPaint paint;
 		paint.setColor(0xFF00ff00);
-		int fx = rand();
-		int fy = rand();
-		canvas->drawBitmap(fbmp, fx % 500, fy % 300, &paint);
-		this->inval(NULL);
+		paint.setStrokeWidth(2);
+		paint.setStyle(SkPaint::kStroke_Style);
+
+		//int fx = 10;
+		//int fy = 10;
+		SkPath path;
+		path.moveTo(10, 10);
+		path.lineTo(50, 50);
+		canvas->drawBitmap(fbmp, 10, 10, &paint);
+		canvas->drawPath(path, paint);
+
+		SkBitmap destBitmap;
+		SkImageInfo info = SkImageInfo::MakeN32Premul( 128, 128 );
+
+		destBitmap.allocPixels(info);
+		canvas->readPixels(&destBitmap, 10, 10);
+		canvas->writePixels(destBitmap, 400, 200);
+		//canvas->drawBitmap(destBitmap, 400, 200, &paint);
+		//this->inval(NULL);
 	}
 
     virtual void onDrawContent(SkCanvas* canvas) {
