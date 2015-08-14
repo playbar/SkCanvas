@@ -517,8 +517,20 @@ protected:
 		ctx->lineTo(20, 100);
 		ctx->stroke();
 	}
+
+	void TestCreateRadialGradient(SkCanvas *canvas )
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		PassRefPtr<CanvasGradient> grd = ctx->createRadialGradient(75, 50, 5, 90, 60, 100);
+		grd->addColorStop(0, "red");
+		grd->addColorStop(1, "green");
+		RefPtr<CanvasStyle> style = CanvasStyle::createFromGradient(grd);
+		ctx->setFillStyle(style);
+		ctx->fillRect(10, 10, 150, 100);
+	}
+
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestLineJoin(canvas);
+		TestCreateRadialGradient(canvas);
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);

@@ -735,6 +735,12 @@ PassRefPtr<CanvasGradient> CanvasContext2D::createLinearGradient(float x0, float
 	return gradient.release();
 }
 
+PassRefPtr<CanvasGradient> CanvasContext2D::createRadialGradient(float x0, float y0, float r0, float x1, float y1, float r1)
+{
+	RefPtr<CanvasGradient> gradient = CanvasGradient::create(SkPoint::Make(x0, y0), r0, SkPoint::Make(x1, y1), r1);
+	return gradient;
+}
+
 void CanvasContext2D::setFont(const std::string& newFont)
 {
 	FontDescription &fontDes = modifiableState().m_FontDescription;
