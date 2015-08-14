@@ -580,8 +580,22 @@ protected:
 		ctx->drawImage(img.get(), 100, 10);
 	}
 
+	void TestCreateImageData(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		RefPtr<ImageData> data = ctx->createImageData(100, 100);
+		for (int i = 0; i < data->length(); i += 4 )
+		{
+			data->data()[i + 0] = 0;
+			data->data()[i + 1] = 0;
+			data->data()[i + 2] = 255;
+			data->data()[i + 3] = 255;
+		}
+		ctx->putImageData(data.get(), 10, 10);
+		
+	}
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestDrawImage(canvas);
+		TestCreateImageData(canvas);
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);

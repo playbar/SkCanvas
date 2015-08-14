@@ -189,6 +189,9 @@
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\BitmapImage.h">
       <Filter>CanvasContext\Canvas2D</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\ImageData.h">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\pipe\utils\SamplePipeControllers.cpp">
@@ -414,6 +417,9 @@
       <Filter>CanvasContext\Canvas2D</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\BitmapImage.cpp">
+      <Filter>CanvasContext\Canvas2D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\ImageData.cpp">
       <Filter>CanvasContext\Canvas2D</Filter>
     </ClCompile>
   </ItemGroup>

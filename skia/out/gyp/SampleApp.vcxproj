@@ -164,6 +164,7 @@
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Gradient.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\graphicstypes.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\HashTools.h" />
+    <ClInclude Include="..\..\..\CanvasContext\Canvas2D\ImageData.h" />
     <ClInclude Include="..\..\..\CanvasContext\Canvas2D\Pattern.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\AffineTransform.h" />
     <ClInclude Include="..\..\..\CanvasContext\utils\ASCIICType.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\FontDescription.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Gradient.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\GraphicsTypes.cpp" />
+    <ClCompile Include="..\..\..\CanvasContext\Canvas2D\ImageData.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\Canvas2D\Pattern.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatPoint.cpp" />
     <ClCompile Include="..\..\..\CanvasContext\geometry\FloatPoint3D.cpp" />

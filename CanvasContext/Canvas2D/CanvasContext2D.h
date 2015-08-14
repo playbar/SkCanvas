@@ -11,6 +11,7 @@
 #include "CanvasStyle.h"
 #include "PassOwnPtr.h"
 #include "FontDescription.h"
+#include "ImageData.h"
 
 using namespace WebCore;
 class BitmapImage;
@@ -157,9 +158,9 @@ public:
 	//PassRefPtr<CanvasPattern> createPattern(CanvasImageSource*, const String& repetitionType);
 
 	//PassRefPtr<ImageData> createImageData(PassRefPtr<ImageData>) const;
-	//PassRefPtr<ImageData> createImageData(float width, float height) const;
-	//PassRefPtr<ImageData> getImageData(float sx, float sy, float sw, float sh) const;
-	//void putImageData(ImageData*, float dx, float dy);
+	PassRefPtr<ImageData> createImageData(float width, float height) const;
+	PassRefPtr<ImageData> getImageData(float sx, float sy, float sw, float sh) const;
+	void putImageData(PassRefPtr<ImageData>, float dx, float dy);
 	//void putImageData(ImageData*, float dx, float dy, float dirtyX, float dirtyY, float dirtyWidth, float dirtyHeight);
 
 	//// Slated for deprecation:

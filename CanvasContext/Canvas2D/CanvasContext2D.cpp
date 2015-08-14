@@ -7,6 +7,7 @@
 #include "DrawLooperBuilder.h"
 #include "SkTypeface.h"
 #include "BitmapImage.h"
+#include "ImageData.h"
 
 static const int defaultFontSize = 30;
 static const char defaultFontFamily[] = "sans-serif";
@@ -745,6 +746,37 @@ PassRefPtr<CanvasGradient> CanvasContext2D::createRadialGradient(float x0, float
 {
 	RefPtr<CanvasGradient> gradient = CanvasGradient::create(SkPoint::Make(x0, y0), r0, SkPoint::Make(x1, y1), r1);
 	return gradient;
+}
+
+PassRefPtr<ImageData> CanvasContext2D::createImageData(float width, float height) const
+{
+	RefPtr<ImageData> data = ImageData::create(width, height );
+	data->zeroFill();
+	return data.release();
+
+}
+
+PassRefPtr<ImageData> CanvasContext2D::getImageData(float sx, float sy, float sw, float sh) const
+{
+	SkBitmap destBitmap;
+	SkImageInfo info = SkImageInfo::MakeN32Premul(sw, sh);
+	destBitmap.allocPixels(info);
+	m_pCanvas->readPixels(&destBitmap, sx, sy);
+
+	RefPtr<ImageData> data = ImageData::create(sw, sh);
+	memcpy(data->data(), destBitmap.getPixels(), sw * sh *4);
+	return data.release();
+}
+
+void CanvasContext2D::putImageData(PassRefPtr<ImageData> data , float dx, float dy)
+{
+	SkBitmap destBitmap;
+	SkImageInfo info = SkImageInfo::MakeN32Premul(data->width(), data->height());
+	destBitmap.allocPixels(info);
+	destBitmap.setPixels(data->data());
+	m_pCanvas->writePixels(destBitmap, dx, dy);
+	//m_pCanvas->writePixels(info, data->data(), data->length(), dx, dy);
+	return;
 }
 
 void CanvasContext2D::setFont(const std::string& newFont)
