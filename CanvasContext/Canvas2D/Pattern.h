@@ -31,7 +31,7 @@
 
 #include "SkShader.h"
 //#include "platform/graphics/image.h"
-#include "SkBitmap.h"
+#include "BitmapImage.h"
 #include "AffineTransform.h"
 
 #include "passrefptr.h"
@@ -44,7 +44,7 @@ class AffineTransform;
 
 class Pattern : public RefCounted<Pattern> {
 public:
-    static PassRefPtr<Pattern> create(PassRefPtr<SkBitmap> tileImage, bool repeatX, bool repeatY)
+	static PassRefPtr<Pattern> create(PassRefPtr<BitmapImage> tileImage, bool repeatX, bool repeatY)
     {
         return adoptRef(new Pattern(tileImage, repeatX, repeatY));
     }
@@ -59,9 +59,9 @@ public:
     bool repeatY() const { return m_repeatY; }
 
 private:
-	Pattern(PassRefPtr<SkBitmap>, bool repeatX, bool repeatY);
+	Pattern(PassRefPtr<BitmapImage>, bool repeatX, bool repeatY);
 
-    RefPtr<SkBitmap> m_tileImage;
+	RefPtr<BitmapImage> m_tileImage;
     bool m_repeatX;
     bool m_repeatY;
     AffineTransform m_patternSpaceTransformation;

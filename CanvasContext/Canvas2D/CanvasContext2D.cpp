@@ -748,6 +748,14 @@ PassRefPtr<CanvasGradient> CanvasContext2D::createRadialGradient(float x0, float
 	return gradient;
 }
 
+PassRefPtr<CanvasPattern> CanvasContext2D::createPattern(PassRefPtr<BitmapImage>image, const std::string& repetitionType)
+{
+	bool repeatX, repeatY;
+	CanvasPattern::parseRepetitionType(repetitionType, repeatX, repeatY);
+	//RefPtr<SkBitmap> bitmap = new SkBitmap(image->bitmap());
+	return CanvasPattern::create(image, repeatX, repeatY, false );
+}
+
 PassRefPtr<ImageData> CanvasContext2D::createImageData(float width, float height) const
 {
 	RefPtr<ImageData> data = ImageData::create(width, height );

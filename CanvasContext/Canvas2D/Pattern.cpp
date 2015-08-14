@@ -35,7 +35,7 @@
 
 namespace WebCore {
 
-Pattern::Pattern(PassRefPtr<SkBitmap> image, bool repeatX, bool repeatY)
+Pattern::Pattern(PassRefPtr<BitmapImage> image, bool repeatX, bool repeatY)
     : m_repeatX(repeatX)
     , m_repeatY(repeatY)
     , m_externalMemoryAllocated(0)
@@ -61,39 +61,32 @@ SkShader* Pattern::shader()
     if (!m_tileImage)
         m_pattern = adoptRef(new SkColorShader(SK_ColorTRANSPARENT));
     else if (m_repeatX && m_repeatY)
-        m_pattern = adoptRef(SkShader::CreateBitmapShader(*m_tileImage.get(), SkShader::kRepeat_TileMode, SkShader::kRepeat_TileMode));
+        m_pattern = adoptRef(SkShader::CreateBitmapShader(m_tileImage->bitmap(), SkShader::kRepeat_TileMode, SkShader::kRepeat_TileMode));
     else {
-        // Skia does not have a "draw the tile only once" option. Clamp_TileMode
-        // repeats the last line of the image after drawing one tile. To avoid
-        // filling the space with arbitrary pixels, this workaround forces the
-        // image to have a line of transparent pixels on the "repeated" edge(s),
-        // thus causing extra space to be transparent filled.
-        SkShader::TileMode tileModeX = m_repeatX ? SkShader::kRepeat_TileMode : SkShader::kClamp_TileMode;
-        SkShader::TileMode tileModeY = m_repeatY ? SkShader::kRepeat_TileMode : SkShader::kClamp_TileMode;
-        //int expandW = m_repeatX ? 0 : 1;
-        //int expandH = m_repeatY ? 0 : 1;
+		SkShader::TileMode tileModeX = m_repeatX ? SkShader::kRepeat_TileMode : SkShader::kClamp_TileMode;
+		SkShader::TileMode tileModeY = m_repeatY ? SkShader::kRepeat_TileMode : SkShader::kClamp_TileMode;
+		int expandW = m_repeatX ? 0 : 1;
+		int expandH = m_repeatY ? 0 : 1;
 
-        // Create a transparent bitmap 1 pixel wider and/or taller than the
-        // original, then copy the orignal into it.
-        // FIXME: Is there a better way to pad (not scale) an image in skia?
-		SkASSERT(false);
-        //SkImageInfo info = m_tileImage->bitmap().info();
-        //info.fWidth += expandW;
-        //info.fHeight += expandH;
-        //// we explicitly require non-opaquness, since we are going to add a transparent strip.
-        //info.fAlphaType = kPremul_SkAlphaType;
+		// Create a transparent bitmap 1 pixel wider and/or taller than the
+		// original, then copy the orignal into it.
+		// FIXME: Is there a better way to pad (not scale) an image in skia?
+		SkImageInfo info = m_tileImage->bitmap().info();
+		info.fWidth += expandW;
+		info.fHeight += expandH;
+		// we explicitly require non-opaquness, since we are going to add a transparent strip.
+		info.fAlphaType = kPremul_SkAlphaType;
 
-        SkBitmap bm2;
-        //bm2.allocPixels(info);
-        bm2.eraseARGB(0x00, 0x00, 0x00, 0x00);
-        SkCanvas canvas(bm2);
-        canvas.drawBitmap(*m_tileImage.get(), 0, 0);
-        bm2.setImmutable();
-		PassRefPtr<SkShader> temp = adoptRef(SkShader::CreateBitmapShader(bm2, tileModeX, tileModeY));
-		m_pattern = temp;
-        // Clamp to int, since that's what the adjust function takes.
-        m_externalMemoryAllocated = static_cast<int>(std::min(static_cast<size_t>(INT_MAX), bm2.getSafeSize()));
-        //v8::Isolate::GetCurrent()->AdjustAmountOfExternalAllocatedMemory(m_externalMemoryAllocated);
+		SkBitmap bm2;
+		bm2.allocPixels(info);
+		bm2.eraseARGB(0x00, 0x00, 0x00, 0x00);
+		SkCanvas canvas(bm2);
+		canvas.drawBitmap(m_tileImage->bitmap(), 0, 0);
+		bm2.setImmutable();
+		m_pattern = adoptRef(SkShader::CreateBitmapShader(bm2, tileModeX, tileModeY));
+
+		// Clamp to int, since that's what the adjust function takes.
+		m_externalMemoryAllocated = static_cast<int>(std::min(static_cast<size_t>(INT_MAX), bm2.getSafeSize()));
     }
     m_pattern->setLocalMatrix(affineTransformToSkMatrix(m_patternSpaceTransformation));
     return m_pattern.get();

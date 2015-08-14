@@ -20,6 +20,7 @@
 #include "SkImageDecoder.h"
 #include "SkForceLinking.h"
 #include "BitmapImage.h"
+#include "CanvasPattern.h"
 
 using namespace WebCore;
 using namespace WTF;
@@ -592,10 +593,23 @@ protected:
 			data->data()[i + 3] = 255;
 		}
 		ctx->putImageData(data.get(), 10, 10);
-		
+		this->inval(NULL);
 	}
+
+	void TestCreatePattern(SkCanvas *canvas)
+	{
+		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
+		RefPtr<BitmapImage> img = BitmapImage::create();
+		img->src("c:/test_ba.png");
+		PassRefPtr<CanvasPattern> pattern = ctx->createPattern(img.get(), "no-repeat");
+		ctx->rect(0, 0, 800, 600);
+		RefPtr<CanvasStyle> style = CanvasStyle::createFromPattern(pattern);
+		ctx->setFillStyle(style);
+		ctx->fill();
+	}
+
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestCreateImageData(canvas);
+		TestCreatePattern(canvas);
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);
