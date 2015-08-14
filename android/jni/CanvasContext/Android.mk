@@ -35,14 +35,20 @@ LOCAL_SRC_FILES	+=  \
 					../../../CanvasContext/geometry/IntRect.cpp \
 					../../../CanvasContext/geometry/LayoutRect.cpp \
 					../../../CanvasContext/geometry/RoundedRect.cpp \
+					../../../CanvasContext/Canvas2D/BitmapImage.cpp \
 					../../../CanvasContext/Canvas2D/CanvasContext2D.cpp \
 					../../../CanvasContext/Canvas2D/CanvasGradient.cpp \
 					../../../CanvasContext/Canvas2D/CanvasPattern.cpp \
 					../../../CanvasContext/Canvas2D/CanvasStyle.cpp \
 					../../../CanvasContext/Canvas2D/Color.cpp \
 					../../../CanvasContext/Canvas2D/ColorData.cpp \
+					../../../CanvasContext/Canvas2D/CSSParserMode.cpp \
+					../../../CanvasContext/Canvas2D/CSSValueKeywords.cpp \
+					../../../CanvasContext/Canvas2D/FontDescription.cpp \
+					../../../CanvasContext/Canvas2D/DrawLooperBuilder.cpp \
 					../../../CanvasContext/Canvas2D/Gradient.cpp \
 					../../../CanvasContext/Canvas2D/GraphicsTypes.cpp \
+					../../../CanvasContext/Canvas2D/ImageData.cpp \
 					../../../CanvasContext/Canvas2D/Pattern.cpp 
 				
 					
