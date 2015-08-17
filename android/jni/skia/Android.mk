@@ -43,6 +43,7 @@ LOCAL_C_INCLUDES := $../../skia/include/core \
 					$../../skia/third_party/etc1 \
 					$../../skia/third_party/ktx \
 					$../../skia/third_party/externals/libpng \
+					$../../skia/third_party/externals/libjpeg \
 					$../../skia/third_party/freetype/include \
 					$../../ \
 					
@@ -300,6 +301,10 @@ LOCAL_SRC_FILES	+=  \
 	../../../skia/src/images/SkImageDecoder_FactoryDefault.cpp \
 	../../../skia/src/images/SkImageDecoder_FactoryRegistrar.cpp \
 	../../../skia/src/images/SkImageDecoder_wbmp.cpp \
+	../../../skia/src/images/SkImageDecoder_libpng.cpp \
+	../../../skia/src/images/SkImageDecoder_libbmp.cpp \
+	../../../skia/src/images/SkImageDecoder_libjpeg.cpp \
+	../../../skia/src/images/SkJpegUtility.cpp \
 	../../../skia/src/images/SkImageEncoder.cpp \
 	../../../skia/src/images/SkImageEncoder_Factory.cpp \
 	../../../skia/src/images/SkImageEncoder_argb.cpp \
