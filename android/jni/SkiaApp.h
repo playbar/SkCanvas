@@ -48,6 +48,8 @@ public:
 	void TestArcTo( SkCanvas *canvas );
 	void TestText( SkCanvas *canvas );
 	void TestGetImageData( SkCanvas *canvas);
+	void TestCreateRadialGradient( SkCanvas *canvas );
+	void TestShadowOffset( SkCanvas *canvas );
 	void mainLoop();
 
 	void windowChanged(int width,int height);
