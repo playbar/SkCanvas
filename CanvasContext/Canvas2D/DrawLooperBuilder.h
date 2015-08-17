@@ -4,7 +4,7 @@
 #include "SkLayerDrawLooper.h"
 #include "Noncopyable.h"
 #include "PassOwnPtr.h"
-#include "PassRefPtr.h"
+#include "passrefptr.h"
 
 class SkDrawLooper;
 

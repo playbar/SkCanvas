@@ -26,6 +26,7 @@
 #include "PassOwnPtr.h"
 #include "SkiaUtils.h"
 #include "CanvasGradient.h"
+#include "SkForceLinking.h"
 
 #include <string>
 #define LOG_TAG "SkiaApp"
@@ -40,6 +41,7 @@ SkiaApp::SkiaApp():
 		fCurContext(NULL),
 		fCurRenderTarget(NULL){
 	// TODO Auto-generated constructor stub
+	SkForceLinking( false );
 
 }
 
