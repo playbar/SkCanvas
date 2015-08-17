@@ -268,10 +268,14 @@ protected:
 	void TestIsPointInPath(SkCanvas *canvas)
 	{
 		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
-		ctx->rect(20, 20, 150, 100);
-		//if ( ctx->isPoint)
-		//{
-		//}
+		ctx->moveTo(20, 20);
+		ctx->lineTo(20, 100);
+		ctx->lineTo(100, 100);
+		ctx->closePath();
+		if (ctx->isPointInPath( 90, 90))
+		{
+			ctx->stroke();
+		}
 		
 	}
 
@@ -620,7 +624,7 @@ protected:
 	}
 
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestCreatePattern(canvas);
+		TestIsPointInPath(canvas);
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);

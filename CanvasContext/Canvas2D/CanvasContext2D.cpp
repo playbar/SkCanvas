@@ -711,7 +711,17 @@ void CanvasContext2D::clip(const std::string& winding)
 
 bool CanvasContext2D::isPointInPath(const float x, const float y, const std::string& winding)
 {
-	return true;
+	FloatPoint point(x, y);
+	AffineTransform ctm = state().m_transform;
+	FloatPoint transformedPoint = ctm.inverse().mapPoint(point);
+	if (!std::isfinite(transformedPoint.x()) || !std::isfinite(transformedPoint.y()))
+		return false;
+	WindRule windRule = RULE_NONZERO;
+	if (!parseWinding(winding, windRule))
+		return false;
+
+	return SkPathContainsPoint(m_path, point, windRule == RULE_NONZERO ? SkPath::kWinding_FillType : SkPath::kEvenOdd_FillType);
+
 }
 
 void CanvasContext2D::clearRect(float x, float y, float width, float height)
