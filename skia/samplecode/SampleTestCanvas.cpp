@@ -608,15 +608,15 @@ protected:
 		//////////////////////////////////////////////////////////////////////////
 		ctx->setShadowBlur(10);
 		ctx->setShadowOffsetX(20);
-		//ctx->setShadowOffsetY(20);
+		ctx->setShadowOffsetY(20);
 		ctx->setShadowColor("#00ff00");
 		ctx->fill();
-		ctx->save();
-		ctx->beginPath();
-		ctx->moveTo(100, 100);
-		ctx->lineTo(200, 200);
-		ctx->stroke();
-		ctx->restore();
+		//ctx->save();
+		//ctx->beginPath();
+		//ctx->moveTo(100, 100);
+		//ctx->lineTo(200, 200);
+		//ctx->stroke();
+		//ctx->restore();
 	}
 
     virtual void onDrawContent(SkCanvas* canvas) {
