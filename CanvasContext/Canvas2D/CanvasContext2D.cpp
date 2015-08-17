@@ -857,7 +857,8 @@ void CanvasContext2D::fillText(const char *text, float x, float y)
 		style |= SkTypeface::Style::kBold;
 	}
 
-	SkTypeface *face = SkTypeface::RefDefault((SkTypeface::Style)style);
+	//SkTypeface *face = SkTypeface::RefDefault((SkTypeface::Style)style);
+	SkTypeface *face = SkTypeface::CreateFromName(fontDes.m_fontName.c_str(), (SkTypeface::Style)style);
 	if ( face )
 	{
 		m_fillPaint.setTypeface(face);

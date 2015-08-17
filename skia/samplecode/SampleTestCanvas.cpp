@@ -350,15 +350,31 @@ protected:
 		ctx->strokeText("Hello", 10, 50);
 	}
 
-	void TestAlign(SkCanvas *canvas)
+	inline std::string Unicode2ASCII(const std::wstring &strUnicode, UINT CodePage = CP_UTF8)
+	{
+		int nByte = WideCharToMultiByte(CodePage, 0, strUnicode.c_str(), -1, 0, 0, 0, 0);
+		if (nByte <= 0)
+		{
+			return "";
+		}
+		std::string strUtf8;
+		strUtf8.resize(nByte + 1, '\0');
+		WideCharToMultiByte(CodePage, 0, strUnicode.c_str(), -1, &strUtf8[0], nByte, 0, 0);
+		return std::string(strUtf8.c_str());
+	}
+
+	void TestDrawZHText(SkCanvas *canvas)
 	{
 		SkPaint paint;
+		SkTypeface* pFace = SkTypeface::CreateFromName("ËÎÌå", SkTypeface::kNormal);
+		paint.setTypeface(pFace);
+		std::string str = Unicode2ASCII(std::wstring(L"1234¹È¸è56789"));
 		paint.setAntiAlias(true);
 		paint.setColor(0xff008000);
-		paint.setTextSize(50);
+		paint.setTextSize(150);
 		paint.setStyle(SkPaint::kStroke_Style);
 		paint.setStrokeWidth(2);
-		canvas->drawText("test", 4, 150, 60, paint);
+		canvas->drawText( str.c_str(), str.length(), 150, 150, paint);
 	}
 
 	void TestRotate(SkCanvas *canvas)
@@ -624,7 +640,7 @@ protected:
 	}
 
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestIsPointInPath(canvas);
+		TestDrawZHText(canvas);
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);
