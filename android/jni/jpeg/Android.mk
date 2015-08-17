@@ -43,10 +43,14 @@ LOCAL_SRC_FILES	+=  ../../../skia/third_party/externals/libjpeg/jcapimin.c \
 					../../../skia/third_party/externals/libjpeg/jdinput.c \
 					../../../skia/third_party/externals/libjpeg/jdmainct.c \
 					../../../skia/third_party/externals/libjpeg/jdmarker.c \
+					../../../skia/third_party/externals/libjpeg/jdmaster.c \
 					../../../skia/third_party/externals/libjpeg/jdmerge.c \
+					../../../skia/third_party/externals/libjpeg/jdphuff.c \
 					../../../skia/third_party/externals/libjpeg/jdpostct.c \
 					../../../skia/third_party/externals/libjpeg/jdsample.c \
 					../../../skia/third_party/externals/libjpeg/jerror.c \
+					../../../skia/third_party/externals/libjpeg/jfdctflt.c \
+					../../../skia/third_party/externals/libjpeg/jfdctfst.c \
 					../../../skia/third_party/externals/libjpeg/jfdctint.c \
 					../../../skia/third_party/externals/libjpeg/jidctflt.c \
 					../../../skia/third_party/externals/libjpeg/jidctfst.c \

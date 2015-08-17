@@ -16,7 +16,7 @@
 #define JPEGLIB_H
 
 /* Begin chromium edits */
-#include "jpeglibmangler.h"
+//#include "jpeglibmangler.h"
 /* End chromium edits */
 
 /*
