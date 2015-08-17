@@ -606,6 +606,17 @@ void SkiaApp::TestCreateRadialGradient( SkCanvas *canvas )
 	RefPtr<CanvasStyle> style = CanvasStyle::createFromGradient( grd );
 	ctx->setFillStyle( style );
 	ctx->fillRect( 10 ,10, 150, 100 );
+}
+
+void SkiaApp::TestShadowOffset( SkCanvas *canvas )
+{
+	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
+	ctx->setShadowBlur( 10 );
+	ctx->setShadowOffsetX( 20 );
+	ctx->setShadowOffsetY( 20 );
+	ctx->setShadowColor( "green");
+	ctx->setFillColor( "blue");
+	ctx->fillRect( 20, 20, 100, 80 );
 
 }
 
@@ -614,7 +625,7 @@ void SkiaApp::mainLoop(){
 	canvas->drawColor(0xffffffff);
 	//TestArc( canvas );
 	//TestText( canvas );
-	TestCreateRadialGradient( canvas );
+	TestShadowOffset( canvas );
 	fCurContext->flush();
 }
 
