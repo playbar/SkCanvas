@@ -50,6 +50,7 @@ public:
 	void TestGetImageData( SkCanvas *canvas);
 	void TestCreateRadialGradient( SkCanvas *canvas );
 	void TestShadowOffset( SkCanvas *canvas );
+	void TestCreatePattern( SkCanvas *canvas );
 	void mainLoop();
 
 	void windowChanged(int width,int height);

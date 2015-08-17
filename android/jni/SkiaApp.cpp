@@ -27,6 +27,8 @@
 #include "SkiaUtils.h"
 #include "CanvasGradient.h"
 #include "SkForceLinking.h"
+#include "BitmapImage.h"
+#include "CanvasPattern.h"
 
 #include <string>
 #define LOG_TAG "SkiaApp"
@@ -622,12 +624,28 @@ void SkiaApp::TestShadowOffset( SkCanvas *canvas )
 
 }
 
+void SkiaApp::TestCreatePattern( SkCanvas *canvas )
+{
+	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
+	RefPtr<BitmapImage> img = BitmapImage::create();
+	img->src( "/sdcard/egret/egret_icon.png" );
+	PassRefPtr<CanvasPattern> pattern = ctx->createPattern( img.get(), "repeat");
+	ctx->rect( 0, 0, 480, 800);
+	RefPtr<CanvasStyle> style = CanvasStyle::createFromPattern( pattern );
+	ctx->setFillStyle( style );
+	ctx->setShadowBlur( 10 );
+	ctx->setShadowOffsetX( 20 );
+	ctx->setShadowColor("#00ff00");
+	ctx->fill();
+
+}
+
 void SkiaApp::mainLoop(){
 	//canvas = createCanvas();
 	canvas->drawColor(0xffffffff);
 	//TestArc( canvas );
 	//TestText( canvas );
-	TestShadowOffset( canvas );
+	TestCreatePattern( canvas );
 	fCurContext->flush();
 }
 
