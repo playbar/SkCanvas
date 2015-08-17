@@ -48,8 +48,6 @@ Pattern::Pattern(PassRefPtr<BitmapImage> image, bool repeatX, bool repeatY)
 
 Pattern::~Pattern()
 {
-    //if (m_externalMemoryAllocated)
-    //    v8::Isolate::GetCurrent()->AdjustAmountOfExternalAllocatedMemory(-m_externalMemoryAllocated);
 }
 
 SkShader* Pattern::shader()

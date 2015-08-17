@@ -601,7 +601,7 @@ protected:
 		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
 		RefPtr<BitmapImage> img = BitmapImage::create();
 		img->src("c:/test_ba.png");
-		PassRefPtr<CanvasPattern> pattern = ctx->createPattern(img.get(), "no-repeat");
+		PassRefPtr<CanvasPattern> pattern = ctx->createPattern(img.get(), "repeat");
 		ctx->rect(0, 0, 800, 600);
 		RefPtr<CanvasStyle> style = CanvasStyle::createFromPattern(pattern);
 		ctx->setFillStyle(style);
