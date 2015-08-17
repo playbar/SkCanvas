@@ -304,6 +304,7 @@ LOCAL_SRC_FILES	+=  \
 	../../../skia/src/images/SkImageDecoder_libpng.cpp \
 	../../../skia/src/images/SkImageDecoder_libbmp.cpp \
 	../../../skia/src/images/SkImageDecoder_libjpeg.cpp \
+	../../../skia/src/images/SkJpegUtility.cpp \
 	../../../skia/src/images/SkImageEncoder.cpp \
 	../../../skia/src/images/SkImageEncoder_Factory.cpp \
 	../../../skia/src/images/SkImageEncoder_argb.cpp \
