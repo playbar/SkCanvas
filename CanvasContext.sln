@@ -58,8 +58,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "views_animated", "skia\out\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xml", "skia\out\gyp\xml.vcxproj", "{C2CDEB62-0274-ECAD-976B-55F6144AF1AC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "skia\third_party\externals\zlib\zlib.vcxproj", "{33B2758B-EFD1-BEB1-80BB-B999B3F1B0D8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -322,18 +320,6 @@ Global
 		{C2CDEB62-0274-ECAD-976B-55F6144AF1AC}.Release|Win32.ActiveCfg = Release|Win32
 		{C2CDEB62-0274-ECAD-976B-55F6144AF1AC}.Release|Win32.Build.0 = Release|Win32
 		{C2CDEB62-0274-ECAD-976B-55F6144AF1AC}.Release|x64.ActiveCfg = Release|Win32
-		{33B2758B-EFD1-BEB1-80BB-B999B3F1B0D8}.Debug|Win32.ActiveCfg = Debug|Win32
-		{33B2758B-EFD1-BEB1-80BB-B999B3F1B0D8}.Debug|Win32.Build.0 = Debug|Win32
-		{33B2758B-EFD1-BEB1-80BB-B999B3F1B0D8}.Debug|x64.ActiveCfg = Debug|x64
-		{33B2758B-EFD1-BEB1-80BB-B999B3F1B0D8}.Debug|x64.Build.0 = Debug|x64
-		{33B2758B-EFD1-BEB1-80BB-B999B3F1B0D8}.Release_Developer|Win32.ActiveCfg = Release|Win32
-		{33B2758B-EFD1-BEB1-80BB-B999B3F1B0D8}.Release_Developer|Win32.Build.0 = Release|Win32
-		{33B2758B-EFD1-BEB1-80BB-B999B3F1B0D8}.Release_Developer|x64.ActiveCfg = Release|x64
-		{33B2758B-EFD1-BEB1-80BB-B999B3F1B0D8}.Release_Developer|x64.Build.0 = Release|x64
-		{33B2758B-EFD1-BEB1-80BB-B999B3F1B0D8}.Release|Win32.ActiveCfg = Release|Win32
-		{33B2758B-EFD1-BEB1-80BB-B999B3F1B0D8}.Release|Win32.Build.0 = Release|Win32
-		{33B2758B-EFD1-BEB1-80BB-B999B3F1B0D8}.Release|x64.ActiveCfg = Release|x64
-		{33B2758B-EFD1-BEB1-80BB-B999B3F1B0D8}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
