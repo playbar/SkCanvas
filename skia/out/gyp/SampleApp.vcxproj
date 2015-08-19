@@ -261,8 +261,6 @@
     <ClCompile Include="..\..\src\utils\debugger\SkDebugCanvas.cpp" />
     <ClCompile Include="..\..\src\utils\debugger\SkDrawCommand.cpp" />
     <ClCompile Include="..\..\src\utils\debugger\SkObjectParser.cpp" />
-    <ClCompile Include="..\..\src\utils\SkLua.cpp" />
-    <ClCompile Include="..\..\src\utils\SkLuaCanvas.cpp" />
     <ClCompile Include="..\..\third_party\externals\libpng\png.c" />
     <ClCompile Include="..\..\third_party\externals\libpng\pngerror.c" />
     <ClCompile Include="..\..\third_party\externals\libpng\pnggccrd.c" />
@@ -354,20 +352,12 @@
       <Project>{f84031d0-8ec1-5549-1a0a-959ddeb5fca9}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="lua.vcxproj">
-      <Project>{ed26e78d-e69f-42b8-6692-2ffaaca81790}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="opts.vcxproj">
       <Project>{97490341-fe9e-12ee-151b-de2928053a7b}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="opts_ssse3.vcxproj">
       <Project>{d0fa47ef-a73d-7564-e2bc-e6666d397303}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="pdf.vcxproj">
-      <Project>{bc74f3aa-2525-a300-1e14-b5eda589f4da}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="ports.vcxproj">

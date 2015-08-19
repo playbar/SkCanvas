@@ -200,12 +200,6 @@
     <ClCompile Include="..\..\src\pipe\utils\SamplePipeControllers.cpp">
       <Filter>src\pipe\utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\utils\SkLuaCanvas.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\utils\SkLua.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\utils\debugger\SkDrawCommand.cpp">
       <Filter>src\utils\debugger</Filter>
     </ClCompile>

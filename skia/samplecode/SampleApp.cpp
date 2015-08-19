@@ -19,8 +19,6 @@
 #include "SkGraphics.h"
 #include "SkImageEncoder.h"
 #include "SkOSFile.h"
-#include "SkPDFDevice.h"
-#include "SkPDFDocument.h"
 #include "SkPaint.h"
 #include "SkPicture.h"
 #include "SkPictureRecorder.h"
@@ -1218,15 +1216,16 @@ void SampleWindow::saveToPdf()
 }
 
 SkCanvas* SampleWindow::beforeChildren(SkCanvas* canvas) {
-    if (fSaveToPdf) {
-        const SkBitmap& bmp = canvas->getDevice()->accessBitmap(false);
-        SkISize size = SkISize::Make(bmp.width(), bmp.height());
-        SkPDFDevice* pdfDevice = new SkPDFDevice(size, size,
-                canvas->getTotalMatrix());
-        fPdfCanvas = new SkCanvas(pdfDevice);
-        pdfDevice->unref();
-        canvas = fPdfCanvas;
-    } else {
+    //if (fSaveToPdf) {
+    //    const SkBitmap& bmp = canvas->getDevice()->accessBitmap(false);
+    //    SkISize size = SkISize::Make(bmp.width(), bmp.height());
+    //    SkPDFDevice* pdfDevice = new SkPDFDevice(size, size,
+    //            canvas->getTotalMatrix());
+    //    fPdfCanvas = new SkCanvas(pdfDevice);
+    //    pdfDevice->unref();
+    //    canvas = fPdfCanvas;
+    //} else 
+	{
             canvas = this->INHERITED::beforeChildren(canvas);
     }
 
@@ -1256,9 +1255,9 @@ void SampleWindow::afterChildren(SkCanvas* orig) {
         }
         SkString name;
         name.printf("%s.pdf", this->getTitle());
-        SkPDFDocument doc;
-        SkPDFDevice* device = static_cast<SkPDFDevice*>(fPdfCanvas->getDevice());
-        doc.appendPage(device);
+        //SkPDFDocument doc;
+        //SkPDFDevice* device = static_cast<SkPDFDevice*>(fPdfCanvas->getDevice());
+        //doc.appendPage(device);
 #ifdef SK_BUILD_FOR_ANDROID
         name.prepend("/sdcard/");
 #endif
@@ -1269,11 +1268,11 @@ void SampleWindow::afterChildren(SkCanvas* orig) {
         fPDFData = mstream.copyToData();
 #endif
         SkFILEWStream stream(name.c_str());
-        if (stream.isValid()) {
-            doc.emitPDF(&stream);
-            const char* desc = "File saved from Skia SampleApp";
-            this->onPDFSaved(this->getTitle(), desc, name.c_str());
-        }
+        //if (stream.isValid()) {
+        //    doc.emitPDF(&stream);
+        //    const char* desc = "File saved from Skia SampleApp";
+        //    this->onPDFSaved(this->getTitle(), desc, name.c_str());
+        //}
 
         delete fPdfCanvas;
         fPdfCanvas = NULL;
