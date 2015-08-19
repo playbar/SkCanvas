@@ -46,6 +46,9 @@
     <Filter Include="CanvasContext\geometry">
       <UniqueIdentifier>{ca1dd851-ba68-4f9e-8fdc-acb53520ac26}</UniqueIdentifier>
     </Filter>
+    <Filter Include="v8binding">
+      <UniqueIdentifier>{b3ddbd7e-43c6-4fdb-8778-4816338e3f81}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\pipe\utils\SamplePipeControllers.h">

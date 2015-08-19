@@ -368,7 +368,8 @@ protected:
 		SkPaint paint;
 		SkTypeface* pFace = SkTypeface::CreateFromName("ËÎÌå", SkTypeface::kNormal);
 		paint.setTypeface(pFace);
-		std::string str = Unicode2ASCII(std::wstring(L"1234¹È¸è56789"));
+		std::string str = "1234¹È¸è56789";
+		//std::string str = Unicode2ASCII(std::wstring(L"1234¹È¸è56789"));
 		paint.setAntiAlias(true);
 		paint.setColor(0xff008000);
 		paint.setTextSize(150);
