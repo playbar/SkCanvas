@@ -4,6 +4,7 @@
 #include "GrContext.h"
 #include "gameplay.h"
 using namespace gameplay;
+#include "include/v8.h"
 
 /**
  * This is a mesh demo game for rendering Mesh.
@@ -71,18 +72,21 @@ protected:
      */
     void render(float elapsedTime);
 
+public: //add by hgl
+	void TestV8();
+
 private:
     
-    bool visitInitNode(Node* node);
-    void initializeCharacter();
     void drawSplash(void* param);
 	bool visitDrawNode(Node* node, void *cookie);
-    void play(const char* id, bool repeat, float speed = 1.0f);
 
 	GrContext *fCurContext;
 	GrRenderTarget *fCurRenderTarget;
 	SkCanvas * fCanvas;
 
+	v8::Platform* platform;
+	v8::Local<v8::Context> context;
+	v8::Isolate* isolate;
 };
 
 #endif

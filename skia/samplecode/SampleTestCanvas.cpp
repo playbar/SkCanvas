@@ -702,8 +702,8 @@ protected:
 	}
 
     virtual void onDrawContent(SkCanvas* canvas) {
-		//TestDrawZHText(canvas);
-		TestV8();
+		TestDrawZHText(canvas);
+		//TestV8();
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);

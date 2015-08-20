@@ -74,6 +74,8 @@
     <ClCompile Include="utils\SkiaUtils.cpp" />
     <ClCompile Include="utils\TransformationMatrix.cpp" />
     <ClCompile Include="utils\TypeTraits.cpp" />
+    <ClCompile Include="v8binding\CanvasContext2D_v8.cpp" />
+    <ClCompile Include="v8binding\LocalContext.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\skia\third_party\externals\libpng\png.h" />
@@ -116,6 +118,8 @@
     <ClInclude Include="utils\SkiaUtils.h" />
     <ClInclude Include="utils\TransformationMatrix.h" />
     <ClInclude Include="utils\TypeTraits.h" />
+    <ClInclude Include="v8binding\CanvasContext2D_v8.h" />
+    <ClInclude Include="v8binding\LocalContext.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <Keyword>Win32Proj</Keyword>
@@ -166,7 +170,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\skia\src\core;..\skia\src\effects;..\skia\src\images;..\skia\src\lazy;..\skia\gm;.\geometry;.\Canvas2D;.\utils;.\;..\v8;..\v8\v8binding;..\skia\src\pipe\utils;..\skia\src\utils\debugger;..\skia\third_party\lua\src;..\skia\gyp\config;..\skia\include\config;..\skia\include\core;..\skia\include\lazy;..\skia\include\pathops;..\skia\include\pipe;..\skia\gyp\ext;..\skia\gyp\config\win;..\skia\include\effects;..\skia\include\images;..\skia\third_party\externals\libjpeg;..\skia\third_party\externals\zlib;..\skia\include\ports;..\skia\src\sfnt;..\skia\include\utils;..\skia\include\utils\win;..\skia\include\gpu;..\skia\include\views;..\skia\include\animator;..skia\\include\xml;..\skia\experimental;..\skia\include\pdf;..\skia\include\views\animated;..\skia\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\skia\src\core;..\skia\src\effects;..\skia\src\images;..\skia\src\lazy;..\skia\gm;.\geometry;.\v8binding;.\Canvas2D;.\utils;.\;..\v8;..\skia\src\pipe\utils;..\skia\src\utils\debugger;..\skia\third_party\lua\src;..\skia\gyp\config;..\skia\include\config;..\skia\include\core;..\skia\include\lazy;..\skia\include\pathops;..\skia\include\pipe;..\skia\gyp\ext;..\skia\gyp\config\win;..\skia\include\effects;..\skia\include\images;..\skia\third_party\externals\libjpeg;..\skia\third_party\externals\zlib;..\skia\include\ports;..\skia\src\sfnt;..\skia\include\utils;..\skia\include\utils\win;..\skia\include\gpu;..\skia\include\views;..\skia\include\animator;..skia\\include\xml;..\skia\experimental;..\skia\include\pdf;..\skia\include\views\animated;..\skia\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ExceptionHandling />

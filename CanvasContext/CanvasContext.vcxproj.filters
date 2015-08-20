@@ -19,6 +19,9 @@
     <Filter Include="CanvasContext\geometry">
       <UniqueIdentifier>{4afd5654-86fb-4bef-85d0-6634332f4802}</UniqueIdentifier>
     </Filter>
+    <Filter Include="v8binding">
+      <UniqueIdentifier>{625cc66b-3a71-4d5c-a2b5-9be91e373614}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\skia\third_party\externals\libpng\png.c">
@@ -198,6 +201,12 @@
     <ClCompile Include="geometry\RoundedRect.cpp">
       <Filter>CanvasContext\geometry</Filter>
     </ClCompile>
+    <ClCompile Include="v8binding\CanvasContext2D_v8.cpp">
+      <Filter>v8binding</Filter>
+    </ClCompile>
+    <ClCompile Include="v8binding\LocalContext.cpp">
+      <Filter>v8binding</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\skia\third_party\externals\libpng\png.h">
@@ -319,6 +328,12 @@
     </ClInclude>
     <ClInclude Include="utils\TypeTraits.h">
       <Filter>CanvasContext\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="v8binding\CanvasContext2D_v8.h">
+      <Filter>v8binding</Filter>
+    </ClInclude>
+    <ClInclude Include="v8binding\LocalContext.h">
+      <Filter>v8binding</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
