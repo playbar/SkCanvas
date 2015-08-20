@@ -30,5 +30,23 @@ public:
 	virtual void Free(void* data, size_t) { free(data); }
 };
 
+
+class JSCore
+{
+public:
+	JSCore();
+	~JSCore();
+public:
+	void init();
+	void uninit();
+	void update();
+	void render();
+public:
+	v8::Platform* platform;
+	v8::Isolate* isolate;
+	v8::Global<v8::Context> mContext;
+
+};
+
 #endif
 

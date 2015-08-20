@@ -4,7 +4,8 @@
 #include "GrContext.h"
 #include "gameplay.h"
 using namespace gameplay;
-#include "include/v8.h"
+
+#include "JSCore.h"
 
 /**
  * This is a mesh demo game for rendering Mesh.
@@ -84,9 +85,8 @@ private:
 	GrRenderTarget *fCurRenderTarget;
 	SkCanvas * fCanvas;
 
-	v8::Platform* platform;
-	v8::Local<v8::Context> context;
-	v8::Isolate* isolate;
+	JSCore mJSCore;
+
 };
 
 #endif

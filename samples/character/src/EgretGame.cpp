@@ -14,7 +14,7 @@
 #include "SkForceLinking.h"
 #include "BitmapImage.h"
 #include "CanvasPattern.h"
-#include "LocalContext.h"
+#include "JSCore.h"
 #include "include/v8.h"
 #include "include/libplatform/libplatform.h"
 
@@ -71,36 +71,15 @@ void EgretGame::initialize()
     //displayScreen(this, &CharacterGame::drawSplash, NULL, 1000L);
 	//TestV8();
 
-	V8::InitializeICU();
-	platform = v8::platform::CreateDefaultPlatform();
-	V8::InitializePlatform(platform);
-	V8::Initialize();
+	mJSCore.init();
 
-	ShellArrayBufferAllocator array_buffer_allocator;
-	v8::Isolate::CreateParams create_params;
-	create_params.array_buffer_allocator = &array_buffer_allocator;
-	isolate = v8::Isolate::New(create_params);
-
-	v8::Isolate::Scope isolate_scope(isolate);
-	v8::HandleScope handle_scope(isolate);
-	context = CreateShellContext(isolate);
-	
 }
 
 
 
 void EgretGame::update(float elapsedTime)
 {
-	v8::Context::Scope context_scope(context);
-
-	v8::Local<v8::String> file_name =
-		v8::String::NewFromUtf8(isolate, "test.js",
-		v8::NewStringType::kNormal).ToLocalChecked();
-	v8::Local<v8::String> source;
-	if (!ExecuteString(isolate, source, file_name, false, true))
-		return;
-
-
+	mJSCore.update();
 	SkPaint paint;
 	paint.setAntiAlias(true);
 	paint.setColor(0xFFFF0000);
@@ -122,6 +101,7 @@ void EgretGame::update(float elapsedTime)
 
 void EgretGame::render(float elapsedTime)
 {
+	mJSCore.render();
 	fCurContext->flush();
 }
 
@@ -175,13 +155,10 @@ void EgretGame::TestV8()
 
 void EgretGame::finalize()
 {
+	mJSCore.uninit();
 	delete fCurContext;
 	delete fCurRenderTarget;
 	delete fCanvas;
-	isolate->Dispose();
-	V8::Dispose();
-	V8::ShutdownPlatform();
-	delete platform;
 }
 
 void EgretGame::drawSplash(void* param)

@@ -1,13 +1,13 @@
-#include "LocalContext.h"
-#include <include/v8.h>
-#include <include/libplatform/libplatform.h>
-
+#include "JSCore.h"
 #include <assert.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include <include/v8.h>
+#include <include/libplatform/libplatform.h>
+using namespace v8;
 /**
 * This sample program shows how to implement a simple javascript shell
 * based on V8.  This includes initializing V8 with command line options,
@@ -368,5 +368,63 @@ void ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch) {
 			fprintf(stderr, "%s\n", stack_trace_string);
 		}
 	}
+}
+
+
+JSCore::JSCore()
+{
+
+}
+
+JSCore::~JSCore()
+{
+
+}
+
+
+void JSCore::init()
+{
+	V8::InitializeICU();
+	platform = v8::platform::CreateDefaultPlatform();
+	V8::InitializePlatform(platform);
+	V8::Initialize();
+
+	ShellArrayBufferAllocator array_buffer_allocator;
+	v8::Isolate::CreateParams create_params;
+	create_params.array_buffer_allocator = &array_buffer_allocator;
+	isolate = v8::Isolate::New(create_params);
+
+	v8::Isolate::Scope isolate_scope(isolate);
+	v8::HandleScope handle_scope(isolate);
+	v8::Local<v8::Context> context = CreateShellContext(isolate);
+	mContext.Reset(isolate, context);
+}
+
+void JSCore::uninit()
+{
+	isolate->Dispose();
+	V8::Dispose();
+	V8::ShutdownPlatform();
+	delete platform;
+}
+
+void JSCore::update()
+{
+	v8::Local<v8::Context> context =
+		v8::Local<v8::Context>::New(isolate, mContext);
+
+	v8::Context::Scope context_scope(context);
+
+	v8::Local<v8::String> file_name =
+		v8::String::NewFromUtf8(isolate, "test.js",
+		v8::NewStringType::kNormal).ToLocalChecked();
+	v8::Local<v8::String> source;
+	if (!ExecuteString(isolate, source, file_name, false, true))
+		return;
+}
+
+void JSCore::render()
+{
+
 }
 
