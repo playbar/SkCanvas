@@ -1,10 +1,28 @@
-#include "CharacterGame.h"
+#include "EgretGame.h"
 
 #include "gl/GrGLInterface.h"
 #include "SkGpuDevice.h"
 
+
+#include "CanvasContext2D.h"
+#include "PassOwnPtr.h"
+#include "SkiaUtils.h"
+#include "CanvasGradient.h"
+#include "SkTypeface.h"
+#include "SkStream.h"
+#include "SkImageDecoder.h"
+#include "SkForceLinking.h"
+#include "BitmapImage.h"
+#include "CanvasPattern.h"
+#include "include/v8.h"
+#include "include/libplatform/libplatform.h"
+using namespace v8;
+
+using namespace WebCore;
+using namespace WTF;
+
 // Declare our game instance
-CharacterGame game;
+EgretGame game;
 
 // Input flags
 #define NORTH 1
@@ -22,18 +40,20 @@ CharacterGame game;
 #define BUTTON_1 0
 #define BUTTON_2 1
 
-CharacterGame::CharacterGame()
+EgretGame::EgretGame()
 {
 }
 
-void CharacterGame::initialize()
+void EgretGame::initialize()
 {
-	glViewport(0, 0, 1280, 720);
+	int iw = getWidth();
+	int ih = getHeight();
+	glViewport(0, 0, iw, ih);
 	const GrGLInterface *fCurIntf = GrGLCreateNativeInterface();
 	fCurContext = GrContext::Create((GrBackendContext)fCurIntf);
 	GrBackendRenderTargetDesc desc;
-	desc.fWidth = 1280;
-	desc.fHeight = 720;
+	desc.fWidth = iw;
+	desc.fHeight = ih;
 	desc.fConfig = kSkia8888_GrPixelConfig;
 	desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
 	desc.fSampleCnt = 1;
@@ -54,18 +74,18 @@ void CharacterGame::initialize()
 
 }
 
-bool CharacterGame::visitInitNode(Node* node)
+bool EgretGame::visitInitNode(Node* node)
 {
     return true;
 }
 
 
-void CharacterGame::finalize()
+void EgretGame::finalize()
 {
 
 }
 
-void CharacterGame::drawSplash(void* param)
+void EgretGame::drawSplash(void* param)
 {
 	SkPaint paint;
 	paint.setColor(0xFFFF0000);
@@ -83,17 +103,17 @@ void CharacterGame::drawSplash(void* param)
     //SAFE_DELETE(batch);
 }
 
-bool CharacterGame::visitDrawNode(Node* node, void *cookie)
+bool EgretGame::visitDrawNode(Node* node, void *cookie)
 {
     return true;
 }
 
-void CharacterGame::play(const char* id, bool repeat, float speed)
+void EgretGame::play(const char* id, bool repeat, float speed)
 {
    
 }
 
-void CharacterGame::update(float elapsedTime)
+void EgretGame::update(float elapsedTime)
 {
 	SkPaint paint;
 	paint.setAntiAlias(true);
@@ -106,14 +126,20 @@ void CharacterGame::update(float elapsedTime)
 	path.lineTo(50, 500);
 	fCanvas->drawPath(path, paint);
 	//fCanvas->drawRectCoords(10, 10, 1200, 600, paint);
+	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(fCanvas);
+	ctx->setFillColor("blue");
+	ctx->setShadowBlur(20);
+	ctx->setShadowColor("white");
+	ctx->fillRect(20, 20, 75, 50);
+
 }
 
-void CharacterGame::render(float elapsedTime)
+void EgretGame::render(float elapsedTime)
 {
 	fCurContext->flush();
 }
 
-void CharacterGame::keyEvent(Keyboard::KeyEvent evt, int key)
+void EgretGame::keyEvent(Keyboard::KeyEvent evt, int key)
 {
     if (evt == Keyboard::KEY_PRESS)
     {
@@ -170,7 +196,7 @@ void CharacterGame::keyEvent(Keyboard::KeyEvent evt, int key)
     }
 }
 
-void CharacterGame::touchEvent(Touch::TouchEvent evt, int x, int y, unsigned int contactIndex)
+void EgretGame::touchEvent(Touch::TouchEvent evt, int x, int y, unsigned int contactIndex)
 {
     // This should only be called if the gamepad did not handle the touch event.
     switch (evt)
@@ -192,7 +218,7 @@ void CharacterGame::touchEvent(Touch::TouchEvent evt, int x, int y, unsigned int
     }
 }
 
-bool CharacterGame::mouseEvent(Mouse::MouseEvent evt, int x, int y, int wheelDelta)
+bool EgretGame::mouseEvent(Mouse::MouseEvent evt, int x, int y, int wheelDelta)
 {
     if (evt == Mouse::MOUSE_PRESS_RIGHT_BUTTON)
     {
@@ -201,7 +227,7 @@ bool CharacterGame::mouseEvent(Mouse::MouseEvent evt, int x, int y, int wheelDel
     return false;
 }
 
-void CharacterGame::gamepadEvent(Gamepad::GamepadEvent evt, Gamepad* gamepad)
+void EgretGame::gamepadEvent(Gamepad::GamepadEvent evt, Gamepad* gamepad)
 {
     switch(evt)
     {
@@ -212,12 +238,12 @@ void CharacterGame::gamepadEvent(Gamepad::GamepadEvent evt, Gamepad* gamepad)
 }
 
 
-void CharacterGame::animationEvent(AnimationClip* clip, AnimationClip::Listener::EventType type)
+void EgretGame::animationEvent(AnimationClip* clip, AnimationClip::Listener::EventType type)
 {
    
 }
 
-void CharacterGame::collisionEvent(PhysicsCollisionObject::CollisionListener::EventType type,
+void EgretGame::collisionEvent(PhysicsCollisionObject::CollisionListener::EventType type,
                                     const PhysicsCollisionObject::CollisionPair& collisionPair,
                                     const Vector3& contactPointA,
                                     const Vector3& contactPointB)

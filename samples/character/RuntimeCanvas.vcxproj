@@ -30,6 +30,7 @@
     <ProjectGuid>{87388E8B-F3CF-428f-BC2C-C1886248C111}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>sample-character</RootNamespace>
+    <ProjectName>RuntimeCanvas</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -122,20 +123,11 @@
       <AdditionalDependencies>OpenGL32.lib;GLU32.lib;gameplay.lib;gameplay-deps.lib;Xinput9_1_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\external-deps\lib\windows\x86_64\Debug;..\..\gameplay\Debug;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\Lib\x64</AdditionalLibraryDirectories>
     </Link>
-    <CustomBuildStep>
-      <Command>copy /Y "$(ProjectDir)game.dxt.config" "$(ProjectDir)game.config"</Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Message>Copying game.config...</Message>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>game.config.dummy</Outputs>
-    </CustomBuildStep>
     <PreBuildEvent>
       <Command>xcopy ..\..\gameplay\res\shaders res\shaders\* /s /y /d
 xcopy ..\..\gameplay\res\ui res\ui\* /s /y /d
 copy ..\..\gameplay\res\logo_powered_white.png res
-copy .\game.dxt.config .\game.config</Command>
+</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -144,7 +136,7 @@ copy .\game.dxt.config .\game.config</Command>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;GP_USE_GAMEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;GP_USE_GAMEPAD;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_DEBUG;SK_DEVELOPER=1;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\gameplay\src;..\..\external-deps\include;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\include;..\..\skia\src\core;..\..\skia\src\effects;..\..\skia\src\images;..\..\skia\src\lazy;..\..\skia\gm;..\..\CanvasContext\geometry;..\..\CanvasContext\Canvas2D;..\..\CanvasContext\utils;..\..\CanvasContext;..\..\v8;..\..\v8\v8binding;..\..\samplecode;..\..\skia\src\pipe\utils;..\..\skia\src\utils\debugger;..\..\skia\third_party\lua\src;..\..\skia\gyp\config;..\..\skia\include\config;..\..\skia\include\core;..\..\skia\include\lazy;..\..\skia\include\pathops;..\..\skia\include\pipe;..\..\skia\gyp\ext;..\..\skia\gyp\config\win;..\..\skia\include\effects;..\..\skia\include\images;..\..\skia\third_party\externals\libjpeg;..\..\skia\third_party\externals\zlib;..\..\skia\include\ports;..\..\skia\src\sfnt;..\..\skia\include\utils;..\..\skia\include\utils\win;..\..\skia\include\gpu;..\..\skia\include\views;..\..\skia\include\animator;..\..\skia\include\xml;..\..\skia\experimental;..\..\skia\include\pdf;..\..\skia\include\views\animated;..\..\skia\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>
       </RuntimeTypeInfo>
@@ -157,19 +149,13 @@ copy .\game.dxt.config .\game.config</Command>
       <AdditionalLibraryDirectories>..\..\external-deps\lib\windows\x86;..\..\gameplay\Debug;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\Lib\x64</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
-      <Command>copy /Y "$(ProjectDir)game.dxt.config" "$(ProjectDir)game.config"</Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Message>Copying game.config...</Message>
-    </CustomBuildStep>
-    <CustomBuildStep>
       <Outputs>game.config.dummy</Outputs>
     </CustomBuildStep>
     <PreBuildEvent>
       <Command>xcopy ..\..\gameplay\res\shaders res\shaders\* /s /y /d
 xcopy ..\..\gameplay\res\ui res\ui\* /s /y /d
 copy ..\..\gameplay\res\logo_powered_white.png res
-copy .\game.dxt.config .\game.config</Command>
+</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugMem|x64'">
@@ -189,20 +175,11 @@ copy .\game.dxt.config .\game.config</Command>
       <AdditionalDependencies>OpenGL32.lib;GLU32.lib;gameplay.lib;gameplay-deps.lib;XInput.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\external-deps\lib\windows\x86_64\Debug;..\..\gameplay\DebugMem;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\Lib\x64</AdditionalLibraryDirectories>
     </Link>
-    <CustomBuildStep>
-      <Command>copy /Y "$(ProjectDir)game.dxt.config" "$(ProjectDir)game.config"</Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Message>Copying game.config...</Message>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>game.config.dummy</Outputs>
-    </CustomBuildStep>
     <PreBuildEvent>
       <Command>xcopy ..\..\gameplay\res\shaders res\shaders\* /s /y /d
 xcopy ..\..\gameplay\res\ui res\ui\* /s /y /d
 copy ..\..\gameplay\res\logo_powered_white.png res
-copy .\game.dxt.config .\game.config</Command>
+</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugMem|Win32'">
@@ -222,20 +199,11 @@ copy .\game.dxt.config .\game.config</Command>
       <AdditionalDependencies>OpenGL32.lib;GLU32.lib;gameplay.lib;gameplay-deps.lib;XInput.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\external-deps\lib\windows\x86_64\Debug;..\..\gameplay\DebugMem;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\Lib\x64</AdditionalLibraryDirectories>
     </Link>
-    <CustomBuildStep>
-      <Command>copy /Y "$(ProjectDir)game.dxt.config" "$(ProjectDir)game.config"</Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Message>Copying game.config...</Message>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>game.config.dummy</Outputs>
-    </CustomBuildStep>
     <PreBuildEvent>
       <Command>xcopy ..\..\gameplay\res\shaders res\shaders\* /s /y /d
 xcopy ..\..\gameplay\res\ui res\ui\* /s /y /d
 copy ..\..\gameplay\res\logo_powered_white.png res
-copy .\game.dxt.config .\game.config</Command>
+</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -257,20 +225,11 @@ copy .\game.dxt.config .\game.config</Command>
       <AdditionalDependencies>OpenGL32.lib;GLU32.lib;gameplay.lib;gameplay-deps.lib;XInput.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\external-deps\lib\windows\x86_64\Release;..\..\gameplay\Release;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\Lib\x64</AdditionalLibraryDirectories>
     </Link>
-    <CustomBuildStep>
-      <Command>copy /Y "$(ProjectDir)game.dxt.config" "$(ProjectDir)game.config"</Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Message>Copying game.config...</Message>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>game.config.dummy</Outputs>
-    </CustomBuildStep>
     <PreBuildEvent>
       <Command>xcopy ..\..\gameplay\res\shaders res\shaders\* /s /y /d
 xcopy ..\..\gameplay\res\ui res\ui\* /s /y /d
 copy ..\..\gameplay\res\logo_powered_white.png res
-copy .\game.dxt.config .\game.config</Command>
+</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -292,27 +251,15 @@ copy .\game.dxt.config .\game.config</Command>
       <AdditionalDependencies>OpenGL32.lib;GLU32.lib;gameplay.lib;gameplay-deps.lib;XInput.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\external-deps\lib\windows\x86_64\Release;..\..\gameplay\Release;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\Lib\x64</AdditionalLibraryDirectories>
     </Link>
-    <CustomBuildStep>
-      <Command>copy /Y "$(ProjectDir)game.dxt.config" "$(ProjectDir)game.config"</Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Message>Copying game.config...</Message>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>game.config.dummy</Outputs>
-    </CustomBuildStep>
     <PreBuildEvent>
       <Command>xcopy ..\..\gameplay\res\shaders res\shaders\* /s /y /d
 xcopy ..\..\gameplay\res\ui res\ui\* /s /y /d
 copy ..\..\gameplay\res\logo_powered_white.png res
-copy .\game.dxt.config .\game.config</Command>
+</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="game.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="game.dxt.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="icon.png" />
@@ -342,15 +289,18 @@ copy .\game.dxt.config .\game.config</Command>
     <None Include="res\shaders\textured.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\CharacterGame.cpp" />
+    <ClCompile Include="src\EgretGame.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\CharacterGame.h" />
+    <ClInclude Include="src\EgretGame.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\logo_powered_white.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\CanvasContext\CanvasContext.vcxproj">
+      <Project>{1da51785-471e-45fc-aee2-955d206829c2}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\gameplay\gameplay.vcxproj">
       <Project>{1032ba4b-57eb-4348-9e03-29dd63e80e4a}</Project>
     </ProjectReference>

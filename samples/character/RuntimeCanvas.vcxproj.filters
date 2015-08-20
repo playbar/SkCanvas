@@ -17,7 +17,6 @@
   <ItemGroup>
     <None Include="icon.png" />
     <None Include="game.config" />
-    <None Include="game.dxt.config" />
     <None Include="res\common\arial.gpb">
       <Filter>res\common</Filter>
     </None>
@@ -92,18 +91,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\CharacterGame.cpp">
+    <Image Include="res\logo_powered_white.png">
+      <Filter>res</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\EgretGame.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\CharacterGame.h">
+    <ClInclude Include="src\EgretGame.h">
       <Filter>src</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\logo_powered_white.png">
-      <Filter>res</Filter>
-    </Image>
   </ItemGroup>
 </Project>

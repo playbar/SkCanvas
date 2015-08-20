@@ -8,14 +8,14 @@ using namespace gameplay;
 /**
  * This is a mesh demo game for rendering Mesh.
  */
-class CharacterGame: public Game, public AnimationClip::Listener, public PhysicsCollisionObject::CollisionListener, public Scene::VisitNode
+class EgretGame: public Game, public AnimationClip::Listener, public PhysicsCollisionObject::CollisionListener, public Scene::VisitNode
 {
 public:
     
     /**
      * Constructor.
      */
-    CharacterGame();
+    EgretGame();
 
     /**
      * @see Game::keyEvent
