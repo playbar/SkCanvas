@@ -32,25 +32,25 @@ CharacterGame::CharacterGame()
 
 void CharacterGame::initialize()
 {
-	const GrGLInterface *fCurIntf = GrGLCreateNativeInterface();
-	fCurContext = GrContext::Create((GrBackendContext)fCurIntf);
-	//LOGE("%s, %d, %d", __FUNCTION__, __LINE__, (int)fCurContext);
-	GrBackendRenderTargetDesc desc;
-	desc.fWidth = 800;
-	desc.fHeight = 600;
-	desc.fConfig = kSkia8888_GrPixelConfig;
-	desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
-	desc.fSampleCnt = 1;
-	desc.fStencilBits = 8;
-	GLint buffer;
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &buffer);
-	desc.fRenderTargetHandle = buffer;
+	//const GrGLInterface *fCurIntf = GrGLCreateNativeInterface();
+	//fCurContext = GrContext::Create((GrBackendContext)fCurIntf);
+	////LOGE("%s, %d, %d", __FUNCTION__, __LINE__, (int)fCurContext);
+	//GrBackendRenderTargetDesc desc;
+	//desc.fWidth = 800;
+	//desc.fHeight = 600;
+	//desc.fConfig = kSkia8888_GrPixelConfig;
+	//desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
+	//desc.fSampleCnt = 1;
+	//desc.fStencilBits = 8;
+	//GLint buffer;
+	//glGetIntegerv(GL_FRAMEBUFFER_BINDING, &buffer);
+	//desc.fRenderTargetHandle = buffer;
 
-	SkSafeUnref(fCurRenderTarget);
-	fCurRenderTarget = fCurContext->wrapBackendRenderTarget(desc);
-	SkAutoTUnref<SkBaseDevice> device(new SkGpuDevice(fCurContext, fCurRenderTarget));
-	//SkAutoTUnref<SkBaseDevice> device( SkGpuDevice::Create(fCurRenderTarget));
-	fCanvas = new SkCanvas(device);
+	//SkSafeUnref(fCurRenderTarget);
+	//fCurRenderTarget = fCurContext->wrapBackendRenderTarget(desc);
+	//SkAutoTUnref<SkBaseDevice> device(new SkGpuDevice(fCurContext, fCurRenderTarget));
+	////SkAutoTUnref<SkBaseDevice> device( SkGpuDevice::Create(fCurRenderTarget));
+	//fCanvas = new SkCanvas(device);
 
     // Enable multi-touch (only affects devices that support multi-touch).
     setMultiTouch(true);

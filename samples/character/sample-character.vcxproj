@@ -148,12 +148,12 @@ copy .\game.dxt.config .\game.config</Command>
       <AdditionalIncludeDirectories>..\..\gameplay\src;..\..\external-deps\include;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\include;..\..\skia\src\core;..\..\skia\src\effects;..\..\skia\src\images;..\..\skia\src\lazy;..\..\skia\gm;..\..\CanvasContext\geometry;..\..\CanvasContext\Canvas2D;..\..\CanvasContext\utils;..\..\CanvasContext;..\..\v8;..\..\v8\v8binding;..\..\samplecode;..\..\skia\src\pipe\utils;..\..\skia\src\utils\debugger;..\..\skia\third_party\lua\src;..\..\skia\gyp\config;..\..\skia\include\config;..\..\skia\include\core;..\..\skia\include\lazy;..\..\skia\include\pathops;..\..\skia\include\pipe;..\..\skia\gyp\ext;..\..\skia\gyp\config\win;..\..\skia\include\effects;..\..\skia\include\images;..\..\skia\third_party\externals\libjpeg;..\..\skia\third_party\externals\zlib;..\..\skia\include\ports;..\..\skia\src\sfnt;..\..\skia\include\utils;..\..\skia\include\utils\win;..\..\skia\include\gpu;..\..\skia\include\views;..\..\skia\include\animator;..\..\skia\include\xml;..\..\skia\experimental;..\..\skia\include\pdf;..\..\skia\include\views\animated;..\..\skia\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>
       </RuntimeTypeInfo>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>OpenGL32.lib;GLU32.lib;gameplay-deps.lib;BulletCollision.lib;BulletDynamics.lib;Xinput9_1_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OpenGL32.lib;GLU32.lib;gameplay-deps.lib;BulletCollision.lib;BulletDynamics.lib;Xinput9_1_0.lib;usp10.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\external-deps\lib\windows\x86;..\..\gameplay\Debug;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\Lib\x64</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
@@ -354,11 +354,77 @@ copy .\game.dxt.config .\game.config</Command>
     <ProjectReference Include="..\..\gameplay\gameplay.vcxproj">
       <Project>{1032ba4b-57eb-4348-9e03-29dd63e80e4a}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\angle.vcxproj">
+      <Project>{0c3fa3e5-c787-6229-3759-f2bc95b456f4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\animator.vcxproj">
+      <Project>{18bced3a-a30c-0fe8-a68c-46cdced95ed7}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\skia\out\gyp\core.vcxproj">
       <Project>{b7760b5e-bfa8-486b-acfd-49e3a6de8e76}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\edtaa.vcxproj">
+      <Project>{cadcafe1-606b-b535-3739-11526d49a01c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\effects.vcxproj">
+      <Project>{6b5ee129-2990-5f4e-f3c4-e22a84454569}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\images.vcxproj">
+      <Project>{ce446a2d-ad49-080b-4842-a0c6705dbb5a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\libjpeg.vcxproj">
+      <Project>{61d12d34-7889-b78c-43fb-fe4617c9477c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\libwebp.vcxproj">
+      <Project>{e58a818f-aa55-041c-ffa9-d55da56d32f6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\libwebp_dec.vcxproj">
+      <Project>{8867418b-435c-cb2e-0b22-d45c986c6123}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\libwebp_demux.vcxproj">
+      <Project>{76e78c70-bd07-f7bc-1de2-762aa80160c1}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\libwebp_dsp.vcxproj">
+      <Project>{287117e1-84ad-ca03-1115-4b36cb61fc54}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\libwebp_dsp_neon.vcxproj">
+      <Project>{0bdc5292-1dfb-d1ac-257d-60146797353b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\libwebp_enc.vcxproj">
+      <Project>{3f85644b-53e3-6aef-cf1d-0f45e2dac785}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\libwebp_utils.vcxproj">
+      <Project>{f84031d0-8ec1-5549-1a0a-959ddeb5fca9}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\opts.vcxproj">
+      <Project>{97490341-fe9e-12ee-151b-de2928053a7b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\opts_ssse3.vcxproj">
+      <Project>{d0fa47ef-a73d-7564-e2bc-e6666d397303}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\ports.vcxproj">
+      <Project>{534fbb80-dc0a-50c7-11f5-99af75bdb35a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\sfnt.vcxproj">
+      <Project>{3d616b7f-bc54-6894-9de4-8db41ab06d75}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\skia\out\gyp\skgpu.vcxproj">
       <Project>{585331d9-e789-1935-ee54-c3dc98b6bfe1}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\skia_lib.vcxproj">
+      <Project>{8526e34c-e974-e136-60e6-bfda54e67b43}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\utils.vcxproj">
+      <Project>{e6df5cc1-9bb3-8ab7-7ca5-731c89d769a0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\views.vcxproj">
+      <Project>{a5b90d9d-f8a8-db29-9037-bb30a5b49dcf}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\views_animated.vcxproj">
+      <Project>{ffb4e93a-05a8-e9c1-01da-c9271e47485d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\skia\out\gyp\xml.vcxproj">
+      <Project>{c2cdeb62-0274-ecad-976b-55f6144af1ac}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
