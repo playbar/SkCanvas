@@ -14,7 +14,7 @@
 #include "SkForceLinking.h"
 #include "BitmapImage.h"
 #include "CanvasPattern.h"
-#include "JSCore.h"
+#include "JSEngine.h"
 #include "include/v8.h"
 #include "include/libplatform/libplatform.h"
 
@@ -60,7 +60,7 @@ void EgretGame::initialize()
     //displayScreen(this, &CharacterGame::drawSplash, NULL, 1000L);
 	//TestV8();
 
-	mJSCore.init();
+	mJSEngine.init();
 
 }
 
@@ -68,7 +68,7 @@ void EgretGame::initialize()
 
 void EgretGame::update(float elapsedTime)
 {
-	mJSCore.update();
+	mJSEngine.update();
 	SkPaint paint;
 	paint.setAntiAlias(true);
 	paint.setColor(0xFFFF0000);
@@ -90,7 +90,7 @@ void EgretGame::update(float elapsedTime)
 
 void EgretGame::render(float elapsedTime)
 {
-	mJSCore.render();
+	mJSEngine.render();
 	fCurContext->flush();
 }
 
@@ -144,7 +144,7 @@ void EgretGame::TestV8()
 
 void EgretGame::finalize()
 {
-	mJSCore.uninit();
+	mJSEngine.uninit();
 	delete fCurContext;
 	delete fCurRenderTarget;
 	delete fCanvas;

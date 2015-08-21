@@ -204,7 +204,7 @@
     <ClCompile Include="v8binding\CanvasContext2D_v8.cpp">
       <Filter>v8binding</Filter>
     </ClCompile>
-    <ClCompile Include="v8binding\JSCore.cpp">
+    <ClCompile Include="v8binding\JSEngine.cpp">
       <Filter>v8binding</Filter>
     </ClCompile>
   </ItemGroup>
@@ -332,7 +332,7 @@
     <ClInclude Include="v8binding\CanvasContext2D_v8.h">
       <Filter>v8binding</Filter>
     </ClInclude>
-    <ClInclude Include="v8binding\JSCore.h">
+    <ClInclude Include="v8binding\JSEngine.h">
       <Filter>v8binding</Filter>
     </ClInclude>
   </ItemGroup>

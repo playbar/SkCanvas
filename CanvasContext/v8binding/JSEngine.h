@@ -4,21 +4,7 @@
 #include "memory.h"
 #include "stdlib.h"
 #include "include/v8.h"
-
-v8::Local<v8::Context> CreateShellContext(v8::Isolate* isolate);
-void RunShell(v8::Local<v8::Context> context);
-int RunMain(v8::Isolate* isolate, int argc, char* argv[]);
-bool ExecuteString(v8::Isolate* isolate, v8::Local<v8::String> source,
-	v8::Local<v8::Value> name, bool print_result,
-	bool report_exceptions);
-void Print(const v8::FunctionCallbackInfo<v8::Value>& args);
-void Read(const v8::FunctionCallbackInfo<v8::Value>& args);
-void Load(const v8::FunctionCallbackInfo<v8::Value>& args);
-void Quit(const v8::FunctionCallbackInfo<v8::Value>& args);
-void Version(const v8::FunctionCallbackInfo<v8::Value>& args);
-v8::MaybeLocal<v8::String> ReadFile(v8::Isolate* isolate, const char* name);
-void ReportException(v8::Isolate* isolate, v8::TryCatch* handler);
-
+using namespace v8;
 
 class ShellArrayBufferAllocator : public v8::ArrayBuffer::Allocator {
 public:
@@ -40,21 +26,28 @@ public:
 	virtual void Free(void* data, size_t) { free(data); }
 };
 
-class JSCore
+class JSEngine
 {
 public:
-	JSCore();
-	~JSCore();
+	JSEngine();
+	~JSEngine();
 public:
 	void init();
 	void uninit();
 	void update();
 	void render();
 	void SetNativeObject();
+
+	void setOnUpdateGame(Handle<Value> update, Handle<Value> owner);
+	void reportException(TryCatch& try_catch);
+	Handle<Value> callFunction(Handle<Function> func, Handle<Object> scope, int argc, Handle<Value> *argv);
+	Handle<Value> onFunction(const char *root, const char *name, int argc, Handle<Value> argv[]);
+
 public:
-	v8::Platform* platform;
-	v8::Isolate* isolate;
+	v8::Platform* mPlatform;
+	v8::Isolate* mIsolate;
 	v8::Global<v8::Context> mContext;
+	bool canUpdateGame;
 
 	ArrayBufferAllocator allocator;
 	v8::Isolate::CreateParams create_params;

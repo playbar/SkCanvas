@@ -5,7 +5,7 @@
 #include "gameplay.h"
 using namespace gameplay;
 
-#include "JSCore.h"
+#include "JSEngine.h"
 
 /**
  * This is a mesh demo game for rendering Mesh.
@@ -85,7 +85,7 @@ private:
 	GrRenderTarget *fCurRenderTarget;
 	SkCanvas * fCanvas;
 
-	JSCore mJSCore;
+	JSEngine mJSEngine;
 
 };
 
