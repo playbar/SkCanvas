@@ -1,4 +1,5 @@
 #include "JSEngine.h"
+#include "JSCore.h"
 #include "SkTypes.h"
 #include <assert.h>
 #include <fcntl.h>
@@ -13,6 +14,14 @@ using namespace v8;
 
 #define UPDATE_GAME_SCOPE "updateGameScope"
 #define UPDATE_GAME_NAME "updateGameName"
+
+
+#define EGRET_GAME_ROOT "egret-game"
+#ifndef EGRET_RUNTIME
+#	define GAME_LOADER "C:/tmp/egret-game/launcher/shellTest.js"
+#else
+#	define GAME_LOADER "launcher/runtime_loader.js"
+#endif /* EGRET_RUNTIME */
 
 static std::map<std::string, Local<String> > stringMap;
 typedef std::map<std::string, Local<String> >::iterator mspit;
@@ -35,7 +44,6 @@ void clearStringMap(void)
 {
 	stringMap.clear();
 }
-
 
 const char * toCString(const String::Utf8Value& value)
 {
@@ -67,23 +75,28 @@ void JSEngine::init()
 	Isolate::Scope isolate_scope(mIsolate);
 	// Create a stack-allocated handle scope.
 	HandleScope handle_scope(mIsolate);
-	Local<Context> context = Context::New(mIsolate);
+	Local<Context> context = CreateShellContext(mIsolate);
 	mContext.Reset(mIsolate, context);
 	//Local<Context> context = Local<Context>::New(isolate, mContext);
 	
 	Context::Scope context_scope(context);
 	// Create a string containing the JavaScript source code.
-	Local<String> source =
-		String::NewFromUtf8(mIsolate, "'Hello' + ', World!'",
-		NewStringType::kNormal).ToLocalChecked();
+	//Local<String> source =
+	//	String::NewFromUtf8(mIsolate, "'Hello' + ', World!'",
+	//	NewStringType::kNormal).ToLocalChecked();
 
-	// Compile the source code.
-	Local<Script> script = Script::Compile(context, source).ToLocalChecked();
-	// Run the script to get the result.
-	Local<Value> result = script->Run(context).ToLocalChecked();
+	v8::Local<v8::String> file_name =
+		v8::String::NewFromUtf8(mIsolate, GAME_LOADER, v8::NewStringType::kNormal)
+		.ToLocalChecked();
+	v8::Local<v8::String> source;
+	if (!ReadFile(mIsolate, GAME_LOADER).ToLocal(&source)) 
+	{
+		fprintf(stderr, "Error reading '%s'\n", GAME_LOADER);
+		return;
+	}
+	if (!ExecuteString(mIsolate, source, file_name, true, true))
+		return;
 
-	// Convert the result to an UTF8 string and print it.
-	//String::Utf8Value utf8(result);
 
 }
 
@@ -167,4 +180,53 @@ Handle<Value> JSEngine::onFunction(const char *root, const char *name, int argc,
 	}
 	return callFunction(func, scope, argc, argv);
 }
+
+static void v8_Log(const v8::FunctionCallbackInfo<v8::Value> & args)
+{
+	if ( args.Length() < 1 )
+	{
+		return;
+	}
+	HandleScope scope(args.GetIsolate());
+	Local<Value> arg = args[0];
+	String::Utf8Value value(arg);
+	std::string str = *value;
+}
+
+Handle<ObjectTemplate> JSEngine::setGlobalFunctions()
+{
+	Handle<ObjectTemplate> result = ObjectTemplate::New(mIsolate);
+	result->Set(String::NewFromUtf8(mIsolate, "log", NewStringType::kNormal).ToLocalChecked(), Function::New(mIsolate, v8_Log));
+	
+	return result;
+}
+
+
+// Reads a file into a v8 string.
+MaybeLocal<String> JSEngine::ReadFile(Isolate* isolate, const std::string& name)
+{
+	FILE* file = fopen(name.c_str(), "rb");
+	if (file == NULL) return MaybeLocal<String>();
+
+	fseek(file, 0, SEEK_END);
+	size_t size = ftell(file);
+	rewind(file);
+
+	char* chars = new char[size + 1];
+	chars[size] = '\0';
+	for (size_t i = 0; i < size;) {
+		i += fread(&chars[i], 1, size - i, file);
+		if (ferror(file)) {
+			fclose(file);
+			return MaybeLocal<String>();
+		}
+	}
+	fclose(file);
+	MaybeLocal<String> result = String::NewFromUtf8(
+		isolate, chars, NewStringType::kNormal, static_cast<int>(size));
+	delete[] chars;
+	return result;
+}
+
+
 

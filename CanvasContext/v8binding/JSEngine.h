@@ -3,6 +3,7 @@
 
 #include "memory.h"
 #include "stdlib.h"
+#include "string"
 #include "include/v8.h"
 using namespace v8;
 
@@ -42,6 +43,10 @@ public:
 	void reportException(TryCatch& try_catch);
 	Handle<Value> callFunction(Handle<Function> func, Handle<Object> scope, int argc, Handle<Value> *argv);
 	Handle<Value> onFunction(const char *root, const char *name, int argc, Handle<Value> argv[]);
+	MaybeLocal<String> ReadFile(Isolate* isolate, const std::string& name);
+
+public:
+	Handle<ObjectTemplate> setGlobalFunctions();
 
 public:
 	v8::Platform* mPlatform;
