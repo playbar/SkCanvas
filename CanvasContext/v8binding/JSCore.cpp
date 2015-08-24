@@ -1,11 +1,6 @@
 #include "JSCore.h"
 #include "SkTypes.h"
-
-#ifndef EGRET_RUNTIME
-#	define GAME_LOADER "C:/tmp/egret-game/launcher/native_loader.js"
-#else
-#	define GAME_LOADER "launcher/runtime_loader.js"
-#endif /* EGRET_RUNTIME */
+#include "string"
 
 class ShellArrayBufferAllocator : public v8::ArrayBuffer::Allocator {
 public:
@@ -138,7 +133,13 @@ void Version(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
 void V8_Require(const v8::FunctionCallbackInfo<v8::Value> &args)
 {
-
+	BEGIN_SCOPE_WHITH_ARGS(1);
+	v8::String::Utf8Value str(args[0]);
+	const char* cstr = ToCString(str);
+	std::string  strfile = "C:/tmp/egret-game/";
+	strfile += cstr;
+	RunJavaScript(strfile.c_str());
+	return;
 }
 
 
@@ -206,16 +207,16 @@ bool ExecuteString(v8::Isolate* isolate, v8::Local<v8::String> source,
 	}
 }
 
-bool RunJavaScript( )
+bool RunJavaScript( const char *fileName )
 {
 	v8::Isolate * isolate = v8::Isolate::GetCurrent();
 	Local<Context> context = isolate->GetCurrentContext();
 	Context::Scope context_scope(context);
-	v8::Local<v8::String> file_name = v8::String::NewFromUtf8(isolate, GAME_LOADER, v8::NewStringType::kNormal).ToLocalChecked();
+	v8::Local<v8::String> file_name = v8::String::NewFromUtf8(isolate, fileName, v8::NewStringType::kNormal).ToLocalChecked();
 	v8::Local<v8::String> source;
-	if (!ReadFile(isolate, GAME_LOADER).ToLocal(&source))
+	if (!ReadFile(isolate, fileName).ToLocal(&source))
 	{
-		fprintf(stderr, "Error reading '%s'\n", GAME_LOADER);
+		fprintf(stderr, "Error reading '%s'\n", fileName);
 		return false;
 	}
 	if (!ExecuteString(isolate, source, file_name, true, true))

@@ -16,9 +16,12 @@ using namespace v8;
 
 #define UPDATE_GAME_SCOPE "updateGameScope"
 #define UPDATE_GAME_NAME "updateGameName"
-
-
 #define EGRET_GAME_ROOT "egret-game"
+#ifndef EGRET_RUNTIME
+#	define GAME_LOADER "C:/tmp/egret-game/launcher/native_loader.js"
+#else
+#	define GAME_LOADER "launcher/runtime_loader.js"
+#endif /* EGRET_RUNTIME */
 
 
 static std::map<std::string, Local<String> > stringMap;
@@ -70,19 +73,7 @@ void JSEngine::init()
 	Local<v8::Object> native = Local<Object>::Cast(context->Global()->Get(v8_str("egret")));
 	setClassInterface(native);
 	
-	RunJavaScript( );
-
-	//Context::Scope context_scope(context);
-	//v8::Local<v8::String> file_name = v8::String::NewFromUtf8(mIsolate, GAME_LOADER, v8::NewStringType::kNormal).ToLocalChecked();
-	//v8::Local<v8::String> source;
-	//if (!ReadFile(mIsolate, GAME_LOADER).ToLocal(&source)) 
-	//{
-	//	fprintf(stderr, "Error reading '%s'\n", GAME_LOADER);
-	//	return;
-	//}
-	//if (!ExecuteString(mIsolate, source, file_name, true, true))
-	//	return;
-
+	RunJavaScript(GAME_LOADER);
 
 }
 
