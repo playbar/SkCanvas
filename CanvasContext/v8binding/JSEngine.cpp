@@ -90,8 +90,11 @@ void JSEngine::uninit()
 
 void JSEngine::update(float elapsedTime )
 {
-	BEGIN_SCOPE;
-	//HandleScope handle_scope(mIsolate);
+	Isolate::Scope isolate_scope(mIsolate);
+	HandleScope handle_scope(mIsolate);
+	Local<Context> context = Local<Context>::New(mIsolate, mContext);
+	context->Enter();	
+	
 	Handle<Value> argv[] = { v8_num(elapsedTime) };
 	onFunction("egret", "executeMainLoop", 1, argv );
 }
@@ -137,7 +140,8 @@ Handle<Value> JSEngine::onFunction(const char *root, const char *name, int argc,
 	if (scope.IsEmpty()) {
 		SkDebugf("%s: %s is undefined", __FUNCTION__, root);
 	}
-	Local<Function> func = Local<Function>::Cast(scope->Get(getString(name)));
+	Local<Value> valName = Local<Value>::New(mIsolate, String::NewFromUtf8(mIsolate, name));
+	Local<Function> func = Local<Function>::Cast(scope->Get(valName));
 	if (func.IsEmpty()) {
 		SkDebugf("%s: %s.%s is undefined", __FUNCTION__, root, name);
 	}
