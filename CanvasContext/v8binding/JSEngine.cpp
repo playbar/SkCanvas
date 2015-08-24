@@ -79,7 +79,11 @@ void JSEngine::init()
 	mContext.Reset(mIsolate, context);
 	context->Enter();
 	//mContext.Reset(mIsolate, context);
-	setNativeObjects(context->Global());
+	Local<Object > global = context->Global();
+	setGlobalFun(global);
+
+	Local<v8::Object> native = Local<Object>::Cast(context->Global()->Get(v8_str("egret")));
+	setClassInterface(native);
 	
 	//Local<v8::Object> native = Local<Object>::Cast(context->Global()->Get(v8_str("egret")));
 	
@@ -209,7 +213,7 @@ void testAA(const v8::FunctionCallbackInfo<v8::Value>& args)
 	i++;
 }
 
-void JSEngine::setNativeObjects( Local<Object> parent )
+void JSEngine::setGlobalFun( Local<Object> parent )
 {
 	v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(mIsolate);
 	global->Set(
@@ -217,12 +221,26 @@ void JSEngine::setNativeObjects( Local<Object> parent )
 		v8::FunctionTemplate::New(mIsolate, testAA));
 
 	parent->Set(String::NewFromUtf8(mIsolate,"console"), global->NewInstance());
-	//Local<v8::Object> native = Local<Object>::Cast(parent->Get(v8_str("egret")));
-	//native->Set(1, global);
-	//native->Set()
-	//native->Set( Persistent<String>)
 	return;
 }
 
+void testAAA(const v8::FunctionCallbackInfo<v8::Value>& args)
+{
+	int i = 0;
+	i++;
+}
 
+
+void JSEngine::setClassInterface(Local<Object> parent)
+{
+	//HandleScope handle_scope(mIsolate);
+	Local<Context> context = Local<Context>::New(v8::Isolate::GetCurrent(), mContext);
+	//context->Enter();
+	//v8::Context::Scope scope(context);
+	//Local<v8::Object> native = Local<Object>::Cast(parent->Get(v8_str("egret")));
+	v8::Local<v8::ObjectTemplate> testclass = v8::ObjectTemplate::New(v8::Isolate::GetCurrent());
+	testclass->Set(v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), "testAAA", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), testAAA));	
+	parent->Set(context, String::NewFromUtf8(v8::Isolate::GetCurrent(), "test"), testclass->NewInstance());
+	return;
+}
 

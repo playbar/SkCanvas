@@ -43,7 +43,8 @@ public:
 	void reportException(TryCatch& try_catch);
 	Handle<Value> callFunction(Handle<Function> func, Handle<Object> scope, int argc, Handle<Value> *argv);
 	Handle<Value> onFunction(const char *root, const char *name, int argc, Handle<Value> argv[]);
-	void setNativeObjects(Local<Object> parent );
+	void setGlobalFun(Local<Object> parent );
+	void setClassInterface(Local<Object> parent);
 public:
 	Handle<ObjectTemplate> setGlobalFunctions();
 
