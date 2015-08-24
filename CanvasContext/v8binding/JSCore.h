@@ -11,6 +11,18 @@ using namespace v8;
 #include <stdlib.h>
 #include <string.h>
 
+#define BEGIN_SCOPE HandleScope handle_scope( v8::Isolate::GetCurrent())
+#define CHECK_ARGUMENTS(X) \
+		if( args.Length() < X) {\
+			SkDebugf("%s: Number of arguments isn't less than %d", __FUNCTION__, X); \
+			return;\
+		}
+
+#define BEGIN_SCOPE_WHITH_ARGS( X ) \
+		BEGIN_SCOPE; \
+		CHECK_ARGUMENTS( X );
+
+
 v8::Local<v8::Context> CreateShellContext(v8::Isolate* isolate);
 void RunShell(v8::Local<v8::Context> context);
 int RunMain(v8::Isolate* isolate, int argc, char* argv[]);

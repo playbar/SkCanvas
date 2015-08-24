@@ -4,11 +4,7 @@
 
 void v8_console_log(const v8::FunctionCallbackInfo<v8::Value> &args)
 {
-	HandleScope handleScope( v8::Isolate::GetCurrent());
-	if ( args.Length() < 1)
-	{
-
-	}
+	BEGIN_SCOPE_WHITH_ARGS(1);
 
 	v8::String::Utf8Value str(args[0]);
 	const char* cstr = ToCString(str);
