@@ -57,9 +57,9 @@ const char* ToCString(const v8::String::Utf8Value& value) {
 // functions.
 v8::Local<v8::Context> CreateShellContext(v8::Isolate* isolate) {
 	v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
+	
 	global->Set(
-		v8::String::NewFromUtf8(isolate, "print", v8::NewStringType::kNormal)
-		.ToLocalChecked(),
+		v8::String::NewFromUtf8(isolate, "print", v8::NewStringType::kNormal).ToLocalChecked(),
 		v8::FunctionTemplate::New(isolate, Print));
 	// Bind the global 'read' function to the C++ Read callback.
 	global->Set(v8::String::NewFromUtf8(
@@ -75,8 +75,7 @@ v8::Local<v8::Context> CreateShellContext(v8::Isolate* isolate) {
 		v8::FunctionTemplate::New(isolate, Quit));
 	// Bind the 'version' function
 	global->Set(
-		v8::String::NewFromUtf8(isolate, "version", v8::NewStringType::kNormal)
-		.ToLocalChecked(),
+		v8::String::NewFromUtf8(isolate, "version", v8::NewStringType::kNormal).ToLocalChecked(),
 		v8::FunctionTemplate::New(isolate, Version));
 
 	return v8::Context::New(isolate, NULL, global);

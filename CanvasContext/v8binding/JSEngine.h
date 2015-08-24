@@ -43,15 +43,14 @@ public:
 	void reportException(TryCatch& try_catch);
 	Handle<Value> callFunction(Handle<Function> func, Handle<Object> scope, int argc, Handle<Value> *argv);
 	Handle<Value> onFunction(const char *root, const char *name, int argc, Handle<Value> argv[]);
-	MaybeLocal<String> ReadFile(Isolate* isolate, const std::string& name);
-
+	void setNativeObjects(Local<Object> parent );
 public:
 	Handle<ObjectTemplate> setGlobalFunctions();
 
 public:
 	v8::Platform* mPlatform;
 	v8::Isolate* mIsolate;
-	v8::Global<v8::Context> mContext;
+	v8::Persistent<v8::Context> mContext;
 	bool canUpdateGame;
 
 	ArrayBufferAllocator allocator;

@@ -26,10 +26,6 @@ using namespace v8;
 static std::map<std::string, Local<String> > stringMap;
 typedef std::map<std::string, Local<String> >::iterator mspit;
 
-static inline v8::Local<v8::String> v8_str(const char* x) {
-	return v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), x);
-}
-
 
 Local<String> getString(const char *name) {
 	mspit it = stringMap.find(name);
@@ -52,21 +48,22 @@ const char * toCString(const String::Utf8Value& value)
 
 JSEngine::JSEngine()
 {
-
+	V8::InitializeICU();
+	mPlatform = v8::platform::CreateDefaultPlatform();
+	V8::InitializePlatform(mPlatform);
+	V8::Initialize();
 }
 
 JSEngine::~JSEngine()
 {
-
+	V8::Dispose();
+	V8::ShutdownPlatform();
+	delete mPlatform;
 }
 
 
 void JSEngine::init()
 {
-	V8::InitializeICU();
-	mPlatform = v8::platform::CreateDefaultPlatform();
-	V8::InitializePlatform(mPlatform);
-	V8::Initialize();
 
 	// Create a new Isolate and make it the current one.
 
@@ -75,15 +72,20 @@ void JSEngine::init()
 	Isolate::Scope isolate_scope(mIsolate);
 	// Create a stack-allocated handle scope.
 	HandleScope handle_scope(mIsolate);
+	//LocalContext localConext(mIsolate);
+	//Local<Context> context = localConext.local();
+	//Local<Context> context = Context::New(mIsolate, NULL, v8::Handle<v8::ObjectTemplate>());
 	Local<Context> context = CreateShellContext(mIsolate);
 	mContext.Reset(mIsolate, context);
-	//Local<Context> context = Local<Context>::New(isolate, mContext);
+	context->Enter();
+	//mContext.Reset(mIsolate, context);
+	setNativeObjects(context->Global());
 	
+	//Local<v8::Object> native = Local<Object>::Cast(context->Global()->Get(v8_str("egret")));
+	
+	
+
 	Context::Scope context_scope(context);
-	// Create a string containing the JavaScript source code.
-	//Local<String> source =
-	//	String::NewFromUtf8(mIsolate, "'Hello' + ', World!'",
-	//	NewStringType::kNormal).ToLocalChecked();
 
 	v8::Local<v8::String> file_name =
 		v8::String::NewFromUtf8(mIsolate, GAME_LOADER, v8::NewStringType::kNormal)
@@ -102,10 +104,10 @@ void JSEngine::init()
 
 void JSEngine::uninit()
 {
+	v8::Local<v8::Context>::New(mIsolate, mContext)->Exit();
+	mContext.Reset();
+
 	mIsolate->Dispose();
-	V8::Dispose();
-	V8::ShutdownPlatform();
-	delete mPlatform;
 }
 
 void JSEngine::update()
@@ -201,31 +203,25 @@ Handle<ObjectTemplate> JSEngine::setGlobalFunctions()
 	return result;
 }
 
-
-// Reads a file into a v8 string.
-MaybeLocal<String> JSEngine::ReadFile(Isolate* isolate, const std::string& name)
+void testAA(const v8::FunctionCallbackInfo<v8::Value>& args)
 {
-	FILE* file = fopen(name.c_str(), "rb");
-	if (file == NULL) return MaybeLocal<String>();
+	int i = 0;
+	i++;
+}
 
-	fseek(file, 0, SEEK_END);
-	size_t size = ftell(file);
-	rewind(file);
+void JSEngine::setNativeObjects( Local<Object> parent )
+{
+	v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(mIsolate);
+	global->Set(
+		v8::String::NewFromUtf8(mIsolate, "test", v8::NewStringType::kNormal).ToLocalChecked(),
+		v8::FunctionTemplate::New(mIsolate, testAA));
 
-	char* chars = new char[size + 1];
-	chars[size] = '\0';
-	for (size_t i = 0; i < size;) {
-		i += fread(&chars[i], 1, size - i, file);
-		if (ferror(file)) {
-			fclose(file);
-			return MaybeLocal<String>();
-		}
-	}
-	fclose(file);
-	MaybeLocal<String> result = String::NewFromUtf8(
-		isolate, chars, NewStringType::kNormal, static_cast<int>(size));
-	delete[] chars;
-	return result;
+	parent->Set(String::NewFromUtf8(mIsolate,"console"), global->NewInstance());
+	//Local<v8::Object> native = Local<Object>::Cast(parent->Get(v8_str("egret")));
+	//native->Set(1, global);
+	//native->Set()
+	//native->Set( Persistent<String>)
+	return;
 }
 
 
