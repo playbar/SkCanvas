@@ -80,9 +80,10 @@ void JSEngine::init()
 	context->Enter();
 	//mContext.Reset(mIsolate, context);
 	Local<Object > global = context->Global();
-	setGlobalFun(global);
 
-	Local<v8::Object> native = Local<Object>::Cast(context->Global()->Get(v8_str("egret")));
+	setGlobalFun(global);
+	Local<Value> val = context->Global()->Get(v8_str("egret"));
+	Local<v8::Object> native = Local<Object>::Cast(val);
 	setClassInterface(native);
 	
 	//Local<v8::Object> native = Local<Object>::Cast(context->Global()->Get(v8_str("egret")));
@@ -207,7 +208,7 @@ Handle<ObjectTemplate> JSEngine::setGlobalFunctions()
 	return result;
 }
 
-void testAA(const v8::FunctionCallbackInfo<v8::Value>& args)
+void infoAA(const v8::FunctionCallbackInfo<v8::Value>& args)
 {
 	int i = 0;
 	i++;
@@ -217,10 +218,10 @@ void JSEngine::setGlobalFun( Local<Object> parent )
 {
 	v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(mIsolate);
 	global->Set(
-		v8::String::NewFromUtf8(mIsolate, "test", v8::NewStringType::kNormal).ToLocalChecked(),
-		v8::FunctionTemplate::New(mIsolate, testAA));
+		v8::String::NewFromUtf8(mIsolate, "info", v8::NewStringType::kNormal).ToLocalChecked(),
+		v8::FunctionTemplate::New(mIsolate, infoAA));
 
-	parent->Set(String::NewFromUtf8(mIsolate,"console"), global->NewInstance());
+	parent->Set(String::NewFromUtf8(mIsolate,"egret"), global->NewInstance());
 	return;
 }
 
@@ -238,9 +239,14 @@ void JSEngine::setClassInterface(Local<Object> parent)
 	//context->Enter();
 	//v8::Context::Scope scope(context);
 	//Local<v8::Object> native = Local<Object>::Cast(parent->Get(v8_str("egret")));
-	v8::Local<v8::ObjectTemplate> testclass = v8::ObjectTemplate::New(v8::Isolate::GetCurrent());
-	testclass->Set(v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), "testAAA", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), testAAA));	
-	parent->Set(context, String::NewFromUtf8(v8::Isolate::GetCurrent(), "test"), testclass->NewInstance());
+	v8::Local<v8::FunctionTemplate> testclass = v8::FunctionTemplate::New(v8::Isolate::GetCurrent());
+	testclass->SetClassName(String::NewFromUtf8(mIsolate,"test"));
+	Handle<ObjectTemplate> temp_proto = testclass->PrototypeTemplate();
+	temp_proto->Set(v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), "testAAA", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), testAAA));
+	Handle<ObjectTemplate> test_inst = testclass->InstanceTemplate();
+	test_inst->SetInternalFieldCount(1);
+
+	parent->Set(context, String::NewFromUtf8(v8::Isolate::GetCurrent(), "test"), testclass->GetFunction());
 	return;
 }
 
