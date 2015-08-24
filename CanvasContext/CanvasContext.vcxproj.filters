@@ -210,6 +210,9 @@
     <ClCompile Include="v8binding\JSCore.cpp">
       <Filter>v8binding</Filter>
     </ClCompile>
+    <ClCompile Include="v8binding\V8GlobalFun.cpp">
+      <Filter>v8binding</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\skia\third_party\externals\libpng\png.h">
@@ -339,6 +342,9 @@
       <Filter>v8binding</Filter>
     </ClInclude>
     <ClInclude Include="v8binding\JSCore.h">
+      <Filter>v8binding</Filter>
+    </ClInclude>
+    <ClInclude Include="v8binding\V8GlobalFun.h">
       <Filter>v8binding</Filter>
     </ClInclude>
   </ItemGroup>

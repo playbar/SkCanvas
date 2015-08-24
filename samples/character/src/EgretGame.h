@@ -74,7 +74,6 @@ protected:
     void render(float elapsedTime);
 
 public: //add by hgl
-	void TestV8();
 
 private:
     

@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "map"
+#include "JSCore.h"
+#include "V8GlobalFun.h"
 
 #include <include/v8.h>
 #include <include/libplatform/libplatform.h>
@@ -18,7 +20,7 @@ using namespace v8;
 
 #define EGRET_GAME_ROOT "egret-game"
 #ifndef EGRET_RUNTIME
-#	define GAME_LOADER "C:/tmp/egret-game/launcher/shellTest.js"
+#	define GAME_LOADER "C:/tmp/egret-game/launcher/native_loader.js"
 #else
 #	define GAME_LOADER "launcher/runtime_loader.js"
 #endif /* EGRET_RUNTIME */
@@ -41,11 +43,6 @@ void clearStringMap(void)
 	stringMap.clear();
 }
 
-const char * toCString(const String::Utf8Value& value)
-{
-	return *value ? *value : "<string conversion failed>";
-}
-
 JSEngine::JSEngine()
 {
 	V8::InitializeICU();
@@ -64,37 +61,22 @@ JSEngine::~JSEngine()
 
 void JSEngine::init()
 {
-
-	// Create a new Isolate and make it the current one.
-
 	create_params.array_buffer_allocator = &allocator;
 	mIsolate = Isolate::New(create_params);
 	Isolate::Scope isolate_scope(mIsolate);
-	// Create a stack-allocated handle scope.
 	HandleScope handle_scope(mIsolate);
-	//LocalContext localConext(mIsolate);
-	//Local<Context> context = localConext.local();
-	//Local<Context> context = Context::New(mIsolate, NULL, v8::Handle<v8::ObjectTemplate>());
 	Local<Context> context = CreateShellContext(mIsolate);
 	mContext.Reset(mIsolate, context);
 	context->Enter();
-	//mContext.Reset(mIsolate, context);
 	Local<Object > global = context->Global();
+	V8SetGlobalFun(global);
 
-	setGlobalFun(global);
-	Local<Value> val = context->Global()->Get(v8_str("egret"));
-	Local<v8::Object> native = Local<Object>::Cast(val);
+	Local<v8::Object> native = Local<Object>::Cast(context->Global()->Get(v8_str("egret")));
 	setClassInterface(native);
-	
-	//Local<v8::Object> native = Local<Object>::Cast(context->Global()->Get(v8_str("egret")));
-	
 	
 
 	Context::Scope context_scope(context);
-
-	v8::Local<v8::String> file_name =
-		v8::String::NewFromUtf8(mIsolate, GAME_LOADER, v8::NewStringType::kNormal)
-		.ToLocalChecked();
+	v8::Local<v8::String> file_name = v8::String::NewFromUtf8(mIsolate, GAME_LOADER, v8::NewStringType::kNormal).ToLocalChecked();
 	v8::Local<v8::String> source;
 	if (!ReadFile(mIsolate, GAME_LOADER).ToLocal(&source)) 
 	{
@@ -144,29 +126,13 @@ void JSEngine::setOnUpdateGame(Handle<Value> update, Handle<Value> owner)
 	}
 }
 
-void JSEngine::reportException(TryCatch& try_catch)
-{
-	HandleScope handle_scope(mIsolate);
-	String::Utf8Value exception(try_catch.Exception());
-	const char* exception_string = toCString(exception);
-	Handle<Message> message = try_catch.Message();
-
-	if (!message.IsEmpty()) {
-		String::Utf8Value filename(message->GetScriptResourceName());
-		const char* filename_string = toCString(filename);
-		int linenum = message->GetLineNumber();
-		String::Utf8Value sourceline(message->GetSourceLine());
-		SkDebugf("%s:%d : %s", filename_string, linenum, exception_string);
-	}
-
-}
 
 Handle<Value> JSEngine::callFunction(Handle<Function> func, Handle<Object> scope, int argc, Handle<Value> *argv)
 {
 	TryCatch tryCatch;
 	Handle<Value> result = func->Call(scope, argc, argv);
 	if (tryCatch.HasCaught()) {
-		reportException(tryCatch);
+		ReportException(tryCatch);
 	}
 	return result;
 }
@@ -208,22 +174,6 @@ Handle<ObjectTemplate> JSEngine::setGlobalFunctions()
 	return result;
 }
 
-void infoAA(const v8::FunctionCallbackInfo<v8::Value>& args)
-{
-	int i = 0;
-	i++;
-}
-
-void JSEngine::setGlobalFun( Local<Object> parent )
-{
-	v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(mIsolate);
-	global->Set(
-		v8::String::NewFromUtf8(mIsolate, "info", v8::NewStringType::kNormal).ToLocalChecked(),
-		v8::FunctionTemplate::New(mIsolate, infoAA));
-
-	parent->Set(String::NewFromUtf8(mIsolate,"egret"), global->NewInstance());
-	return;
-}
 
 void testAAA(const v8::FunctionCallbackInfo<v8::Value>& args)
 {

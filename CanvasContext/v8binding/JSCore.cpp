@@ -1,8 +1,5 @@
 #include "JSCore.h"
-
-
-static bool run_shell;
-
+#include "SkTypes.h"
 
 class ShellArrayBufferAllocator : public v8::ArrayBuffer::Allocator {
 public:
@@ -14,70 +11,20 @@ public:
 	virtual void Free(void* data, size_t) { free(data); }
 };
 
-
-int main11(int argc, char* argv[]) {
-	v8::V8::InitializeICU();
-	v8::Platform* platform = v8::platform::CreateDefaultPlatform();
-	v8::V8::InitializePlatform(platform);
-	v8::V8::Initialize();
-	v8::V8::SetFlagsFromCommandLine(&argc, argv, true);
-	ShellArrayBufferAllocator array_buffer_allocator;
-	v8::Isolate::CreateParams create_params;
-	create_params.array_buffer_allocator = &array_buffer_allocator;
-	v8::Isolate* isolate = v8::Isolate::New(create_params);
-	run_shell = (argc == 1);
-	int result;
-	{
-		v8::Isolate::Scope isolate_scope(isolate);
-		v8::HandleScope handle_scope(isolate);
-		v8::Local<v8::Context> context = CreateShellContext(isolate);
-		if (context.IsEmpty()) {
-			fprintf(stderr, "Error creating context\n");
-			return 1;
-		}
-		v8::Context::Scope context_scope(context);
-		result = RunMain(isolate, argc, argv);
-		if (run_shell) RunShell(context);
-	}
-	isolate->Dispose();
-	v8::V8::Dispose();
-	v8::V8::ShutdownPlatform();
-	delete platform;
-	return result;
-}
-
-
 // Extracts a C string from a V8 Utf8Value.
-const char* ToCString(const v8::String::Utf8Value& value) {
+const char* ToCString(const v8::String::Utf8Value& value)
+{
 	return *value ? *value : "<string conversion failed>";
 }
 
-
-// Creates a new execution environment containing the built-in
-// functions.
-v8::Local<v8::Context> CreateShellContext(v8::Isolate* isolate) {
+v8::Local<v8::Context> CreateShellContext(v8::Isolate* isolate) 
+{
 	v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
-	
-	global->Set(
-		v8::String::NewFromUtf8(isolate, "print", v8::NewStringType::kNormal).ToLocalChecked(),
-		v8::FunctionTemplate::New(isolate, Print));
-	// Bind the global 'read' function to the C++ Read callback.
-	global->Set(v8::String::NewFromUtf8(
-		isolate, "read", v8::NewStringType::kNormal).ToLocalChecked(),
-		v8::FunctionTemplate::New(isolate, Read));
-	// Bind the global 'load' function to the C++ Load callback.
-	global->Set(v8::String::NewFromUtf8(
-		isolate, "load", v8::NewStringType::kNormal).ToLocalChecked(),
-		v8::FunctionTemplate::New(isolate, Load));
-	// Bind the 'quit' function
-	global->Set(v8::String::NewFromUtf8(
-		isolate, "quit", v8::NewStringType::kNormal).ToLocalChecked(),
-		v8::FunctionTemplate::New(isolate, Quit));
-	// Bind the 'version' function
-	global->Set(
-		v8::String::NewFromUtf8(isolate, "version", v8::NewStringType::kNormal).ToLocalChecked(),
-		v8::FunctionTemplate::New(isolate, Version));
-
+	global->Set(v8::String::NewFromUtf8(isolate, "print", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, Print));
+	global->Set(v8::String::NewFromUtf8(isolate, "read", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, Read));
+	global->Set(v8::String::NewFromUtf8(isolate, "load", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, Load));
+	global->Set(v8::String::NewFromUtf8(isolate, "quit", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, Quit));
+	global->Set(v8::String::NewFromUtf8(isolate, "version", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, Version));
 	return v8::Context::New(isolate, NULL, global);
 }
 
@@ -209,13 +156,11 @@ v8::MaybeLocal<v8::String> ReadFile(v8::Isolate* isolate, const char* name) {
 
 
 // Process remaining command line arguments and execute files
-int RunMain(v8::Isolate* isolate, int argc, char* argv[]) {
+int RunMain(v8::Isolate* isolate, int argc, char* argv[])
+{
 	for (int i = 1; i < argc; i++) {
 		const char* str = argv[i];
-		if (strcmp(str, "--shell") == 0) {
-			run_shell = true;
-		}
-		else if (strcmp(str, "-f") == 0) {
+		if (strcmp(str, "-f") == 0) {
 			// Ignore any -f flags for compatibility with the other stand-
 			// alone JavaScript engines.
 			continue;
@@ -359,4 +304,20 @@ void ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch) {
 	}
 }
 
+void ReportException(TryCatch& try_catch)
+{
+	HandleScope handle_scope(v8::Isolate::GetCurrent());
+	String::Utf8Value exception(try_catch.Exception());
+	const char* exception_string = ToCString(exception);
+	Handle<Message> message = try_catch.Message();
+
+	if (!message.IsEmpty()) {
+		String::Utf8Value filename(message->GetScriptResourceName());
+		const char* filename_string = ToCString(filename);
+		int linenum = message->GetLineNumber();
+		String::Utf8Value sourceline(message->GetSourceLine());
+		SkDebugf("%s:%d : %s", filename_string, linenum, exception_string);
+	}
+
+}
 

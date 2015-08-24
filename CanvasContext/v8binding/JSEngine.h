@@ -40,7 +40,6 @@ public:
 	void SetNativeObject();
 
 	void setOnUpdateGame(Handle<Value> update, Handle<Value> owner);
-	void reportException(TryCatch& try_catch);
 	Handle<Value> callFunction(Handle<Function> func, Handle<Object> scope, int argc, Handle<Value> *argv);
 	Handle<Value> onFunction(const char *root, const char *name, int argc, Handle<Value> argv[]);
 	void setGlobalFun(Local<Object> parent );

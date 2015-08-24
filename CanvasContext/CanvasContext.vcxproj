@@ -77,6 +77,7 @@
     <ClCompile Include="v8binding\CanvasContext2D_v8.cpp" />
     <ClCompile Include="v8binding\JSCore.cpp" />
     <ClCompile Include="v8binding\JSEngine.cpp" />
+    <ClCompile Include="v8binding\V8GlobalFun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\skia\third_party\externals\libpng\png.h" />
@@ -122,6 +123,7 @@
     <ClInclude Include="v8binding\CanvasContext2D_v8.h" />
     <ClInclude Include="v8binding\JSCore.h" />
     <ClInclude Include="v8binding\JSEngine.h" />
+    <ClInclude Include="v8binding\V8GlobalFun.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <Keyword>Win32Proj</Keyword>
