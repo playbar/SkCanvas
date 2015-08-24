@@ -1,6 +1,12 @@
 #include "JSCore.h"
 #include "SkTypes.h"
 
+#ifndef EGRET_RUNTIME
+#	define GAME_LOADER "C:/tmp/egret-game/launcher/native_loader.js"
+#else
+#	define GAME_LOADER "launcher/runtime_loader.js"
+#endif /* EGRET_RUNTIME */
+
 class ShellArrayBufferAllocator : public v8::ArrayBuffer::Allocator {
 public:
 	virtual void* Allocate(size_t length) {
@@ -25,6 +31,7 @@ v8::Local<v8::Context> CreateShellContext(v8::Isolate* isolate)
 	global->Set(v8::String::NewFromUtf8(isolate, "load", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, Load));
 	global->Set(v8::String::NewFromUtf8(isolate, "quit", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, Quit));
 	global->Set(v8::String::NewFromUtf8(isolate, "version", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, Version));
+	global->Set(v8::String::NewFromUtf8(isolate, "require", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, V8_Require));
 	return v8::Context::New(isolate, NULL, global);
 }
 
@@ -32,7 +39,8 @@ v8::Local<v8::Context> CreateShellContext(v8::Isolate* isolate)
 // The callback that is invoked by v8 whenever the JavaScript 'print'
 // function is called.  Prints its arguments on stdout separated by
 // spaces and ending with a newline.
-void Print(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void Print(const v8::FunctionCallbackInfo<v8::Value>& args)
+{
 	bool first = true;
 	for (int i = 0; i < args.Length(); i++) {
 		v8::HandleScope handle_scope(args.GetIsolate());
@@ -128,6 +136,11 @@ void Version(const v8::FunctionCallbackInfo<v8::Value>& args) {
 		v8::NewStringType::kNormal).ToLocalChecked());
 }
 
+void V8_Require(const v8::FunctionCallbackInfo<v8::Value> &args)
+{
+
+}
+
 
 // Reads a file into a v8 string.
 v8::MaybeLocal<v8::String> ReadFile(v8::Isolate* isolate, const char* name) {
@@ -154,80 +167,11 @@ v8::MaybeLocal<v8::String> ReadFile(v8::Isolate* isolate, const char* name) {
 	return result;
 }
 
-
-// Process remaining command line arguments and execute files
-int RunMain(v8::Isolate* isolate, int argc, char* argv[])
-{
-	for (int i = 1; i < argc; i++) {
-		const char* str = argv[i];
-		if (strcmp(str, "-f") == 0) {
-			// Ignore any -f flags for compatibility with the other stand-
-			// alone JavaScript engines.
-			continue;
-		}
-		else if (strncmp(str, "--", 2) == 0) {
-			fprintf(stderr,
-				"Warning: unknown flag %s.\nTry --help for options\n", str);
-		}
-		else if (strcmp(str, "-e") == 0 && i + 1 < argc) {
-			// Execute argument given to -e option directly.
-			v8::Local<v8::String> file_name =
-				v8::String::NewFromUtf8(isolate, "unnamed",
-				v8::NewStringType::kNormal).ToLocalChecked();
-			v8::Local<v8::String> source;
-			if (!v8::String::NewFromUtf8(isolate, argv[++i],
-				v8::NewStringType::kNormal)
-				.ToLocal(&source)) {
-				return 1;
-			}
-			if (!ExecuteString(isolate, source, file_name, false, true)) return 1;
-		}
-		else {
-			// Use all other arguments as names of files to load and run.
-			v8::Local<v8::String> file_name =
-				v8::String::NewFromUtf8(isolate, str, v8::NewStringType::kNormal)
-				.ToLocalChecked();
-			v8::Local<v8::String> source;
-			if (!ReadFile(isolate, str).ToLocal(&source)) {
-				fprintf(stderr, "Error reading '%s'\n", str);
-				continue;
-			}
-			if (!ExecuteString(isolate, source, file_name, false, true)) return 1;
-		}
-	}
-	return 0;
-}
-
-
-// The read-eval-execute loop of the shell.
-void RunShell(v8::Local<v8::Context> context) {
-	fprintf(stderr, "V8 version %s [sample shell]\n", v8::V8::GetVersion());
-	static const int kBufferSize = 256;
-	// Enter the execution environment before evaluating any code.
-	v8::Context::Scope context_scope(context);
-	v8::Local<v8::String> name(
-		v8::String::NewFromUtf8(context->GetIsolate(), "(shell)",
-		v8::NewStringType::kNormal).ToLocalChecked());
-	while (true) {
-		char buffer[kBufferSize];
-		fprintf(stderr, "> ");
-		char* str = fgets(buffer, kBufferSize, stdin);
-		if (str == NULL) break;
-		v8::HandleScope handle_scope(context->GetIsolate());
-		ExecuteString(
-			context->GetIsolate(),
-			v8::String::NewFromUtf8(context->GetIsolate(), str,
-			v8::NewStringType::kNormal).ToLocalChecked(),
-			name, true, true);
-	}
-	fprintf(stderr, "\n");
-}
-
-
 // Executes a string within the current v8 context.
 bool ExecuteString(v8::Isolate* isolate, v8::Local<v8::String> source,
 	v8::Local<v8::Value> name, bool print_result,
-	bool report_exceptions) {
+	bool report_exceptions) 
+{
 	v8::HandleScope handle_scope(isolate);
 	v8::TryCatch try_catch(isolate);
 	v8::ScriptOrigin origin(name);
@@ -260,6 +204,23 @@ bool ExecuteString(v8::Isolate* isolate, v8::Local<v8::String> source,
 			return true;
 		}
 	}
+}
+
+bool RunJavaScript( )
+{
+	v8::Isolate * isolate = v8::Isolate::GetCurrent();
+	Local<Context> context = isolate->GetCurrentContext();
+	Context::Scope context_scope(context);
+	v8::Local<v8::String> file_name = v8::String::NewFromUtf8(isolate, GAME_LOADER, v8::NewStringType::kNormal).ToLocalChecked();
+	v8::Local<v8::String> source;
+	if (!ReadFile(isolate, GAME_LOADER).ToLocal(&source))
+	{
+		fprintf(stderr, "Error reading '%s'\n", GAME_LOADER);
+		return false;
+	}
+	if (!ExecuteString(isolate, source, file_name, true, true))
+		return false;
+	return true;
 }
 
 
