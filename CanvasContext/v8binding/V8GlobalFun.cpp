@@ -14,7 +14,12 @@ void v8_console_log(const v8::FunctionCallbackInfo<v8::Value> &args)
 
 void v8_console_info(const v8::FunctionCallbackInfo<v8::Value> &args)
 {
+	BEGIN_SCOPE_WHITH_ARGS(1);
 
+	v8::String::Utf8Value str(args[0]);
+	const char* cstr = ToCString(str);
+	SkDebugf(cstr);
+	return;
 }
 
 void v8_console_debug(const v8::FunctionCallbackInfo<v8::Value> &args)

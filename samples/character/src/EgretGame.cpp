@@ -68,7 +68,7 @@ void EgretGame::initialize()
 
 void EgretGame::update(float elapsedTime)
 {
-	mJSEngine.update();
+	mJSEngine.update( elapsedTime );
 	SkPaint paint;
 	paint.setAntiAlias(true);
 	paint.setColor(0xFFFF0000);
@@ -90,7 +90,7 @@ void EgretGame::update(float elapsedTime)
 
 void EgretGame::render(float elapsedTime)
 {
-	mJSEngine.render();
+	mJSEngine.render( elapsedTime );
 	fCurContext->flush();
 }
 

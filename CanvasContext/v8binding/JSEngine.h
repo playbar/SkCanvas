@@ -35,9 +35,8 @@ public:
 public:
 	void init();
 	void uninit();
-	void update();
-	void render();
-	void SetNativeObject();
+	void update(float elapsedTime);
+	void render(float elapsedTime);
 
 	void setOnUpdateGame(Handle<Value> update, Handle<Value> owner);
 	Handle<Value> callFunction(Handle<Function> func, Handle<Object> scope, int argc, Handle<Value> *argv);

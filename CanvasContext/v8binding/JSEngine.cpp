@@ -48,6 +48,8 @@ JSEngine::JSEngine()
 	mPlatform = v8::platform::CreateDefaultPlatform();
 	V8::InitializePlatform(mPlatform);
 	V8::Initialize();
+	create_params.array_buffer_allocator = &allocator;
+	mIsolate = Isolate::New(create_params);
 }
 
 JSEngine::~JSEngine()
@@ -60,8 +62,6 @@ JSEngine::~JSEngine()
 
 void JSEngine::init()
 {
-	create_params.array_buffer_allocator = &allocator;
-	mIsolate = Isolate::New(create_params);
 	Isolate::Scope isolate_scope(mIsolate);
 	HandleScope handle_scope(mIsolate);
 	Local<Context> context = CreateShellContext(mIsolate);
@@ -75,27 +75,28 @@ void JSEngine::init()
 	
 	RunJavaScript(GAME_LOADER);
 
+	onFunction("egret", "egtMain", 0, NULL);
+	//Local<Value> val = Local<Value>::New(mIsolate, String::NewFromUtf8(mIsolate, "egtMain"));
+	//Local<Function> func = Local<Function>::Cast(native->Get( val));
+	//callFunction(func, native, 0, NULL);
 }
 
 void JSEngine::uninit()
 {
 	v8::Local<v8::Context>::New(mIsolate, mContext)->Exit();
 	mContext.Reset();
-
 	mIsolate->Dispose();
 }
 
-void JSEngine::update()
+void JSEngine::update(float elapsedTime )
 {
-
+	BEGIN_SCOPE;
+	//HandleScope handle_scope(mIsolate);
+	Handle<Value> argv[] = { v8_num(elapsedTime) };
+	onFunction("egret", "executeMainLoop", 1, argv );
 }
 
-void JSEngine::render()
-{
-
-}
-
-void JSEngine::SetNativeObject()
+void JSEngine::render(float elapsedTime)
 {
 
 }
@@ -131,7 +132,8 @@ Handle<Value> JSEngine::onFunction(const char *root, const char *name, int argc,
 	Context::Scope context_scope(context);
 	context->Enter();
 
-	Handle<Object> scope = context->Global();
+	Local<Value> val = Local<Value>::New(mIsolate, String::NewFromUtf8(mIsolate, root));
+	Handle<Object> scope = context->Global()->Get(val)->ToObject();
 	if (scope.IsEmpty()) {
 		SkDebugf("%s: %s is undefined", __FUNCTION__, root);
 	}

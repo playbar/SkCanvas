@@ -38,6 +38,10 @@ void V8_Require(const v8::FunctionCallbackInfo<v8::Value> &args);
 v8::MaybeLocal<v8::String> ReadFile(v8::Isolate* isolate, const char* name);
 void ReportException(v8::Isolate* isolate, v8::TryCatch* handler);
 
+static inline v8::Local<v8::Value> v8_num(double x) {
+	return v8::Number::New(v8::Isolate::GetCurrent(), x);
+}
+
 static inline v8::Local<v8::String> v8_str(const char* x) {
 	return v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), x);
 }
