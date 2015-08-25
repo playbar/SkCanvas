@@ -35,6 +35,17 @@ using namespace v8;
 		BEGIN_SCOPE; \
 		CHECK_ARGUMENTS( X );
 
+#define V8TRYCATCH_VOID(type, var, value)  \
+    type var;                              \
+    {                                      \
+        v8::TryCatch block;                \
+        var = (value);                     \
+        if (UNLIKELY(block.HasCaught())) { \
+            block.ReThrow();               \
+            return;                        \
+		}                                  \
+    }
+
 
 v8::Local<v8::Context> CreateShellContext(v8::Isolate* isolate);
 bool ExecuteString(v8::Isolate* isolate, v8::Local<v8::String> source,
@@ -62,6 +73,8 @@ static inline v8::Local<v8::String> v8_str(const char* x) {
 const char* ToCString(const v8::String::Utf8Value& value);
 
 void ReportException(TryCatch& try_catch);
+
+//void CreateSkCanvas(int w, int h);
 
 #endif
 

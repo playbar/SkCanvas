@@ -9,6 +9,7 @@ const char* ToCString(const v8::String::Utf8Value& value)
 	return *value ? *value : "<string conversion failed>";
 }
 
+
 v8::Local<v8::Context> CreateShellContext(v8::Isolate* isolate) 
 {
 	v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);

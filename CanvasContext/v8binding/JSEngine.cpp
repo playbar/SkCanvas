@@ -9,6 +9,7 @@
 #include "map"
 #include "JSCore.h"
 #include "V8GlobalFun.h"
+#include "CanvasContext2D_v8.h"
 
 #include <include/v8.h>
 #include <include/libplatform/libplatform.h>
@@ -150,18 +151,24 @@ void testAAA(const v8::FunctionCallbackInfo<v8::Value>& args)
 	i++;
 }
 
-
-void JSEngine::setClassInterface(Local<Object> parent)
+void JSEngine::setTestClass(Local<Object> parent)
 {
-	Local<Context> context = Local<Context>::New(v8::Isolate::GetCurrent(), mContext);
+	Isolate *isolate = v8::Isolate::GetCurrent();
+	Local<Context> context = isolate->GetCurrentContext();// Local<Context>::New(v8::Isolate::GetCurrent(), mContext);
 	v8::Local<v8::FunctionTemplate> testclass = v8::FunctionTemplate::New(v8::Isolate::GetCurrent());
-	testclass->SetClassName(String::NewFromUtf8(mIsolate,"test"));
+	testclass->SetClassName(String::NewFromUtf8(mIsolate, "test"));
 	Handle<ObjectTemplate> temp_proto = testclass->PrototypeTemplate();
 	temp_proto->Set(v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), "testAAA", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(v8::Isolate::GetCurrent(), testAAA));
 	Handle<ObjectTemplate> test_inst = testclass->InstanceTemplate();
 	test_inst->SetInternalFieldCount(1);
-
 	parent->Set(context, String::NewFromUtf8(v8::Isolate::GetCurrent(), "test"), testclass->GetFunction());
+
+}
+
+void JSEngine::setClassInterface(Local<Object> parent)
+{
+	setTestClass(parent);
+	setCanvasContext2DClass(parent, mIsolate);
 	return;
 }
 

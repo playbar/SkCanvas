@@ -57,7 +57,6 @@ protected:
      * @see Game::initialize
      */
     void initialize();
-
     /**
      * @see Game::finalize
      */

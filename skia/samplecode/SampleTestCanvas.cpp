@@ -23,6 +23,7 @@
 #include "CanvasPattern.h"
 #include "include/v8.h"
 #include "include/libplatform/libplatform.h"
+#include "v8binding/JSEngine.h"
 using namespace v8;
 
 using namespace WebCore;
@@ -43,16 +44,6 @@ static void test_circlebounds(SkCanvas*) {
     p.addOval(r);
     SkASSERT(r == p.getBounds());
 }
-
-class ArrayBufferAllocator : public v8::ArrayBuffer::Allocator {
-public:
-	virtual void* Allocate(size_t length) {
-		void* data = AllocateUninitialized(length);
-		return data == NULL ? data : memset(data, 0, length);
-	}
-	virtual void* AllocateUninitialized(size_t length) { return malloc(length); }
-	virtual void Free(void* data, size_t) { free(data); }
-};
 
 class CanvasTestView : public SampleView {
 public:

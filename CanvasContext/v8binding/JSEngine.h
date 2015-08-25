@@ -32,6 +32,7 @@ public:
 	Handle<Value> callFunction(Handle<Function> func, Handle<Object> scope, int argc, Handle<Value> *argv);
 	Handle<Value> onFunction(const char *root, const char *name, int argc, Handle<Value> argv[]);
 	void setGlobalFun(Local<Object> parent );
+	void setTestClass(Local<Object> parent);
 	void setClassInterface(Local<Object> parent);
 public:
 	Handle<ObjectTemplate> setGlobalFunctions();

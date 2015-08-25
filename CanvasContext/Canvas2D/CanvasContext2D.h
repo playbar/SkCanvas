@@ -24,7 +24,7 @@ public:
 	{
 		return adoptPtr(new CanvasContext2D(canvas));
 	}
-
+	CanvasContext2D(SkCanvas*);
 	virtual ~CanvasContext2D();
 
 	CanvasStyle *strokeStyle() const;
@@ -241,8 +241,6 @@ private:
 		FontDescription m_FontDescription;
 		bool m_realizedFont;
 	};
-
-	CanvasContext2D(SkCanvas* );
 
 	State& modifiableState() { return m_stateStack.back(); }
 	const State& state() const { return m_stateStack.back(); }

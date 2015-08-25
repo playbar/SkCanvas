@@ -1,4 +1,5 @@
 #include "EgretGame.h"
+#include "ScreenDisplayer.h"
 
 #include "gl/GrGLInterface.h"
 #include "SkGpuDevice.h"
@@ -26,6 +27,8 @@ using namespace WTF;
 // Declare our game instance
 EgretGame game;
 
+SkCanvas *gCanvas;
+
 
 EgretGame::EgretGame()
 {
@@ -33,6 +36,9 @@ EgretGame::EgretGame()
 
 void EgretGame::initialize()
 {
+	// Display the gameplay splash screen for at least 1 second.
+	displayScreen(this, &EgretGame::drawSplash, NULL, 1000L);
+
 	int iw = getWidth();
 	int ih = getHeight();
 	glViewport(0, 0, iw, ih);
@@ -53,38 +59,33 @@ void EgretGame::initialize()
 	fCurRenderTarget = fCurContext->wrapBackendRenderTarget(desc);
 	SkAutoTUnref<SkBaseDevice> device(new SkGpuDevice(fCurContext, fCurRenderTarget));
 	fCanvas = new SkCanvas(device);
-
-    setMultiTouch(true);
-
-    // Display the gameplay splash screen for at least 1 second.
-    //displayScreen(this, &CharacterGame::drawSplash, NULL, 1000L);
-	//TestV8();
+	gCanvas = fCanvas;
+    setMultiTouch(true); 
 
 	mJSEngine.init();
 
 }
 
-
-
 void EgretGame::update(float elapsedTime)
 {
-	mJSEngine.update( elapsedTime );
-	SkPaint paint;
-	paint.setAntiAlias(true);
-	paint.setColor(0xFFFF0000);
-	paint.setStyle(SkPaint::kStroke_Style);
-	paint.setStrokeWidth(10);
-	fCanvas->clear(0xff008000);
-	SkPath path;
-	path.moveTo(0, 0);
-	path.lineTo(50, 500);
-	fCanvas->drawPath(path, paint);
-	//fCanvas->drawRectCoords(10, 10, 1200, 600, paint);
-	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(fCanvas);
-	ctx->setFillColor("blue");
-	ctx->setShadowBlur(20);
-	ctx->setShadowColor("white");
-	ctx->fillRect(20, 20, 75, 50);
+	clear(CLEAR_COLOR_DEPTH, Vector4(1, 1, 1, 1), 1.0f, 0);
+	mJSEngine.update(elapsedTime);
+	//SkPaint paint;
+	//paint.setAntiAlias(true);
+	//paint.setColor(0xFFFF0000);
+	//paint.setStyle(SkPaint::kStroke_Style);
+	//paint.setStrokeWidth(10);
+	//fCanvas->clear(0xff008000);
+	//SkPath path;
+	//path.moveTo(0, 0);
+	//path.lineTo(50, 500);
+	//fCanvas->drawPath(path, paint);
+	////fCanvas->drawRectCoords(10, 10, 1200, 600, paint);
+	//PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(fCanvas);
+	//ctx->setFillColor("blue");
+	//ctx->setShadowBlur(20);
+	//ctx->setShadowColor("white");
+	//ctx->fillRect(20, 20, 75, 50);
 
 }
 
@@ -104,20 +105,20 @@ void EgretGame::finalize()
 
 void EgretGame::drawSplash(void* param)
 {
-	SkPaint paint;
-	paint.setColor(0xFFFF0000);
-	paint.setStrokeWidth(10);
-	fCanvas->clear(0xff000080);
-	SkPath path;
-	path.moveTo(10, 10);
-	path.lineTo(50, 50);
-	fCanvas->drawPath(path, paint);
-    //clear(CLEAR_COLOR_DEPTH, Vector4(0, 0, 0, 1), 1.0f, 0);
-    //SpriteBatch* batch = SpriteBatch::create("res/eglogo.png");
-    //batch->start();
-    //batch->draw(getWidth() * 0.5f, getHeight() * 0.5f, 0.0f, 512.0f, 512.0f, 0.0f, 1.0f, 1.0f, 0.0f, Vector4::one(), true);
-    //batch->finish();
-    //SAFE_DELETE(batch);
+	//SkPaint paint;
+	//paint.setColor(0xFFFF0000);
+	//paint.setStrokeWidth(10);
+	//fCanvas->clear(0xff000080);
+	//SkPath path;
+	//path.moveTo(10, 10);
+	//path.lineTo(50, 50);
+	//fCanvas->drawPath(path, paint);
+	clear(CLEAR_COLOR_DEPTH, Vector4(0, 0, 0, 1), 1.0f, 0);
+	SpriteBatch* batch = SpriteBatch::create("res/eglogo.png");
+	batch->start();
+	batch->draw(getWidth() * 0.5f, getHeight() * 0.5f, 0.0f, 512.0f, 512.0f, 0.0f, 1.0f, 1.0f, 0.0f, Vector4::one(), true);
+	batch->finish();
+	SAFE_DELETE(batch);
 }
 
 bool EgretGame::visitDrawNode(Node* node, void *cookie)
