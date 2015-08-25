@@ -2,15 +2,6 @@
 #include "SkTypes.h"
 #include "string"
 
-class ShellArrayBufferAllocator : public v8::ArrayBuffer::Allocator {
-public:
-	virtual void* Allocate(size_t length) {
-		void* data = AllocateUninitialized(length);
-		return data == NULL ? data : memset(data, 0, length);
-	}
-	virtual void* AllocateUninitialized(size_t length) { return malloc(length); }
-	virtual void Free(void* data, size_t) { free(data); }
-};
 
 // Extracts a C string from a V8 Utf8Value.
 const char* ToCString(const v8::String::Utf8Value& value)

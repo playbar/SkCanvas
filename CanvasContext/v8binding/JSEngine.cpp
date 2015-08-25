@@ -14,33 +14,6 @@
 #include <include/libplatform/libplatform.h>
 using namespace v8;
 
-#define UPDATE_GAME_SCOPE "updateGameScope"
-#define UPDATE_GAME_NAME "updateGameName"
-#define EGRET_GAME_ROOT "egret-game"
-#ifndef EGRET_RUNTIME
-#	define GAME_LOADER "C:/tmp/egret-game/launcher/native_loader.js"
-#else
-#	define GAME_LOADER "launcher/runtime_loader.js"
-#endif /* EGRET_RUNTIME */
-
-
-static std::map<std::string, Local<String> > stringMap;
-typedef std::map<std::string, Local<String> >::iterator mspit;
-
-
-Local<String> getString(const char *name) {
-	mspit it = stringMap.find(name);
-	if (it != stringMap.end()) {
-		return it->second;
-	}
-	stringMap[name] = v8_str(name);// Persistent<String>::New(String::New(name));
-	return stringMap[name];
-}
-
-void clearStringMap(void)
-{
-	stringMap.clear();
-}
 
 JSEngine::JSEngine()
 {
@@ -70,12 +43,12 @@ void JSEngine::init()
 	Local<Object > global = context->Global();
 	V8SetGlobalFun(global);
 
-	Local<v8::Object> native = Local<Object>::Cast(context->Global()->Get(v8_str("egret")));
+	Local<v8::Object> native = Local<Object>::Cast(context->Global()->Get(v8_str(EGRET_ROOT)));
 	setClassInterface(native);
 	
 	RunJavaScript(GAME_LOADER);
 
-	onFunction("egret", "egtMain", 0, NULL);
+	onFunction(EGRET_ROOT, EGRET_MAIN, 0, NULL);
 	//Local<Value> val = Local<Value>::New(mIsolate, String::NewFromUtf8(mIsolate, "egtMain"));
 	//Local<Function> func = Local<Function>::Cast(native->Get( val));
 	//callFunction(func, native, 0, NULL);
@@ -96,7 +69,7 @@ void JSEngine::update(float elapsedTime )
 	context->Enter();	
 	
 	Handle<Value> argv[] = { v8_num(elapsedTime) };
-	onFunction("egret", "executeMainLoop", 1, argv );
+	onFunction(EGRET_ROOT, EGRET_MAINLOOP, 1, argv);
 }
 
 void JSEngine::render(float elapsedTime)
@@ -112,8 +85,10 @@ void JSEngine::setOnUpdateGame(Handle<Value> update, Handle<Value> owner)
 		HandleScope handle_scope(mIsolate);
 		Local<Object> global = context->Global();
 		Local<Object> gameScope = owner->ToObject();
-		gameScope->Set(getString(UPDATE_GAME_NAME), update);
-		global->Set(getString(UPDATE_GAME_SCOPE), gameScope);
+		Local<String> strName = Local<String>::New(mIsolate, String::NewFromUtf8(mIsolate, UPDATE_GAME_NAME));
+		Local<String> strScope = Local<String>::New(mIsolate, String::NewFromUtf8(mIsolate, UPDATE_GAME_SCOPE));
+		gameScope->Set(strName, update);
+		global->Set(strScope, gameScope);
 		canUpdateGame = true;
 	}
 }
@@ -178,11 +153,7 @@ void testAAA(const v8::FunctionCallbackInfo<v8::Value>& args)
 
 void JSEngine::setClassInterface(Local<Object> parent)
 {
-	//HandleScope handle_scope(mIsolate);
 	Local<Context> context = Local<Context>::New(v8::Isolate::GetCurrent(), mContext);
-	//context->Enter();
-	//v8::Context::Scope scope(context);
-	//Local<v8::Object> native = Local<Object>::Cast(parent->Get(v8_str("egret")));
 	v8::Local<v8::FunctionTemplate> testclass = v8::FunctionTemplate::New(v8::Isolate::GetCurrent());
 	testclass->SetClassName(String::NewFromUtf8(mIsolate,"test"));
 	Handle<ObjectTemplate> temp_proto = testclass->PrototypeTemplate();

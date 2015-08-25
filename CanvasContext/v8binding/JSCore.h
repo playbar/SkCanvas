@@ -11,6 +11,19 @@ using namespace v8;
 #include <stdlib.h>
 #include <string.h>
 
+#define EGRET_ROOT "egret"
+#define EGRET_MAIN "egtMain"
+#define EGRET_MAINLOOP "executeMainLoop"
+#define UPDATE_GAME_SCOPE "updateGameScope"
+#define UPDATE_GAME_NAME "updateGameName"
+
+#ifndef EGRET_RUNTIME
+#	define GAME_LOADER "C:/tmp/egret-game/launcher/native_loader.js"
+#else
+#	define GAME_LOADER "launcher/runtime_loader.js"
+#endif /* EGRET_RUNTIME */
+
+
 #define BEGIN_SCOPE HandleScope handle_scope( v8::Isolate::GetCurrent())
 #define CHECK_ARGUMENTS(X) \
 		if( args.Length() < X) {\
