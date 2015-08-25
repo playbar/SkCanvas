@@ -10,6 +10,7 @@
 #include "JSCore.h"
 #include "V8GlobalFun.h"
 #include "CanvasContext2D_v8.h"
+#include "CanvasGradient_v8.h"
 
 #include <include/v8.h>
 #include <include/libplatform/libplatform.h>
@@ -45,7 +46,7 @@ void JSEngine::init()
 	V8SetGlobalFun(global);
 
 	Local<v8::Object> native = Local<Object>::Cast(context->Global()->Get(v8_str(EGRET_ROOT)));
-	setClassInterface(native);
+	V8BindingClassInterface(native);
 	
 	RunJavaScript(GAME_LOADER);
 
@@ -165,10 +166,11 @@ void JSEngine::setTestClass(Local<Object> parent)
 
 }
 
-void JSEngine::setClassInterface(Local<Object> parent)
+void JSEngine::V8BindingClassInterface(Local<Object> parent)
 {
 	setTestClass(parent);
 	setCanvasContext2DClass(parent, mIsolate);
+	setCanvasGradientClass(parent, mIsolate);
 	return;
 }
 

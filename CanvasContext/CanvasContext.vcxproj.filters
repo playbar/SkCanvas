@@ -213,6 +213,15 @@
     <ClCompile Include="v8binding\V8GlobalFun.cpp">
       <Filter>v8binding</Filter>
     </ClCompile>
+    <ClCompile Include="v8binding\BitmapImage_v8.cpp">
+      <Filter>v8binding</Filter>
+    </ClCompile>
+    <ClCompile Include="v8binding\ImageData_v8.cpp">
+      <Filter>v8binding</Filter>
+    </ClCompile>
+    <ClCompile Include="v8binding\CanvasGradient_v8.cpp">
+      <Filter>v8binding</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\skia\third_party\externals\libpng\png.h">
@@ -345,6 +354,15 @@
       <Filter>v8binding</Filter>
     </ClInclude>
     <ClInclude Include="v8binding\V8GlobalFun.h">
+      <Filter>v8binding</Filter>
+    </ClInclude>
+    <ClInclude Include="v8binding\BitmapImage_v8.h">
+      <Filter>v8binding</Filter>
+    </ClInclude>
+    <ClInclude Include="v8binding\ImageData_v8.h">
+      <Filter>v8binding</Filter>
+    </ClInclude>
+    <ClInclude Include="v8binding\CanvasGradient_v8.h">
       <Filter>v8binding</Filter>
     </ClInclude>
   </ItemGroup>
