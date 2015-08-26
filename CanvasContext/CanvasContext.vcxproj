@@ -75,11 +75,13 @@
     <ClCompile Include="utils\TransformationMatrix.cpp" />
     <ClCompile Include="utils\TypeTraits.cpp" />
     <ClCompile Include="v8binding\BitmapImage_v8.cpp" />
-    <ClCompile Include="v8binding\CanvasContext2D_v8.cpp" />
-    <ClCompile Include="v8binding\CanvasGradient_v8.cpp" />
+    <ClCompile Include="v8binding\V8CanvasContext2D.cpp" />
+    <ClCompile Include="v8binding\V8CanvasGradient.cpp" />
+    <ClCompile Include="v8binding\DOMDataStore.cpp" />
     <ClCompile Include="v8binding\ImageData_v8.cpp" />
     <ClCompile Include="v8binding\JSCore.cpp" />
     <ClCompile Include="v8binding\JSEngine.cpp" />
+    <ClCompile Include="v8binding\V8Binding.cpp" />
     <ClCompile Include="v8binding\V8GlobalFun.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -125,12 +127,18 @@
     <ClInclude Include="utils\TransformationMatrix.h" />
     <ClInclude Include="utils\TypeTraits.h" />
     <ClInclude Include="v8binding\BitmapImage_v8.h" />
-    <ClInclude Include="v8binding\CanvasContext2D_v8.h" />
-    <ClInclude Include="v8binding\CanvasGradient_v8.h" />
+    <ClInclude Include="v8binding\V8CanvasContext2D.h" />
+    <ClInclude Include="v8binding\V8CanvasGradient.h" />
+    <ClInclude Include="v8binding\DOMDataStore.h" />
+    <ClInclude Include="v8binding\DOMWrapperMap.h" />
     <ClInclude Include="v8binding\ImageData_v8.h" />
     <ClInclude Include="v8binding\JSCore.h" />
     <ClInclude Include="v8binding\JSEngine.h" />
+    <ClInclude Include="v8binding\ScriptWrappable.h" />
+    <ClInclude Include="v8binding\UnsafePersistent.h" />
+    <ClInclude Include="v8binding\V8Binding.h" />
     <ClInclude Include="v8binding\V8GlobalFun.h" />
+    <ClInclude Include="v8binding\WrapperTypeInfo.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <Keyword>Win32Proj</Keyword>

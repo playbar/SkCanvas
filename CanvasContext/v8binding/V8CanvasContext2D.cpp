@@ -1,8 +1,9 @@
-#include "CanvasContext2D_v8.h"
+#include "V8CanvasContext2D.h"
 #include "CanvasContext2D.h"
 #include "gl/GrGLInterface.h"
 #include "SkGpuDevice.h"
 #include "JSCore.h"
+#include "V8CanvasGradient.h"
 
 extern SkCanvas *gCanvas;
 
@@ -92,7 +93,7 @@ void v8_CanvasContext2D_createLinearGradient(const v8::FunctionCallbackInfo<v8::
 	float x1 = static_cast<float>(args[2]->NumberValue());
 	float y1 = static_cast<float>(args[3]->NumberValue());
 	RefPtr<CanvasGradient> result = imp->createLinearGradient(x0, y0, x1, y1);
-
+	v8SetReturnValue(args, result.release());
 }
 
 void v8_CanvasContext2D_createRadialGradient(const v8::FunctionCallbackInfo<v8::Value> &args)
