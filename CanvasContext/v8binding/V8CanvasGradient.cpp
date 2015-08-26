@@ -7,7 +7,7 @@
 const WrapperTypeInfo V8CanvasGradient::wrapperTypeInfo =
 {
 	kEmbedderBlink, 
-	V8CanvasGradient::domTemplate, 
+	CanvasGradient_Class,
 	V8CanvasGradient::derefObject, 0, 0, 0,
 	V8CanvasGradient::installPerContextEnabledMethods, 0, 
 	WrapperTypeObjectPrototype, false 

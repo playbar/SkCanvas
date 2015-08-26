@@ -16,7 +16,6 @@ public:
 	static const WrapperTypeInfo wrapperTypeInfo;
 	static void derefObject(void*);
 	static v8::Handle<v8::Object> createWrapper(PassRefPtr<CanvasGradient> impl, v8::Handle<v8::Object> creationContext, v8::Isolate* isolate);
-	static v8::Handle<v8::FunctionTemplate> domTemplate(v8::Isolate*);
 	static void installPerContextEnabledProperties(v8::Handle<v8::Object>, CanvasGradient*, v8::Isolate*) { }
 	static void installPerContextEnabledMethods(v8::Handle<v8::Object>, v8::Isolate*) { }
 

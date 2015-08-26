@@ -27,16 +27,12 @@
 #include "OwnPtrCommon.h"
 #include <algorithm>
 
-namespace WTF {
+namespace Canvas2D {
 
     template<typename T> class PassOwnPtr;
 
     template<typename T> class OwnPtr {
-#if COMPILER_SUPPORTS(CXX_RVALUE_REFERENCES)
-        // If rvalue references are not supported, the copy constructor is
-        // public so OwnPtr cannot be marked noncopyable. See note below.
-        WTF_MAKE_NONCOPYABLE(OwnPtr);
-#endif
+
         WTF_DISALLOW_CONSTRUCTION_FROM_ZERO(OwnPtr);
     public:
         typedef typename RemoveExtent<T>::Type ValueType;
@@ -67,7 +63,7 @@ namespace WTF {
 
         void clear();
         PassOwnPtr<T> release();
-        PtrType leakPtr() WARN_UNUSED_RETURN;
+        PtrType leakPtr();
 
         ValueType& operator*() const { ASSERT(m_ptr); return *m_ptr; }
         PtrType operator->() const { ASSERT(m_ptr); return m_ptr; }
@@ -235,6 +231,6 @@ namespace WTF {
 
 } // namespace WTF
 
-using WTF::OwnPtr;
+using Canvas2D::OwnPtr;
 
 #endif // WTF_OwnPtr_h

@@ -68,7 +68,8 @@ struct WrapperTypeInfo;
         return wrapper;
     }
 
-    class V8WrapperInstantiationScope {
+    class V8WrapperInstantiationScope 
+	{
     public:
         V8WrapperInstantiationScope(v8::Handle<v8::Object> creationContext, v8::Isolate* isolate)
             : m_didEnterContext(false)

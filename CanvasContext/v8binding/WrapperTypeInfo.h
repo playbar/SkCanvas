@@ -16,6 +16,11 @@ enum GinEmbedder {
 	kEmbedderBlink,
 };
 
+enum ContextEmbedderDataFields {
+	kDebugIdIndex = 0,
+	kPerContextDataStartIndex,
+};
+
 namespace Canvas2D
 {
 
