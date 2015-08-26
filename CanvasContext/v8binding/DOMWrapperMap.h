@@ -7,7 +7,8 @@
 #include "SkTypes.h"
 #include "map"
 
-namespace WebCore {
+namespace Canvas2D
+{
 
 template<class KeyType>
 class DOMWrapperMap {
@@ -53,28 +54,24 @@ public:
 
     void set(KeyType* key, v8::Handle<v8::Object> wrapper, const WrapperConfiguration& configuration)
     {
-        ASSERT(static_cast<KeyType*>(toNative(wrapper)) == key);
+        SkASSERT(static_cast<KeyType*>(toNative(wrapper)) == key);
         v8::Persistent<v8::Object> persistent(m_isolate, wrapper);
         configuration.configureWrapper(&persistent);
         persistent.SetWeak(this, &setWeakCallback);
-        typename MapType::AddResult result = m_map.add(key, UnsafePersistent<v8::Object>());
-        ASSERT(result.isNewEntry);
-        // FIXME: Stop handling this case once duplicate wrappers are guaranteed not to be created.
-        if (!result.isNewEntry)
-            result.storedValue->value.dispose();
-        result.storedValue->value = UnsafePersistent<v8::Object>(persistent);
-    }
+		m_map[key]= UnsafePersistent<v8::Object>(persistent);
+	}
 
     void clear()
     {
         v8::HandleScope scope(m_isolate);
-        while (!m_map.isEmpty()) {
+        while (!m_map.empty()) 
+		{
             // Swap out m_map on each iteration to ensure any wrappers added due to side effects of the loop are cleared.
             MapType map;
             map.swap(m_map);
             for (typename MapType::iterator it = map.begin(); it != map.end(); ++it) {
-                releaseObject(it->value.newLocal(m_isolate));
-                it->value.dispose();
+                releaseObject(it->second.newLocal(m_isolate));
+                it->second.dispose();
             }
         }
     }
@@ -82,9 +79,8 @@ public:
     void removeAndDispose(KeyType* key)
     {
         typename MapType::iterator it = m_map.find(key);
-        ASSERT_WITH_SECURITY_IMPLICATION(it != m_map.end());
-        it->value.dispose();
-        m_map.remove(it);
+        it->second.dispose();
+		m_map.erase(it);
     }
 
 private:
@@ -98,7 +94,7 @@ template<>
 inline void DOMWrapperMap<void>::setWeakCallback(const v8::WeakCallbackData<v8::Object, DOMWrapperMap<void> >& data)
 {
     void* key = static_cast<void*>(toNative(data.GetValue()));
-    SkASSERT(*data.GetParameter()->m_map.get(key).persistent() == data.GetValue());
+    SkASSERT(*data.GetParameter()->m_map[key].persistent() == data.GetValue());
     data.GetParameter()->removeAndDispose(key);
     releaseObject(data.GetValue());
 }

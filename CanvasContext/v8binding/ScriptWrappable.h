@@ -40,8 +40,8 @@ public:
         v8::Persistent<v8::Object> persistent(isolate, wrapper);
         configuration.configureWrapper(&persistent);
         persistent.SetWeak(this, &setWeakCallback);
-        m_wrapperOrTypeInfo = reinterpret_cast<uintptr_t>(persistent.ClearAndLeak()) | 1;
-        ASSERT(containsWrapper());
+		m_wrapperOrTypeInfo = reinterpret_cast<uintptr_t>(persistent.ClearWeak<uintptr_t>()) | 1;
+        SkASSERT(containsWrapper());
     }
 
     v8::Local<v8::Object> newLocalWrapper(v8::Isolate* isolate) const
@@ -63,7 +63,7 @@ public:
     void setTypeInfo(const WrapperTypeInfo* typeInfo)
     {
         m_wrapperOrTypeInfo = reinterpret_cast<uintptr_t>(typeInfo);
-        ASSERT(containsTypeInfo());
+        SkASSERT(containsTypeInfo());
     }
 
     static bool wrapperCanBeStoredInObject(const void*) { return false; }
@@ -71,7 +71,6 @@ public:
 
     static void setWrapperInObject(void*, v8::Handle<v8::Object>, v8::Isolate*, const WrapperConfiguration&)
     {
-        ASSERT_NOT_REACHED();
     }
 
     static void setWrapperInObject(ScriptWrappable* object, v8::Handle<v8::Object> wrapper, v8::Isolate* isolate, const WrapperConfiguration& configuration)
@@ -81,7 +80,6 @@ public:
 
     static const WrapperTypeInfo* getTypeInfoFromObject(void* object)
     {
-        ASSERT_NOT_REACHED();
         return 0;
     }
 
@@ -92,7 +90,6 @@ public:
 
     static void setTypeInfoInObject(void* object, const WrapperTypeInfo*)
     {
-        ASSERT_NOT_REACHED();
     }
 
     static void setTypeInfoInObject(ScriptWrappable* object, const WrapperTypeInfo* typeInfo)
@@ -115,7 +112,7 @@ public:
 protected:
     ~ScriptWrappable()
     {
-        ASSERT(m_wrapperOrTypeInfo);  // Assert initialization via init() even if not subsequently wrapped.
+        SkASSERT(m_wrapperOrTypeInfo);  // Assert initialization via init() even if not subsequently wrapped.
         m_wrapperOrTypeInfo = 0;      // Break UAF attempts to wrap.
     }
 
@@ -132,7 +129,6 @@ private:
 
     static UnsafePersistent<v8::Object> getUnsafeWrapperFromObject(void*)
     {
-        ASSERT_NOT_REACHED();
         return UnsafePersistent<v8::Object>();
     }
 
@@ -146,8 +142,8 @@ private:
 
     inline void disposeWrapper(v8::Local<v8::Object> wrapper)
     {
-        ASSERT(containsWrapper());
-        ASSERT(wrapper == *unsafePersistent().persistent());
+        SkASSERT(containsWrapper());
+        SkASSERT(wrapper == *unsafePersistent().persistent());
         unsafePersistent().dispose();
         setTypeInfo(toWrapperTypeInfo(wrapper));
     }
@@ -159,7 +155,7 @@ private:
 
     static void setWeakCallback(const v8::WeakCallbackData<v8::Object, ScriptWrappable>& data)
     {
-        ASSERT(*data.GetParameter()->unsafePersistent().persistent() == data.GetValue());
+        SkASSERT(*data.GetParameter()->unsafePersistent().persistent() == data.GetValue());
         data.GetParameter()->disposeWrapper(data.GetValue());
 
         // FIXME: I noticed that 50%~ of minor GC cycle times can be consumed

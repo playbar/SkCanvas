@@ -22,13 +22,13 @@ public:
     explicit UnsafePersistent(T* value) : m_value(value) { }
     explicit UnsafePersistent(v8::Persistent<T>& handle)
     {
-        m_value = handle.ClearAndLeak();
+		m_value = handle.ClearWeak<T>();
     }
 
     UnsafePersistent(v8::Isolate* isolate, v8::Handle<T>& handle)
     {
         v8::Persistent<T> persistent(isolate, handle);
-        m_value = persistent.ClearAndLeak();
+		m_value = persistent.ClearWeak<T>();
     }
 
     T* value() const

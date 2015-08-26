@@ -78,10 +78,11 @@
     <ClCompile Include="v8binding\V8CanvasContext2D.cpp" />
     <ClCompile Include="v8binding\V8CanvasGradient.cpp" />
     <ClCompile Include="v8binding\DOMDataStore.cpp" />
-    <ClCompile Include="v8binding\ImageData_v8.cpp" />
+    <ClCompile Include="v8binding\V8ImageData.cpp" />
     <ClCompile Include="v8binding\JSCore.cpp" />
     <ClCompile Include="v8binding\JSEngine.cpp" />
     <ClCompile Include="v8binding\V8Binding.cpp" />
+    <ClCompile Include="v8binding\V8DOMWrapper.cpp" />
     <ClCompile Include="v8binding\V8GlobalFun.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -131,12 +132,13 @@
     <ClInclude Include="v8binding\V8CanvasGradient.h" />
     <ClInclude Include="v8binding\DOMDataStore.h" />
     <ClInclude Include="v8binding\DOMWrapperMap.h" />
-    <ClInclude Include="v8binding\ImageData_v8.h" />
+    <ClInclude Include="v8binding\V8ImageData.h" />
     <ClInclude Include="v8binding\JSCore.h" />
     <ClInclude Include="v8binding\JSEngine.h" />
     <ClInclude Include="v8binding\ScriptWrappable.h" />
     <ClInclude Include="v8binding\UnsafePersistent.h" />
     <ClInclude Include="v8binding\V8Binding.h" />
+    <ClInclude Include="v8binding\V8DOMWrapper.h" />
     <ClInclude Include="v8binding\V8GlobalFun.h" />
     <ClInclude Include="v8binding\WrapperTypeInfo.h" />
   </ItemGroup>

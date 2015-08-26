@@ -1,5 +1,8 @@
 #include "V8CanvasGradient.h"
 #include "WrapperTypeInfo.h"
+#include "DOMDataStore.h"
+#include "V8DOMWrapper.h"
+#include "ScriptWrappable.h"
 
 const WrapperTypeInfo V8CanvasGradient::wrapperTypeInfo =
 {
@@ -14,16 +17,10 @@ const WrapperTypeInfo V8CanvasGradient::wrapperTypeInfo =
 v8::Handle<v8::Object> V8CanvasGradient::createWrapper(PassRefPtr<CanvasGradient> impl, v8::Handle<v8::Object> creationContext, v8::Isolate* isolate)
 {
 	SkASSERT(impl);
-	ASSERT(!DOMDataStore::containsWrapper<V8CanvasGradient>(impl.get(), isolate));
-	if (ScriptWrappable::wrapperCanBeStoredInObject(impl.get())) {
-		const WrapperTypeInfo* actualInfo = ScriptWrappable::getTypeInfoFromObject(impl.get());
-		// Might be a XXXConstructor::wrapperTypeInfo instead of an XXX::wrapperTypeInfo. These will both have
-		// the same object de-ref functions, though, so use that as the basis of the check.
-		RELEASE_ASSERT_WITH_SECURITY_IMPLICATION(actualInfo->derefObjectFunction == wrapperTypeInfo.derefObjectFunction);
-	}
+	SkASSERT(!DOMDataStore::containsWrapper<V8CanvasGradient>(impl.get(), isolate));
 
 	v8::Handle<v8::Object> wrapper = V8DOMWrapper::createWrapper(creationContext, &wrapperTypeInfo, toInternalPointer(impl.get()), isolate);
-	if (UNLIKELY(wrapper.IsEmpty()))
+	if (wrapper.IsEmpty())
 		return wrapper;
 
 	installPerContextEnabledProperties(wrapper, impl.get(), isolate);

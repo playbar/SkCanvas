@@ -2,6 +2,7 @@
 #define WrapperTypeInfo_h
 
 #include "include/v8.h"
+#include "SkTypes.h"
 
 enum InternalFields
 {
@@ -51,7 +52,8 @@ namespace Canvas2D
     // This struct provides a way to store a bunch of information that is helpful when unwrapping
     // v8 objects. Each v8 bindings class has exactly one static WrapperTypeInfo member, so
     // comparing pointers is a safe way to determine if types match.
-    struct WrapperTypeInfo {
+    struct WrapperTypeInfo 
+	{
 
         static const WrapperTypeInfo* unwrap(v8::Handle<v8::Value> typeInfoWrapper)
         {
@@ -127,14 +129,14 @@ namespace Canvas2D
     {
         // This would be unsafe, but InternalFieldCount and GetAlignedPointerFromInternalField are guaranteed not to allocate
         const v8::Handle<v8::Object>& object = reinterpret_cast<const v8::Handle<v8::Object>&>(persistent);
-        ASSERT(offset < object->InternalFieldCount());
+        SkASSERT(offset < object->InternalFieldCount());
         return static_cast<T*>(object->GetAlignedPointerFromInternalField(offset));
     }
 
     template<typename T, int offset>
     inline T* getInternalField(v8::Handle<v8::Object> wrapper)
     {
-        ASSERT(offset < wrapper->InternalFieldCount());
+        SkASSERT(offset < wrapper->InternalFieldCount());
         return static_cast<T*>(wrapper->GetAlignedPointerFromInternalField(offset));
     }
 

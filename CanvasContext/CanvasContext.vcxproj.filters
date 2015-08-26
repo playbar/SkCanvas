@@ -213,9 +213,6 @@
     <ClCompile Include="v8binding\BitmapImage_v8.cpp">
       <Filter>v8binding</Filter>
     </ClCompile>
-    <ClCompile Include="v8binding\ImageData_v8.cpp">
-      <Filter>v8binding</Filter>
-    </ClCompile>
     <ClCompile Include="v8binding\V8Binding.cpp">
       <Filter>v8binding</Filter>
     </ClCompile>
@@ -226,6 +223,12 @@
       <Filter>v8binding</Filter>
     </ClCompile>
     <ClCompile Include="v8binding\V8CanvasContext2D.cpp">
+      <Filter>v8binding</Filter>
+    </ClCompile>
+    <ClCompile Include="v8binding\V8DOMWrapper.cpp">
+      <Filter>v8binding</Filter>
+    </ClCompile>
+    <ClCompile Include="v8binding\V8ImageData.cpp">
       <Filter>v8binding</Filter>
     </ClCompile>
   </ItemGroup>
@@ -362,9 +365,6 @@
     <ClInclude Include="v8binding\BitmapImage_v8.h">
       <Filter>v8binding</Filter>
     </ClInclude>
-    <ClInclude Include="v8binding\ImageData_v8.h">
-      <Filter>v8binding</Filter>
-    </ClInclude>
     <ClInclude Include="utils\AnimationUtilities.h">
       <Filter>CanvasContext\utils</Filter>
     </ClInclude>
@@ -390,6 +390,12 @@
       <Filter>v8binding</Filter>
     </ClInclude>
     <ClInclude Include="v8binding\V8CanvasContext2D.h">
+      <Filter>v8binding</Filter>
+    </ClInclude>
+    <ClInclude Include="v8binding\V8DOMWrapper.h">
+      <Filter>v8binding</Filter>
+    </ClInclude>
+    <ClInclude Include="v8binding\V8ImageData.h">
       <Filter>v8binding</Filter>
     </ClInclude>
   </ItemGroup>

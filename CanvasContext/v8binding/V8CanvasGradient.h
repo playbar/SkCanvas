@@ -5,7 +5,7 @@
 #include "passrefptr.h"
 #include "CanvasGradient.h"
 #include "V8Binding.h"
-
+#include "WrapperTypeInfo.h"
 #include "include/v8.h"
 using namespace v8;
 using namespace Canvas2D;
@@ -19,6 +19,11 @@ public:
 	static v8::Handle<v8::FunctionTemplate> domTemplate(v8::Isolate*);
 	static void installPerContextEnabledProperties(v8::Handle<v8::Object>, CanvasGradient*, v8::Isolate*) { }
 	static void installPerContextEnabledMethods(v8::Handle<v8::Object>, v8::Isolate*) { }
+
+	static inline void* toInternalPointer(CanvasGradient* impl)
+	{
+		return impl;
+	}
 };
 
 void setCanvasGradientClass(Local<Object> parent, Isolate *isolate);

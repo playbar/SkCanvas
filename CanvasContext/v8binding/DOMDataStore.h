@@ -16,7 +16,8 @@ namespace Canvas2D
 
 class Node;
 
-class DOMDataStore {
+class DOMDataStore 
+{
     WTF_MAKE_NONCOPYABLE(DOMDataStore);
 public:
     explicit DOMDataStore(bool isMainWorld);
@@ -31,8 +32,7 @@ public:
     template<typename T>
     static bool canUseScriptWrappable(T* object)
     {
-        return !DOMWrapperWorld::isolatedWorldsExist()
-            && !canExistInWorker(object)
+        return !canExistInWorker(object)
             && ScriptWrappable::wrapperCanBeStoredInObject(object);
     }
 
@@ -147,9 +147,7 @@ private:
     template<typename V8T, typename T>
     inline void set(T* object, v8::Handle<v8::Object> wrapper, v8::Isolate* isolate, const WrapperConfiguration& configuration)
     {
-        ASSERT(!!object);
-        ASSERT(!wrapper.IsEmpty());
-        if (ScriptWrappable::wrapperCanBeStoredInObject(object) && m_isMainWorld) {
+		if (ScriptWrappable::wrapperCanBeStoredInObject(object) && m_isMainWorld) {
             ScriptWrappable::setWrapperInObject(object, wrapper, isolate, configuration);
             return;
         }
