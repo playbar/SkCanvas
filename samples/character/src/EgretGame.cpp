@@ -22,7 +22,6 @@
 using namespace v8;
 
 using namespace Canvas2D;
-using namespace WTF;
 
 // Declare our game instance
 EgretGame game;

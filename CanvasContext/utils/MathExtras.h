@@ -207,7 +207,7 @@ inline void doubleToInteger(double d, unsigned long long& value)
     }
 }
 
-namespace WTF {
+namespace Canvas2D {
 
 inline unsigned fastLog2(unsigned i)
 {

@@ -23,7 +23,7 @@
 
 #include "Noncopyable.h"
 
-namespace WTF {
+namespace Canvas2D {
 
 // This base class holds the non-template methods and attributes.
 // The RefCounted class inherits from it reducing the template bloat
@@ -98,6 +98,6 @@ protected:
 
 } // namespace WTF
 
-using WTF::RefCounted;
+using Canvas2D::RefCounted;
 
 #endif // RefCounted_h

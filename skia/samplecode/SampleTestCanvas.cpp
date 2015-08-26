@@ -27,7 +27,6 @@
 using namespace v8;
 
 using namespace Canvas2D;
-using namespace WTF;
 
 // ensure that we don't accidentally screw up the bounds when the oval is
 // fractional, and the impl computes the center and radii, and uses them to

@@ -42,7 +42,7 @@
 // use reference counting or garbage collection based on a
 // compile-time flag.
 
-namespace WTF {
+namespace Canvas2D {
 
 template<typename T>
 class RawPtr {
@@ -132,6 +132,6 @@ template<typename T> inline T* getPtr(const RawPtr<T>& p)
 
 } // namespace WTF
 
-using WTF::RawPtr;
+using Canvas2D::RawPtr;
 
 #endif
