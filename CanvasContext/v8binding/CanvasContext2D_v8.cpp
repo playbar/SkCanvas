@@ -85,6 +85,13 @@ void v8_CanvasContext2D_resetTransform(const v8::FunctionCallbackInfo<v8::Value>
 
 void v8_CanvasContext2D_createLinearGradient(const v8::FunctionCallbackInfo<v8::Value> &args)
 {
+	BEGIN_SCOPE_WHITH_ARGS(4);
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	float x0 = static_cast<float>(args[0]->NumberValue());
+	float y0 = static_cast<float>(args[1]->NumberValue());
+	float x1 = static_cast<float>(args[2]->NumberValue());
+	float y1 = static_cast<float>(args[3]->NumberValue());
+	RefPtr<CanvasGradient> result = imp->createLinearGradient(x0, y0, x1, y1);
 
 }
 
