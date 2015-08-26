@@ -23,11 +23,11 @@ inline v8::Handle<v8::String> v8AtomicString(v8::Isolate* isolate, const char* s
 	return v8::String::NewFromUtf8(isolate, str, v8::String::kInternalizedString, strlen(str));
 }
 
-inline v8::Handle<v8::String> v8String(v8::Isolate* isolate, const std::string& string)
-{
-	if (string.empty())
-		return v8::String::Empty(isolate);
-	return V8PerIsolateData::from(isolate)->stringCache()->v8ExternalString(string.impl(), isolate);
-}
+//inline v8::Handle<v8::String> v8String(v8::Isolate* isolate, const std::string& string)
+//{
+//	if (string.empty())
+//		return v8::String::Empty(isolate);
+//	return V8PerIsolateData::from(isolate)->stringCache()->v8ExternalString(string.impl(), isolate);
+//}
 
 #endif // V8Binding_h

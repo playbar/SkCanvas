@@ -11,6 +11,10 @@ using namespace v8;
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef snprintf
+#  define snprintf _snprintf
+#endif
+
 #define EGRET_ROOT "egret"
 #define EGRET_MAIN "egtMain"
 #define EGRET_MAINLOOP "executeMainLoop"
@@ -73,6 +77,19 @@ static inline v8::Local<v8::String> v8_str(const char* x) {
 const char* ToCString(const v8::String::Utf8Value& value);
 
 void ReportException(TryCatch& try_catch);
+
+
+inline char* strnstr(const char* buffer, const char* target, size_t bufferLength)
+{
+	size_t targetLength = strlen(target);
+	if (targetLength == 0)
+		return const_cast<char*>(buffer);
+	for (const char* start = buffer; *start && start + targetLength <= buffer + bufferLength; start++) {
+		if (*start == *target && strncmp(start + 1, target + 1, targetLength - 1) == 0)
+			return const_cast<char*>(start);
+	}
+	return 0;
+}
 
 //void CreateSkCanvas(int w, int h);
 

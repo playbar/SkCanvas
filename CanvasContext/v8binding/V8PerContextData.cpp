@@ -1,7 +1,8 @@
 #include "V8PerContextData.h"
 #include "V8Binding.h"
 #include "RefPtr.h"
-//#include "bindings/v8/V8ObjectConstructor.h"
+#include "JSCore.h"
+#include "V8ObjectConstructor.h"
 
 #include <stdlib.h>
 
@@ -12,16 +13,16 @@ static void disposeMapWithUnsafePersistentValues(Map* map)
 {
     typename Map::iterator it = map->begin();
     for (; it != map->end(); ++it)
-        it->value.dispose();
+        it->second.dispose();
     map->clear();
 }
 
 class V8PerContextDataHolder {
     WTF_MAKE_NONCOPYABLE(V8PerContextDataHolder);
 public:
-    static void install(v8::Handle<v8::Context> context, PassRefPtr<DOMWrapperWorld> world)
+    static void install(v8::Handle<v8::Context> context)
     {
-        new V8PerContextDataHolder(context, world);
+        new V8PerContextDataHolder(context);
     }
 
     static V8PerContextDataHolder* from(v8::Handle<v8::Context> context)
@@ -36,15 +37,15 @@ public:
 
     V8PerContextData* perContextData() const { return m_perContextData; }
     void setPerContextData(V8PerContextData* data) { m_perContextData = data; }
-    DOMWrapperWorld* world() const { return m_world.get(); }
+    //DOMWrapperWorld* world() const { return m_world.get(); }
     v8::Handle<v8::Context> context() const { return m_context.newLocal(m_isolate); }
 
 private:
-    V8PerContextDataHolder(v8::Handle<v8::Context> context, PassRefPtr<DOMWrapperWorld> world)
+    V8PerContextDataHolder(v8::Handle<v8::Context> context)
         : m_isolate(context->GetIsolate())
         , m_context(m_isolate, context)
         , m_perContextData(0)
-        , m_world(world)
+        //, m_world(world)
     {
         m_context.setWeak(this, &V8PerContextDataHolder::weakCallback);
         context->SetAlignedPointerInEmbedderData(v8ContextPerContextDataIndex, this);
@@ -61,16 +62,16 @@ private:
     v8::Isolate* m_isolate;
     ScopedPersistent<v8::Context> m_context;
     V8PerContextData* m_perContextData;
-    RefPtr<DOMWrapperWorld> m_world;
+    //RefPtr<DOMWrapperWorld> m_world;
 };
 
-V8PerContextData::V8PerContextData(v8::Handle<v8::Context> context, PassRefPtr<DOMWrapperWorld> world)
+V8PerContextData::V8PerContextData(v8::Handle<v8::Context> context)
     : m_isolate(context->GetIsolate())
     , m_context(m_isolate, context)
     , m_customElementBindings(adoptPtr(new CustomElementBindingMap()))
 {
     m_contextHolder.Reset(context->GetIsolate(), context);
-    V8PerContextDataHolder::install(context, world);
+    V8PerContextDataHolder::install(context);
     V8PerContextDataHolder::from(context)->setPerContextData(this);
 
     v8::Context::Scope contextScope(context);
@@ -96,26 +97,26 @@ V8PerContextData* V8PerContextData::from(v8::Handle<v8::Context> context)
     return V8PerContextDataHolder::from(context)->perContextData();
 }
 
-DOMWrapperWorld* V8PerContextData::world(v8::Handle<v8::Context> context)
-{
-    DOMWrapperWorld* world = V8PerContextDataHolder::from(context)->world();
-    SkASSERT(world);
-    return world;
-}
-
-//v8::Local<v8::Object> V8PerContextData::createWrapperFromCacheSlowCase(const WrapperTypeInfo* type)
+//DOMWrapperWorld* V8PerContextData::world(v8::Handle<v8::Context> context)
 //{
-//    ASSERT(!m_errorPrototype.isEmpty());
-//
-//    v8::Context::Scope scope(context());
-//    v8::Local<v8::Function> function = constructorForType(type);
-//    v8::Local<v8::Object> instanceTemplate = V8ObjectConstructor::newInstance(function);
-//    if (!instanceTemplate.IsEmpty()) {
-//        m_wrapperBoilerplates.set(type, UnsafePersistent<v8::Object>(m_isolate, instanceTemplate));
-//        return instanceTemplate->Clone();
-//    }
-//    return v8::Local<v8::Object>();
+//    DOMWrapperWorld* world = V8PerContextDataHolder::from(context)->world();
+//    SkASSERT(world);
+//    return world;
 //}
+
+v8::Local<v8::Object> V8PerContextData::createWrapperFromCacheSlowCase(const WrapperTypeInfo* type)
+{
+	SkASSERT(!m_errorPrototype.isEmpty());
+
+	v8::Context::Scope scope(context());
+	v8::Local<v8::Function> function = constructorForType(type);
+	v8::Local<v8::Object> instanceTemplate = V8ObjectConstructor::newInstance(function);
+	if (!instanceTemplate.IsEmpty()) {
+		m_wrapperBoilerplates[type] = UnsafePersistent<v8::Object>(m_isolate, instanceTemplate);
+		return instanceTemplate->Clone();
+	}
+	return v8::Local<v8::Object>();
+}
 
 v8::Local<v8::Function> V8PerContextData::constructorForTypeSlowCase(const WrapperTypeInfo* type)
 {
@@ -152,34 +153,34 @@ v8::Local<v8::Function> V8PerContextData::constructorForTypeSlowCase(const Wrapp
     return function;
 }
 
-v8::Local<v8::Object> V8PerContextData::prototypeForType(const WrapperTypeInfo* type)
-{
-    v8::Local<v8::Object> constructor = constructorForType(type);
-    if (constructor.IsEmpty())
-        return v8::Local<v8::Object>();
-    return constructor->Get(v8String(m_isolate, "prototype")).As<v8::Object>();
-}
+//v8::Local<v8::Object> V8PerContextData::prototypeForType(const WrapperTypeInfo* type)
+//{
+//    v8::Local<v8::Object> constructor = constructorForType(type);
+//    if (constructor.IsEmpty())
+//        return v8::Local<v8::Object>();
+//    return constructor->Get(v8String(m_isolate, "prototype")).As<v8::Object>();
+//}
 
-void V8PerContextData::addCustomElementBinding(CustomElementDefinition* definition, PassOwnPtr<CustomElementBinding> binding)
-{
-    ASSERT(!m_customElementBindings->contains(definition));
-    m_customElementBindings->add(definition, binding);
-}
+//void V8PerContextData::addCustomElementBinding(CustomElementDefinition* definition, PassOwnPtr<CustomElementBinding> binding)
+//{
+//    ASSERT(!m_customElementBindings->contains(definition));
+//    m_customElementBindings->add(definition, binding);
+//}
 
-void V8PerContextData::clearCustomElementBinding(CustomElementDefinition* definition)
-{
-    CustomElementBindingMap::iterator it = m_customElementBindings->find(definition);
-    ASSERT_WITH_SECURITY_IMPLICATION(it != m_customElementBindings->end());
-    m_customElementBindings->remove(it);
-}
+//void V8PerContextData::clearCustomElementBinding(CustomElementDefinition* definition)
+//{
+//    CustomElementBindingMap::iterator it = m_customElementBindings->find(definition);
+//    ASSERT_WITH_SECURITY_IMPLICATION(it != m_customElementBindings->end());
+//    m_customElementBindings->remove(it);
+//}
 
-CustomElementBinding* V8PerContextData::customElementBinding(CustomElementDefinition* definition)
-{
-    CustomElementBindingMap::const_iterator it = m_customElementBindings->find(definition);
-    ASSERT_WITH_SECURITY_IMPLICATION(it != m_customElementBindings->end());
-    return it->value.get();
-}
-
+//CustomElementBinding* V8PerContextData::customElementBinding(CustomElementDefinition* definition)
+//{
+//    CustomElementBindingMap::const_iterator it = m_customElementBindings->find(definition);
+//    ASSERT_WITH_SECURITY_IMPLICATION(it != m_customElementBindings->end());
+//    return it->value.get();
+//}
+//
 
 static v8::Handle<v8::Value> createDebugData(const char* worldName, int debugId, v8::Isolate* isolate)
 {

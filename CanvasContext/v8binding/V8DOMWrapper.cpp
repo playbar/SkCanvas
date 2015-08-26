@@ -5,8 +5,8 @@
 //#include "V8HTMLDocument.h"
 //#include "V8Window.h"
 //#include "bindings/v8/V8Binding.h"
-//#include "bindings/v8/V8ObjectConstructor.h"
-//#include "bindings/v8/V8PerContextData.h"
+#include "V8ObjectConstructor.h"
+#include "V8PerContextData.h"
 //#include "bindings/v8/V8ScriptRunner.h"
 
 namespace Canvas2D {
@@ -45,28 +45,28 @@ v8::Local<v8::Object> V8DOMWrapper::createWrapper(v8::Handle<v8::Object> creatio
     V8PerContextData* perContextData = V8PerContextData::from(scope.context());
     v8::Local<v8::Object> wrapper = perContextData ? perContextData->createWrapperFromCache(type) : V8ObjectConstructor::newInstance(type->domTemplate(isolate)->GetFunction());
 
-    if (type == &V8HTMLDocument::wrapperTypeInfo && !wrapper.IsEmpty())
-        wrapper = wrapInShadowTemplate(wrapper, static_cast<Node*>(impl), isolate);
+    //if ( !wrapper.IsEmpty())
+    //    wrapper = wrapInShadowTemplate(wrapper, static_cast<Node*>(impl), isolate);
 
     return wrapper;
 }
 
-//bool V8DOMWrapper::isDOMWrapper(v8::Handle<v8::Value> value)
-//{
-//    if (value.IsEmpty() || !value->IsObject())
-//        return false;
-//
-//    if (v8::Handle<v8::Object>::Cast(value)->InternalFieldCount() < v8DefaultWrapperInternalFieldCount)
-//        return false;
-//
-//    v8::Handle<v8::Object> wrapper = v8::Handle<v8::Object>::Cast(value);
-//    SkASSERT(wrapper->GetAlignedPointerFromInternalField(v8DOMWrapperObjectIndex));
-//    SkASSERT(wrapper->GetAlignedPointerFromInternalField(v8DOMWrapperTypeIndex));
-//
-//    const WrapperTypeInfo* typeInfo = static_cast<const WrapperTypeInfo*>(wrapper->GetAlignedPointerFromInternalField(v8DOMWrapperTypeIndex));
-//    // FIXME: We should add a more strict way to check if the typeInfo is a typeInfo of some DOM wrapper.
-//    // Even if it's a typeInfo of Blink, it's not guaranteed that it's a typeInfo of a DOM wrapper.
-//    return typeInfo->ginEmbedder == kEmbedderBlink;
-//}
+bool V8DOMWrapper::isDOMWrapper(v8::Handle<v8::Value> value)
+{
+    if (value.IsEmpty() || !value->IsObject())
+        return false;
+
+    if (v8::Handle<v8::Object>::Cast(value)->InternalFieldCount() < v8DefaultWrapperInternalFieldCount)
+        return false;
+
+    v8::Handle<v8::Object> wrapper = v8::Handle<v8::Object>::Cast(value);
+    SkASSERT(wrapper->GetAlignedPointerFromInternalField(v8DOMWrapperObjectIndex));
+    SkASSERT(wrapper->GetAlignedPointerFromInternalField(v8DOMWrapperTypeIndex));
+
+    const WrapperTypeInfo* typeInfo = static_cast<const WrapperTypeInfo*>(wrapper->GetAlignedPointerFromInternalField(v8DOMWrapperTypeIndex));
+    // FIXME: We should add a more strict way to check if the typeInfo is a typeInfo of some DOM wrapper.
+    // Even if it's a typeInfo of Blink, it's not guaranteed that it's a typeInfo of a DOM wrapper.
+    return typeInfo->ginEmbedder == kEmbedderBlink;
+}
 
 }  // namespace WebCore

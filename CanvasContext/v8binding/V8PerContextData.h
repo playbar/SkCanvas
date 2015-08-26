@@ -23,7 +23,6 @@ namespace Canvas2D
 {
 
 class CustomElementDefinition;
-class DOMWrapperWorld;
 class V8PerContextData;
 struct V8NPObject;
 typedef std::vector<V8NPObject*> V8NPObjectVector;
@@ -38,13 +37,13 @@ enum V8ContextEmbedderDataField
 class V8PerContextData 
 {
 public:
-    static PassOwnPtr<V8PerContextData> create(v8::Handle<v8::Context> context, PassRefPtr<DOMWrapperWorld> world)
+    static PassOwnPtr<V8PerContextData> create(v8::Handle<v8::Context> context)
     {
-        return adoptPtr(new V8PerContextData(context, world));
+        return adoptPtr(new V8PerContextData(context));
     }
 
     static V8PerContextData* from(v8::Handle<v8::Context>);
-    static DOMWrapperWorld* world(v8::Handle<v8::Context>);
+    //static DOMWrapperWorld* world(v8::Handle<v8::Context>);
 
     ~V8PerContextData();
 
@@ -75,11 +74,11 @@ public:
     //void setActivityLogger(V8DOMActivityLogger* logger) { m_activityLogger = logger; }
 
     //void addCustomElementBinding(CustomElementDefinition*, PassOwnPtr<CustomElementBinding>);
-    void clearCustomElementBinding(CustomElementDefinition*);
+    //void clearCustomElementBinding(CustomElementDefinition*);
     //CustomElementBinding* customElementBinding(CustomElementDefinition*);
 
 private:
-    V8PerContextData(v8::Handle<v8::Context>, PassRefPtr<DOMWrapperWorld>);
+    V8PerContextData(v8::Handle<v8::Context>);
 
     v8::Local<v8::Object> createWrapperFromCacheSlowCase(const WrapperTypeInfo*);
     v8::Local<v8::Function> constructorForTypeSlowCase(const WrapperTypeInfo*);

@@ -20,9 +20,4 @@ DOMDataStore::~DOMDataStore()
     m_wrapperMap.clear();
 }
 
-//DOMDataStore& DOMDataStore::current(v8::Isolate* isolate)
-//{
-//    return DOMWrapperWorld::world(isolate->GetCurrentContext())->domDataStore();
-//}
-
 } // namespace WebCore

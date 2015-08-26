@@ -23,8 +23,6 @@ public:
     explicit DOMDataStore(bool isMainWorld);
     ~DOMDataStore();
 
-    static DOMDataStore& current(v8::Isolate*);
-
     // We can use a wrapper stored in a ScriptWrappable when we're in the main world.
     // This method does the fast check if we're in the main world. If this method returns true,
     // it is guaranteed that we're in the main world. On the other hand, if this method returns
@@ -36,29 +34,29 @@ public:
             && ScriptWrappable::wrapperCanBeStoredInObject(object);
     }
 
-    template<typename V8T, typename T, typename Wrappable>
-    static bool setReturnValueFromWrapperFast(v8::ReturnValue<v8::Value> returnValue, T* object, v8::Local<v8::Object> holder, Wrappable* wrappable)
-    {
-        if (canUseScriptWrappable(object))
-            return ScriptWrappable::setReturnValueWithSecurityCheck<V8T>(returnValue, object);
-        // The second fastest way to check if we're in the main world is to check if
-        // the wrappable's wrapper is the same as the holder.
-        // FIXME: Investigate if it's worth having this check for performance.
-        if (holderContainsWrapper(holder, wrappable)) {
-            if (ScriptWrappable::wrapperCanBeStoredInObject(object))
-                return ScriptWrappable::setReturnValueWithSecurityCheck<V8T>(returnValue, object);
-            return DOMWrapperWorld::mainWorld()->domDataStore().m_wrapperMap.setReturnValueFrom(returnValue, V8T::toInternalPointer(object));
-        }
-        return current(returnValue.GetIsolate()).template setReturnValueFrom<V8T>(returnValue, object);
-    }
+    //template<typename V8T, typename T, typename Wrappable>
+    //static bool setReturnValueFromWrapperFast(v8::ReturnValue<v8::Value> returnValue, T* object, v8::Local<v8::Object> holder, Wrappable* wrappable)
+    //{
+    //    if (canUseScriptWrappable(object))
+    //        return ScriptWrappable::setReturnValueWithSecurityCheck<V8T>(returnValue, object);
+    //    // The second fastest way to check if we're in the main world is to check if
+    //    // the wrappable's wrapper is the same as the holder.
+    //    // FIXME: Investigate if it's worth having this check for performance.
+    //    if (holderContainsWrapper(holder, wrappable)) {
+    //        if (ScriptWrappable::wrapperCanBeStoredInObject(object))
+    //            return ScriptWrappable::setReturnValueWithSecurityCheck<V8T>(returnValue, object);
+    //        return DOMWrapperWorld::mainWorld()->domDataStore().m_wrapperMap.setReturnValueFrom(returnValue, V8T::toInternalPointer(object));
+    //    }
+    //    return current(returnValue.GetIsolate()).template setReturnValueFrom<V8T>(returnValue, object);
+    //}
 
-    template<typename V8T, typename T>
-    static bool setReturnValueFromWrapper(v8::ReturnValue<v8::Value> returnValue, T* object)
-    {
-        if (canUseScriptWrappable(object))
-            return ScriptWrappable::setReturnValueWithSecurityCheck<V8T>(returnValue, object);
-        return current(returnValue.GetIsolate()).template setReturnValueFrom<V8T>(returnValue, object);
-    }
+    //template<typename V8T, typename T>
+    //static bool setReturnValueFromWrapper(v8::ReturnValue<v8::Value> returnValue, T* object)
+    //{
+    //    if (canUseScriptWrappable(object))
+    //        return ScriptWrappable::setReturnValueWithSecurityCheck<V8T>(returnValue, object);
+    //    return current(returnValue.GetIsolate()).template setReturnValueFrom<V8T>(returnValue, object);
+    //}
 
     template<typename V8T, typename T>
     static bool setReturnValueFromWrapperForMainWorld(v8::ReturnValue<v8::Value> returnValue, T* object)
@@ -93,21 +91,21 @@ public:
         current(isolate).template setReference<V8T>(parent, child, isolate);
     }
 
-    template<typename V8T, typename T>
-    static void setWrapper(T* object, v8::Handle<v8::Object> wrapper, v8::Isolate* isolate, const WrapperConfiguration& configuration)
-    {
-        if (canUseScriptWrappable(object)) {
-            ScriptWrappable::setWrapperInObject(object, wrapper, isolate, configuration);
-            return;
-        }
-        return current(isolate).template set<V8T>(object, wrapper, isolate, configuration);
-    }
+	template<typename V8T, typename T>
+	static void setWrapper(T* object, v8::Handle<v8::Object> wrapper, v8::Isolate* isolate, const WrapperConfiguration& configuration)
+	{
+		if (canUseScriptWrappable(object)) {
+			ScriptWrappable::setWrapperInObject(object, wrapper, isolate, configuration);
+			return;
+		}
+		//return current(isolate).template set<V8T>(object, wrapper, isolate, configuration);
+	}
 
-    template<typename V8T, typename T>
-    static bool containsWrapper(T* object, v8::Isolate* isolate)
-    {
-        return current(isolate).template containsWrapper<V8T>(object);
-    }
+    //template<typename V8T, typename T>
+    //static bool containsWrapper(T* object, v8::Isolate* isolate)
+    //{
+    //    return current(isolate).template containsWrapper<V8T>(object);
+    //}
 
     template<typename V8T, typename T>
     inline v8::Handle<v8::Object> get(T* object, v8::Isolate* isolate)

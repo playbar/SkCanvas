@@ -9,8 +9,8 @@
 #include "map"
 #include "JSCore.h"
 #include "V8GlobalFun.h"
-#include "CanvasContext2D_v8.h"
-#include "CanvasGradient_v8.h"
+#include "V8CanvasContext2D.h"
+#include "V8CanvasGradient.h"
 
 #include <include/v8.h>
 #include <include/libplatform/libplatform.h>

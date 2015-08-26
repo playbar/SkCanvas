@@ -14,17 +14,18 @@ class V8CanvasGradient
 {
 public:
 	static const WrapperTypeInfo wrapperTypeInfo;
-	static void derefObject(void*);
+	static void derefObject(void*){};
 	static v8::Handle<v8::Object> createWrapper(PassRefPtr<CanvasGradient> impl, v8::Handle<v8::Object> creationContext, v8::Isolate* isolate);
 	static void installPerContextEnabledProperties(v8::Handle<v8::Object>, CanvasGradient*, v8::Isolate*) { }
 	static void installPerContextEnabledMethods(v8::Handle<v8::Object>, v8::Isolate*) { }
-
+	static v8::Handle<v8::FunctionTemplate> domTemplate(v8::Isolate*);
 	static inline void* toInternalPointer(CanvasGradient* impl)
 	{
 		return impl;
 	}
 };
 
+Handle<FunctionTemplate> CanvasGradient_Class(Isolate *isolate);
 void setCanvasGradientClass(Local<Object> parent, Isolate *isolate);
 
 template<class CallbackInfo>

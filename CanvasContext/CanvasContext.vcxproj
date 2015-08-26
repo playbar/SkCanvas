@@ -85,6 +85,7 @@
     <ClCompile Include="v8binding\V8Binding.cpp" />
     <ClCompile Include="v8binding\V8DOMWrapper.cpp" />
     <ClCompile Include="v8binding\V8GlobalFun.cpp" />
+    <ClCompile Include="v8binding\V8ObjectConstructor.cpp" />
     <ClCompile Include="v8binding\V8PerContextData.cpp" />
     <ClCompile Include="v8binding\V8PerIsolateData.cpp" />
     <ClCompile Include="v8binding\V8ScriptRunner.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="v8binding\V8Binding.h" />
     <ClInclude Include="v8binding\V8DOMWrapper.h" />
     <ClInclude Include="v8binding\V8GlobalFun.h" />
+    <ClInclude Include="v8binding\V8ObjectConstructor.h" />
     <ClInclude Include="v8binding\V8PerContextData.h" />
     <ClInclude Include="v8binding\V8PerIsolateData.h" />
     <ClInclude Include="v8binding\V8ScriptRunner.h" />
