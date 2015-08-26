@@ -4,7 +4,7 @@
 #include "SkPaint.h"
 #include "string"
 
-namespace WebCore
+namespace Canvas2D
 {
 
 	enum WindRule 

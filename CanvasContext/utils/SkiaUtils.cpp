@@ -34,7 +34,7 @@
 #include "SkColorPriv.h"
 #include "SkRegion.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 static const struct CompositOpToXfermodeMode {
     uint8_t mCompositOp;

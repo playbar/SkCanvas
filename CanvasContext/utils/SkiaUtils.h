@@ -14,7 +14,7 @@
 class SkCanvas;
 class SkRegion;
 
-namespace WebCore {
+namespace Canvas2D {
 
 class GraphicsContext;
 

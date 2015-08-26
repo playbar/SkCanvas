@@ -32,7 +32,7 @@
 #include "RefCounted.h"
 #include "string"
 
-namespace WebCore {
+namespace Canvas2D{
 
 class CanvasGradient : public RefCounted<CanvasGradient> {
 public:

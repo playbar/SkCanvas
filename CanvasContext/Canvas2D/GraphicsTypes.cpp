@@ -27,7 +27,7 @@
 #include "graphicstypes.h"
 
 
-namespace WebCore
+namespace Canvas2D
 {
 
 static const char* const compositeOperatorNames[] =

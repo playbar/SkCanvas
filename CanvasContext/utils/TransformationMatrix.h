@@ -32,7 +32,7 @@
 #include "FloatPoint3D.h"
 #include "IntPoint.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 class AffineTransform;
 class IntRect;

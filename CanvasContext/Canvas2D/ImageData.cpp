@@ -1,6 +1,6 @@
 #include "ImageData.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 PassRefPtr<ImageData> ImageData::create(int w, int h)
 {

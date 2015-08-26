@@ -33,7 +33,7 @@
 
 using namespace std;
 
-namespace WebCore {
+namespace Canvas2D {
 
 FloatSize::FloatSize(const LayoutSize& size) : m_width(size.width()), m_height(size.height())
 {

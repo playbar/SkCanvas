@@ -5,7 +5,7 @@
 using namespace v8;
 #include "passrefptr.h"
 #include "CanvasGradient.h"
-using namespace WebCore;
+using namespace Canvas2D;
 
 //template<class CallbackInfo>
 //inline void v8SetReturnValue(const CallbackInfo& callbackInfo, PassRefPtr<CanvasGradient> impl)

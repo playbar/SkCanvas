@@ -13,7 +13,7 @@
 #include "FontDescription.h"
 #include "ImageData.h"
 
-using namespace WebCore;
+using namespace Canvas2D;
 class BitmapImage;
 
 class CanvasContext2D

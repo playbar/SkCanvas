@@ -30,7 +30,7 @@
 
 using namespace std;
 
-namespace WebCore {
+namespace Canvas2D {
 
 bool RoundedRect::Radii::isZero() const
 {

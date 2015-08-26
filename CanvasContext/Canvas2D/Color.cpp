@@ -31,7 +31,7 @@
 #include <algorithm>
 using namespace std;
 
-namespace WebCore {
+namespace Canvas2D {
 
 static const RGBA32 lightenedBlack = 0xFF545454;
 static const RGBA32 darkenedWhite = 0xFFABABAB;

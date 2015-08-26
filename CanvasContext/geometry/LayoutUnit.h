@@ -7,7 +7,7 @@
 #include "MathExtras.h"
 #include "SaturatedArithmetic.h"
 
-namespace WebCore
+namespace Canvas2D
 {
 
 #ifdef NDEBUG

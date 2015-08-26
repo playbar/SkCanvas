@@ -33,7 +33,7 @@
 #include "SkiaUtils.h"
 
 
-namespace WebCore {
+namespace Canvas2D {
 
 Pattern::Pattern(PassRefPtr<BitmapImage> image, bool repeatX, bool repeatY)
     : m_repeatX(repeatX)

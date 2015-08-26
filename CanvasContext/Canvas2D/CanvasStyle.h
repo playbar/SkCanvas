@@ -10,7 +10,7 @@
 
 class CanvasContext2D;
 
-namespace WebCore {
+namespace Canvas2D {
 
     class CanvasPattern;
 

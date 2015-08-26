@@ -1,6 +1,6 @@
 #include "CanvasPattern.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 void CanvasPattern::parseRepetitionType(const std::string& type, bool& repeatX, bool& repeatY)
 {

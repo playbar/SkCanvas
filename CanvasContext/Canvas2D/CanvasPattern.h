@@ -7,7 +7,7 @@
 #include "string"
 #include "BitmapImage.h"
 
-namespace WebCore
+namespace Canvas2D
 {
 
 class CanvasPattern : public RefCounted<CanvasPattern> {

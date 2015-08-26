@@ -21,7 +21,7 @@
 
 using namespace v8;
 
-using namespace WebCore;
+using namespace Canvas2D;
 using namespace WTF;
 
 // Declare our game instance

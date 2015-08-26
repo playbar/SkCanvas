@@ -114,6 +114,7 @@
     <ClInclude Include="Canvas2D\ImageData.h" />
     <ClInclude Include="Canvas2D\Pattern.h" />
     <ClInclude Include="utils\AffineTransform.h" />
+    <ClInclude Include="utils\AnimationUtilities.h" />
     <ClInclude Include="utils\ASCIICType.h" />
     <ClInclude Include="utils\MathExtras.h" />
     <ClInclude Include="utils\PassRefPtr.h" />

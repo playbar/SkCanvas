@@ -35,7 +35,7 @@
 
 using namespace std;
 
-namespace WebCore {
+namespace Canvas2D {
 
 static inline float min4(float a, float b, float c, float d)
 {

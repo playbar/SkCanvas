@@ -4,7 +4,7 @@
 #include "AnimationUtilities.h"
 #include "string"
 
-namespace WebCore 
+namespace Canvas2D
 {
 
 class Color;

@@ -34,7 +34,7 @@
 #include "FloatRect.h"
 #include <algorithm>
 
-namespace WebCore {
+namespace Canvas2D {
 
 LayoutRect::LayoutRect(const FloatRect& r)
     : m_location(LayoutPoint(r.location()))

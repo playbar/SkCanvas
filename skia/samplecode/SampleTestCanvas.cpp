@@ -26,7 +26,7 @@
 #include "v8binding/JSEngine.h"
 using namespace v8;
 
-using namespace WebCore;
+using namespace Canvas2D;
 using namespace WTF;
 
 // ensure that we don't accidentally screw up the bounds when the oval is

@@ -23,7 +23,7 @@
 
 #include <math.h>
 
-namespace WebCore {
+namespace Canvas2D {
 
 void FloatPoint3D::normalize()
 {

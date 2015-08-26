@@ -34,7 +34,7 @@
 #include <algorithm>
 #include <math.h>
 
-namespace WebCore {
+namespace Canvas2D {
 
 FloatRect::FloatRect(const IntRect& r) : m_location(r.location()), m_size(r.size())
 {

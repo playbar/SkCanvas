@@ -1,7 +1,7 @@
 #include "Color.h"
 #include <string.h>
 
-namespace WebCore {
+namespace Canvas2D {
 	enum
 	{
 		TOTAL_KEYWORDS = 150,

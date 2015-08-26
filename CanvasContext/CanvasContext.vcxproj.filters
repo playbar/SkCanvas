@@ -365,5 +365,8 @@
     <ClInclude Include="v8binding\CanvasGradient_v8.h">
       <Filter>v8binding</Filter>
     </ClInclude>
+    <ClInclude Include="utils\AnimationUtilities.h">
+      <Filter>CanvasContext\utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

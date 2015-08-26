@@ -31,7 +31,7 @@
 #include "FloatRect.h"
 #include "IntRect.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 AffineTransform::AffineTransform()
 {

@@ -8,7 +8,7 @@
 
 class SkDrawLooper;
 
-namespace WebCore 
+namespace Canvas2D 
 {
 
 class Color;

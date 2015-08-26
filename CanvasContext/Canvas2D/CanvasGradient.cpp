@@ -28,7 +28,7 @@
 #include "CanvasStyle.h"
 #include "Color.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 
 CanvasGradient::CanvasGradient(const SkPoint& p0, const SkPoint& p1)

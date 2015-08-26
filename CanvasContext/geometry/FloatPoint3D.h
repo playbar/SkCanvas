@@ -25,7 +25,7 @@
 
 #include "FloatPoint.h"
 
-namespace WebCore {
+namespace Canvas2D{
 
 class FloatPoint3D {
 public:
