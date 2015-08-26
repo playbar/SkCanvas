@@ -3,6 +3,7 @@
 #include "DOMDataStore.h"
 #include "V8DOMWrapper.h"
 #include "ScriptWrappable.h"
+#include "V8PerIsolateData.h"
 
 const WrapperTypeInfo V8CanvasGradient::wrapperTypeInfo =
 {
@@ -39,6 +40,12 @@ v8::Handle<v8::Object> V8CanvasGradient::createWrapper(PassRefPtr<CanvasGradient
 
 v8::Handle<v8::FunctionTemplate> V8CanvasGradient::domTemplate(v8::Isolate* isolate)
 {
+	V8PerIsolateData *data = V8PerIsolateData::from(isolate);
+	v8::Local<v8::FunctionTemplate> result = data->existingDOMTemplate(const_cast<WrapperTypeInfo*>(&wrapperTypeInfo));
+	if ( !result.IsEmpty())
+	{
+		return result;
+	}
 	Handle<FunctionTemplate> temp_class = FunctionTemplate::New(isolate, CanvasGradientCallBack);
 	temp_class->SetClassName(String::NewFromUtf8(isolate, "canvasgradient"));
 	Handle<ObjectTemplate> temp_proto = temp_class->PrototypeTemplate();

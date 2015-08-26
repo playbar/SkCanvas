@@ -11,6 +11,7 @@
 #include "V8GlobalFun.h"
 #include "V8CanvasContext2D.h"
 #include "V8CanvasGradient.h"
+#include "V8PerIsolateData.h"
 
 #include <include/v8.h>
 #include <include/libplatform/libplatform.h>
@@ -25,6 +26,8 @@ JSEngine::JSEngine()
 	V8::Initialize();
 	create_params.array_buffer_allocator = &allocator;
 	mIsolate = Isolate::New(create_params);
+	V8PerIsolateData::ensureInitialized(mIsolate);
+
 }
 
 JSEngine::~JSEngine()
