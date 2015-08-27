@@ -94,8 +94,6 @@ void v8_CanvasContext2D_createLinearGradient(const v8::FunctionCallbackInfo<v8::
 	float y1 = static_cast<float>(args[3]->NumberValue());
 	RefPtr<CanvasGradient> result = imp->createLinearGradient(x0, y0, x1, y1);
 	v8SetReturnValue(args, result.release());
-	int i = 0;
-	i++;
 }
 
 void v8_CanvasContext2D_createRadialGradient(const v8::FunctionCallbackInfo<v8::Value> &args)

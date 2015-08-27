@@ -67,7 +67,7 @@ void EgretGame::initialize()
 
 void EgretGame::update(float elapsedTime)
 {
-	//clear(CLEAR_COLOR_DEPTH, Vector4(1, 1, 1, 1), 1.0f, 0);
+	clear(CLEAR_COLOR_DEPTH, Vector4(1, 1, 1, 1), 1.0f, 0);
 	mJSEngine.update(elapsedTime);
 
 	//SkPaint paint;

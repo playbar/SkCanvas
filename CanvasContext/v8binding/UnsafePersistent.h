@@ -28,7 +28,7 @@ public:
     UnsafePersistent(v8::Isolate* isolate, v8::Handle<T>& handle)
     {
         v8::Persistent<T> persistent(isolate, handle);
-		m_value = *handle;
+		//m_value = *handle;
     }
 
     T* value() const

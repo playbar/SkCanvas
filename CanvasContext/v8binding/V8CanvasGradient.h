@@ -43,8 +43,6 @@ template<class CallbackInfo>
 inline void v8SetReturnValue(const CallbackInfo& callbackInfo, PassRefPtr<CanvasGradient> impl)
 {
 	v8SetReturnValue(callbackInfo, impl.get());
-	int i = 0;
-	i++;
 }
 
 template<typename CallbackInfo>
