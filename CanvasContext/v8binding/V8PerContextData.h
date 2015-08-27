@@ -5,7 +5,6 @@
 
 #include "CustomElementBinding.h"
 #include "ScopedPersistent.h"
-#include "UnsafePersistent.h"
 //#include "bindings/v8/V8DOMActivityLogger.h"
 #include "WrapperTypeInfo.h"
 //#include "gin/public/context_holder.h"
@@ -55,9 +54,9 @@ public:
     v8::Local<v8::Object> createWrapperFromCache(const WrapperTypeInfo* type)
     {
 		WrapperBoilerplateMap::iterator it = m_wrapperBoilerplates.find(type);
-		if ( it != m_wrapperBoilerplates.end() && !it->second.isEmpty())
+		if ( it != m_wrapperBoilerplates.end() && !it->second.IsEmpty())
 		{
-			return it->second.newLocal(v8::Isolate::GetCurrent())->Clone();
+			return v8::Local<v8::Object>::New(v8::Isolate::GetCurrent(), it->second)->Clone();
 		}
 		else
 		{
@@ -68,9 +67,11 @@ public:
 
     v8::Local<v8::Function> constructorForType(const WrapperTypeInfo* type)
     {
-        UnsafePersistent<v8::Function> function = m_constructorMap.find(type)->second;
-        if (!function.isEmpty())
-            return function.newLocal(v8::Isolate::GetCurrent());
+		ConstructorMap::iterator it = m_constructorMap.find(type);
+		if ( it != m_constructorMap.end() && !it->second.IsEmpty() )
+		{
+			return v8::Local<v8::Function>::New(v8::Isolate::GetCurrent(), it->second );
+		}
         return constructorForTypeSlowCase(type);
     }
 
@@ -92,10 +93,10 @@ private:
 
     // For each possible type of wrapper, we keep a boilerplate object.
     // The boilerplate is used to create additional wrappers of the same type.
-    typedef std::map<const WrapperTypeInfo*, UnsafePersistent<v8::Object> > WrapperBoilerplateMap;
+    typedef std::map<const WrapperTypeInfo*, v8::Global<v8::Object> > WrapperBoilerplateMap;
     WrapperBoilerplateMap m_wrapperBoilerplates;
 
-    typedef std::map<const WrapperTypeInfo*, UnsafePersistent<v8::Function> > ConstructorMap;
+    typedef std::map<const WrapperTypeInfo*, v8::Global<v8::Function> > ConstructorMap;
     ConstructorMap m_constructorMap;
 
     V8NPObjectMap m_v8NPObjectMap;

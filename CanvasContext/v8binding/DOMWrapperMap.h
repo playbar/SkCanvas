@@ -1,7 +1,6 @@
 #ifndef DOMWrapperMap_h
 #define DOMWrapperMap_h
 
-#include "UnsafePersistent.h"
 #include "WrapperTypeInfo.h"
 #include <include/v8.h>
 #include "SkTypes.h"
@@ -13,7 +12,7 @@ namespace Canvas2D
 template<class KeyType>
 class DOMWrapperMap {
 public:
-    typedef std::map<KeyType*, UnsafePersistent<v8::Object> > MapType;
+    typedef std::map<KeyType*, v8::Global<v8::Object> > MapType;
 
     explicit DOMWrapperMap(v8::Isolate* isolate)
         : m_isolate(isolate)
@@ -70,8 +69,8 @@ public:
             MapType map;
             map.swap(m_map);
             for (typename MapType::iterator it = map.begin(); it != map.end(); ++it) {
-                releaseObject(it->second.newLocal(m_isolate));
-                it->second.dispose();
+                //releaseObject(it->second.Reset(m_isolate));
+                it->second.Reset();
             }
         }
     }
@@ -79,7 +78,7 @@ public:
     void removeAndDispose(KeyType* key)
     {
         typename MapType::iterator it = m_map.find(key);
-        it->second.dispose();
+        it->second.Reset();
 		m_map.erase(it);
     }
 
@@ -94,7 +93,6 @@ template<>
 inline void DOMWrapperMap<void>::setWeakCallback(const v8::WeakCallbackData<v8::Object, DOMWrapperMap<void> >& data)
 {
     void* key = static_cast<void*>(toNative(data.GetValue()));
-    SkASSERT(*data.GetParameter()->m_map[key].persistent() == data.GetValue());
     data.GetParameter()->removeAndDispose(key);
     releaseObject(data.GetValue());
 }

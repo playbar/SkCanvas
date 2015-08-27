@@ -68,10 +68,10 @@ v8::Handle<v8::FunctionTemplate> V8PerIsolateData::domTemplate(void* domTemplate
 {
     DOMTemplateMap& domTemplateMap = currentDOMTemplateMap();
     DOMTemplateMap::iterator result = domTemplateMap.find(domTemplateKey);
-    if (result != domTemplateMap.end())
-        return result->second.newLocal(m_isolate);
+	if (result != domTemplateMap.end())
+		return v8::Local<v8::FunctionTemplate>::New(m_isolate, result->second);
     v8::Local<v8::FunctionTemplate> templ = v8::FunctionTemplate::New(m_isolate, callback, data, signature, length);
-    domTemplateMap[domTemplateKey]= UnsafePersistent<v8::FunctionTemplate>(m_isolate, templ);
+    domTemplateMap[domTemplateKey]= v8::Global<v8::FunctionTemplate>(m_isolate, templ);
     return templ;
 }
 
@@ -79,14 +79,14 @@ v8::Handle<v8::FunctionTemplate> V8PerIsolateData::existingDOMTemplate(void* dom
 {
     DOMTemplateMap& domTemplateMap = currentDOMTemplateMap();
     DOMTemplateMap::iterator result = domTemplateMap.find(domTemplateKey);
-    if (result != domTemplateMap.end())
-        return result->second.newLocal(m_isolate);
+	if (result != domTemplateMap.end())
+		return v8::Local<v8::FunctionTemplate>::New(m_isolate, result->second);
     return v8::Local<v8::FunctionTemplate>();
 }
 
 void V8PerIsolateData::setDOMTemplate(void* domTemplateKey, v8::Handle<v8::FunctionTemplate> templ)
 {
-    currentDOMTemplateMap()[domTemplateKey] = UnsafePersistent<v8::FunctionTemplate>(m_isolate, templ);
+    currentDOMTemplateMap()[domTemplateKey] = v8::Global<v8::FunctionTemplate>(m_isolate, templ);
 }
 
 //v8::Local<v8::Context> V8PerIsolateData::ensureRegexContext()
@@ -96,39 +96,39 @@ void V8PerIsolateData::setDOMTemplate(void* domTemplateKey, v8::Handle<v8::Funct
 //    return m_perContextDataForRegex->context();
 //}
 
-bool V8PerIsolateData::hasInstance(const WrapperTypeInfo* info, v8::Handle<v8::Value> value)
-{
-    return hasInstance(info, value, m_domTemplateMapForMainWorld)
-        || hasInstance(info, value, m_domTemplateMapForNonMainWorld);
-}
+//bool V8PerIsolateData::hasInstance(const WrapperTypeInfo* info, v8::Handle<v8::Value> value)
+//{
+//    return hasInstance(info, value, m_domTemplateMapForMainWorld)
+//        || hasInstance(info, value, m_domTemplateMapForNonMainWorld);
+//}
 
-bool V8PerIsolateData::hasInstance(const WrapperTypeInfo* info, v8::Handle<v8::Value> value, DOMTemplateMap& domTemplateMap)
-{
-    DOMTemplateMap::iterator result = domTemplateMap.find(info);
-    if (result == domTemplateMap.end())
-        return false;
-    v8::Handle<v8::FunctionTemplate> templ = result->second.newLocal(m_isolate);
-    return templ->HasInstance(value);
-}
+//bool V8PerIsolateData::hasInstance(const WrapperTypeInfo* info, v8::Handle<v8::Value> value, DOMTemplateMap& domTemplateMap)
+//{
+//    DOMTemplateMap::iterator result = domTemplateMap.find(info);
+//    if (result == domTemplateMap.end())
+//        return false;
+//    v8::Handle<v8::FunctionTemplate> templ = result->second.newLocal(m_isolate);
+//    return templ->HasInstance(value);
+//}
 
-v8::Handle<v8::Object> V8PerIsolateData::findInstanceInPrototypeChain(const WrapperTypeInfo* info, v8::Handle<v8::Value> value)
-{
-    v8::Handle<v8::Object> wrapper = findInstanceInPrototypeChain(info, value, m_domTemplateMapForMainWorld);
-    if (!wrapper.IsEmpty())
-        return wrapper;
-    return findInstanceInPrototypeChain(info, value, m_domTemplateMapForNonMainWorld);
-}
+//v8::Handle<v8::Object> V8PerIsolateData::findInstanceInPrototypeChain(const WrapperTypeInfo* info, v8::Handle<v8::Value> value)
+//{
+//    v8::Handle<v8::Object> wrapper = findInstanceInPrototypeChain(info, value, m_domTemplateMapForMainWorld);
+//    if (!wrapper.IsEmpty())
+//        return wrapper;
+//    return findInstanceInPrototypeChain(info, value, m_domTemplateMapForNonMainWorld);
+//}
 
-v8::Handle<v8::Object> V8PerIsolateData::findInstanceInPrototypeChain(const WrapperTypeInfo* info, v8::Handle<v8::Value> value, DOMTemplateMap& domTemplateMap)
-{
-    if (value.IsEmpty() || !value->IsObject())
-        return v8::Handle<v8::Object>();
-    DOMTemplateMap::iterator result = domTemplateMap.find(info);
-    if (result == domTemplateMap.end())
-        return v8::Handle<v8::Object>();
-    v8::Handle<v8::FunctionTemplate> templ = result->second.newLocal(m_isolate);
-    return v8::Handle<v8::Object>::Cast(value)->FindInstanceInPrototypeChain(templ);
-}
+//v8::Handle<v8::Object> V8PerIsolateData::findInstanceInPrototypeChain(const WrapperTypeInfo* info, v8::Handle<v8::Value> value, DOMTemplateMap& domTemplateMap)
+//{
+//    if (value.IsEmpty() || !value->IsObject())
+//        return v8::Handle<v8::Object>();
+//    DOMTemplateMap::iterator result = domTemplateMap.find(info);
+//    if (result == domTemplateMap.end())
+//        return v8::Handle<v8::Object>();
+//    v8::Handle<v8::FunctionTemplate> templ = result->second.newLocal(m_isolate);
+//    return v8::Handle<v8::Object>::Cast(value)->FindInstanceInPrototypeChain(templ);
+//}
 
 //static void constructorOfToString(const v8::FunctionCallbackInfo<v8::Value>& info)
 //{

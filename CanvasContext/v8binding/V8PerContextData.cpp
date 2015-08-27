@@ -13,7 +13,7 @@ static void disposeMapWithUnsafePersistentValues(Map* map)
 {
     typename Map::iterator it = map->begin();
     for (; it != map->end(); ++it)
-        it->second.dispose();
+        it->second.Reset();
     map->clear();
 }
 
@@ -112,7 +112,7 @@ v8::Local<v8::Object> V8PerContextData::createWrapperFromCacheSlowCase(const Wra
 	v8::Local<v8::Function> function = constructorForType(type);
 	v8::Local<v8::Object> instanceTemplate = V8ObjectConstructor::newInstance(function);
 	if (!instanceTemplate.IsEmpty()) {
-		m_wrapperBoilerplates[type] = UnsafePersistent<v8::Object>(m_isolate, instanceTemplate);
+		m_wrapperBoilerplates[type] = v8::Global<v8::Object>(m_isolate, instanceTemplate);
 		return instanceTemplate->Clone();
 	}
 	return v8::Local<v8::Object>();
@@ -148,7 +148,7 @@ v8::Local<v8::Function> V8PerContextData::constructorForTypeSlowCase(const Wrapp
             prototypeObject->SetPrototype(m_errorPrototype.newLocal(m_isolate));
     }
 
-    m_constructorMap[type] = UnsafePersistent<v8::Function>(m_isolate, function);
+    m_constructorMap[type] = v8::Global<v8::Function>(m_isolate, function);
 
     return function;
 }

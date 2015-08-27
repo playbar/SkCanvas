@@ -2,7 +2,6 @@
 #define V8PerIsolateData_h
 
 //#include "bindings/v8/ScopedPersistent.h"
-#include "UnsafePersistent.h"
 //#include "bindings/v8/V8HiddenValue.h"
 #include "WrapperTypeInfo.h"
 #include "DOMDataStore.h"
@@ -56,8 +55,8 @@ public:
     v8::Handle<v8::FunctionTemplate> existingDOMTemplate(void* domTemplateKey);
     void setDOMTemplate(void* domTemplateKey, v8::Handle<v8::FunctionTemplate>);
 
-    bool hasInstance(const WrapperTypeInfo*, v8::Handle<v8::Value>);
-    v8::Handle<v8::Object> findInstanceInPrototypeChain(const WrapperTypeInfo*, v8::Handle<v8::Value>);
+    //bool hasInstance(const WrapperTypeInfo*, v8::Handle<v8::Value>);
+    //v8::Handle<v8::Object> findInstanceInPrototypeChain(const WrapperTypeInfo*, v8::Handle<v8::Value>);
 
     v8::Local<v8::Context> ensureRegexContext();
 
@@ -68,10 +67,10 @@ private:
     explicit V8PerIsolateData(v8::Isolate*);
     ~V8PerIsolateData();
 
-    typedef std::map<const void*, UnsafePersistent<v8::FunctionTemplate> > DOMTemplateMap;
+    typedef std::map<const void*, v8::Global<v8::FunctionTemplate> > DOMTemplateMap;
     DOMTemplateMap& currentDOMTemplateMap();
-    bool hasInstance(const WrapperTypeInfo*, v8::Handle<v8::Value>, DOMTemplateMap&);
-    v8::Handle<v8::Object> findInstanceInPrototypeChain(const WrapperTypeInfo*, v8::Handle<v8::Value>, DOMTemplateMap&);
+    //bool hasInstance(const WrapperTypeInfo*, v8::Handle<v8::Value>, DOMTemplateMap&);
+    //v8::Handle<v8::Object> findInstanceInPrototypeChain(const WrapperTypeInfo*, v8::Handle<v8::Value>, DOMTemplateMap&);
 
     v8::Isolate* m_isolate;
     //OwnPtr<gin::IsolateHolder> m_isolateHolder;

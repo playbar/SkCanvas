@@ -44,21 +44,21 @@ public:
         SkASSERT(containsWrapper());
     }
 
-    v8::Local<v8::Object> newLocalWrapper(v8::Isolate* isolate) const
-    {
-        return unsafePersistent().newLocal(isolate);
-    }
+    //v8::Local<v8::Object> newLocalWrapper(v8::Isolate* isolate) const
+    //{
+    //    return unsafePersistent().newLocal(isolate);
+    //}
 
-    const WrapperTypeInfo* typeInfo()
-    {
-        if (containsTypeInfo())
-            return reinterpret_cast<const WrapperTypeInfo*>(m_wrapperOrTypeInfo);
+    //const WrapperTypeInfo* typeInfo()
+    //{
+    //    if (containsTypeInfo())
+    //        return reinterpret_cast<const WrapperTypeInfo*>(m_wrapperOrTypeInfo);
 
-        if (containsWrapper())
-            return toWrapperTypeInfo(*(unsafePersistent().persistent()));
+    //    if (containsWrapper())
+    //        return toWrapperTypeInfo(*(unsafePersistent().persistent()));
 
-        return 0;
-    }
+    //    return 0;
+    //}
 
     void setTypeInfo(const WrapperTypeInfo* typeInfo)
     {
@@ -83,10 +83,10 @@ public:
         return 0;
     }
 
-    static const WrapperTypeInfo* getTypeInfoFromObject(ScriptWrappable* object)
-    {
-        return object->typeInfo();
-    }
+    //static const WrapperTypeInfo* getTypeInfoFromObject(ScriptWrappable* object)
+    //{
+    //    return object->typeInfo();
+    //}
 
     static void setTypeInfoInObject(void* object, const WrapperTypeInfo*)
     {
@@ -121,21 +121,21 @@ private:
     friend class MinorGCWrapperVisitor;
     friend class DOMDataStore;
 
-    UnsafePersistent<v8::Object> unsafePersistent() const
-    {
-        v8::Object* object = containsWrapper() ? reinterpret_cast<v8::Object*>(m_wrapperOrTypeInfo & ~1) : 0;
-        return UnsafePersistent<v8::Object>(object);
-    }
+    //v8::Global<v8::Object> unsafePersistent() const
+    //{
+    //    v8::Object* object = containsWrapper() ? reinterpret_cast<v8::Object*>(m_wrapperOrTypeInfo & ~1) : 0;
+    //    return v8::Global<v8::Object>(object);
+    //}
 
-    static UnsafePersistent<v8::Object> getUnsafeWrapperFromObject(void*)
-    {
-        return UnsafePersistent<v8::Object>();
-    }
+	//static v8::Global<v8::Object> getUnsafeWrapperFromObject(void*)
+	//{
+	//	return UnsafePersistent<v8::Object>();
+	//}
 
-    static UnsafePersistent<v8::Object> getUnsafeWrapperFromObject(ScriptWrappable* object)
-    {
-        return object->unsafePersistent();
-    }
+    //static UnsafePersistent<v8::Object> getUnsafeWrapperFromObject(ScriptWrappable* object)
+    //{
+    //    return object->unsafePersistent();
+    //}
 
     inline bool containsWrapper() const { return (m_wrapperOrTypeInfo & 1) == 1; }
     inline bool containsTypeInfo() const { return m_wrapperOrTypeInfo && (m_wrapperOrTypeInfo & 1) == 0; }
@@ -143,8 +143,8 @@ private:
     inline void disposeWrapper(v8::Local<v8::Object> wrapper)
     {
         SkASSERT(containsWrapper());
-        SkASSERT(wrapper == *unsafePersistent().persistent());
-        unsafePersistent().dispose();
+        //SkASSERT(wrapper == *unsafePersistent().persistent());
+        //unsafePersistent().dispose();
         setTypeInfo(toWrapperTypeInfo(wrapper));
     }
 
@@ -155,7 +155,7 @@ private:
 
     static void setWeakCallback(const v8::WeakCallbackData<v8::Object, ScriptWrappable>& data)
     {
-        SkASSERT(*data.GetParameter()->unsafePersistent().persistent() == data.GetValue());
+        //SkASSERT(*data.GetParameter()->unsafePersistent().persistent() == data.GetValue());
         data.GetParameter()->disposeWrapper(data.GetValue());
 
         // FIXME: I noticed that 50%~ of minor GC cycle times can be consumed
