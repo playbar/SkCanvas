@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "map"
+#include "hash_map"
 #include "JSCore.h"
 #include "V8GlobalFun.h"
 #include "V8CanvasContext2D.h"

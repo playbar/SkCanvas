@@ -4,7 +4,7 @@
 #include "WrapperTypeInfo.h"
 #include <include/v8.h>
 #include "SkTypes.h"
-#include "map"
+#include "hash_map"
 
 namespace Canvas2D
 {
@@ -12,7 +12,7 @@ namespace Canvas2D
 template<class KeyType>
 class DOMWrapperMap {
 public:
-    typedef std::map<KeyType*, v8::Global<v8::Object> > MapType;
+    typedef std::hash_map<KeyType*, v8::Global<v8::Object> > MapType;
 
     explicit DOMWrapperMap(v8::Isolate* isolate)
         : m_isolate(isolate)
