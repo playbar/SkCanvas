@@ -51,7 +51,7 @@ v8::Handle<v8::Object> V8CanvasGradient::createWrapper(PassRefPtr<CanvasGradient
 	if (wrapper.IsEmpty())
 		return wrapper;
 
-	wrapper->SetAlignedPointerInInternalField(v8DOMWrapperTypeIndex, impl.get());
+	wrapper->SetAlignedPointerInInternalField(v8DOMWrapperTypeIndex, impl.leakRef());
 
 	return wrapper;
 }

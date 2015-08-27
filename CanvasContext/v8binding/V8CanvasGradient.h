@@ -26,7 +26,7 @@ public:
 
 	static CanvasGradient* toNative(v8::Handle<v8::Object> object)
 	{
-		return fromInternalPointer(object->GetAlignedPointerFromInternalField(v8DOMWrapperObjectIndex));
+		return fromInternalPointer(object->GetAlignedPointerFromInternalField(v8DOMWrapperTypeIndex));
 	}
 	static inline CanvasGradient* fromInternalPointer(void* object)
 	{
@@ -43,6 +43,8 @@ template<class CallbackInfo>
 inline void v8SetReturnValue(const CallbackInfo& callbackInfo, PassRefPtr<CanvasGradient> impl)
 {
 	v8SetReturnValue(callbackInfo, impl.get());
+	int i = 0;
+	i++;
 }
 
 template<typename CallbackInfo>

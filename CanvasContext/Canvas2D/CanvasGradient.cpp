@@ -58,4 +58,10 @@ void CanvasGradient::addColorStop(float value, const std::string& color)
     m_gradient->addColorStop(value, Color(rgba));
 }
 
+CanvasGradient::~CanvasGradient()
+{
+	int i = 0;
+	i++;
+}
+
 } // namespace
