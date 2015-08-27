@@ -68,18 +68,18 @@ void EgretGame::initialize()
 void EgretGame::update(float elapsedTime)
 {
 	//clear(CLEAR_COLOR_DEPTH, Vector4(1, 1, 1, 1), 1.0f, 0);
-	//mJSEngine.update(elapsedTime);
+	mJSEngine.update(elapsedTime);
 
-	SkPaint paint;
-	//paint.setAntiAlias(true);
-	paint.setColor(0xFFFF0000);
-	paint.setStyle(SkPaint::kStroke_Style);
-	paint.setStrokeWidth(10);
-	fCanvas->clear(0xff008000);
-	SkPath path;
-	path.moveTo(0, 0);
-	path.lineTo(50, 500);
-	fCanvas->drawPath(path, paint);
+	//SkPaint paint;
+	////paint.setAntiAlias(true);
+	//paint.setColor(0xFFFF0000);
+	//paint.setStyle(SkPaint::kStroke_Style);
+	//paint.setStrokeWidth(10);
+	//fCanvas->clear(0xff008000);
+	//SkPath path;
+	//path.moveTo(0, 0);
+	//path.lineTo(50, 500);
+	//fCanvas->drawPath(path, paint);
 	////fCanvas->drawRectCoords(10, 10, 1200, 600, paint);
 	//PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(fCanvas);
 	//ctx->setFillColor("blue");

@@ -54,9 +54,16 @@ public:
     // This is faster than going through the full object creation process.
     v8::Local<v8::Object> createWrapperFromCache(const WrapperTypeInfo* type)
     {
-		//WrapperBoilerplateMap::iterator it = m_wrapperBoilerplates.find(type);
-        UnsafePersistent<v8::Object> boilerplate = m_wrapperBoilerplates.find(type)->second;
-        return !boilerplate.isEmpty() ? boilerplate.newLocal(v8::Isolate::GetCurrent())->Clone() : createWrapperFromCacheSlowCase(type);
+		WrapperBoilerplateMap::iterator it = m_wrapperBoilerplates.find(type);
+		if ( it != m_wrapperBoilerplates.end() && !it->second.isEmpty())
+		{
+			return it->second.newLocal(v8::Isolate::GetCurrent())->Clone();
+		}
+		else
+		{
+			return createWrapperFromCacheSlowCase(type);
+		}
+		
     }
 
     v8::Local<v8::Function> constructorForType(const WrapperTypeInfo* type)

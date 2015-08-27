@@ -23,10 +23,21 @@ public:
 	{
 		return impl;
 	}
+
+	static CanvasGradient* toNative(v8::Handle<v8::Object> object)
+	{
+		return fromInternalPointer(object->GetAlignedPointerFromInternalField(v8DOMWrapperObjectIndex));
+	}
+	static inline CanvasGradient* fromInternalPointer(void* object)
+	{
+		return static_cast<CanvasGradient*>(object);
+	}
 };
 
 Handle<FunctionTemplate> CanvasGradient_Class(Isolate *isolate);
 void setCanvasGradientClass(Local<Object> parent, Isolate *isolate);
+
+//void v8SetReturnValue(const v8::FunctionCallbackInfo<v8::Value> &args, CanvasGradient*impl);
 
 template<class CallbackInfo>
 inline void v8SetReturnValue(const CallbackInfo& callbackInfo, PassRefPtr<CanvasGradient> impl)
@@ -43,6 +54,7 @@ inline void v8SetReturnValue(const CallbackInfo& callbackInfo, CanvasGradient* i
 		return;
 	}
 	v8::Handle<v8::Object> wrapper = wrap(impl, callbackInfo.Holder(), callbackInfo.GetIsolate());
+	
 	v8SetReturnValue(callbackInfo, wrapper);
 }
 

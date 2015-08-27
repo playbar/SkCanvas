@@ -4,6 +4,8 @@
 #include "V8DOMWrapper.h"
 #include "ScriptWrappable.h"
 #include "V8PerIsolateData.h"
+#include "V8ObjectConstructor.h"
+#include "JSCore.h"
 
 const WrapperTypeInfo V8CanvasGradient::wrapperTypeInfo =
 {
@@ -14,8 +16,20 @@ const WrapperTypeInfo V8CanvasGradient::wrapperTypeInfo =
 	WrapperTypeObjectPrototype, false 
 };
 
+CanvasGradient* UnwrapCanvasGradient(Local<Object> obj)
+{
+	Local<External> field = Local<External>::Cast(obj->GetInternalField(0));
+	void* ptr = field->Value();
+	return static_cast<CanvasGradient*>(ptr);
+}
+
 void v8_CanvasGradient_addColorStop(const FunctionCallbackInfo<Value> &args)
 {
+	CanvasGradient* imp = V8CanvasGradient::toNative(args.Holder());
+	float offset = static_cast<float>(args[0]->NumberValue());
+	v8::String::Utf8Value str(args[1]);
+	const char* cstr = ToCString(str);
+	imp->addColorStop(offset, cstr);
 
 }
 
@@ -28,15 +42,31 @@ v8::Handle<v8::Object> V8CanvasGradient::createWrapper(PassRefPtr<CanvasGradient
 {
 	SkASSERT(impl);
 	//SkASSERT(!DOMDataStore::containsWrapper<V8CanvasGradient>(impl.get(), isolate));
+	v8::Context::Scope scope(isolate->GetCurrentContext());
 
-	v8::Handle<v8::Object> wrapper = V8DOMWrapper::createWrapper(creationContext, &wrapperTypeInfo, toInternalPointer(impl.get()), isolate);
+	int argc = 1;
+	Handle<Integer> mval = Integer::NewFromUnsigned(isolate, reinterpret_cast<uintptr_t>(impl.get()));
+	Handle<Value> argv[] = { mval };
+	v8::Handle<v8::Object> wrapper = V8CanvasGradient::domTemplate(isolate)->GetFunction()->NewInstance(argc, argv);
 	if (wrapper.IsEmpty())
 		return wrapper;
 
-	installPerContextEnabledProperties(wrapper, impl.get(), isolate);
-	V8DOMWrapper::associateObjectWithWrapper<V8CanvasGradient>(impl, &wrapperTypeInfo, wrapper, isolate, WrapperConfiguration::Independent);
+	wrapper->SetAlignedPointerInInternalField(v8DOMWrapperTypeIndex, impl.get());
+
 	return wrapper;
 }
+
+//void v8SetReturnValue(const v8::FunctionCallbackInfo<v8::Value> &args, CanvasGradient*impl)
+//{
+//	Isolate *isolate = args.GetIsolate();
+//	int argc = 1;
+//	Handle<Integer> mval = Integer::NewFromUnsigned(isolate, reinterpret_cast<uintptr_t>(impl));
+//	Handle<Value> argv[] = { mval };
+//	//v8::Handle<v8::Object> wrapper = V8ObjectConstructor::newInstance(V8CanvasGradient::domTemplate(isolate)->GetFunction(), argc, argv );
+//	v8::Handle<v8::Object> wrapper = V8CanvasGradient::domTemplate(isolate)->GetFunction()->NewInstance(argc, argv);
+//
+//	wrapper->SetAlignedPointerInInternalField(v8DOMWrapperTypeIndex, impl);
+//}
 
 v8::Handle<v8::FunctionTemplate> V8CanvasGradient::domTemplate(v8::Isolate* isolate)
 {
@@ -53,6 +83,7 @@ v8::Handle<v8::FunctionTemplate> V8CanvasGradient::domTemplate(v8::Isolate* isol
 
 	Handle<ObjectTemplate> temp_inst = temp_class->InstanceTemplate();
 	temp_inst->SetInternalFieldCount(1);
+	data->setDOMTemplate(const_cast<WrapperTypeInfo*>(&wrapperTypeInfo), temp_class);
 	return temp_class;
 }
 
