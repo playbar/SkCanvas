@@ -210,9 +210,6 @@
     <ClCompile Include="v8binding\V8GlobalFun.cpp">
       <Filter>v8binding</Filter>
     </ClCompile>
-    <ClCompile Include="v8binding\BitmapImage_v8.cpp">
-      <Filter>v8binding</Filter>
-    </ClCompile>
     <ClCompile Include="v8binding\V8Binding.cpp">
       <Filter>v8binding</Filter>
     </ClCompile>
@@ -247,6 +244,9 @@
       <Filter>v8binding</Filter>
     </ClCompile>
     <ClCompile Include="v8binding\V8CanvasPattern.cpp">
+      <Filter>v8binding</Filter>
+    </ClCompile>
+    <ClCompile Include="v8binding\V8BitmapImage.cpp">
       <Filter>v8binding</Filter>
     </ClCompile>
   </ItemGroup>
@@ -380,9 +380,6 @@
     <ClInclude Include="v8binding\V8GlobalFun.h">
       <Filter>v8binding</Filter>
     </ClInclude>
-    <ClInclude Include="v8binding\BitmapImage_v8.h">
-      <Filter>v8binding</Filter>
-    </ClInclude>
     <ClInclude Include="utils\AnimationUtilities.h">
       <Filter>CanvasContext\utils</Filter>
     </ClInclude>
@@ -438,6 +435,9 @@
       <Filter>CanvasContext\utils</Filter>
     </ClInclude>
     <ClInclude Include="v8binding\V8CanvasPattern.h">
+      <Filter>v8binding</Filter>
+    </ClInclude>
+    <ClInclude Include="v8binding\V8BitmapImage.h">
       <Filter>v8binding</Filter>
     </ClInclude>
   </ItemGroup>

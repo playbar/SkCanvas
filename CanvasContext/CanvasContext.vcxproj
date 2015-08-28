@@ -74,7 +74,7 @@
     <ClCompile Include="utils\SkiaUtils.cpp" />
     <ClCompile Include="utils\TransformationMatrix.cpp" />
     <ClCompile Include="utils\TypeTraits.cpp" />
-    <ClCompile Include="v8binding\BitmapImage_v8.cpp" />
+    <ClCompile Include="v8binding\V8BitmapImage.cpp" />
     <ClCompile Include="v8binding\CustomElementBinding.cpp" />
     <ClCompile Include="v8binding\V8CanvasContext2D.cpp" />
     <ClCompile Include="v8binding\V8CanvasGradient.cpp" />
@@ -134,7 +134,7 @@
     <ClInclude Include="utils\SkiaUtils.h" />
     <ClInclude Include="utils\TransformationMatrix.h" />
     <ClInclude Include="utils\TypeTraits.h" />
-    <ClInclude Include="v8binding\BitmapImage_v8.h" />
+    <ClInclude Include="v8binding\V8BitmapImage.h" />
     <ClInclude Include="v8binding\CustomElementBinding.h" />
     <ClInclude Include="v8binding\ScopedPersistent.h" />
     <ClInclude Include="v8binding\V8CanvasContext2D.h" />
