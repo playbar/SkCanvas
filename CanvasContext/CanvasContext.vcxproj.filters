@@ -431,5 +431,8 @@
     <ClInclude Include="v8binding\V8ObjectConstructor.h">
       <Filter>v8binding</Filter>
     </ClInclude>
+    <ClInclude Include="utils\HexNumber.h">
+      <Filter>CanvasContext\utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

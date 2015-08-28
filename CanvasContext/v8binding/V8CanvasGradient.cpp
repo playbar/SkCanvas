@@ -56,18 +56,6 @@ v8::Handle<v8::Object> V8CanvasGradient::createWrapper(PassRefPtr<CanvasGradient
 	return wrapper;
 }
 
-//void v8SetReturnValue(const v8::FunctionCallbackInfo<v8::Value> &args, CanvasGradient*impl)
-//{
-//	Isolate *isolate = args.GetIsolate();
-//	int argc = 1;
-//	Handle<Integer> mval = Integer::NewFromUnsigned(isolate, reinterpret_cast<uintptr_t>(impl));
-//	Handle<Value> argv[] = { mval };
-//	//v8::Handle<v8::Object> wrapper = V8ObjectConstructor::newInstance(V8CanvasGradient::domTemplate(isolate)->GetFunction(), argc, argv );
-//	v8::Handle<v8::Object> wrapper = V8CanvasGradient::domTemplate(isolate)->GetFunction()->NewInstance(argc, argv);
-//
-//	wrapper->SetAlignedPointerInInternalField(v8DOMWrapperTypeIndex, impl);
-//}
-
 v8::Handle<v8::FunctionTemplate> V8CanvasGradient::domTemplate(v8::Isolate* isolate)
 {
 	V8PerIsolateData *data = V8PerIsolateData::from(isolate);

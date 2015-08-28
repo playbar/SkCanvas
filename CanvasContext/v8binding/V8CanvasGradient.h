@@ -34,11 +34,6 @@ public:
 	}
 };
 
-Handle<FunctionTemplate> CanvasGradient_Class(Isolate *isolate);
-void setCanvasGradientClass(Local<Object> parent, Isolate *isolate);
-
-//void v8SetReturnValue(const v8::FunctionCallbackInfo<v8::Value> &args, CanvasGradient*impl);
-
 template<class CallbackInfo>
 inline void v8SetReturnValue(const CallbackInfo& callbackInfo, PassRefPtr<CanvasGradient> impl)
 {
@@ -53,17 +48,14 @@ inline void v8SetReturnValue(const CallbackInfo& callbackInfo, CanvasGradient* i
 		v8SetReturnValueNull(callbackInfo);
 		return;
 	}
-	v8::Handle<v8::Object> wrapper = wrap(impl, callbackInfo.Holder(), callbackInfo.GetIsolate());
-	
+	//v8::Handle<v8::Object> wrapper = wrap(impl, callbackInfo.Holder(), callbackInfo.GetIsolate());
+	v8::Handle<v8::Object> wrapper = V8CanvasGradient::createWrapper(impl, callbackInfo.Holder(), callbackInfo.GetIsolate());
 	v8SetReturnValue(callbackInfo, wrapper);
+	return;
 }
 
-inline v8::Handle<v8::Object> wrap(CanvasGradient* impl, v8::Handle<v8::Object> creationContext, v8::Isolate* isolate)
-{
-	SkASSERT(impl);
-	return V8CanvasGradient::createWrapper(impl, creationContext, isolate);
-}
-
+Handle<FunctionTemplate> CanvasGradient_Class(Isolate *isolate);
+void setCanvasGradientClass(Local<Object> parent, Isolate *isolate);
 
 
 #endif

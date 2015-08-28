@@ -1,34 +1,11 @@
-/*
- * Copyright (C) 2003, 2004, 2005, 2006, 2008 Apple Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY APPLE COMPUTER, INC. ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL APPLE COMPUTER, INC. OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
- * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 #include "SkTypes.h"
 #include "Color.h"
 #include "ASCIICType.h"
+#include "HexNumber.h"
 
 #include "MathExtras.h"
 #include <algorithm>
+#include <sstream>
 using namespace std;
 
 namespace Canvas2D {
@@ -195,42 +172,48 @@ std::string Color::serializedAsCSSComponentValue() const
 
 std::string Color::serialized() const
 {
-	SkASSERT(false);
- //   if (!hasAlpha())
-	//{
- //       std::string builder;
- //       builder.reserveCapacity(7);
- //       builder.append('#');
- //       appendByteAsHex(red(), builder, Lowercase);
- //       appendByteAsHex(green(), builder, Lowercase);
- //       appendByteAsHex(blue(), builder, Lowercase);
- //       return builder.toString();
- //   }
+	//SkASSERT(false);
+	if (!hasAlpha())
+	{
+		std::string builder;
+		builder.reserve(7);
+		builder.push_back('#');
+		appendByteAsHex(red(), builder, Lowercase);
+		appendByteAsHex(green(), builder, Lowercase);
+		appendByteAsHex(blue(), builder, Lowercase);
+		return builder;
+	}
 
     std::string result;
 	result.resize(28);
+    const char commaSpace[] = ", ";
+    const char rgbaParen[] = "rgba(";
 
-    //result.reserveCapacity(28);
-    //const char commaSpace[] = ", ";
-    //const char rgbaParen[] = "rgba(";
+    result.append(rgbaParen, 5);
+	std::ostringstream ost;
+	ost << red();
+    result.append(ost.str());
+	ost.str("");
+    result.append(commaSpace, 2);
+	ost << green();
+    result.append(ost.str());
+	ost.str("");
+    result.append(commaSpace, 2);
+	ost << blue();
+    result.append(ost.str());
+    result.append(commaSpace, 2);
 
-    //result.append(rgbaParen, 5);
-    //result.appendNumber(red());
-    //result.append(commaSpace, 2);
-    //result.appendNumber(green());
-    //result.append(commaSpace, 2);
-    //result.appendNumber(blue());
-    //result.append(commaSpace, 2);
+    if (!alpha())
+        result.push_back('0');
+    else
+	{
+		SkASSERT(false);
+        //NumberToLStringBuffer buffer;
+        //unsigned length = DecimalNumber(alpha() / 255.0).toStringDecimal(buffer, WTF::NumberToStringBufferLength);
+        //result.append(buffer, length);
+    }
 
-    //if (!alpha())
-    //    result.append('0');
-    //else {
-    //    NumberToLStringBuffer buffer;
-    //    unsigned length = DecimalNumber(alpha() / 255.0).toStringDecimal(buffer, WTF::NumberToStringBufferLength);
-    //    result.append(buffer, length);
-    //}
-
-    //result.append(')');
+    result.push_back(')');
     return result;
 }
 

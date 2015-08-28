@@ -124,6 +124,7 @@
     <ClInclude Include="utils\AffineTransform.h" />
     <ClInclude Include="utils\AnimationUtilities.h" />
     <ClInclude Include="utils\ASCIICType.h" />
+    <ClInclude Include="utils\HexNumber.h" />
     <ClInclude Include="utils\MathExtras.h" />
     <ClInclude Include="utils\PassRefPtr.h" />
     <ClInclude Include="utils\RawPtr.h" />

@@ -40,9 +40,11 @@ public:
 
 	std::string lineCap() const;
 	void setLineCap(const std::string&);
-
+	LineCap getLineCap() const { return state().m_lineCap; }
+	
 	std::string lineJoin() const;
 	void setLineJoin(const std::string&);
+	LineJoin getLineJoin() const { return state().m_lineJoin; }
 
 	float miterLimit() const;
 	void setMiterLimit(float);
@@ -185,9 +187,6 @@ public:
 	void strokeText( const char* text, float x, float y);
 	//void strokeText(const String& text, float x, float y, float maxWidth);
 	float measureText(const std::string& text);
-
-	LineCap getLineCap() const { return state().m_lineCap; }
-	LineJoin getLineJoin() const { return state().m_lineJoin; }
 
 	bool imageSmoothingEnabled() const;
 	void setImageSmoothingEnabled(bool);

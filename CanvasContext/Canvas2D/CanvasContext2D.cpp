@@ -164,7 +164,8 @@ void CanvasContext2D::setLineWidth(float thickness )
 
 std::string CanvasContext2D::lineCap() const
 {
-	return "";
+	const char* const names[3] = { "butt", "round", "square" };
+	return names[state().m_lineCap];
 }
 void CanvasContext2D::setLineCap(const std::string& s)
 {
@@ -177,12 +178,15 @@ void CanvasContext2D::setLineCap(const std::string& s)
 	{
 		return;
 	}
+	modifiableState().m_lineCap = cap;
 	m_strokePaint.setStrokeCap((SkPaint::Cap)cap);
 }
 
 std::string CanvasContext2D::lineJoin() const
 {
-	return "";
+	const char* const names[3] = { "miter", "round", "bevel" };
+	return names[state().m_lineJoin];
+
 }
 void CanvasContext2D::setLineJoin(const std::string&s)
 {
@@ -195,6 +199,7 @@ void CanvasContext2D::setLineJoin(const std::string&s)
 	{
 		return;
 	}
+	modifiableState().m_lineJoin = join;
 	m_strokePaint.setStrokeJoin((SkPaint::Join)join);
 }
 
@@ -284,7 +289,7 @@ void CanvasContext2D::setShadowBlur(float blur)
 
 std::string CanvasContext2D::shadowColor() const
 {
-	return "";
+	return Color(state().m_shadowColor).serialized();
 }
 void CanvasContext2D::setShadowColor(const std::string& color )
 {
