@@ -33,7 +33,7 @@ CanvasPattern* UnwrapCanvasGradient(Local<Object> obj)
 //
 //}
 
-void CanvasGradientCallBack(const FunctionCallbackInfo<Value> &args)
+void CanvasPatternCallBack(const FunctionCallbackInfo<Value> &args)
 {
 
 }
@@ -59,7 +59,7 @@ v8::Handle<v8::FunctionTemplate> V8CanvasPattern::domTemplate(v8::Isolate* isola
 	{
 		return temp_class;
 	}
-	temp_class = FunctionTemplate::New(isolate, CanvasGradientCallBack);
+	temp_class = FunctionTemplate::New(isolate, CanvasPatternCallBack);
 	temp_class->SetClassName(String::NewFromUtf8(isolate, "canvasgradient"));
 	Handle<ObjectTemplate> temp_proto = temp_class->PrototypeTemplate();
 	//temp_proto->Set(String::NewFromUtf8(isolate, "addColorStop", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, v8_CanvasGradient_addColorStop));
@@ -73,10 +73,10 @@ v8::Handle<v8::FunctionTemplate> V8CanvasPattern::domTemplate(v8::Isolate* isola
 
 Handle<FunctionTemplate> CanvasPattern_Class(Isolate *isolate)
 {
-	Handle<FunctionTemplate> temp_class = FunctionTemplate::New(isolate, CanvasGradientCallBack);
+	Handle<FunctionTemplate> temp_class = FunctionTemplate::New(isolate, CanvasPatternCallBack);
 	temp_class->SetClassName(String::NewFromUtf8(isolate, "canvasgradient"));
 	Handle<ObjectTemplate> temp_proto = temp_class->PrototypeTemplate();
-	temp_proto->Set(String::NewFromUtf8(isolate, "addColorStop", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, v8_CanvasGradient_addColorStop));
+	//temp_proto->Set(String::NewFromUtf8(isolate, "addColorStop", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, v8_CanvasGradient_addColorStop));
 
 	Handle<ObjectTemplate> temp_inst = temp_class->InstanceTemplate();
 	temp_inst->SetInternalFieldCount(1);

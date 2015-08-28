@@ -28,7 +28,7 @@ static v8::Handle<v8::Value> toV8Object(CanvasStyle* style, v8::Handle<v8::Objec
 
 static PassRefPtr<CanvasStyle> toCanvasStyle(v8::Handle<v8::Value> value, v8::Isolate* isolate)
 {
-	RefPtr<CanvasStyle> canvasStyle = CanvasStyle::createFromGradient(V8CanvasGradient::toNative( value));
+	RefPtr<CanvasStyle> canvasStyle = CanvasStyle::createFromGradient(V8CanvasGradient::toNative(value));
 	if (canvasStyle)
 		return canvasStyle;
 	return CanvasStyle::createFromPattern(V8CanvasPattern::toNative(value));
@@ -445,7 +445,9 @@ static void v8_CanvasContext2D_canvas_get(Local<String> str, const PropertyCallb
 	//todo
 }
 
-static void v8_CanvasContext2D_canvas_set( )
+static void v8_CanvasContext2D_canvas_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	//todo
 }
@@ -456,21 +458,25 @@ static void v8_CanvasContext2D_globalAlpha_get(Local<String> str, const Property
 	v8SetReturnValue(args, imp->globalAlpha());
 }
 
-static void v8_CanvasContext2D_globalAlpha_set(Local<Value> jsValue, PropertyCallbackInfo<void> &args)
+static void v8_CanvasContext2D_globalAlpha_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	float cppValue = static_cast<float>(jsValue->NumberValue());
 	imp->setGlobalAlpha(cppValue);
 }
 
-static void v8_CanvasContext2D_globalCompositeOperation_get(Local<String> val, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_globalCompositeOperation_get(Local<String> val, const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	Local<String> newString = String::NewFromUtf8(args.GetReturnValue().GetIsolate(), imp->globalCompositeOperation().c_str());
 	args.GetReturnValue().Set(newString);
 }
 
-static void v8_CanvasContext2D_globalCompositeOperation_set(Local<Value> jsValue, const v8::PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_globalCompositeOperation_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	v8::String::Utf8Value str(jsValue);
@@ -478,27 +484,31 @@ static void v8_CanvasContext2D_globalCompositeOperation_set(Local<Value> jsValue
 	imp->setGlobalCompositeOperation(cstr);
 }
 
-static void v8_CanvasContext2D_lineWidth_get(Local<String> val, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_lineWidth_get(Local<String> val, const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	args.GetReturnValue().Set(imp->lineWidth());
 }
 
-static void v8_CanvasContext2D_lineWidth_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_lineWidth_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	float cppValue = static_cast<float>(jsValue->NumberValue());
 	imp->setLineWidth(cppValue);
 }
 
-static void v8_CanvasContext2D_lineCap_get(Local<String> val, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_lineCap_get(Local<String> val, const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	Local<String> strVal = String::NewFromUtf8(args.GetReturnValue().GetIsolate(), imp->lineCap().c_str());
 	args.GetReturnValue().Set(strVal);
 }
 
-static void v8_CanvasContext2D_lineCap_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_lineCap_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	v8::String::Utf8Value str(jsValue);
@@ -506,14 +516,16 @@ static void v8_CanvasContext2D_lineCap_set(Local<Value> jsValue, PropertyCallbac
 	imp->setLineCap(cstr);
 }
 
-static void v8_CanvasContext2D_lineJoin_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_lineJoin_get(Local<String> strValue, const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	Local<String> strVal = String::NewFromUtf8(args.GetReturnValue().GetIsolate(), imp->lineJoin().c_str());
 	args.GetReturnValue().Set(strVal);
 }
 
-static void v8_CanvasContext2D_lineJoin_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_lineJoin_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	v8::String::Utf8Value str(jsValue);
@@ -521,66 +533,76 @@ static void v8_CanvasContext2D_lineJoin_set(Local<Value> jsValue, PropertyCallba
 	imp->setLineJoin(cstr);
 }
 
-static void v8_CanvasContext2D_miterLimit_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_miterLimit_get(Local<String> strVal, const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	args.GetReturnValue().Set(imp->miterLimit());
 }
 
-static void v8_CanvasContext2D_miterLimit_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_miterLimit_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	float cppValue = static_cast<float>(jsValue->NumberValue());
 	imp->setMiterLimit(cppValue);
 }
 
-static void v8_CanvasContext2D_shadowOffsetX_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_shadowOffsetX_get(Local<String> strVal, const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	args.GetReturnValue().Set(imp->shadowOffsetX());
 }
 
-static void v8_CanvasContext2D_shadowOffsetX_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_shadowOffsetX_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	float cppValue = static_cast<float>(jsValue->NumberValue());
 	imp->setShadowOffsetX(cppValue);
 }
 
-static void v8_CanvasContext2D_shadowOffsetY_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_shadowOffsetY_get(Local<String> strVal, const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	args.GetReturnValue().Set(imp->shadowOffsetY());
 }
 
-static void v8_CanvasContext2D_shadowOffsetY_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_shadowOffsetY_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	float cppValue = static_cast<float>(jsValue->NumberValue());
 	imp->setShadowOffsetY(cppValue);
 }
 
-static void v8_CanvasContext2D_shadowBlur_get(Local<String> strVa, PropertyCallbackInfo<Value>&args)
+static void v8_CanvasContext2D_shadowBlur_get(Local<String> strVa,const PropertyCallbackInfo<Value>&args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
-	args.GetReturnValue.Set(imp->shadowBlur());
+	args.GetReturnValue().Set(imp->shadowBlur());
 }
 
-static void v8_CanvasContext2D_shadowBlur_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_shadowBlur_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	float cppValue = static_cast<float>(jsValue->NumberValue());
 	imp->setShadowBlur(cppValue);
 }
 
-static void v8_CanvasContext2D_shadowColor_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_shadowColor_get(Local<String> strValue, const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	Local<String> strVal = String::NewFromUtf8(args.GetReturnValue().GetIsolate(), imp->shadowColor().c_str());
 	args.GetReturnValue().Set(strVal);
 }
 
-static void v8_CanvasContext2D_shadowColor_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_shadowColor_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	v8::String::Utf8Value str(jsValue);
@@ -588,39 +610,45 @@ static void v8_CanvasContext2D_shadowColor_set(Local<Value> jsValue, PropertyCal
 	imp->setShadowColor(cstr);
 }
 
-static void v8_CanvasContext2D_lineDashOffset_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_lineDashOffset_get(Local<String> strVal, const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
-	args.GetReturnValue().Set(strVal->NumberValue());
+	args.GetReturnValue().Set(imp->lineDashOffset());
 }
 
-static void v8_CanvasContext2D_lineDashOffset_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_lineDashOffset_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	float cppValue = static_cast<float>(jsValue->NumberValue());
 	imp->setLineDashOffset(cppValue);
 }
 
-static void v8_CanvasContext2D_currentPath_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_currentPath_get(Local<String> strVal,const PropertyCallbackInfo<Value> &args)
 {
-	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	//CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	// todo
 }
 
-static void v8_CanvasContext2D_currentPath_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_currentPath_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
-	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	//CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	// todo
 }
 
-static void v8_CanvasContext2D_font_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_font_get(Local<String> strValue, const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	Local<String> strVal = String::NewFromUtf8(args.GetReturnValue().GetIsolate(), imp->font().c_str());
 	args.GetReturnValue().Set(strVal);
 }
 
-static void v8_CanvasContext2D_font_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_font_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	v8::String::Utf8Value str(jsValue);
@@ -628,14 +656,16 @@ static void v8_CanvasContext2D_font_set(Local<Value> jsValue, PropertyCallbackIn
 	imp->setFont(cstr);
 }
 
-static void v8_CanvasContext2D_textAlign_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_textAlign_get(Local<String> strValue, const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
-	Local<String> strVal = String::NewFromUtf8(args.GetReturnValue().GetIsolate(), imp->textAlign.c_str());
+	Local<String> strVal = String::NewFromUtf8(args.GetReturnValue().GetIsolate(), imp->textAlign().c_str());
 	args.GetReturnValue().Set(strVal);
 }
 
-static void v8_CanvasContext2D_textAlign_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_textAlign_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	v8::String::Utf8Value str(jsValue);
@@ -643,14 +673,16 @@ static void v8_CanvasContext2D_textAlign_set(Local<Value> jsValue, PropertyCallb
 	imp->setTextAlign(cstr);
 }
 
-static void v8_CanvasContext2D_textBaseline_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_textBaseline_get(Local<String> strValue, const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	Local<String> strVal = String::NewFromUtf8(args.GetReturnValue().GetIsolate(), imp->textBaseline().c_str());
 	args.GetReturnValue().Set(strVal);
 }
 
-static void v8_CanvasContext2D_textBaseline_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_textBaseline_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	v8::String::Utf8Value str(jsValue);
@@ -658,14 +690,16 @@ static void v8_CanvasContext2D_textBaseline_set(Local<Value> jsValue, PropertyCa
 	imp->setTextBaseline(cstr);
 }
 
-static void v8_CanvasContext2D_strokeStyle_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_strokeStyle_get(Local<String> strValue, const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	v8::Handle<v8::Value> strVal = toV8Object(imp->strokeStyle(), args.Holder(), args.GetIsolate());
 	args.GetReturnValue().Set(strVal);
 }
 
-static void v8_CanvasContext2D_strokeStyle_set(Local<Value>jsValue, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_strokeStyle_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	if ( jsValue->IsString() )
@@ -676,38 +710,42 @@ static void v8_CanvasContext2D_strokeStyle_set(Local<Value>jsValue, PropertyCall
 	}
 	else
 	{
-		imp->setStrokeStyle(toCanvasStyle(jsValue, args.GetIsolate()));
+		//imp->setStrokeStyle(toCanvasStyle(jsValue, args.GetIsolate()));
 	}
 }
 
-static void v8_CanvasContext2D_fillStyle_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_fillStyle_get(Local<String> strValue,const PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 	v8::Handle<v8::Value> strVal = toV8Object(imp->fillStyle(), args.Holder(), args.GetIsolate());
 	args.GetReturnValue().Set(strVal);
 }
 
-static void v8_CanvasContext2D_fillStyle_set(Local<Value> jsVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_fillStyle_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
-	if (jsVal->IsString())
+	if (jsValue->IsString())
 	{
-		v8::String::Utf8Value str(jsVal);
+		v8::String::Utf8Value str(jsValue);
 		const char *cstr = ToCString(str);
 		imp->setFillColor(cstr);
 	}
 	else
 	{
-		imp->setFillStyle(toCanvasStyle(jsVal, args.GetIsolate()));
+		imp->setFillStyle(toCanvasStyle(jsValue, args.GetIsolate()));
 	}
 }
 
-static void v8_CanvasContext2D_imageSmoothingEnable_get(Local<String> jsStr, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_imageSmoothingEnable_get(Local<String> jsStr, const PropertyCallbackInfo<Value> &args)
 {
-	CanvasContext2D * imp = UnwrapCanvasContext2D(args.Holder());
+	//CanvasContext2D * imp = UnwrapCanvasContext2D(args.Holder());
 }
 
-static void v8_CanvasContext2D_imageSmoothingEnable_set(Local<Value> jsVal, PropertyCallbackInfo<Value> &args)
+static void v8_CanvasContext2D_imageSmoothingEnable_set(Local<String> pro,
+	Local<Value> jsValue,
+	const PropertyCallbackInfo<void>& args)
 {
 
 }

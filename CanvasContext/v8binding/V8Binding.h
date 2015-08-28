@@ -3,6 +3,7 @@
 
 #include "SkTypes.h"
 #include "include/v8.h"
+#include "string"
 using namespace v8;
 
 template<typename CallbackInfo>
@@ -23,9 +24,9 @@ inline v8::Handle<v8::String> v8AtomicString(v8::Isolate* isolate, const char* s
 	return v8::String::NewFromUtf8(isolate, str, v8::String::kInternalizedString, strlen(str));
 }
 
-inline v8::Handle<v8::String> v8String(v8::Isolate* isolate, const std::string& string)
+inline v8::Handle<v8::String> v8String(v8::Isolate* isolate, const std::string& str)
 {
-	v8::Handle<v8::String> strVal = String::NewFromUtf8(isolate, string.c_str());
+	v8::Handle<v8::String> strVal = String::NewFromUtf8(isolate, str.c_str());
 	return strVal;
 }
 

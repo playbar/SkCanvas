@@ -28,6 +28,10 @@ public:
 	{
 		return fromInternalPointer(object->GetAlignedPointerFromInternalField(v8DOMWrapperTypeIndex));
 	}
+	static CanvasGradient*toNative(v8::Handle<v8::Value> value)
+	{
+		return fromInternalPointer(v8::Handle<v8::Object>::Cast(value)->GetAlignedPointerFromInternalField(v8DOMWrapperObjectIndex));
+	}
 	static inline CanvasGradient* fromInternalPointer(void* object)
 	{
 		return static_cast<CanvasGradient*>(object);

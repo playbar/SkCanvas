@@ -28,6 +28,10 @@ public:
 	{
 		return fromInternalPointer(object->GetAlignedPointerFromInternalField(v8DOMWrapperTypeIndex));
 	}
+	static CanvasPattern *toNative(v8::Handle<v8::Value> value)
+	{
+		return fromInternalPointer(v8::Handle<v8::Object>::Cast(value)->GetAlignedPointerFromInternalField(v8DOMWrapperObjectIndex));
+	}
 	static inline CanvasPattern* fromInternalPointer(void* object)
 	{
 		return static_cast<CanvasPattern*>(object);
@@ -35,13 +39,13 @@ public:
 };
 
 template<class CallbackInfo>
-inline void v8SetReturnValue(const CallbackInfo& callbackInfo, PassRefPtr<CanvasGradient> impl)
+inline void v8SetReturnValue(const CallbackInfo& callbackInfo, PassRefPtr<CanvasPattern> impl)
 {
 	v8SetReturnValue(callbackInfo, impl.get());
 }
 
 template<typename CallbackInfo>
-inline void v8SetReturnValue(const CallbackInfo& callbackInfo, CanvasGradient* impl)
+inline void v8SetReturnValue(const CallbackInfo& callbackInfo, CanvasPattern* impl)
 {
 	if (!impl) 
 	{
