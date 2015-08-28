@@ -710,7 +710,7 @@ static void v8_CanvasContext2D_strokeStyle_set(Local<String> pro,
 	}
 	else
 	{
-		//imp->setStrokeStyle(toCanvasStyle(jsValue, args.GetIsolate()));
+		imp->setStrokeStyle(toCanvasStyle(jsValue, args.GetIsolate()));
 	}
 }
 
