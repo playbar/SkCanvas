@@ -61,7 +61,7 @@ inline v8::Handle<v8::Value> toV8(CanvasPattern *imp, v8::Handle<v8::Object> cre
 }
 
 Handle<FunctionTemplate> CanvasPattern_Class(Isolate *isolate);
-void setCanvasGradientClass(Local<Object> parent, Isolate *isolate);
+void setCanvasPatternClass(Local<Object> parent, Isolate *isolate);
 
 
 #endif

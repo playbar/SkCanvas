@@ -246,6 +246,9 @@
     <ClCompile Include="v8binding\V8ObjectConstructor.cpp">
       <Filter>v8binding</Filter>
     </ClCompile>
+    <ClCompile Include="v8binding\V8CanvasPattern.cpp">
+      <Filter>v8binding</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\skia\third_party\externals\libpng\png.h">
@@ -433,6 +436,9 @@
     </ClInclude>
     <ClInclude Include="utils\HexNumber.h">
       <Filter>CanvasContext\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="v8binding\V8CanvasPattern.h">
+      <Filter>v8binding</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

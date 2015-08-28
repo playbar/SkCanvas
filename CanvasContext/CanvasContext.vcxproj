@@ -79,6 +79,7 @@
     <ClCompile Include="v8binding\V8CanvasContext2D.cpp" />
     <ClCompile Include="v8binding\V8CanvasGradient.cpp" />
     <ClCompile Include="v8binding\DOMDataStore.cpp" />
+    <ClCompile Include="v8binding\V8CanvasPattern.cpp" />
     <ClCompile Include="v8binding\V8ImageData.cpp" />
     <ClCompile Include="v8binding\JSCore.cpp" />
     <ClCompile Include="v8binding\JSEngine.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="v8binding\V8CanvasGradient.h" />
     <ClInclude Include="v8binding\DOMDataStore.h" />
     <ClInclude Include="v8binding\DOMWrapperMap.h" />
+    <ClInclude Include="v8binding\V8CanvasPattern.h" />
     <ClInclude Include="v8binding\V8ImageData.h" />
     <ClInclude Include="v8binding\JSCore.h" />
     <ClInclude Include="v8binding\JSEngine.h" />

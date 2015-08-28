@@ -4,6 +4,7 @@
 #include "SkGpuDevice.h"
 #include "JSCore.h"
 #include "V8CanvasGradient.h"
+#include "V8CanvasPattern.h"
 
 extern SkCanvas *gCanvas;
 
@@ -19,11 +20,20 @@ static v8::Handle<v8::Value> toV8Object(CanvasStyle* style, v8::Handle<v8::Objec
 	if (style->canvasGradient())
 		return toV8(style->canvasGradient(), creationContext, isolate);
 
-	//if (style->canvasPattern())
-	//	return toV8(style->canvasPattern(), creationContext, isolate);
+	if (style->canvasPattern())
+		return toV8(style->canvasPattern(), creationContext, isolate);
 
-	//return v8String(isolate, style->color());
+	return v8String(isolate, style->color());
 }
+
+static PassRefPtr<CanvasStyle> toCanvasStyle(v8::Handle<v8::Value> value, v8::Isolate* isolate)
+{
+	RefPtr<CanvasStyle> canvasStyle = CanvasStyle::createFromGradient(V8CanvasGradient::toNative( value));
+	if (canvasStyle)
+		return canvasStyle;
+	return CanvasStyle::createFromPattern(V8CanvasPattern::toNative(value));
+}
+
 
 void v8_CanvasContext2D_sava(const v8::FunctionCallbackInfo<v8::Value> &args)
 {
@@ -651,12 +661,55 @@ static void v8_CanvasContext2D_textBaseline_set(Local<Value> jsValue, PropertyCa
 static void v8_CanvasContext2D_strokeStyle_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
-	imp->strokeStyle();
+	v8::Handle<v8::Value> strVal = toV8Object(imp->strokeStyle(), args.Holder(), args.GetIsolate());
+	args.GetReturnValue().Set(strVal);
 }
 
 static void v8_CanvasContext2D_strokeStyle_set(Local<Value>jsValue, PropertyCallbackInfo<Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	if ( jsValue->IsString() )
+	{
+		v8::String::Utf8Value str(jsValue);
+		const char *cstr = ToCString(str);
+		imp->setStrokeColor(cstr);
+	}
+	else
+	{
+		imp->setStrokeStyle(toCanvasStyle(jsValue, args.GetIsolate()));
+	}
+}
+
+static void v8_CanvasContext2D_fillStyle_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+{
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	v8::Handle<v8::Value> strVal = toV8Object(imp->fillStyle(), args.Holder(), args.GetIsolate());
+	args.GetReturnValue().Set(strVal);
+}
+
+static void v8_CanvasContext2D_fillStyle_set(Local<Value> jsVal, PropertyCallbackInfo<Value> &args)
+{
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	if (jsVal->IsString())
+	{
+		v8::String::Utf8Value str(jsVal);
+		const char *cstr = ToCString(str);
+		imp->setFillColor(cstr);
+	}
+	else
+	{
+		imp->setFillStyle(toCanvasStyle(jsVal, args.GetIsolate()));
+	}
+}
+
+static void v8_CanvasContext2D_imageSmoothingEnable_get(Local<String> jsStr, PropertyCallbackInfo<Value> &args)
+{
+	CanvasContext2D * imp = UnwrapCanvasContext2D(args.Holder());
+}
+
+static void v8_CanvasContext2D_imageSmoothingEnable_set(Local<Value> jsVal, PropertyCallbackInfo<Value> &args)
+{
+
 }
 
 //////////////////////////////////////////////////////////////////////////
