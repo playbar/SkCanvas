@@ -14,6 +14,17 @@ CanvasContext2D* UnwrapCanvasContext2D(Local<Object> obj)
 	return static_cast<CanvasContext2D*>(ptr);
 }
 
+static v8::Handle<v8::Value> toV8Object(CanvasStyle* style, v8::Handle<v8::Object> creationContext, v8::Isolate* isolate)
+{
+	if (style->canvasGradient())
+		return toV8(style->canvasGradient(), creationContext, isolate);
+
+	//if (style->canvasPattern())
+	//	return toV8(style->canvasPattern(), creationContext, isolate);
+
+	//return v8String(isolate, style->color());
+}
+
 void v8_CanvasContext2D_sava(const v8::FunctionCallbackInfo<v8::Value> &args)
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
@@ -635,6 +646,17 @@ static void v8_CanvasContext2D_textBaseline_set(Local<Value> jsValue, PropertyCa
 	v8::String::Utf8Value str(jsValue);
 	const char *cstr = ToCString(str);
 	imp->setTextBaseline(cstr);
+}
+
+static void v8_CanvasContext2D_strokeStyle_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+{
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	imp->strokeStyle();
+}
+
+static void v8_CanvasContext2D_strokeStyle_set(Local<Value>jsValue, PropertyCallbackInfo<Value> &args)
+{
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -1,36 +1,36 @@
-#ifndef __CANVASGRADIENT_H__
-#define __CANVASGRADIENT_H__
+#ifndef __CANVASPATTERN_H__
+#define __CANVASPATTERN_H__
 
 
 #include "passrefptr.h"
-#include "CanvasGradient.h"
+#include "CanvasPattern.h"
 #include "V8Binding.h"
 #include "WrapperTypeInfo.h"
 #include "include/v8.h"
 using namespace v8;
 using namespace Canvas2D;
 
-class V8CanvasGradient
+class V8CanvasPattern
 {
 public:
 	static const WrapperTypeInfo wrapperTypeInfo;
 	static void derefObject(void*){};
-	static v8::Handle<v8::Object> createWrapper(PassRefPtr<CanvasGradient> impl, v8::Handle<v8::Object> creationContext, v8::Isolate* isolate);
-	static void installPerContextEnabledProperties(v8::Handle<v8::Object>, CanvasGradient*, v8::Isolate*) { }
+	static v8::Handle<v8::Object> createWrapper(PassRefPtr<CanvasPattern> impl, v8::Handle<v8::Object> creationContext, v8::Isolate* isolate);
+	static void installPerContextEnabledProperties(v8::Handle<v8::Object>, CanvasPattern*, v8::Isolate*) { }
 	static void installPerContextEnabledMethods(v8::Handle<v8::Object>, v8::Isolate*) { }
 	static v8::Handle<v8::FunctionTemplate> domTemplate(v8::Isolate*);
-	static inline void* toInternalPointer(CanvasGradient* impl)
+	static inline void* toInternalPointer(CanvasPattern* impl)
 	{
 		return impl;
 	}
 
-	static CanvasGradient* toNative(v8::Handle<v8::Object> object)
+	static CanvasPattern* toNative(v8::Handle<v8::Object> object)
 	{
 		return fromInternalPointer(object->GetAlignedPointerFromInternalField(v8DOMWrapperTypeIndex));
 	}
-	static inline CanvasGradient* fromInternalPointer(void* object)
+	static inline CanvasPattern* fromInternalPointer(void* object)
 	{
-		return static_cast<CanvasGradient*>(object);
+		return static_cast<CanvasPattern*>(object);
 	}
 };
 
@@ -54,13 +54,13 @@ inline void v8SetReturnValue(const CallbackInfo& callbackInfo, CanvasGradient* i
 	return;
 }
 
-inline v8::Handle<v8::Value> toV8(CanvasGradient *imp, v8::Handle<v8::Object> createContext, v8::Isolate *isolate)
+inline v8::Handle<v8::Value> toV8(CanvasPattern *imp, v8::Handle<v8::Object> createContext, v8::Isolate *isolate)
 {
-	v8::Handle<v8::Object> wrapper = V8CanvasGradient::createWrapper(imp, createContext, isolate);
+	v8::Handle<v8::Object> wrapper = V8CanvasPattern::createWrapper(imp, createContext, isolate);
 	return wrapper;
 }
 
-Handle<FunctionTemplate> CanvasGradient_Class(Isolate *isolate);
+Handle<FunctionTemplate> CanvasPattern_Class(Isolate *isolate);
 void setCanvasGradientClass(Local<Object> parent, Isolate *isolate);
 
 
