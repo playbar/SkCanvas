@@ -173,13 +173,13 @@ public:
 
 	void reset();
 
-	//String font() const;
+	std::string font() const;
 	void setFont(const std::string&);
 
-	//String textAlign() const;
+	std::string textAlign() const;
 	void setTextAlign(const std::string&);
 
-	//String textBaseline() const;
+	std::string textBaseline() const;
 	void setTextBaseline(const std::string&);
 
 	void fillText(const char* text, float x, float y);

@@ -580,7 +580,62 @@ static void v8_CanvasContext2D_lineDashOffset_set(Local<Value> jsValue, Property
 	imp->setLineDashOffset(cppValue);
 }
 
+static void v8_CanvasContext2D_currentPath_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+{
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	// todo
+}
 
+static void v8_CanvasContext2D_currentPath_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+{
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	// todo
+}
+
+static void v8_CanvasContext2D_font_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+{
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	Local<String> strVal = String::NewFromUtf8(args.GetReturnValue().GetIsolate(), imp->font().c_str());
+	args.GetReturnValue().Set(strVal);
+}
+
+static void v8_CanvasContext2D_font_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+{
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	v8::String::Utf8Value str(jsValue);
+	const char *cstr = ToCString(str);
+	imp->setFont(cstr);
+}
+
+static void v8_CanvasContext2D_textAlign_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+{
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	Local<String> strVal = String::NewFromUtf8(args.GetReturnValue().GetIsolate(), imp->textAlign.c_str());
+	args.GetReturnValue().Set(strVal);
+}
+
+static void v8_CanvasContext2D_textAlign_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+{
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	v8::String::Utf8Value str(jsValue);
+	const char *cstr = ToCString(str);
+	imp->setTextAlign(cstr);
+}
+
+static void v8_CanvasContext2D_textBaseline_get(Local<String> strVal, PropertyCallbackInfo<Value> &args)
+{
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	Local<String> strVal = String::NewFromUtf8(args.GetReturnValue().GetIsolate(), imp->textBaseline().c_str());
+	args.GetReturnValue().Set(strVal);
+}
+
+static void v8_CanvasContext2D_textBaseline_set(Local<Value> jsValue, PropertyCallbackInfo<Value> &args)
+{
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	v8::String::Utf8Value str(jsValue);
+	const char *cstr = ToCString(str);
+	imp->setTextBaseline(cstr);
+}
 
 //////////////////////////////////////////////////////////////////////////
 void CanvasContext2DCallBack(const FunctionCallbackInfo<Value>& info)
@@ -660,7 +715,7 @@ Handle<FunctionTemplate> CanvasContext2D_Class(Isolate *isolate )
 	temp_inst->SetAccessor(String::NewFromUtf8(isolate, "shadowColor"), v8_CanvasContext2D_shadowColor_get, v8_CanvasContext2D_shadowColor_set);
 	temp_inst->SetAccessor(String::NewFromUtf8(isolate, "lineDashOffset"), v8_CanvasContext2D_lineDashOffset_get, v8_CanvasContext2D_lineDashOffset_set);
 	temp_inst->SetAccessor(String::NewFromUtf8(isolate, "currentPath"), v8_CanvasContext2D_currentPath_get, v8_CanvasContext2D_currentPath_set);
-	temp_inst->SetAccessor(String::NewFromUtf8(isolate, "font"), v8_CanvasContext2D_font_get, v8_CanvasContext2D_gont_set);
+	temp_inst->SetAccessor(String::NewFromUtf8(isolate, "font"), v8_CanvasContext2D_font_get, v8_CanvasContext2D_font_set);
 	temp_inst->SetAccessor(String::NewFromUtf8(isolate, "textAlign"), v8_CanvasContext2D_textAlign_get, v8_CanvasContext2D_textAlign_set);
 	temp_inst->SetAccessor(String::NewFromUtf8(isolate, "textBaseline"), v8_CanvasContext2D_textBaseline_get, v8_CanvasContext2D_textBaseline_set);
 	temp_inst->SetAccessor(String::NewFromUtf8(isolate, "strokeStyle"), v8_CanvasContext2D_strokeStyle_get, v8_CanvasContext2D_strokeStyle_set);

@@ -8,6 +8,7 @@
 #include "SkTypeface.h"
 #include "BitmapImage.h"
 #include "ImageData.h"
+#include <sstream>
 
 static const int defaultFontSize = 30;
 static const char defaultFontFamily[] = "sans-serif";
@@ -812,11 +813,41 @@ void CanvasContext2D::reset()
 
 }
 
+std::string CanvasContext2D::font() const
+{
+	if (!state().m_realizedFont)
+		return defaultFont;
+
+	std::string serializedFont;
+	const FontDescription& fontDescription = state().m_FontDescription;
+
+	if (fontDescription.style() == FontStyleItalic)
+		serializedFont.append("italic ");
+	if (fontDescription.weight() == FontWeightBold)
+		serializedFont.append("bold ");
+	if (fontDescription.variant() == FontVariantSmallCaps)
+		serializedFont.append("small-caps ");
+	std::ostringstream ost;
+	ost << fontDescription.computedPixelSize();
+	serializedFont.append(ost.str());
+	serializedFont.append("px");
+	serializedFont.append(" ");
+	serializedFont.append(fontDescription.m_fontName);
+	return serializedFont;
+
+}
+
 void CanvasContext2D::setFont(const std::string& newFont)
 {
 	FontDescription &fontDes = modifiableState().m_FontDescription;
 	fontDes.parseFontDes(newFont);
 	return;
+}
+
+std::string CanvasContext2D::textAlign() const
+{
+	const char* const names[5] = { "start", "end", "left", "center", "right" };
+	return names[state().m_textAlign];
 }
 
 void CanvasContext2D::setTextAlign(const std::string& s)
@@ -831,6 +862,12 @@ void CanvasContext2D::setTextAlign(const std::string& s)
 		return;
 	}
 	modifiableState().m_textAlign = align;
+}
+
+std::string CanvasContext2D::textBaseline() const
+{
+	const char* const names[6] = { "alphabetic", "top", "middle", "bottom", "ideographic", "hanging" };
+	return names[state().m_textBaseline];
 }
 
 void CanvasContext2D::setTextBaseline(const std::string& s)
