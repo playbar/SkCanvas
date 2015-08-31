@@ -53,7 +53,7 @@ inline void v8SetReturnValue(const CallbackInfo& callbackInfo, CanvasPattern* im
 		return;
 	}
 	//v8::Handle<v8::Object> wrapper = wrap(impl, callbackInfo.Holder(), callbackInfo.GetIsolate());
-	v8::Handle<v8::Object> wrapper = V8CanvasGradient::createWrapper(impl, callbackInfo.Holder(), callbackInfo.GetIsolate());
+	v8::Handle<v8::Object> wrapper = V8CanvasPattern::createWrapper(impl, callbackInfo.Holder(), callbackInfo.GetIsolate());
 	v8SetReturnValue(callbackInfo, wrapper);
 	return;
 }

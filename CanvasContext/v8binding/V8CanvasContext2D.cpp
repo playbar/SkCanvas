@@ -405,7 +405,14 @@ void v8_CanvasContext2D_strokeRect(const FunctionCallbackInfo<Value> &args)
 
 void v8_CanvasContext2D_drawImage(const FunctionCallbackInfo<Value> &args)
 {
-
+	BEGIN_SCOPE_WHITH_ARGS(3);
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	Local<External> field = Local<External>::Cast(args[0]->ToObject()->GetInternalField(0));
+	void* ptr = field->Value();
+	BitmapImage *img = static_cast<BitmapImage*>(ptr);
+	float x = static_cast<float>(args[1]->NumberValue());
+	float y = static_cast<float>(args[2]->NumberValue());
+	imp->drawImage(img, x, y);
 }
 
 void v8_CanvasContext2D_drawImageFromRect(const FunctionCallbackInfo<Value> &args)
@@ -420,22 +427,49 @@ void v8_CanvasContext2D_setShadow(const FunctionCallbackInfo<Value> &args)
 
 void v8_CanvasContext2D_putImageData(const FunctionCallbackInfo<Value> &args)
 {
-
+	BEGIN_SCOPE_WHITH_ARGS(3);
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	Local<External> field = Local<External>::Cast(args[0]->ToObject()->GetInternalField(0));
+	void* ptr = field->Value();
+	ImageData * imgdata = static_cast<ImageData*>(ptr);
+	float w = static_cast<float>(args[1]->NumberValue());
+	float h = static_cast<float>(args[2]->NumberValue());
+	imp->putImageData(imgdata, w, h);
 }
 
 void v8_CanvasContext2D_createPattern(const FunctionCallbackInfo<Value> &args)
 {
-
+	BEGIN_SCOPE_WHITH_ARGS(2);
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	Local<External> field = Local<External>::Cast(args[0]->ToObject()->GetInternalField(0));
+	void* ptr = field->Value();
+	BitmapImage * bitmapImg = static_cast<BitmapImage*>(ptr);
+	v8::String::Utf8Value str(args[1]);
+	const char* cstr = ToCString(str);
+	RefPtr<CanvasPattern> result = imp->createPattern(bitmapImg, cstr);
+	v8SetReturnValue(args, result.release());
 }
 
 void v8_CanvasContext2D_createImageData(const FunctionCallbackInfo<Value> &args)
 {
-
+	BEGIN_SCOPE_WHITH_ARGS(2);
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	float width = static_cast<float>(args[0]->NumberValue());
+	float height = static_cast<float>(args[1]->NumberValue());
+	RefPtr<ImageData> result = imp->createImageData(width, height);
+	v8SetReturnValue(args, result.release());
 }
 
 void v8_CanvasContext2D_getImageData(const FunctionCallbackInfo<Value> &args)
 {
-
+	BEGIN_SCOPE_WHITH_ARGS(4);
+	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
+	float x = static_cast<float>(args[0]->NumberValue());
+	float y = static_cast<float>(args[1]->NumberValue());
+	float w = static_cast<float>(args[2]->NumberValue());
+	float h = static_cast<float>(args[3]->NumberValue());
+	RefPtr<ImageData> result = imp->getImageData(x, y, w, h);
+	v8SetReturnValue(args, result.release());
 }
 
 
