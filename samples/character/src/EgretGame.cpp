@@ -31,6 +31,7 @@ SkCanvas *gCanvas;
 
 EgretGame::EgretGame()
 {
+	SkForceLinking(false);
 }
 
 void EgretGame::initialize()

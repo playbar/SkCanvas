@@ -63,8 +63,8 @@ inline v8::Handle<v8::Value> toV8(BitmapImage *imp, v8::Handle<v8::Object> creat
 	return wrapper;
 }
 
-Handle<FunctionTemplate> CanvasPattern_Class(Isolate *isolate);
-void setCanvasPatternClass(Local<Object> parent, Isolate *isolate);
+Handle<FunctionTemplate> BitmapImage_Class(Isolate *isolate);
+void setBitmapImageClass(Local<Object> parent, Isolate *isolate);
 
 
 

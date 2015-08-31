@@ -754,7 +754,6 @@ static void v8_CanvasContext2D_imageSmoothingEnable_set(Local<String> pro,
 void CanvasContext2DCallBack(const FunctionCallbackInfo<Value>& info)
 {
 	CanvasContext2D* pCanvas = new CanvasContext2D(gCanvas);
-	
 	Local<Object> object = info.This();
 	Local<External> map_ptr = External::New(Isolate::GetCurrent(), pCanvas);
 	object->SetInternalField(0, map_ptr);

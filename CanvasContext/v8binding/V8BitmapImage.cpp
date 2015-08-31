@@ -16,26 +16,28 @@ const WrapperTypeInfo V8BitmapImage::wrapperTypeInfo =
 	WrapperTypeObjectPrototype, false
 };
 
-BitmapImage* UnwrapCanvasGradient(Local<Object> obj)
+BitmapImage* UnwrapBitmapImage(Local<Object> obj)
 {
 	Local<External> field = Local<External>::Cast(obj->GetInternalField(0));
 	void* ptr = field->Value();
 	return static_cast<BitmapImage*>(ptr);
 }
 
-//void v8_CanvasGradient_addColorStop(const FunctionCallbackInfo<Value> &args)
-//{
-//	CanvasGradient* imp = V8CanvasGradient::toNative(args.Holder());
-//	float offset = static_cast<float>(args[0]->NumberValue());
-//	v8::String::Utf8Value str(args[1]);
-//	const char* cstr = ToCString(str);
-//	imp->addColorStop(offset, cstr);
-//
-//}
+void v8_BitmapImage_src(const FunctionCallbackInfo<Value> &args)
+{
+	BitmapImage* imp = UnwrapBitmapImage(args.Holder());
+	v8::String::Utf8Value str(args[0]);
+	const char* cstr = ToCString(str);
+	imp->src( cstr);
+
+}
 
 void BitmapImageCallBack(const FunctionCallbackInfo<Value> &args)
 {
-
+	BitmapImage* pImage = new BitmapImage();
+	Local<Object> object = args.This();
+	Local<External> map_ptr = External::New(Isolate::GetCurrent(), pImage);
+	object->SetInternalField(0, map_ptr);
 }
 
 v8::Handle<v8::Object> V8BitmapImage::createWrapper(PassRefPtr<BitmapImage> impl, v8::Handle<v8::Object> creationContext, v8::Isolate* isolate)
@@ -60,9 +62,9 @@ v8::Handle<v8::FunctionTemplate> V8BitmapImage::domTemplate(v8::Isolate* isolate
 		return temp_class;
 	}
 	temp_class = FunctionTemplate::New(isolate, BitmapImageCallBack);
-	temp_class->SetClassName(String::NewFromUtf8(isolate, "bitmapimage"));
+	temp_class->SetClassName(String::NewFromUtf8(isolate, "Image"));
 	Handle<ObjectTemplate> temp_proto = temp_class->PrototypeTemplate();
-	//temp_proto->Set(String::NewFromUtf8(isolate, "addColorStop", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, v8_CanvasGradient_addColorStop));
+	temp_proto->Set(String::NewFromUtf8(isolate, "src", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, v8_BitmapImage_src));
 
 	Handle<ObjectTemplate> temp_inst = temp_class->InstanceTemplate();
 	temp_inst->SetInternalFieldCount(1);
@@ -71,21 +73,21 @@ v8::Handle<v8::FunctionTemplate> V8BitmapImage::domTemplate(v8::Isolate* isolate
 }
 
 
-Handle<FunctionTemplate> CanvasPattern_Class(Isolate *isolate)
+Handle<FunctionTemplate> BitmapImage_Class(Isolate *isolate)
 {
 	Handle<FunctionTemplate> temp_class = FunctionTemplate::New(isolate, BitmapImageCallBack);
-	temp_class->SetClassName(String::NewFromUtf8(isolate, "bitmapimage"));
+	temp_class->SetClassName(String::NewFromUtf8(isolate, "Image"));
 	Handle<ObjectTemplate> temp_proto = temp_class->PrototypeTemplate();
-	//temp_proto->Set(String::NewFromUtf8(isolate, "addColorStop", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, v8_CanvasGradient_addColorStop));
+	temp_proto->Set(String::NewFromUtf8(isolate, "src", v8::NewStringType::kNormal).ToLocalChecked(), v8::FunctionTemplate::New(isolate, v8_BitmapImage_src));
 
 	Handle<ObjectTemplate> temp_inst = temp_class->InstanceTemplate();
 	temp_inst->SetInternalFieldCount(1);
 	return temp_class;
 }
 
-void setCanvasPatternClass(Local<Object> parent, Isolate *isolate)
+void setBitmapImageClass(Local<Object> parent, Isolate *isolate)
 {
-	Handle<FunctionTemplate> temp_class = CanvasPattern_Class(isolate);
-	parent->Set(String::NewFromUtf8(isolate, "bitmapimage"), temp_class->GetFunction());
+	Handle<FunctionTemplate> temp_class = BitmapImage_Class(isolate);
+	parent->Set(String::NewFromUtf8(isolate, "Image"), temp_class->GetFunction());
 
 }

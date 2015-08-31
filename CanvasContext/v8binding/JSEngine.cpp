@@ -12,6 +12,7 @@
 #include "V8CanvasContext2D.h"
 #include "V8CanvasGradient.h"
 #include "V8PerIsolateData.h"
+#include "V8BitmapImage.h"
 
 #include <include/v8.h>
 #include <include/libplatform/libplatform.h>
@@ -174,6 +175,7 @@ void JSEngine::V8BindingClassInterface(Local<Object> parent)
 	setTestClass(parent);
 	setCanvasContext2DClass(parent, mIsolate);
 	setCanvasGradientClass(parent, mIsolate);
+	setBitmapImageClass(parent, mIsolate );
 	return;
 }
 
