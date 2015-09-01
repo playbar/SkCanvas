@@ -111,6 +111,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>jni/CanvasContext/v8binding</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>jni/skia/include</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -381,6 +386,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/utils/HashTableDeletedValueType.h</locationURI>
 		</link>
 		<link>
+			<name>jni/CanvasContext/utils/HexNumber.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/utils/HexNumber.h</locationURI>
+		</link>
+		<link>
 			<name>jni/CanvasContext/utils/MathExtras.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/utils/MathExtras.h</locationURI>
@@ -389,6 +399,11 @@
 			<name>jni/CanvasContext/utils/Noncopyable.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/utils/Noncopyable.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/utils/NullPtr.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/utils/NullPtr.cpp</locationURI>
 		</link>
 		<link>
 			<name>jni/CanvasContext/utils/NullPtr.h</name>
@@ -464,6 +479,186 @@
 			<name>jni/CanvasContext/utils/passrefptr.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/utils/passrefptr.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/CustomElementBinding.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/CustomElementBinding.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/CustomElementBinding.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/CustomElementBinding.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/DOMDataStore.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/DOMDataStore.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/DOMDataStore.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/DOMDataStore.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/DOMWrapperMap.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/DOMWrapperMap.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/JSCore.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/JSCore.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/JSCore.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/JSCore.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/JSEngine.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/JSEngine.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/JSEngine.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/JSEngine.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/ScopedPersistent.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/ScopedPersistent.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/ScriptWrappable.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/ScriptWrappable.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8Binding.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8Binding.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8Binding.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8Binding.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8BitmapImage.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8BitmapImage.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8BitmapImage.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8BitmapImage.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8CanvasContext2D.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8CanvasContext2D.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8CanvasContext2D.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8CanvasContext2D.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8CanvasGradient.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8CanvasGradient.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8CanvasGradient.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8CanvasGradient.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8CanvasPattern.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8CanvasPattern.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8CanvasPattern.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8CanvasPattern.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8DOMWrapper.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8DOMWrapper.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8DOMWrapper.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8DOMWrapper.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8GlobalFun.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8GlobalFun.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8GlobalFun.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8GlobalFun.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8ImageData.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8ImageData.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8ImageData.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8ImageData.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8ObjectConstructor.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8ObjectConstructor.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8ObjectConstructor.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8ObjectConstructor.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8PerContextData.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8PerContextData.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8PerContextData.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8PerContextData.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8PerIsolateData.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8PerIsolateData.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8PerIsolateData.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8PerIsolateData.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8ScriptRunner.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8ScriptRunner.cpp</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/V8ScriptRunner.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/V8ScriptRunner.h</locationURI>
+		</link>
+		<link>
+			<name>jni/CanvasContext/v8binding/WrapperTypeInfo.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CanvasContext/v8binding/WrapperTypeInfo.h</locationURI>
 		</link>
 		<link>
 			<name>jni/skia/include/.DS_Store</name>

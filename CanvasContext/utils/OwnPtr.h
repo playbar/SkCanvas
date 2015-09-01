@@ -27,16 +27,12 @@
 #include "OwnPtrCommon.h"
 #include <algorithm>
 
-namespace WTF {
+namespace Canvas2D {
 
     template<typename T> class PassOwnPtr;
 
     template<typename T> class OwnPtr {
-#if COMPILER_SUPPORTS(CXX_RVALUE_REFERENCES)
-        // If rvalue references are not supported, the copy constructor is
-        // public so OwnPtr cannot be marked noncopyable. See note below.
-        WTF_MAKE_NONCOPYABLE(OwnPtr);
-#endif
+
         WTF_DISALLOW_CONSTRUCTION_FROM_ZERO(OwnPtr);
     public:
         typedef typename RemoveExtent<T>::Type ValueType;
@@ -49,14 +45,6 @@ namespace WTF {
         OwnPtr(const PassOwnPtr<T>&);
         template<typename U> OwnPtr(const PassOwnPtr<U>&, EnsurePtrConvertibleArgDecl(U, T));
 
-#if !COMPILER_SUPPORTS(CXX_RVALUE_REFERENCES)
-        // This copy constructor is used implicitly by gcc when it generates
-        // transients for assigning a PassOwnPtr<T> object to a stack-allocated
-        // OwnPtr<T> object. It should never be called explicitly and gcc
-        // should optimize away the constructor when generating code.
-        OwnPtr(const OwnPtr&);
-#endif
-
         ~OwnPtr()
         {
             OwnedPtrDeleter<T>::deletePtr(m_ptr);
@@ -67,7 +55,7 @@ namespace WTF {
 
         void clear();
         PassOwnPtr<T> release();
-        PtrType leakPtr() WARN_UNUSED_RETURN;
+        PtrType leakPtr();
 
         ValueType& operator*() const { ASSERT(m_ptr); return *m_ptr; }
         PtrType operator->() const { ASSERT(m_ptr); return m_ptr; }
@@ -84,22 +72,9 @@ namespace WTF {
         OwnPtr& operator=(std::nullptr_t) { clear(); return *this; }
         template<typename U> OwnPtr& operator=(const PassOwnPtr<U>&);
 
-#if COMPILER_SUPPORTS(CXX_RVALUE_REFERENCES)
-        OwnPtr(OwnPtr&&);
-        template<typename U> OwnPtr(OwnPtr<U>&&);
-
-        OwnPtr& operator=(OwnPtr&&);
-        template<typename U> OwnPtr& operator=(OwnPtr<U>&&);
-#endif
-
         void swap(OwnPtr& o) { std::swap(m_ptr, o.m_ptr); }
 
     private:
-#if !COMPILER_SUPPORTS(CXX_RVALUE_REFERENCES)
-        // If rvalue references are supported, noncopyable takes care of this.
-        OwnPtr& operator=(const OwnPtr&);
-#endif
-
         // We should never have two OwnPtrs for the same underlying object (otherwise we'll get
         // double-destruction), so these equality operators should never be needed.
         template<typename U> bool operator==(const OwnPtr<U>&) const { COMPILE_ASSERT(!sizeof(U*), OwnPtrs_should_never_be_equal); return false; }
@@ -169,40 +144,6 @@ namespace WTF {
         return *this;
     }
 
-#if COMPILER_SUPPORTS(CXX_RVALUE_REFERENCES)
-    template<typename T> inline OwnPtr<T>::OwnPtr(OwnPtr<T>&& o)
-        : m_ptr(o.leakPtr())
-    {
-    }
-
-    template<typename T> template<typename U> inline OwnPtr<T>::OwnPtr(OwnPtr<U>&& o)
-        : m_ptr(o.leakPtr())
-    {
-        COMPILE_ASSERT(!IsArray<T>::value, Pointers_to_array_must_never_be_converted);
-    }
-
-    template<typename T> inline OwnPtr<T>& OwnPtr<T>::operator=(OwnPtr<T>&& o)
-    {
-        PtrType ptr = m_ptr;
-        m_ptr = o.leakPtr();
-        ASSERT(!ptr || m_ptr != ptr);
-        OwnedPtrDeleter<T>::deletePtr(ptr);
-
-        return *this;
-    }
-
-    template<typename T> template<typename U> inline OwnPtr<T>& OwnPtr<T>::operator=(OwnPtr<U>&& o)
-    {
-        COMPILE_ASSERT(!IsArray<T>::value, Pointers_to_array_must_never_be_converted);
-        PtrType ptr = m_ptr;
-        m_ptr = o.leakPtr();
-        ASSERT(!ptr || m_ptr != ptr);
-        OwnedPtrDeleter<T>::deletePtr(ptr);
-
-        return *this;
-    }
-#endif
-
     template<typename T> inline void swap(OwnPtr<T>& a, OwnPtr<T>& b)
     {
         a.swap(b);
@@ -235,6 +176,6 @@ namespace WTF {
 
 } // namespace WTF
 
-using WTF::OwnPtr;
+using Canvas2D::OwnPtr;
 
 #endif // WTF_OwnPtr_h

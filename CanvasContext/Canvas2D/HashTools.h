@@ -20,7 +20,7 @@
 #ifndef HashTools_h
 #define HashTools_h
 
-namespace WebCore {
+namespace Canvas2D {
 
 struct Property {
     int nameOffset;

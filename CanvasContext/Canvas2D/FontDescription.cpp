@@ -5,7 +5,7 @@
 #include "HashTools.h"
 #include "CSSValueKeywords.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 	static const std::string cssValue[]
 	{

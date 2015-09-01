@@ -34,7 +34,7 @@
 
 struct SkPoint;
 
-namespace WebCore {
+namespace Canvas2D{
 
 class IntPoint;
 class IntSize;

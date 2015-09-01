@@ -30,7 +30,7 @@
 #include "IntSize.h"
 #include "MathExtras.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 class IntPoint {
 public:

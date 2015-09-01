@@ -7,7 +7,7 @@
 #include <ctype.h>
 #include <string.h>
 
-namespace WebCore {
+namespace Canvas2D {
 
 #ifdef __ANDROID__
 

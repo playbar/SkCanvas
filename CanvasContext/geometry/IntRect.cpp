@@ -30,7 +30,7 @@
 
 #include <algorithm>
 
-namespace WebCore {
+namespace Canvas2D {
 
 IntRect::IntRect(const FloatRect& r)
     : m_location(clampToInteger(r.x()), clampToInteger(r.y()))

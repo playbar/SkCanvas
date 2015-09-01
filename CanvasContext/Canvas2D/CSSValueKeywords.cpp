@@ -35,7 +35,7 @@
 #include "HashTools.h"
 #include <string.h>
 
-namespace WebCore {
+namespace Canvas2D {
 static const char valueListStringPool[] = {
 "\0"
     "inherit\0"

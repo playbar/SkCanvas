@@ -32,7 +32,7 @@
 #include "RefCounted.h"
 #include "string"
 
-namespace WebCore {
+namespace Canvas2D{
 
 class CanvasGradient : public RefCounted<CanvasGradient> {
 public:
@@ -48,7 +48,7 @@ public:
     Gradient* gradient() const { return m_gradient.get(); }
 
     void addColorStop(float value, const std::string& color );
-
+	~CanvasGradient();
 private:
     CanvasGradient(const SkPoint& p0, const SkPoint& p1);
     CanvasGradient(const SkPoint& p0, float r0, const SkPoint& p1, float r1);

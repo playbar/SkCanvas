@@ -31,6 +31,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -63,14 +64,14 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\..\CanvasContext\geometry;..\..\..\CanvasContext\Canvas2D;..\..\..\CanvasContext\utils;..\..\..\CanvasContext;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\effects;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\third_party\externals\zlib;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\include\utils\win;..\..\include\gpu;..\..\include\views;..\..\include\animator;..\..\include\xml;..\..\experimental;..\..\include\pdf;..\..\include\views\animated;..\..\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\core;..\..\src\effects;..\..\src\images;..\..\src\lazy;..\..\gm;..\..\..\CanvasContext\geometry;..\..\..\CanvasContext\Canvas2D;..\..\..\CanvasContext\utils;..\..\..\CanvasContext;..\..\..\v8;..\..\..\v8\v8binding;..\..\samplecode;..\..\src\pipe\utils;..\..\src\utils\debugger;..\..\third_party\lua\src;..\..\gyp\config;..\..\include\config;..\..\include\core;..\..\include\lazy;..\..\include\pathops;..\..\include\pipe;..\..\gyp\ext;..\..\gyp\config\win;..\..\include\effects;..\..\include\images;..\..\third_party\externals\libjpeg;..\..\third_party\externals\zlib;..\..\include\ports;..\..\src\sfnt;..\..\include\utils;..\..\include\utils\win;..\..\include\gpu;..\..\include\views;..\..\include\animator;..\..\include\xml;..\..\experimental;..\..\include\pdf;..\..\include\views\animated;..\..\src\gpu;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP /we4189 %(AdditionalOptions)</AdditionalOptions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ExceptionHandling />
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_DEBUG;SK_DEVELOPER=1;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWarningAsError>false</TreatWarningAsError>
       <WarningLevel>Level3</WarningLevel>
@@ -80,10 +81,11 @@
       <PreprocessorDefinitions>SK_GAMMA_SRGB;SK_GAMMA_APPLY_TO_A8;SK_SCALAR_TO_FLOAT_EXCLUDED;SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1;SK_SUPPORT_GPU=1;SK_SUPPORT_OPENCL=0;SK_DISTANCEFIELD_FONTS=0;SK_SCALAR_IS_FLOAT;SK_CAN_USE_FLOAT;SK_BUILD_FOR_WIN32;_CRT_SECURE_NO_WARNINGS;GR_GL_FUNCTION_TYPE=__stdcall;SK_SUPPORT_PDF;SK_DEBUG;SK_DEVELOPER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib;windowscodecs.lib</AdditionalDependencies>
+      <AdditionalDependencies>OpenGL32.lib;usp10.lib;kernel32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;user32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DelayImp.lib;windowscodecs.lib;winmm.lib;icui18n.lib;icuuc.lib;v8_base_0.lib;v8_base_1.lib;v8_base_2.lib;v8_base_3.lib;v8_libbase.lib;v8_libplatform.lib;v8_nosnapshot.lib;v8_snapshot.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>..\..\..\v8\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -259,8 +261,6 @@
     <ClCompile Include="..\..\src\utils\debugger\SkDebugCanvas.cpp" />
     <ClCompile Include="..\..\src\utils\debugger\SkDrawCommand.cpp" />
     <ClCompile Include="..\..\src\utils\debugger\SkObjectParser.cpp" />
-    <ClCompile Include="..\..\src\utils\SkLua.cpp" />
-    <ClCompile Include="..\..\src\utils\SkLuaCanvas.cpp" />
     <ClCompile Include="..\..\third_party\externals\libpng\png.c" />
     <ClCompile Include="..\..\third_party\externals\libpng\pngerror.c" />
     <ClCompile Include="..\..\third_party\externals\libpng\pnggccrd.c" />
@@ -352,20 +352,12 @@
       <Project>{f84031d0-8ec1-5549-1a0a-959ddeb5fca9}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="lua.vcxproj">
-      <Project>{ed26e78d-e69f-42b8-6692-2ffaaca81790}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="opts.vcxproj">
       <Project>{97490341-fe9e-12ee-151b-de2928053a7b}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="opts_ssse3.vcxproj">
       <Project>{d0fa47ef-a73d-7564-e2bc-e6666d397303}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="pdf.vcxproj">
-      <Project>{bc74f3aa-2525-a300-1e14-b5eda589f4da}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="ports.vcxproj">

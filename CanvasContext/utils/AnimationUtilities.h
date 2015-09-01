@@ -5,7 +5,7 @@
 #include "SkPoint.h"
 #include "IntPoint.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 inline int blend(int from, int to, double progress)
 {

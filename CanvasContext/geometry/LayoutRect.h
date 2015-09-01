@@ -35,7 +35,7 @@
 #include "LayoutPoint.h"
 #include "vector"
 
-namespace WebCore {
+namespace Canvas2D{
 
 class FloatRect;
 

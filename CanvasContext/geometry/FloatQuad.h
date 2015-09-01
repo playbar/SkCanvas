@@ -33,7 +33,7 @@
 #include "FloatRect.h"
 #include "IntRect.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 // A FloatQuad is a collection of 4 points, often representing the result of
 // mapping a rectangle through transforms. When initialized from a rect, the

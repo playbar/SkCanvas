@@ -27,7 +27,7 @@
 #ifndef IntSize_h
 #define IntSize_h
 
-namespace WebCore {
+namespace Canvas2D {
 
 class IntSize {
 public:

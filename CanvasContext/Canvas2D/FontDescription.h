@@ -7,7 +7,7 @@
 #include "RefPtr.h"
 #include "string"
 
-namespace WebCore {
+namespace Canvas2D {
 
 	enum FontOrientation 
 	{
@@ -193,9 +193,10 @@ public:
     static bool subpixelPositioning() { return s_useSubpixelTextPositioning; }
 
 	void parseFontDes(const std::string &newFont);
-private:
 
 	std::string m_fontName;
+private:
+
     float m_specifiedSize;   // Specified CSS value. Independent of rendering issues such as integer
                              // rounding, minimum font sizes, and zooming.
     float m_computedSize;    // Computed size adjusted for the minimum font size and the zoom factor.

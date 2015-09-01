@@ -26,7 +26,7 @@
 
 #include "CSSParserMode.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 CSSParserContext::CSSParserContext(CSSParserMode mode, UseCounter* useCounter)
     : m_mode(mode)

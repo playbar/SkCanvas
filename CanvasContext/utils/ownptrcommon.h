@@ -31,7 +31,7 @@
 
 #include "TypeTraits.h"
 
-namespace WTF {
+namespace Canvas2D {
 
 class RefCountedBase;
 class ThreadSafeRefCountedBase;

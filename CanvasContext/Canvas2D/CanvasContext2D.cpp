@@ -8,6 +8,7 @@
 #include "SkTypeface.h"
 #include "BitmapImage.h"
 #include "ImageData.h"
+#include <sstream>
 
 static const int defaultFontSize = 30;
 static const char defaultFontFamily[] = "sans-serif";
@@ -164,7 +165,8 @@ void CanvasContext2D::setLineWidth(float thickness )
 
 std::string CanvasContext2D::lineCap() const
 {
-	return "";
+	const char* const names[3] = { "butt", "round", "square" };
+	return names[state().m_lineCap];
 }
 void CanvasContext2D::setLineCap(const std::string& s)
 {
@@ -177,12 +179,15 @@ void CanvasContext2D::setLineCap(const std::string& s)
 	{
 		return;
 	}
+	modifiableState().m_lineCap = cap;
 	m_strokePaint.setStrokeCap((SkPaint::Cap)cap);
 }
 
 std::string CanvasContext2D::lineJoin() const
 {
-	return "";
+	const char* const names[3] = { "miter", "round", "bevel" };
+	return names[state().m_lineJoin];
+
 }
 void CanvasContext2D::setLineJoin(const std::string&s)
 {
@@ -195,6 +200,7 @@ void CanvasContext2D::setLineJoin(const std::string&s)
 	{
 		return;
 	}
+	modifiableState().m_lineJoin = join;
 	m_strokePaint.setStrokeJoin((SkPaint::Join)join);
 }
 
@@ -284,7 +290,7 @@ void CanvasContext2D::setShadowBlur(float blur)
 
 std::string CanvasContext2D::shadowColor() const
 {
-	return "";
+	return Color(state().m_shadowColor).serialized();
 }
 void CanvasContext2D::setShadowColor(const std::string& color )
 {
@@ -711,7 +717,17 @@ void CanvasContext2D::clip(const std::string& winding)
 
 bool CanvasContext2D::isPointInPath(const float x, const float y, const std::string& winding)
 {
-	return true;
+	FloatPoint point(x, y);
+	AffineTransform ctm = state().m_transform;
+	FloatPoint transformedPoint = ctm.inverse().mapPoint(point);
+	if (!std::isfinite(transformedPoint.x()) || !std::isfinite(transformedPoint.y()))
+		return false;
+	WindRule windRule = RULE_NONZERO;
+	if (!parseWinding(winding, windRule))
+		return false;
+
+	return SkPathContainsPoint(m_path, point, windRule == RULE_NONZERO ? SkPath::kWinding_FillType : SkPath::kEvenOdd_FillType);
+
 }
 
 void CanvasContext2D::clearRect(float x, float y, float width, float height)
@@ -797,11 +813,41 @@ void CanvasContext2D::reset()
 
 }
 
+std::string CanvasContext2D::font() const
+{
+	if (!state().m_realizedFont)
+		return defaultFont;
+
+	std::string serializedFont;
+	const FontDescription& fontDescription = state().m_FontDescription;
+
+	if (fontDescription.style() == FontStyleItalic)
+		serializedFont.append("italic ");
+	if (fontDescription.weight() == FontWeightBold)
+		serializedFont.append("bold ");
+	if (fontDescription.variant() == FontVariantSmallCaps)
+		serializedFont.append("small-caps ");
+	std::ostringstream ost;
+	ost << fontDescription.computedPixelSize();
+	serializedFont.append(ost.str());
+	serializedFont.append("px");
+	serializedFont.append(" ");
+	serializedFont.append(fontDescription.m_fontName);
+	return serializedFont;
+
+}
+
 void CanvasContext2D::setFont(const std::string& newFont)
 {
 	FontDescription &fontDes = modifiableState().m_FontDescription;
 	fontDes.parseFontDes(newFont);
 	return;
+}
+
+std::string CanvasContext2D::textAlign() const
+{
+	const char* const names[5] = { "start", "end", "left", "center", "right" };
+	return names[state().m_textAlign];
 }
 
 void CanvasContext2D::setTextAlign(const std::string& s)
@@ -816,6 +862,12 @@ void CanvasContext2D::setTextAlign(const std::string& s)
 		return;
 	}
 	modifiableState().m_textAlign = align;
+}
+
+std::string CanvasContext2D::textBaseline() const
+{
+	const char* const names[6] = { "alphabetic", "top", "middle", "bottom", "ideographic", "hanging" };
+	return names[state().m_textBaseline];
 }
 
 void CanvasContext2D::setTextBaseline(const std::string& s)
@@ -847,7 +899,8 @@ void CanvasContext2D::fillText(const char *text, float x, float y)
 		style |= SkTypeface::Style::kBold;
 	}
 
-	SkTypeface *face = SkTypeface::RefDefault((SkTypeface::Style)style);
+	//SkTypeface *face = SkTypeface::RefDefault((SkTypeface::Style)style);
+	SkTypeface *face = SkTypeface::CreateFromName(fontDes.m_fontName.c_str(), (SkTypeface::Style)style);
 	if ( face )
 	{
 		m_fillPaint.setTypeface(face);

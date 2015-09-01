@@ -30,7 +30,7 @@
 #include "FloatQuad.h"
 #include "IntRect.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 // This class is used to represent rectangles with rounded corners. It is only
 // used for painting. It uses integer units because using layout units leads to

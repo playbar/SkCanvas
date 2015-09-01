@@ -32,7 +32,7 @@
 #include "SkPoint.h"
 #include <string.h> // for memcpy
 
-namespace WebCore {
+namespace Canvas2D {
 
 class FloatQuad;
 class FloatRect;

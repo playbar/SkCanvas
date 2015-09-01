@@ -29,7 +29,7 @@
 #include "RawPtr.h"
 #include "TypeTraits.h"
 
-namespace WTF {
+namespace Canvas2D {
 
 	template<typename T> class PassRefPtr;
 
@@ -203,7 +203,7 @@ namespace WTF {
 
 } // namespace WTF
 
-using WTF::RefPtr;
-using WTF::static_pointer_cast;
+using Canvas2D::RefPtr;
+using Canvas2D::static_pointer_cast;
 
 #endif // WTF_RefPtr_h

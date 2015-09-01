@@ -7,7 +7,7 @@
 #include "SkGradientShader.h"
 #include "SkiaUtils.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 Gradient::Gradient(const SkPoint& p0, const SkPoint& p1)
     : m_p0(p0)

@@ -35,7 +35,7 @@
 #include "FloatSize.h"
 #include "IntSize.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 class LayoutPoint;
 

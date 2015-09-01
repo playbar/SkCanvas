@@ -38,7 +38,7 @@
 #include "RefCounted.h"
 #include "RefPtr.h"
 
-namespace WebCore {
+namespace Canvas2D {
 	 
 class AffineTransform;
 

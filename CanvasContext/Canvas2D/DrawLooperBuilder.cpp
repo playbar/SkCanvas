@@ -10,7 +10,7 @@
 #include "SkBlurMaskFilter.h"
 #include "RefPtr.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 DrawLooperBuilder::DrawLooperBuilder() { }
 

@@ -30,7 +30,7 @@
 #include "NullPtr.h"
 #include "ownptrcommon.h"
 
-namespace WTF {
+namespace Canvas2D {
 
     template<typename T> class OwnPtr;
     template<typename T> class PassOwnPtr;
@@ -140,9 +140,9 @@ namespace WTF {
 
 } // namespace WTF
 
-using WTF::PassOwnPtr;
-using WTF::adoptPtr;
-using WTF::adoptArrayPtr;
-using WTF::static_pointer_cast;
+using Canvas2D::PassOwnPtr;
+using Canvas2D::adoptPtr;
+using Canvas2D::adoptArrayPtr;
+using Canvas2D::static_pointer_cast;
 
 #endif // WTF_PassOwnPtr_h

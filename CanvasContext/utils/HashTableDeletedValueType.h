@@ -31,7 +31,7 @@
 #ifndef HashTableDeletedValueType_h
 #define HashTableDeletedValueType_h
 
-namespace WTF {
+namespace Canvas2D {
 
 enum HashTableDeletedValueType { HashTableDeletedValue };
 

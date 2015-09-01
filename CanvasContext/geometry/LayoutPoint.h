@@ -35,7 +35,7 @@
 #include "LayoutSize.h"
 #include "MathExtras.h"
 
-namespace WebCore {
+namespace Canvas2D{
 
 class LayoutPoint {
 public:

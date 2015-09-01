@@ -34,7 +34,7 @@
 struct SkRect;
 struct SkIRect;
 
-namespace WebCore {
+namespace Canvas2D{
 
 class FloatRect;
 class LayoutRect;

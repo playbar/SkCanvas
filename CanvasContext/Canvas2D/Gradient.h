@@ -11,7 +11,7 @@
 
 class SkShader;
 
-namespace WebCore 
+namespace Canvas2D 
 {
 
 class Color;

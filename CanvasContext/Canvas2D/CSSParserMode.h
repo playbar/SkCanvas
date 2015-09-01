@@ -5,7 +5,7 @@
 
 #include "string"
 
-namespace WebCore {
+namespace Canvas2D {
 
 
 // Must not grow beyond 3 bits, due to packing in StylePropertySet.

@@ -5,7 +5,7 @@
 
 #endif
 
-namespace WTF {
+namespace Canvas2D {
 
     // The following are provided in this file:
     //
@@ -240,23 +240,23 @@ namespace WTF {
     };
 
 #define EnsurePtrConvertibleArgDecl(From, To) \
-    typename WTF::EnableIf<WTF::IsPointerConvertible<From, To>::Value, bool>::Type = true
+    typename Canvas2D::EnableIf<Canvas2D::IsPointerConvertible<From, To>::Value, bool>::Type = true
 #define EnsurePtrConvertibleArgDefn(From, To) \
-    typename WTF::EnableIf<WTF::IsPointerConvertible<From, To>::Value, bool>::Type
+    typename Canvas2D::EnableIf<Canvas2D::IsPointerConvertible<From, To>::Value, bool>::Type
 
 } // namespace WTF
 
-namespace WebCore {
+namespace Canvas2D {
 
 class JSONValue;
 
 } // namespace WebCore
 
-namespace WTF {
+namespace Canvas2D {
 
     // FIXME: Disable pointer conversion checking against JSONValue.
     // The current CodeGeneratorInspector.py generates code which upcasts to JSONValue from undefined types.
-    template<typename From> class IsPointerConvertible<From, WebCore::JSONValue> {
+    template<typename From> class IsPointerConvertible<From, Canvas2D::JSONValue> {
     public:
         enum {
             Value = true

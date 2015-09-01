@@ -6,12 +6,12 @@
 #include "passrefptr.h"
 #include "RefPtr.h"
 #include "string"
+#include "CanvasGradient.h"
 
 class CanvasContext2D;
 
-namespace WebCore {
+namespace Canvas2D {
 
-	class CanvasGradient;
     class CanvasPattern;
 
 	class CanvasStyle : public RefCounted<CanvasStyle> 

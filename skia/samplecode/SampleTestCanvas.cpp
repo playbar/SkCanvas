@@ -21,9 +21,12 @@
 #include "SkForceLinking.h"
 #include "BitmapImage.h"
 #include "CanvasPattern.h"
+#include "include/v8.h"
+#include "include/libplatform/libplatform.h"
+#include "v8binding/JSEngine.h"
+using namespace v8;
 
-using namespace WebCore;
-using namespace WTF;
+using namespace Canvas2D;
 
 // ensure that we don't accidentally screw up the bounds when the oval is
 // fractional, and the impl computes the center and radii, and uses them to
@@ -268,10 +271,14 @@ protected:
 	void TestIsPointInPath(SkCanvas *canvas)
 	{
 		PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create(canvas);
-		ctx->rect(20, 20, 150, 100);
-		//if ( ctx->isPoint)
-		//{
-		//}
+		ctx->moveTo(20, 20);
+		ctx->lineTo(20, 100);
+		ctx->lineTo(100, 100);
+		ctx->closePath();
+		if (ctx->isPointInPath( 90, 90))
+		{
+			ctx->stroke();
+		}
 		
 	}
 
@@ -346,15 +353,32 @@ protected:
 		ctx->strokeText("Hello", 10, 50);
 	}
 
-	void TestAlign(SkCanvas *canvas)
+	inline std::string Unicode2ASCII(const std::wstring &strUnicode, UINT CodePage = CP_UTF8)
+	{
+		int nByte = WideCharToMultiByte(CodePage, 0, strUnicode.c_str(), -1, 0, 0, 0, 0);
+		if (nByte <= 0)
+		{
+			return "";
+		}
+		std::string strUtf8;
+		strUtf8.resize(nByte + 1, '\0');
+		WideCharToMultiByte(CodePage, 0, strUnicode.c_str(), -1, &strUtf8[0], nByte, 0, 0);
+		return std::string(strUtf8.c_str());
+	}
+
+	void TestDrawZHText(SkCanvas *canvas)
 	{
 		SkPaint paint;
+		SkTypeface* pFace = SkTypeface::CreateFromName("ËÎÌå", SkTypeface::kNormal);
+		paint.setTypeface(pFace);
+		//std::string str = "1234¹È¸è56789";
+		std::string str = Unicode2ASCII(std::wstring(L"1234¹È¸è56789"));
 		paint.setAntiAlias(true);
 		paint.setColor(0xff008000);
-		paint.setTextSize(50);
+		paint.setTextSize(150);
 		paint.setStyle(SkPaint::kStroke_Style);
 		paint.setStrokeWidth(2);
-		canvas->drawText("test", 4, 150, 60, paint);
+		canvas->drawText( str.c_str(), str.length(), 150, 150, paint);
 	}
 
 	void TestRotate(SkCanvas *canvas)
@@ -619,8 +643,57 @@ protected:
 		//ctx->restore();
 	}
 
+	void TestV8()
+	{
+		V8::InitializeICU();
+		Platform* platform = platform::CreateDefaultPlatform();
+		V8::InitializePlatform(platform);
+		V8::Initialize();
+
+		// Create a new Isolate and make it the current one.
+		ArrayBufferAllocator allocator;
+		Isolate::CreateParams create_params;
+		create_params.array_buffer_allocator = &allocator;
+		Isolate* isolate = Isolate::New(create_params);
+		{
+			Isolate::Scope isolate_scope(isolate);
+
+			// Create a stack-allocated handle scope.
+			HandleScope handle_scope(isolate);
+
+			// Create a new context.
+			Local<Context> context = Context::New(isolate);
+
+			// Enter the context for compiling and running the hello world script.
+			Context::Scope context_scope(context);
+
+			// Create a string containing the JavaScript source code.
+			Local<String> source =
+				String::NewFromUtf8(isolate, "'Hello' + ', World!'",
+				NewStringType::kNormal).ToLocalChecked();
+
+			// Compile the source code.
+			Local<Script> script = Script::Compile(context, source).ToLocalChecked();
+
+			// Run the script to get the result.
+			Local<Value> result = script->Run(context).ToLocalChecked();
+
+			// Convert the result to an UTF8 string and print it.
+			String::Utf8Value utf8(result);
+			printf("%s\n", *utf8);
+		}
+
+		// Dispose the isolate and tear down V8.
+		isolate->Dispose();
+		V8::Dispose();
+		V8::ShutdownPlatform();
+		delete platform;
+
+	}
+
     virtual void onDrawContent(SkCanvas* canvas) {
-		TestCreatePattern(canvas);
+		TestDrawZHText(canvas);
+		//TestV8();
 		return;
 		SkPaint paint;
 		paint.setAntiAlias(true);

@@ -32,7 +32,7 @@
 
 struct SkRect;
 
-namespace WebCore {
+namespace Canvas2D{
 
 class LayoutRect;
 class IntRect;

@@ -31,7 +31,7 @@
 #include "IntPoint.h"
 #include "MathExtras.h"
 
-namespace WebCore {
+namespace Canvas2D {
 
 class IntSize;
 class LayoutSize;

@@ -36,7 +36,7 @@
 #include "CSSParserMode.h"
 #include <string.h>
 
-namespace WebCore {
+namespace Canvas2D {
 
 enum CSSValueID {
     CSSValueInvalid = 0,
