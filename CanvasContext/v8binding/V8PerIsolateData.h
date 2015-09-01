@@ -10,7 +10,7 @@
 #include <include/v8.h>
 #include "OwnPtr.h"
 #include "vector"
-
+#include "map"
 
 namespace Canvas2D
 {

@@ -71,7 +71,9 @@ v8::Handle<v8::FunctionTemplate> V8PerIsolateData::domTemplate(void* domTemplate
 	if (result != domTemplateMap.end())
 		return v8::Local<v8::FunctionTemplate>::New(m_isolate, result->second);
     v8::Local<v8::FunctionTemplate> templ = v8::FunctionTemplate::New(m_isolate, callback, data, signature, length);
-    domTemplateMap[domTemplateKey]= v8::Global<v8::FunctionTemplate>(m_isolate, templ);
+	domTemplateMap[domTemplateKey] = v8::Global<v8::FunctionTemplate>(m_isolate, templ);
+	//domTemplateMap.insert(std::map::value_type(domTemplateKey, v8::Global<v8::FunctionTemplate>(m_isolate, templ)));
+	//domTemplateMap.insert(std::pair<const void *, v8::Global<v8::FunctionTemplate> >(domTemplateKey, v8::Global<v8::FunctionTemplate>(m_isolate, templ)));
     return templ;
 }
 

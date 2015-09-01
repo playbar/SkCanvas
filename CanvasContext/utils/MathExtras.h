@@ -88,9 +88,9 @@ inline double wtf_fmod(double x, double y) { return (!std::isinf(x) && std::isin
 // Work around a bug in the Microsoft CRT, where pow(NaN, 0) yields NaN instead of 1.
 inline double wtf_pow(double x, double y) { return y == 0 ? 1 : pow(x, y); }
 
-#define atan2(x, y) wtf_atan2(x, y)
-#define fmod(x, y) wtf_fmod(x, y)
-#define pow(x, y) wtf_pow(x, y)
+//#define atan2(x, y) wtf_atan2(x, y)
+//#define fmod(x, y) wtf_fmod(x, y)
+//#define pow(x, y) wtf_pow(x, y)
 
 #if _MSC_VER < 1800
 

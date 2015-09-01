@@ -13,8 +13,8 @@
 #include "PassOwnPtr.h"
 #include "PassRefPtr.h"
 #include "OwnPtr.h"
-#include "hash_map"
 #include "vector"
+#include "map"
 //#include "wtf/text/AtomicString.h"
 //#include "wtf/text/AtomicStringHash.h"
 
@@ -25,7 +25,6 @@ class CustomElementDefinition;
 class V8PerContextData;
 struct V8NPObject;
 typedef std::vector<V8NPObject*> V8NPObjectVector;
-typedef std::hash_map<int, V8NPObjectVector> V8NPObjectMap;
 
 enum V8ContextEmbedderDataField
 {
@@ -77,7 +76,6 @@ public:
 
     v8::Local<v8::Object> prototypeForType(const WrapperTypeInfo*);
 
-    V8NPObjectMap* v8NPObjectMap() { return &m_v8NPObjectMap; }
     //V8DOMActivityLogger* activityLogger() { return m_activityLogger; }
     //void setActivityLogger(V8DOMActivityLogger* logger) { m_activityLogger = logger; }
 
@@ -93,13 +91,12 @@ private:
 
     // For each possible type of wrapper, we keep a boilerplate object.
     // The boilerplate is used to create additional wrappers of the same type.
-    typedef std::hash_map<const WrapperTypeInfo*, v8::Global<v8::Object> > WrapperBoilerplateMap;
+    typedef std::map<const WrapperTypeInfo*, v8::Global<v8::Object> > WrapperBoilerplateMap;
     WrapperBoilerplateMap m_wrapperBoilerplates;
 
-    typedef std::hash_map<const WrapperTypeInfo*, v8::Global<v8::Function> > ConstructorMap;
+    typedef std::map<const WrapperTypeInfo*, v8::Global<v8::Function> > ConstructorMap;
     ConstructorMap m_constructorMap;
 
-    V8NPObjectMap m_v8NPObjectMap;
     // We cache a pointer to the V8DOMActivityLogger associated with the world
     // corresponding to this context. The ownership of the pointer is retained
     // by the DOMActivityLoggerMap in DOMWrapperWorld.
@@ -113,7 +110,7 @@ private:
     ScopedPersistent<v8::Context> m_context;
     ScopedPersistent<v8::Value> m_errorPrototype;
 
-    typedef std::hash_map<CustomElementDefinition*, OwnPtr<CustomElementBinding> > CustomElementBindingMap;
+    typedef std::map<CustomElementDefinition*, OwnPtr<CustomElementBinding> > CustomElementBindingMap;
     OwnPtr<CustomElementBindingMap> m_customElementBindings;
 };
 

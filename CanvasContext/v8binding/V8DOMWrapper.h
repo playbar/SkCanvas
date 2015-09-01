@@ -58,16 +58,6 @@ struct WrapperTypeInfo;
         return wrapper;
     }
 
-    template<typename V8T, typename T>
-    inline v8::Handle<v8::Object> V8DOMWrapper::associateObjectWithWrapper(T* object, const WrapperTypeInfo* type, v8::Handle<v8::Object> wrapper, v8::Isolate* isolate, WrapperConfiguration::Lifetime lifetime)
-    {
-        setNativeInfoWithPersistentHandle(wrapper, type, V8T::toInternalPointer(object), new Persistent<T>(object));
-        SkASSERT(isDOMWrapper(wrapper));
-        WrapperConfiguration configuration = buildWrapperConfiguration(object, lifetime);
-        DOMDataStore::setWrapper<V8T>(object, wrapper, isolate, configuration);
-        return wrapper;
-    }
-
     class V8WrapperInstantiationScope 
 	{
     public:

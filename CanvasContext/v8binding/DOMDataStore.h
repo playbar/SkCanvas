@@ -58,39 +58,6 @@ public:
     //    return current(returnValue.GetIsolate()).template setReturnValueFrom<V8T>(returnValue, object);
     //}
 
-    template<typename V8T, typename T>
-    static bool setReturnValueFromWrapperForMainWorld(v8::ReturnValue<v8::Value> returnValue, T* object)
-    {
-        if (ScriptWrappable::wrapperCanBeStoredInObject(object))
-            return ScriptWrappable::setReturnValue(returnValue, object);
-        return DOMWrapperWorld::mainWorld()->domDataStore().m_wrapperMap.setReturnValueFrom(returnValue, V8T::toInternalPointer(object));
-    }
-
-    template<typename V8T, typename T>
-    static v8::Handle<v8::Object> getWrapper(T* object, v8::Isolate* isolate)
-    {
-        if (canUseScriptWrappable(object)) {
-            v8::Handle<v8::Object> result = ScriptWrappable::getUnsafeWrapperFromObject(object).newLocal(isolate);
-            // Security: always guard against malicious tampering.
-            RELEASE_ASSERT_WITH_SECURITY_IMPLICATION(result.IsEmpty() || result->GetAlignedPointerFromInternalField(v8DOMWrapperObjectIndex) == V8T::toInternalPointer(object));
-            return result;
-        }
-        return current(isolate).template get<V8T>(object, isolate);
-    }
-
-    template<typename V8T, typename T>
-    static void setWrapperReference(const v8::Persistent<v8::Object>& parent, T* child, v8::Isolate* isolate)
-    {
-        if (canUseScriptWrappable(child)) {
-            UnsafePersistent<v8::Object> unsafePersistent = ScriptWrappable::getUnsafeWrapperFromObject(child);
-            // Security: always guard against malicious tampering.
-            RELEASE_ASSERT_WITH_SECURITY_IMPLICATION(unsafePersistent.isEmpty() || unsafePersistent.value()->GetAlignedPointerFromInternalField(v8DOMWrapperObjectIndex) == V8T::toInternalPointer(child));
-            unsafePersistent.setReferenceFrom(parent, isolate);
-            return;
-        }
-        current(isolate).template setReference<V8T>(parent, child, isolate);
-    }
-
 	template<typename V8T, typename T>
 	static void setWrapper(T* object, v8::Handle<v8::Object> wrapper, v8::Isolate* isolate, const WrapperConfiguration& configuration)
 	{
