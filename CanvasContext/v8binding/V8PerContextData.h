@@ -5,18 +5,13 @@
 
 #include "CustomElementBinding.h"
 #include "ScopedPersistent.h"
-//#include "bindings/v8/V8DOMActivityLogger.h"
 #include "WrapperTypeInfo.h"
-//#include "gin/public/context_holder.h"
-//#include "gin/public/gin_embedders.h"
 #include <include/v8.h>
 #include "PassOwnPtr.h"
 #include "PassRefPtr.h"
 #include "OwnPtr.h"
 #include "vector"
 #include "map"
-//#include "wtf/text/AtomicString.h"
-//#include "wtf/text/AtomicStringHash.h"
 
 namespace Canvas2D
 {
@@ -76,13 +71,6 @@ public:
 
     v8::Local<v8::Object> prototypeForType(const WrapperTypeInfo*);
 
-    //V8DOMActivityLogger* activityLogger() { return m_activityLogger; }
-    //void setActivityLogger(V8DOMActivityLogger* logger) { m_activityLogger = logger; }
-
-    //void addCustomElementBinding(CustomElementDefinition*, PassOwnPtr<CustomElementBinding>);
-    //void clearCustomElementBinding(CustomElementDefinition*);
-    //CustomElementBinding* customElementBinding(CustomElementDefinition*);
-
 private:
     V8PerContextData(v8::Handle<v8::Context>);
 
@@ -97,15 +85,8 @@ private:
     typedef std::map<const WrapperTypeInfo*, v8::Global<v8::Function> > ConstructorMap;
     ConstructorMap m_constructorMap;
 
-    // We cache a pointer to the V8DOMActivityLogger associated with the world
-    // corresponding to this context. The ownership of the pointer is retained
-    // by the DOMActivityLoggerMap in DOMWrapperWorld.
-    //V8DOMActivityLogger* m_activityLogger;
-
     v8::Isolate* m_isolate;
-    //OwnPtr<gin::ContextHolder> m_contextHolder;
 	v8::UniquePersistent<v8::Context> m_contextHolder;
-
 
     ScopedPersistent<v8::Context> m_context;
     ScopedPersistent<v8::Value> m_errorPrototype;

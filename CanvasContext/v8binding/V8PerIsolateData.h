@@ -1,12 +1,8 @@
 #ifndef V8PerIsolateData_h
 #define V8PerIsolateData_h
 
-//#include "bindings/v8/ScopedPersistent.h"
-//#include "bindings/v8/V8HiddenValue.h"
 #include "WrapperTypeInfo.h"
 #include "DOMDataStore.h"
-//#include "gin/public/gin_embedders.h"
-//#include "gin/public/isolate_holder.h"
 #include <include/v8.h>
 #include "OwnPtr.h"
 #include "vector"
@@ -37,8 +33,6 @@ public:
 
     v8::Handle<v8::FunctionTemplate> toStringTemplate();
 
-    //StringCache* stringCache() { return m_stringCache.get(); }
-
     v8::Persistent<v8::Value>& ensureLiveRoot();
 
     int recursionLevel() const { return m_recursionLevel; }
@@ -48,17 +42,11 @@ public:
     bool performingMicrotaskCheckpoint() const { return m_performingMicrotaskCheckpoint; }
     void setPerformingMicrotaskCheckpoint(bool performingMicrotaskCheckpoint) { m_performingMicrotaskCheckpoint = performingMicrotaskCheckpoint; }
 
-    //GCEventData* gcEventData() { return m_gcEventData.get(); }
-    //V8HiddenValue* hiddenValue() { return m_hiddenValue.get(); }
-
-    v8::Handle<v8::FunctionTemplate> domTemplate(void* domTemplateKey, v8::FunctionCallback = 0, v8::Handle<v8::Value> data = v8::Handle<v8::Value>(), v8::Handle<v8::Signature> = v8::Handle<v8::Signature>(), int length = 0);
+    //v8::Handle<v8::FunctionTemplate> domTemplate(void* domTemplateKey, v8::FunctionCallback = 0, v8::Handle<v8::Value> data = v8::Handle<v8::Value>(), v8::Handle<v8::Signature> = v8::Handle<v8::Signature>(), int length = 0);
     v8::Handle<v8::FunctionTemplate> existingDOMTemplate(void* domTemplateKey);
     void setDOMTemplate(void* domTemplateKey, v8::Handle<v8::FunctionTemplate>);
 
-    //bool hasInstance(const WrapperTypeInfo*, v8::Handle<v8::Value>);
-    //v8::Handle<v8::Object> findInstanceInPrototypeChain(const WrapperTypeInfo*, v8::Handle<v8::Value>);
-
-    v8::Local<v8::Context> ensureRegexContext();
+     v8::Local<v8::Context> ensureRegexContext();
 
     const char* previousSamplingState() const { return m_previousSamplingState; }
     void setPreviousSamplingState(const char* name) { m_previousSamplingState = name; }
