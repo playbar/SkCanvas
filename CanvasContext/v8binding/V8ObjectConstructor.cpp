@@ -37,12 +37,12 @@ v8::Local<v8::Object> V8ObjectConstructor::newInstance(v8::Handle<v8::Function> 
 //    return V8ScriptRunner::instantiateObjectInDocument(function, document, argc, argv);
 //}
 
-void V8ObjectConstructor::isValidConstructorMode(const v8::FunctionCallbackInfo<v8::Value>& info)
-{
-    if (ConstructorMode::current() == ConstructorMode::CreateNewObject) {
-        return;
-    }
-    v8SetReturnValue(info, info.This());
-}
+//void V8ObjectConstructor::isValidConstructorMode(const v8::FunctionCallbackInfo<v8::Value>& info)
+//{
+//    if (ConstructorMode::current() == ConstructorMode::CreateNewObject) {
+//        return;
+//    }
+//    v8SetReturnValue(info, info.This());
+//}
 
 } // namespace WebCore

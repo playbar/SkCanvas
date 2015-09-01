@@ -38,11 +38,11 @@ public:
 	}
 };
 
-template<class CallbackInfo>
-inline void v8SetReturnValue(const CallbackInfo& callbackInfo, PassRefPtr<CanvasPattern> impl)
-{
-	v8SetReturnValue(callbackInfo, impl.get());
-}
+//template<class CallbackInfo>
+//inline void v8SetReturnValue(const CallbackInfo& callbackInfo, PassRefPtr<CanvasPattern> impl)
+//{
+//	v8SetReturnValue(callbackInfo, impl.get());
+//}
 
 template<typename CallbackInfo>
 inline void v8SetReturnValue(const CallbackInfo& callbackInfo, CanvasPattern* impl)
@@ -54,7 +54,8 @@ inline void v8SetReturnValue(const CallbackInfo& callbackInfo, CanvasPattern* im
 	}
 	//v8::Handle<v8::Object> wrapper = wrap(impl, callbackInfo.Holder(), callbackInfo.GetIsolate());
 	v8::Handle<v8::Object> wrapper = V8CanvasPattern::createWrapper(impl, callbackInfo.Holder(), callbackInfo.GetIsolate());
-	v8SetReturnValue(callbackInfo, wrapper);
+	//v8SetReturnValue(callbackInfo, wrapper);
+	callbackInfo.GetReturnValue().Set(wrapper);
 	return;
 }
 

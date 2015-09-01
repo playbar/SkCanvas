@@ -38,11 +38,11 @@ public:
 	}
 };
 
-template<class CallbackInfo>
-inline void v8SetReturnValue(const CallbackInfo& callbackInfo, PassRefPtr<ImageData> impl)
-{
-	v8SetReturnValue(callbackInfo, impl.get());
-}
+//template<class CallbackInfo>
+//inline void v8SetReturnValue(const CallbackInfo& callbackInfo, PassRefPtr<ImageData> impl)
+//{
+//	v8SetReturnValue(callbackInfo, impl.get());
+//}
 
 template<typename CallbackInfo>
 inline void v8SetReturnValue(const CallbackInfo& callbackInfo, ImageData* impl)

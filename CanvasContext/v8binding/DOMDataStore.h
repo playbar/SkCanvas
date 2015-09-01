@@ -108,37 +108,11 @@ public:
     //}
 
     template<typename V8T, typename T>
-    inline v8::Handle<v8::Object> get(T* object, v8::Isolate* isolate)
-    {
-        if (ScriptWrappable::wrapperCanBeStoredInObject(object) && m_isMainWorld)
-            return ScriptWrappable::getUnsafeWrapperFromObject(object).newLocal(isolate);
-        return m_wrapperMap.newLocal(V8T::toInternalPointer(object), isolate);
-    }
-
-    template<typename V8T, typename T>
-    inline void setReference(const v8::Persistent<v8::Object>& parent, T* child, v8::Isolate* isolate)
-    {
-        if (ScriptWrappable::wrapperCanBeStoredInObject(child) && m_isMainWorld) {
-            ScriptWrappable::getUnsafeWrapperFromObject(child).setReferenceFrom(parent, isolate);
-            return;
-        }
-        m_wrapperMap.setReference(parent, V8T::toInternalPointer(child), isolate);
-    }
-
-    template<typename V8T, typename T>
     inline bool setReturnValueFrom(v8::ReturnValue<v8::Value> returnValue, T* object)
     {
         if (ScriptWrappable::wrapperCanBeStoredInObject(object) && m_isMainWorld)
             return ScriptWrappable::setReturnValue(returnValue, object);
         return m_wrapperMap.setReturnValueFrom(returnValue, V8T::toInternalPointer(object));
-    }
-
-    template<typename V8T, typename T>
-    inline bool containsWrapper(T* object)
-    {
-        if (ScriptWrappable::wrapperCanBeStoredInObject(object) && m_isMainWorld)
-            return !ScriptWrappable::getUnsafeWrapperFromObject(object).isEmpty();
-        return m_wrapperMap.containsKey(V8T::toInternalPointer(object));
     }
 
 private:

@@ -12,11 +12,11 @@ inline void v8SetReturnValueNull(const CallbackInfo& info)
 	info.GetReturnValue().SetNull();
 }
 
-template<typename CallbackInfo, typename V>
-inline void v8SetReturnValue(const CallbackInfo& info, V v)
-{
-	info.GetReturnValue().Set(v);
-}
+//template<typename CallbackInfo, typename V>
+//inline void v8SetReturnValue(const CallbackInfo& info, V v)
+//{
+//	info.GetReturnValue().Set(v);
+//}
 
 inline v8::Handle<v8::String> v8AtomicString(v8::Isolate* isolate, const char* str)
 {

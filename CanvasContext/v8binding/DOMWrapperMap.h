@@ -57,7 +57,7 @@ public:
         v8::Persistent<v8::Object> persistent(m_isolate, wrapper);
         configuration.configureWrapper(&persistent);
         persistent.SetWeak(this, &setWeakCallback);
-		m_map[key]= UnsafePersistent<v8::Object>(persistent);
+		m_map[key]= v8::Global<v8::Object>(persistent);
 	}
 
     void clear()

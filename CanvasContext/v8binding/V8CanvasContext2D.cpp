@@ -114,7 +114,7 @@ void v8_CanvasContext2D_createLinearGradient(const v8::FunctionCallbackInfo<v8::
 	float x1 = static_cast<float>(args[2]->NumberValue());
 	float y1 = static_cast<float>(args[3]->NumberValue());
 	RefPtr<CanvasGradient> result = imp->createLinearGradient(x0, y0, x1, y1);
-	v8SetReturnValue(args, result.release());
+	v8SetReturnValue(args, result.get());
 }
 
 void v8_CanvasContext2D_createRadialGradient(const v8::FunctionCallbackInfo<v8::Value> &args)
@@ -128,7 +128,7 @@ void v8_CanvasContext2D_createRadialGradient(const v8::FunctionCallbackInfo<v8::
 	float y1 = static_cast<float>(args[4]->NumberValue());
 	float r1 = static_cast<float>(args[5]->NumberValue());
 	RefPtr<CanvasGradient> result = imp->createRadialGradient(x0, y0, r0, x1, y1, r1);
-	v8SetReturnValue(args, result.release());
+	v8SetReturnValue(args, result.get());
 }
 
 void v8_CanvasContext2D_setLineDash(const FunctionCallbackInfo<Value> &args)
@@ -447,7 +447,7 @@ void v8_CanvasContext2D_createPattern(const FunctionCallbackInfo<Value> &args)
 	v8::String::Utf8Value str(args[1]);
 	const char* cstr = ToCString(str);
 	RefPtr<CanvasPattern> result = imp->createPattern(bitmapImg, cstr);
-	v8SetReturnValue(args, result.release());
+	v8SetReturnValue(args, result.get());
 }
 
 void v8_CanvasContext2D_createImageData(const FunctionCallbackInfo<Value> &args)
@@ -457,7 +457,8 @@ void v8_CanvasContext2D_createImageData(const FunctionCallbackInfo<Value> &args)
 	float width = static_cast<float>(args[0]->NumberValue());
 	float height = static_cast<float>(args[1]->NumberValue());
 	RefPtr<ImageData> result = imp->createImageData(width, height);
-	v8SetReturnValue(args, result.release());
+	//v8SetReturnValue(args, result.release());
+	args.GetReturnValue().Set(result.release());
 }
 
 void v8_CanvasContext2D_getImageData(const FunctionCallbackInfo<Value> &args)
@@ -469,7 +470,8 @@ void v8_CanvasContext2D_getImageData(const FunctionCallbackInfo<Value> &args)
 	float w = static_cast<float>(args[2]->NumberValue());
 	float h = static_cast<float>(args[3]->NumberValue());
 	RefPtr<ImageData> result = imp->getImageData(x, y, w, h);
-	v8SetReturnValue(args, result.release());
+	//v8SetReturnValue(args, result.release());
+	args.GetReturnValue().Set(result.release());
 }
 
 
@@ -489,7 +491,8 @@ static void v8_CanvasContext2D_canvas_set(Local<String> pro,
 static void v8_CanvasContext2D_globalAlpha_get(Local<String> str, const PropertyCallbackInfo<Value> &args )
 {
 	CanvasContext2D *imp = UnwrapCanvasContext2D(args.Holder());
-	v8SetReturnValue(args, imp->globalAlpha());
+	//v8SetReturnValue(args, imp->globalAlpha());
+	args.GetReturnValue().Set(imp->globalAlpha());
 }
 
 static void v8_CanvasContext2D_globalAlpha_set(Local<String> pro,
