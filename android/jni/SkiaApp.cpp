@@ -562,19 +562,31 @@ void SkiaApp::TestArcTo( SkCanvas *canvas )
 
 void SkiaApp::TestText( SkCanvas *canvas )
 {
-	//SkTypeface *font = SkTypeface::CreateFromFile("NotoSansHans-Regular.otf");
-	//if( !font )
-	//	return;
+	//SkTypeface *font = SkTypeface::CreateFromFile("DroidSansFallbackFull.ttf");
+	SkDebugf("%s, %d --------->begin", __FILENAME__, __LINE__ );
+	SkTypeface *font = SkTypeface::CreateFromName( "Droid Sans", SkTypeface::kNormal );
+	SkDebugf("%s, %d----->end", __FILENAME__, __LINE__ );
 	SkPaint paint;
 	paint.setAntiAlias( true );
 	paint.setColor( 0xFF008000);
-	//paint.setTypeface( font );
+	if( font )
+	{
+		SkDebugf("%s, %d faceType is not null", __FILENAME__, __LINE__ );
+		paint.setTypeface( font );
+	}
+	else
+	{
+		SkDebugf("%s, %d, %d", __FILENAME__, __LINE__, (int)font );
+	}
 	paint.setTextSize( 50 );
-	paint.setStyle( SkPaint::kStroke_Style );
+	//paint.setStyle( SkPaint::kStroke_Style );
 	paint.setStrokeWidth( 2 );
 	canvas->drawLine( 10, 10, 100, 10, paint );
 	paint.setColor( 0xffff0000);
-	canvas->drawText( "test", 4, 150, 60, paint );
+
+	std::string str = "ab12音乐er";
+	canvas->drawText( str.c_str(), str.length() , 10, 400, paint );
+	canvas->drawText( "test", 4, 10, 200, paint );
 }
 
 void SkiaApp::TestGetImageData( SkCanvas *canvas)
@@ -643,9 +655,9 @@ void SkiaApp::TestCreatePattern( SkCanvas *canvas )
 void SkiaApp::mainLoop(){
 	//canvas = createCanvas();
 	canvas->drawColor(0xffffffff);
-	//TestArc( canvas );
+	TestArc( canvas );
 	//TestText( canvas );
-	TestCreatePattern( canvas );
+	//TestCreatePattern( canvas );
 	fCurContext->flush();
 }
 

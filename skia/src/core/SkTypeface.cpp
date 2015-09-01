@@ -132,7 +132,9 @@ SkTypeface* SkTypeface::CreateFromName(const char name[], Style style) {
     if (NULL == name) {
         return RefDefault(style);
     }
-    return SkFontHost::CreateTypeface(NULL, name, style);
+    SkTypeface * face = SkFontHost::CreateTypeface(NULL, name, style);
+	SkDebugf("%s, %d, %d", __FILENAME__, __LINE__, (int)face );
+    return face;
 }
 
 SkTypeface* SkTypeface::CreateFromTypeface(const SkTypeface* family, Style s) {

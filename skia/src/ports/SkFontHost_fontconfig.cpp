@@ -83,6 +83,7 @@ SkTypeface* FontConfigTypeface::LegacyCreateTypeface(
                 const SkTypeface* familyFace,
                 const char familyName[],
                 SkTypeface::Style style) {
+	SkDebugf("%s, %d, familyName:%s", __FILENAME__, __LINE__, familyName );
     SkAutoTUnref<SkFontConfigInterface> fci(RefFCI());
     if (NULL == fci.get()) {
         return NULL;
@@ -115,12 +116,13 @@ SkTypeface* FontConfigTypeface::LegacyCreateTypeface(
     rec.fStyle = outStyle;
     face = SkTypefaceCache::FindByProcAndRef(find_proc, &rec);
     if (face) {
+    	SkDebugf("%s, %d, %d", __FILENAME__, __LINE__, (int)face );
         return face;
     }
 
     face = FontConfigTypeface::Create(outStyle, indentity, outFamilyName);
     SkTypefaceCache::Add(face, style);
-//    SkDebugf("add face <%s> <%s> %p [%d]\n", familyName, outFamilyName.c_str(), face, face->getRefCnt());
+    SkDebugf("add face <%s> <%s> %p [%d]\n", familyName, outFamilyName.c_str(), face, face->getRefCnt());
     return face;
 }
 
@@ -129,8 +131,10 @@ SkTypeface* FontConfigTypeface::LegacyCreateTypeface(
 SkTypeface* SkFontHost::CreateTypeface(const SkTypeface* familyFace,
                                        const char familyName[],
                                        SkTypeface::Style style) {
-    return FontConfigTypeface::LegacyCreateTypeface(familyFace, familyName,
-                                                    style);
+	SkTypeface *face = FontConfigTypeface::LegacyCreateTypeface(familyFace, familyName,
+            style);
+	SkDebugf("%s, %d, %d", __FILENAME__, __LINE__, (int)face );
+    return face;
 }
 
 SkTypeface* SkFontHost::CreateTypefaceFromStream(SkStream* stream) {
