@@ -100,13 +100,15 @@ public:
     template<typename V8T, typename T>
     static bool setReturnValueWithSecurityCheck(v8::ReturnValue<v8::Value> returnValue, T* object)
     {
-        return ScriptWrappable::getUnsafeWrapperFromObject(object).template setReturnValueWithSecurityCheck<V8T>(returnValue, object);
+    	return true;
+        //return ScriptWrappable::getUnsafeWrapperFromObject(object).template setReturnValueWithSecurityCheck<V8T>(returnValue, object);
     }
 
     template<typename T>
     static bool setReturnValue(v8::ReturnValue<v8::Value> returnValue, T* object)
     {
-        return ScriptWrappable::getUnsafeWrapperFromObject(object).setReturnValue(returnValue);
+    	return true;
+        //return ScriptWrappable::getUnsafeWrapperFromObject(object).setReturnValue(returnValue);
     }
 
 protected:

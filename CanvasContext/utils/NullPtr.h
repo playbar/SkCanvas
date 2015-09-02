@@ -1,11 +1,11 @@
 #ifndef NullPtr_h
 #define NullPtr_h
 
-#ifndef _WIN32
-namespace std{
-class nullptr_t{};
-}
-#endif
+//#ifndef _WIN32
+//namespace std{
+//class nullptr_t{};
+//}
+//#endif
 
 
 #define WTF_DISALLOW_CONSTRUCTION_FROM_ZERO(ClassName) \

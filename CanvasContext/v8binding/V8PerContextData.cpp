@@ -184,6 +184,7 @@ v8::Local<v8::Function> V8PerContextData::constructorForTypeSlowCase(const Wrapp
 
 static v8::Handle<v8::Value> createDebugData(const char* worldName, int debugId, v8::Isolate* isolate)
 {
+#ifdef _WIN32
     char buffer[32];
     unsigned wanted;
     if (debugId == -1)
@@ -193,6 +194,7 @@ static v8::Handle<v8::Value> createDebugData(const char* worldName, int debugId,
 
     if (wanted < sizeof(buffer))
         return v8AtomicString(isolate, buffer);
+#endif
 
     return v8::Undefined(isolate);
 }

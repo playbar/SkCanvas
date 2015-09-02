@@ -30,8 +30,9 @@ public:
     template<typename T>
     static bool canUseScriptWrappable(T* object)
     {
-        return !canExistInWorker(object)
-            && ScriptWrappable::wrapperCanBeStoredInObject(object);
+    	return true;
+        //return !canExistInWorker(object)
+        //    && ScriptWrappable::wrapperCanBeStoredInObject(object);
     }
 
     //template<typename V8T, typename T, typename Wrappable>
@@ -62,7 +63,7 @@ public:
 	static void setWrapper(T* object, v8::Handle<v8::Object> wrapper, v8::Isolate* isolate, const WrapperConfiguration& configuration)
 	{
 		if (canUseScriptWrappable(object)) {
-			ScriptWrappable::setWrapperInObject(object, wrapper, isolate, configuration);
+			//ScriptWrappable::setWrapperInObject(object, wrapper, isolate, configuration);
 			return;
 		}
 		//return current(isolate).template set<V8T>(object, wrapper, isolate, configuration);
@@ -77,19 +78,20 @@ public:
     template<typename V8T, typename T>
     inline bool setReturnValueFrom(v8::ReturnValue<v8::Value> returnValue, T* object)
     {
-        if (ScriptWrappable::wrapperCanBeStoredInObject(object) && m_isMainWorld)
-            return ScriptWrappable::setReturnValue(returnValue, object);
-        return m_wrapperMap.setReturnValueFrom(returnValue, V8T::toInternalPointer(object));
+    	return true;
+        //if (ScriptWrappable::wrapperCanBeStoredInObject(object) && m_isMainWorld)
+        //    return ScriptWrappable::setReturnValue(returnValue, object);
+        //return m_wrapperMap.setReturnValueFrom(returnValue, V8T::toInternalPointer(object));
     }
 
 private:
     template<typename V8T, typename T>
     inline void set(T* object, v8::Handle<v8::Object> wrapper, v8::Isolate* isolate, const WrapperConfiguration& configuration)
     {
-		if (ScriptWrappable::wrapperCanBeStoredInObject(object) && m_isMainWorld) {
-            ScriptWrappable::setWrapperInObject(object, wrapper, isolate, configuration);
-            return;
-        }
+		//if (ScriptWrappable::wrapperCanBeStoredInObject(object) && m_isMainWorld) {
+        //    ScriptWrappable::setWrapperInObject(object, wrapper, isolate, configuration);
+        //    return;
+        //}
         m_wrapperMap.set(V8T::toInternalPointer(object), wrapper, configuration);
     }
 

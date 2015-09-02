@@ -1,5 +1,6 @@
 #include "CustomElementBinding.h"
 #include "SkTypes.h"
+#include "include/v8.h"
 
 namespace Canvas2D
 {

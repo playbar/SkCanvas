@@ -4,7 +4,7 @@
 #include "WrapperTypeInfo.h"
 #include <include/v8.h>
 #include "SkTypes.h"
-#include "hash_map"
+#include "map"
 
 namespace Canvas2D
 {
@@ -12,7 +12,7 @@ namespace Canvas2D
 template<class KeyType>
 class DOMWrapperMap {
 public:
-    typedef std::hash_map<KeyType*, v8::Global<v8::Object> > MapType;
+    typedef std::map<KeyType*, v8::Global<v8::Object> > MapType;
 
     explicit DOMWrapperMap(v8::Isolate* isolate)
         : m_isolate(isolate)
@@ -93,7 +93,7 @@ template<>
 inline void DOMWrapperMap<void>::setWeakCallback(const v8::WeakCallbackData<v8::Object, DOMWrapperMap<void> >& data)
 {
     void* key = static_cast<void*>(toNative(data.GetValue()));
-    data.GetParameter()->removeAndDispose(key);
+    //data.GetParameter()->removeAndDispose(key);
     releaseObject(data.GetValue());
 }
 

@@ -55,7 +55,7 @@ private:
     explicit V8PerIsolateData(v8::Isolate*);
     ~V8PerIsolateData();
 
-    typedef std::hash_map<const void*, v8::Global<v8::FunctionTemplate> > DOMTemplateMap;
+    typedef std::map<const void*, v8::Global<v8::FunctionTemplate> > DOMTemplateMap;
     DOMTemplateMap& currentDOMTemplateMap();
     //bool hasInstance(const WrapperTypeInfo*, v8::Handle<v8::Value>, DOMTemplateMap&);
     //v8::Handle<v8::Object> findInstanceInPrototypeChain(const WrapperTypeInfo*, v8::Handle<v8::Value>, DOMTemplateMap&);

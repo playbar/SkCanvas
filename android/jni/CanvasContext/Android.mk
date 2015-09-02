@@ -17,6 +17,8 @@ LOCAL_C_INCLUDES := $../../CanvasContext/Canvas2D \
 					$../../skia/include/core \
 					$../../skia/include/config \
 					$../../skia/include/effects \
+					$../../skia/include/gpu \
+					$../thirdparty/v8 \
 				
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)	
@@ -49,7 +51,24 @@ LOCAL_SRC_FILES	+=  \
 					../../../CanvasContext/Canvas2D/Gradient.cpp \
 					../../../CanvasContext/Canvas2D/GraphicsTypes.cpp \
 					../../../CanvasContext/Canvas2D/ImageData.cpp \
-					../../../CanvasContext/Canvas2D/Pattern.cpp 
+					../../../CanvasContext/Canvas2D/Pattern.cpp \
+					../../../CanvasContext/v8binding/JSCore.cpp \
+					../../../CanvasContext/v8binding/JSEngine.cpp \
+					../../../CanvasContext/v8binding/V8Binding.cpp \
+					../../../CanvasContext/v8binding/V8BitmapImage.cpp \
+					../../../CanvasContext/v8binding/V8CanvasContext2D.cpp \
+					../../../CanvasContext/v8binding/CustomElementBinding.cpp \
+					../../../CanvasContext/v8binding/DOMDataStore.cpp \
+					../../../CanvasContext/v8binding/V8CanvasGradient.cpp \
+					../../../CanvasContext/v8binding/V8CanvasPattern.cpp \
+					../../../CanvasContext/v8binding/V8DOMWrapper.cpp \
+					../../../CanvasContext/v8binding/V8GlobalFun.cpp \
+					../../../CanvasContext/v8binding/V8ImageData.cpp \
+					../../../CanvasContext/v8binding/V8ObjectConstructor.cpp \
+					../../../CanvasContext/v8binding/V8PerContextData.cpp \
+					../../../CanvasContext/v8binding/V8PerIsolateData.cpp \
+					../../../CanvasContext/v8binding/V8ScriptRunner.cpp \
+					
 				
 					
 

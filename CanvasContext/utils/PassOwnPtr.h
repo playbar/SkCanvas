@@ -44,7 +44,6 @@ namespace Canvas2D {
         typedef ValueType* PtrType;
 
         PassOwnPtr() : m_ptr(0) { }
-        PassOwnPtr(std::nullptr_t) : m_ptr(0) { }
 
         // It somewhat breaks the type system to allow transfer of ownership out of
         // a const PassOwnPtr. However, it makes it much easier to work with PassOwnPtr
