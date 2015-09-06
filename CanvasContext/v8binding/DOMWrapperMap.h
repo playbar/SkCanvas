@@ -92,7 +92,7 @@ private:
 template<>
 inline void DOMWrapperMap<void>::setWeakCallback(const v8::WeakCallbackData<v8::Object, DOMWrapperMap<void> >& data)
 {
-    void* key = static_cast<void*>(toNative(data.GetValue()));
+    //void* key = static_cast<void*>(toNative(data.GetValue()));
     //data.GetParameter()->removeAndDispose(key);
     releaseObject(data.GetValue());
 }
