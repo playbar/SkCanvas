@@ -654,10 +654,10 @@ void SkiaApp::TestCreatePattern( SkCanvas *canvas )
 
 void SkiaApp::mainLoop(){
 	//canvas = createCanvas();
-	canvas->drawColor(0xffffffff);
-	TestArc( canvas );
-	//TestText( canvas );
-	//TestCreatePattern( canvas );
+	canvas->drawColor(0xffffff00);
+//	TestArc( canvas );
+	TestShadowOffset( canvas );
+//	TestCreatePattern( canvas );
 	fCurContext->flush();
 }
 
