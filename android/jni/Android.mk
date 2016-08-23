@@ -51,7 +51,7 @@ include $(BUILD_SHARED_LIBRARY)
 include $(call all-makefiles-under,$(LOCAL_PATH))
 
 $(call import-add-path,$(LOCAL_PATH))
-$(call import-module, ../thirdparty/v8/prebuilt/android )
+#$(call import-module, ../thirdparty/v8/prebuilt/android )
 
 
 
