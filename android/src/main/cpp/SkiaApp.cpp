@@ -640,7 +640,7 @@ void SkiaApp::TestCreatePattern( SkCanvas *canvas )
 {
 	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
 	RefPtr<BitmapImage> img = BitmapImage::create();
-	img->src( "/sdcard/egret/egret_icon.png" );
+	img->src( "/sdcard/test.png" );
 	PassRefPtr<CanvasPattern> pattern = ctx->createPattern( img.get(), "repeat");
 	ctx->rect( 0, 0, 480, 800);
 	RefPtr<CanvasStyle> style = CanvasStyle::createFromPattern( pattern );
@@ -653,11 +653,11 @@ void SkiaApp::TestCreatePattern( SkCanvas *canvas )
 }
 
 void SkiaApp::mainLoop(){
-	//canvas = createCanvas();
-	canvas->drawColor(0xffffff00);
+//	canvas = createCanvas();
+	canvas->drawColor(0xffff00ff);
 //	TestArc( canvas );
-	TestShadowOffset( canvas );
 //	TestCreatePattern( canvas );
+    TestShadowOffset(canvas);
 	fCurContext->flush();
 }
 

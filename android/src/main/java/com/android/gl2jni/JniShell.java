@@ -2,7 +2,6 @@
  * @author jkd2972
  *
  * JniShell.java
- * обнГ5:26:24 2015-7-28
  */
 package com.android.gl2jni;
 
