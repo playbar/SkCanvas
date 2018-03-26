@@ -28,7 +28,7 @@
 #define LOG_TAG "SkiaApp"
 
 
-#define IMG_NAME "egret_icon.png"
+#define IMG_NAME "icon.png"
 
 SkiaApp * SkiaApp::_instance = NULL;
 
@@ -125,17 +125,16 @@ SkCanvas* SkiaApp::createCanvas()
 static void draw_checks(SkCanvas* canvas, int width, int height) {
     SkPaint paint;
     paint.setColor(SK_ColorRED);
-    canvas->drawRectCoords(SkIntToScalar(0), SkIntToScalar(0),
-        SkIntToScalar(width / 2), SkIntToScalar(height / 2), paint);
-    paint.setColor(SK_ColorGREEN);
-    canvas->drawRectCoords(SkIntToScalar(width / 2), SkIntToScalar(0),
-        SkIntToScalar(width), SkIntToScalar(height / 2), paint);
+    canvas->drawRectCoords(SkIntToScalar(0), SkIntToScalar(0), SkIntToScalar(width / 2), SkIntToScalar(height / 2), paint);
+
+	paint.setColor(SK_ColorGREEN);
+    canvas->drawRectCoords(SkIntToScalar(width / 2), SkIntToScalar(0), SkIntToScalar(width), SkIntToScalar(height / 2), paint);
+
     paint.setColor(SK_ColorBLUE);
-    canvas->drawRectCoords(SkIntToScalar(0), SkIntToScalar(height / 2),
-        SkIntToScalar(width / 2), SkIntToScalar(height), paint);
-    paint.setColor(SK_ColorYELLOW);
-    canvas->drawRectCoords(SkIntToScalar(width / 2), SkIntToScalar(height / 2),
-        SkIntToScalar(width), SkIntToScalar(height), paint);
+    canvas->drawRectCoords(SkIntToScalar(0), SkIntToScalar(height / 2), SkIntToScalar(width / 2), SkIntToScalar(height), paint);
+
+	paint.setColor(SK_ColorYELLOW);
+    canvas->drawRectCoords(SkIntToScalar(width / 2), SkIntToScalar(height / 2), SkIntToScalar(width), SkIntToScalar(height), paint);
 }
 
 void SkiaApp::initApp(int width , int height){
@@ -573,7 +572,7 @@ void SkiaApp::TestText( SkCanvas *canvas )
 		SkDebugf("%s, %d, %d", __FILENAME__, __LINE__, (int)font );
 	}
 	paint.setTextSize( 50 );
-	//paint.setStyle( SkPaint::kStroke_Style );
+	paint.setStyle( SkPaint::kStroke_Style );
 	paint.setStrokeWidth( 2 );
 	canvas->drawLine( 10, 10, 100, 10, paint );
 	paint.setColor( 0xffff0000);
@@ -607,61 +606,35 @@ void SkiaApp::TestGetImageData( SkCanvas *canvas)
 
 void SkiaApp::TestCreateRadialGradient( SkCanvas *canvas )
 {
-//	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
-//	PassRefPtr<CanvasGradient>grd = ctx->createRadialGradient( 175, 50, 5, 9, 60, 100);
-//	grd->addColorStop( 0, "red");
-//	grd->addColorStop( 0.6, "blue");
-//	grd->addColorStop( 0.2, "green");
-//	grd->addColorStop( 1, "white");
-//	RefPtr<CanvasStyle> style = CanvasStyle::createFromGradient( grd );
-//	ctx->setFillStyle( style );
-//	ctx->fillRect( 10 ,10, 150, 100 );
+
 }
 
 void SkiaApp::TestShadowOffset( SkCanvas *canvas )
 {
-//	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
-//	ctx->setShadowBlur( 50 );
-//	ctx->setShadowOffsetX( 50 );
-//	ctx->setShadowOffsetY( 50 );
-//	ctx->setShadowColor( "green");
-//	ctx->setFillColor( "blue");
-//	ctx->fillRect( 20, 20, 500, 800 );
+
 
 }
 
-void SkiaApp::TestCreatePattern( SkCanvas *canvas )
+void SkiaApp::TestDrawRect(SkCanvas *canvas)
 {
-//	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
-//	RefPtr<BitmapImage> img = BitmapImage::create();
-//	img->src( "/sdcard/test.png" );
-//	PassRefPtr<CanvasPattern> pattern = ctx->createPattern( img.get(), "repeat");
-//	ctx->rect( 0, 0, 480, 800);
-//	RefPtr<CanvasStyle> style = CanvasStyle::createFromPattern( pattern );
-//	ctx->setFillStyle( style );
-//	ctx->setShadowBlur( 10 );
-//	ctx->setShadowOffsetX( 20 );
-//	ctx->setShadowColor("#00ff00");
-//	ctx->fill();
-
+	SkPaint strokePaint;
+	strokePaint.setStyle(SkPaint::kStroke_Style);
+	strokePaint.setAntiAlias(true);
+	strokePaint.setStrokeWidth( 20);
+	strokePaint.setColor(0xff00ffff);
+	SkRect r = SkRect::MakeXYWH(800, 800, 100, 100);
+	canvas->drawRect(r, strokePaint );
+	return;
 }
 
 
 
 
 void SkiaApp::mainLoop(){
-//	canvas = createCanvas();
 	canvas->drawColor(0xffffffff);
-    DrawTest(canvas);
-//	TestArc( canvas );
-//	TestCreatePattern( canvas );
-//    TestShadowOffset(canvas);
-	SkPaint m_fillPaint;
-	m_fillPaint.setStyle(SkPaint::kFill_Style);
-	m_fillPaint.setAntiAlias(true);
-	m_fillPaint.setColor(0xff00ffff);
-	SkRect r = SkRect::MakeXYWH(10, 10, 100, 100);
-	canvas->drawRect(r, m_fillPaint );
+	TestDrawRect(canvas);
+//	canvas->drawCircle( 200, 200, 100, fillPaint);
+//    draw_checks(canvas, 640, 640);
 	fCurContext->flush();
 
 }
