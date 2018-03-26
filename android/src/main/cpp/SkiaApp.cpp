@@ -174,23 +174,23 @@ void SkiaApp::DrawTest(SkCanvas *canvas )
 		//LOGD("%s:",__func__);
 		//canvas->drawColor(0xff00ff00,SkXfermode::Mode::kColor_Mode);
 		SkPaint paint;
-		paint.setColor(0xffff0000);
+		paint.setColor(0xffff00ff);
 		paint.setStrokeWidth( 10 );
 		paint.setStyle( SkPaint::kStroke_Style );
-		//canvas->drawColor( 0xff00ffff);
-		//canvas->drawLine(0,0,100,100,paint);
-		//canvas->drawText("test", 4, 200, 100, paint );
-		//canvas->drawCircle( 200, 200, 100, paint);
-		SkPath path;
-		path.moveTo( 100, 100);
-		path.lineTo( 100, 200);
-		path.lineTo( 200, 200);
-		canvas->drawPath( path, paint );
-		SkRect r;
-		r.set( 0, 0, 200, 200);
-		r.offset(100, 100);
-		//canvas->drawRect( r, paint );
-		canvas->drawArc( r, 0, 90, true, paint );
+//		canvas->drawColor( 0xff00ffff);
+		canvas->drawLine(0,0,100,100,paint);
+//		canvas->drawText("test", 4, 200, 100, paint );
+		canvas->drawCircle( 200, 200, 100, paint);
+//		SkPath path;
+//		path.moveTo( 100, 100);
+//		path.lineTo( 100, 200);
+//		path.lineTo( 200, 200);
+//		canvas->drawPath( path, paint );
+//		SkRect r;
+//		r.set( 0, 0, 200, 200);
+//		r.offset(100, 100);
+//		//canvas->drawRect( r, paint );
+//		canvas->drawArc( r, 0, 90, true, paint );
 		//canvas->drawColor( 0xff00ffff);
 		//glClearColor( 1.0f, 0.0f, 0.0f, 1.0f );
 		//glClear( GL_COLOR_BUFFER_BIT );
@@ -627,12 +627,12 @@ void SkiaApp::TestCreateRadialGradient( SkCanvas *canvas )
 void SkiaApp::TestShadowOffset( SkCanvas *canvas )
 {
 	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
-	ctx->setShadowBlur( 10 );
-	ctx->setShadowOffsetX( 20 );
-	ctx->setShadowOffsetY( 20 );
+	ctx->setShadowBlur( 50 );
+	ctx->setShadowOffsetX( 50 );
+	ctx->setShadowOffsetY( 50 );
 	ctx->setShadowColor( "green");
 	ctx->setFillColor( "blue");
-	ctx->fillRect( 20, 20, 100, 80 );
+	ctx->fillRect( 20, 20, 500, 800 );
 
 }
 
@@ -652,13 +652,24 @@ void SkiaApp::TestCreatePattern( SkCanvas *canvas )
 
 }
 
+
+
+
 void SkiaApp::mainLoop(){
 //	canvas = createCanvas();
-	canvas->drawColor(0xffff00ff);
+	canvas->drawColor(0xffffffff);
+    DrawTest(canvas);
 //	TestArc( canvas );
 //	TestCreatePattern( canvas );
-    TestShadowOffset(canvas);
+//    TestShadowOffset(canvas);
+	SkPaint m_fillPaint;
+	m_fillPaint.setStyle(SkPaint::kFill_Style);
+	m_fillPaint.setAntiAlias(true);
+	m_fillPaint.setColor(0xff00ffff);
+	SkRect r = SkRect::MakeXYWH(10, 10, 100, 100);
+	canvas->drawRect(r, m_fillPaint );
 	fCurContext->flush();
+
 }
 
 } /* namespace egret */
