@@ -611,7 +611,29 @@ void SkiaApp::TestCreateRadialGradient( SkCanvas *canvas )
 
 void SkiaApp::TestShadowOffset( SkCanvas *canvas )
 {
+    canvas->drawColor(SK_ColorWHITE);
+    SkPaint paint;
+    paint.setStyle(SkPaint::kFill_Style);
+    paint.setAntiAlias(true);
+    paint.setStrokeWidth(4);
+    paint.setColor(0xffFE938C);
 
+    SkRect rect = SkRect::MakeXYWH(10, 10, 100, 160);
+    canvas->drawRect(rect, paint);
+
+    SkRRect oval;
+    oval.setOval(rect);
+    oval.offset(40, 80);
+    paint.setColor(0xffE6B89C);
+    canvas->drawRRect(oval, paint);
+
+    paint.setColor(0xff9CAFB7);
+    canvas->drawCircle(180, 50, 25, paint);
+
+    rect.offset(80, 50);
+    paint.setColor(0xff4281A4);
+    paint.setStyle(SkPaint::kStroke_Style);
+    canvas->drawRoundRect(rect, 10, 10, paint);
 
 }
 
@@ -632,7 +654,7 @@ void SkiaApp::TestDrawRect(SkCanvas *canvas)
 
 void SkiaApp::mainLoop(){
 	canvas->drawColor(0xffffffff);
-	TestDrawRect(canvas);
+    TestShadowOffset(canvas);
 //	canvas->drawCircle( 200, 200, 100, fillPaint);
 //    draw_checks(canvas, 640, 640);
 	fCurContext->flush();

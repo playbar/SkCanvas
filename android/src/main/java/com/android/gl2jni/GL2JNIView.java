@@ -339,7 +339,7 @@ class GL2JNIView extends GLSurfaceView
         		icou = 0;
         	}
         
-            //GL2JNILib.drawFrame();
+//            GL2JNILib.drawFrame();
         	JniShell.mainLoop();
         }
         int width,height;
@@ -349,7 +349,7 @@ class GL2JNIView extends GLSurfaceView
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-           //GL2JNILib.changed(width, height);
+//           GL2JNILib.changed(width, height);
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {

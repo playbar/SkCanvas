@@ -6,7 +6,6 @@
  */
 
 #include "JniShell.h"
-#include "com_android_gl2jni_JniShell.h"
 #include "SkiaApp.h"
 
 #ifdef __cplusplus
@@ -83,12 +82,5 @@ JNIEXPORT void JNICALL Java_com_android_gl2jni_JniShell_setFilesDir
 #endif
 
 
-JniShell::JniShell() {
-	// TODO Auto-generated constructor stub
 
-}
-
-JniShell::~JniShell() {
-	// TODO Auto-generated destructor stub
-}
 
