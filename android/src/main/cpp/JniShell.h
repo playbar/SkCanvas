@@ -8,7 +8,6 @@
 #ifndef JNISHELL_H_
 #define JNISHELL_H_
 
-namespace egret {
 
 class JniShell {
 public:
@@ -16,5 +15,4 @@ public:
 	virtual ~JniShell();
 };
 
-} /* namespace egret */
 #endif /* JNISHELL_H_ */

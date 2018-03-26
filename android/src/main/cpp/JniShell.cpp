@@ -8,7 +8,6 @@
 #include "JniShell.h"
 #include "com_android_gl2jni_JniShell.h"
 #include "SkiaApp.h"
-namespace egret {
 
 #ifdef __cplusplus
 extern "C" {
@@ -93,4 +92,3 @@ JniShell::~JniShell() {
 	// TODO Auto-generated destructor stub
 }
 
-} /* namespace egret */

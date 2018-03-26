@@ -11,8 +11,6 @@
 #include <string>
 
 
-namespace egret {
-
 class SkiaApp {
 protected:
 	static SkiaApp * _instance;
@@ -59,5 +57,4 @@ public:
 	bool createBitmap(const std::string &src);
 };
 
-} /* namespace egret */
 #endif /* SKIAAPP_H_ */

@@ -484,47 +484,6 @@ target_include_directories(skia PRIVATE
 
 #//////////////
 
-add_library(canvascontext2d STATIC
-                CanvasContext/utils/AffineTransform.cpp
-                CanvasContext/utils/TypeTraits.cpp
-                CanvasContext/utils/TransformationMatrix.cpp
-                CanvasContext/utils/SkiaUtils.cpp
-                CanvasContext/geometry/FloatPoint.cpp
-                CanvasContext/geometry/FloatPoint3D.cpp
-                CanvasContext/geometry/FloatQuad.cpp
-                CanvasContext/geometry/FloatRect.cpp
-                CanvasContext/geometry/FloatSize.cpp
-                CanvasContext/geometry/IntRect.cpp
-                CanvasContext/geometry/LayoutRect.cpp
-                CanvasContext/geometry/RoundedRect.cpp
-                CanvasContext/Canvas2D/BitmapImage.cpp
-                CanvasContext/Canvas2D/CanvasContext2D.cpp
-                CanvasContext/Canvas2D/CanvasGradient.cpp
-                CanvasContext/Canvas2D/CanvasPattern.cpp
-                CanvasContext/Canvas2D/CanvasStyle.cpp
-                CanvasContext/Canvas2D/Color.cpp
-                CanvasContext/Canvas2D/ColorData.cpp
-                CanvasContext/Canvas2D/CSSParserMode.cpp
-                CanvasContext/Canvas2D/CSSValueKeywords.cpp
-                CanvasContext/Canvas2D/FontDescription.cpp
-                CanvasContext/Canvas2D/DrawLooperBuilder.cpp
-                CanvasContext/Canvas2D/Gradient.cpp
-                CanvasContext/Canvas2D/GraphicsTypes.cpp
-                CanvasContext/Canvas2D/ImageData.cpp
-                CanvasContext/Canvas2D/Pattern.cpp
-              )
-
-target_include_directories(canvascontext2d PRIVATE
-                    CanvasContext/Canvas2D
-                    CanvasContext/geometry
-                    CanvasContext/utils
-                    skia/include/utils
-                    skia/include/core
-                    skia/include/config
-                    skia/include/effects
-                    skia/include/gpu
-                    thirdparty/v8
-                 )
 
 #////////////////////
 add_library(freetype STATIC
@@ -666,7 +625,6 @@ target_include_directories(zlib PRIVATE
                 android/src/main/cpp/GlesUtil.cpp
                 android/src/main/cpp/SkiaApp.cpp
                 android/src/main/cpp/JniShell.cpp
-                android/src/main/cpp/EGTLog.cpp
                 android/src/main/cpp/StdC.cpp
                 skia/third_party/externals/zlib/adler32.c
                 skia/third_party/externals/zlib/compress.c
@@ -724,7 +682,6 @@ target_link_libraries(runtimecanvas
                     GLESv2
                     android
                     zlib
-                    canvascontext2d
                     skia
                     freetype
                     png

@@ -11,7 +11,6 @@
 #include <GLES2/gl2.h>
 #include "SkRefCnt.h"
 #include "SkGpuDevice.h"
-#include "EGTLog.h"
 #include "SkStream.h"
 #include "SkImageDecoder.h"
 #include "SkBitmap.h"
@@ -22,22 +21,17 @@
 #include "SkBlurMask.h"
 #include "SkTypeface.h"
 
-#include "CanvasContext2D.h"
-#include "PassOwnPtr.h"
-#include "SkiaUtils.h"
-#include "CanvasGradient.h"
 #include "SkForceLinking.h"
-#include "BitmapImage.h"
-#include "CanvasPattern.h"
+#include "mylog.h"
 
 #include <string>
 #define LOG_TAG "SkiaApp"
 
-namespace egret {
 
 #define IMG_NAME "egret_icon.png"
 
 SkiaApp * SkiaApp::_instance = NULL;
+
 std::string SkiaApp::filesDir;
 SkiaApp::SkiaApp():
 		fCurContext(NULL),
@@ -525,39 +519,39 @@ void SkiaApp::TestCopyBitmap( SkCanvas *canvas )
 
 void SkiaApp::TestFill( SkCanvas *canvas)
 {
-	PassOwnPtr<CanvasContext2D>ctx = CanvasContext2D::create( canvas );
-	ctx->rect( 5, 5, 50, 50 );
-	ctx->setFillColor( "blue");
-	ctx->fill();
+//	PassOwnPtr<CanvasContext2D>ctx = CanvasContext2D::create( canvas );
+//	ctx->rect( 5, 5, 50, 50 );
+//	ctx->setFillColor( "blue");
+//	ctx->fill();
 }
 
 void SkiaApp::TestAddColorStop( SkCanvas *canvas )
 {
-	PassOwnPtr<CanvasContext2D>ctx = CanvasContext2D::create( canvas );
-	PassRefPtr<CanvasGradient> grd = ctx->createLinearGradient( 0, 0, 170, 0 );
-	grd->addColorStop( 0, "black");
-	grd->addColorStop( 0.3, "magenta");
-	grd->addColorStop( 0.5, "blue");
-	grd->addColorStop( 0.6, "green");
-	grd->addColorStop( 0.8, "yellow");
-	grd->addColorStop( 1, "red");
-	RefPtr< CanvasStyle> style = CanvasStyle::createFromGradient( grd );
-	ctx->setFillStyle( style );
-	ctx->fillRect( 10, 10, 150, 100 );
+//	PassOwnPtr<CanvasContext2D>ctx = CanvasContext2D::create( canvas );
+//	PassRefPtr<CanvasGradient> grd = ctx->createLinearGradient( 0, 0, 170, 0 );
+//	grd->addColorStop( 0, "black");
+//	grd->addColorStop( 0.3, "magenta");
+//	grd->addColorStop( 0.5, "blue");
+//	grd->addColorStop( 0.6, "green");
+//	grd->addColorStop( 0.8, "yellow");
+//	grd->addColorStop( 1, "red");
+//	RefPtr< CanvasStyle> style = CanvasStyle::createFromGradient( grd );
+//	ctx->setFillStyle( style );
+//	ctx->fillRect( 10, 10, 150, 100 );
 	return;
 }
 
 void SkiaApp::TestArcTo( SkCanvas *canvas )
 {
-	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
-	ctx->beginPath();
-	ctx->setStrokeColor( "green");
-	ctx->setLineWidth( 8 );
-	ctx->moveTo( 20, 20 );
-	ctx->lineTo( 100, 20 );
-	ctx->arcTo( 150, 20, 150, 70, 50 );
-	ctx->lineTo( 150, 120 );
-	ctx->stroke();
+//	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
+//	ctx->beginPath();
+//	ctx->setStrokeColor( "green");
+//	ctx->setLineWidth( 8 );
+//	ctx->moveTo( 20, 20 );
+//	ctx->lineTo( 100, 20 );
+//	ctx->arcTo( 150, 20, 150, 70, 50 );
+//	ctx->lineTo( 150, 120 );
+//	ctx->stroke();
 }
 
 void SkiaApp::TestText( SkCanvas *canvas )
@@ -613,42 +607,42 @@ void SkiaApp::TestGetImageData( SkCanvas *canvas)
 
 void SkiaApp::TestCreateRadialGradient( SkCanvas *canvas )
 {
-	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
-	PassRefPtr<CanvasGradient>grd = ctx->createRadialGradient( 175, 50, 5, 9, 60, 100);
-	grd->addColorStop( 0, "red");
-	grd->addColorStop( 0.6, "blue");
-	grd->addColorStop( 0.2, "green");
-	grd->addColorStop( 1, "white");
-	RefPtr<CanvasStyle> style = CanvasStyle::createFromGradient( grd );
-	ctx->setFillStyle( style );
-	ctx->fillRect( 10 ,10, 150, 100 );
+//	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
+//	PassRefPtr<CanvasGradient>grd = ctx->createRadialGradient( 175, 50, 5, 9, 60, 100);
+//	grd->addColorStop( 0, "red");
+//	grd->addColorStop( 0.6, "blue");
+//	grd->addColorStop( 0.2, "green");
+//	grd->addColorStop( 1, "white");
+//	RefPtr<CanvasStyle> style = CanvasStyle::createFromGradient( grd );
+//	ctx->setFillStyle( style );
+//	ctx->fillRect( 10 ,10, 150, 100 );
 }
 
 void SkiaApp::TestShadowOffset( SkCanvas *canvas )
 {
-	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
-	ctx->setShadowBlur( 50 );
-	ctx->setShadowOffsetX( 50 );
-	ctx->setShadowOffsetY( 50 );
-	ctx->setShadowColor( "green");
-	ctx->setFillColor( "blue");
-	ctx->fillRect( 20, 20, 500, 800 );
+//	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
+//	ctx->setShadowBlur( 50 );
+//	ctx->setShadowOffsetX( 50 );
+//	ctx->setShadowOffsetY( 50 );
+//	ctx->setShadowColor( "green");
+//	ctx->setFillColor( "blue");
+//	ctx->fillRect( 20, 20, 500, 800 );
 
 }
 
 void SkiaApp::TestCreatePattern( SkCanvas *canvas )
 {
-	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
-	RefPtr<BitmapImage> img = BitmapImage::create();
-	img->src( "/sdcard/test.png" );
-	PassRefPtr<CanvasPattern> pattern = ctx->createPattern( img.get(), "repeat");
-	ctx->rect( 0, 0, 480, 800);
-	RefPtr<CanvasStyle> style = CanvasStyle::createFromPattern( pattern );
-	ctx->setFillStyle( style );
-	ctx->setShadowBlur( 10 );
-	ctx->setShadowOffsetX( 20 );
-	ctx->setShadowColor("#00ff00");
-	ctx->fill();
+//	PassOwnPtr<CanvasContext2D> ctx = CanvasContext2D::create( canvas );
+//	RefPtr<BitmapImage> img = BitmapImage::create();
+//	img->src( "/sdcard/test.png" );
+//	PassRefPtr<CanvasPattern> pattern = ctx->createPattern( img.get(), "repeat");
+//	ctx->rect( 0, 0, 480, 800);
+//	RefPtr<CanvasStyle> style = CanvasStyle::createFromPattern( pattern );
+//	ctx->setFillStyle( style );
+//	ctx->setShadowBlur( 10 );
+//	ctx->setShadowOffsetX( 20 );
+//	ctx->setShadowColor("#00ff00");
+//	ctx->fill();
 
 }
 
@@ -672,4 +666,3 @@ void SkiaApp::mainLoop(){
 
 }
 
-} /* namespace egret */

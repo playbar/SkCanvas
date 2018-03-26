@@ -1,6 +1,5 @@
 
 #include "StdC.h"
-#include "EGTLog.h"
 
 #include <time.h>
 
