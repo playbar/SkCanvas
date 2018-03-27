@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2008 The Android Open Source Project
  *
@@ -7,8 +6,10 @@
  */
 
 
-#include "SkPoint.h"
+#include "SkMathPriv.h"
+#include "SkPointPriv.h"
 
+#if 0
 void SkIPoint::rotateCW(SkIPoint* dst) const {
     SkASSERT(dst);
 
@@ -26,53 +27,13 @@ void SkIPoint::rotateCCW(SkIPoint* dst) const {
     dst->fX = fY;
     dst->fY = -tmp;
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void SkPoint::setIRectFan(int l, int t, int r, int b, size_t stride) {
-    SkASSERT(stride >= sizeof(SkPoint));
-
-    ((SkPoint*)((intptr_t)this + 0 * stride))->set(SkIntToScalar(l),
-                                                   SkIntToScalar(t));
-    ((SkPoint*)((intptr_t)this + 1 * stride))->set(SkIntToScalar(l),
-                                                   SkIntToScalar(b));
-    ((SkPoint*)((intptr_t)this + 2 * stride))->set(SkIntToScalar(r),
-                                                   SkIntToScalar(b));
-    ((SkPoint*)((intptr_t)this + 3 * stride))->set(SkIntToScalar(r),
-                                                   SkIntToScalar(t));
-}
-
-void SkPoint::setRectFan(SkScalar l, SkScalar t, SkScalar r, SkScalar b,
-                         size_t stride) {
-    SkASSERT(stride >= sizeof(SkPoint));
-
-    ((SkPoint*)((intptr_t)this + 0 * stride))->set(l, t);
-    ((SkPoint*)((intptr_t)this + 1 * stride))->set(l, b);
-    ((SkPoint*)((intptr_t)this + 2 * stride))->set(r, b);
-    ((SkPoint*)((intptr_t)this + 3 * stride))->set(r, t);
-}
-
-void SkPoint::rotateCW(SkPoint* dst) const {
-    SkASSERT(dst);
-
-    // use a tmp in case this == dst
-    SkScalar tmp = fX;
-    dst->fX = -fY;
-    dst->fY = tmp;
-}
-
-void SkPoint::rotateCCW(SkPoint* dst) const {
-    SkASSERT(dst);
-
-    // use a tmp in case this == dst
-    SkScalar tmp = fX;
-    dst->fX = fY;
-    dst->fY = -tmp;
-}
-
 void SkPoint::scale(SkScalar scale, SkPoint* dst) const {
     SkASSERT(dst);
-    dst->set(SkScalarMul(fX, scale), SkScalarMul(fY, scale));
+    dst->set(fX * scale, fY * scale);
 }
 
 bool SkPoint::normalize() {
@@ -98,8 +59,8 @@ static inline float getLengthSquared(float dx, float dy) {
 // This logic is encapsulated in a helper method to make it explicit that we
 // always perform this check in the same manner, to avoid inconsistencies
 // (see http://code.google.com/p/skia/issues/detail?id=560 ).
-static inline bool isLengthNearlyZero(float dx, float dy,
-                                      float *lengthSquared) {
+static inline bool is_length_nearly_zero(float dx, float dy,
+                                         float *lengthSquared) {
     *lengthSquared = getLengthSquared(dx, dy);
     return *lengthSquared <= (SK_ScalarNearlyZero * SK_ScalarNearlyZero);
 }
@@ -108,7 +69,8 @@ SkScalar SkPoint::Normalize(SkPoint* pt) {
     float x = pt->fX;
     float y = pt->fY;
     float mag2;
-    if (isLengthNearlyZero(x, y, &mag2)) {
+    if (is_length_nearly_zero(x, y, &mag2)) {
+        pt->set(0, 0);
         return 0;
     }
 
@@ -141,7 +103,7 @@ SkScalar SkPoint::Length(SkScalar dx, SkScalar dy) {
     } else {
         double xx = dx;
         double yy = dy;
-        return (float)sqrt(xx * xx + yy * yy);
+        return sk_double_to_float(sqrt(xx * xx + yy * yy));
     }
 }
 
@@ -155,7 +117,8 @@ SkScalar SkPoint::Length(SkScalar dx, SkScalar dy) {
  */
 bool SkPoint::setLength(float x, float y, float length) {
     float mag2;
-    if (isLengthNearlyZero(x, y, &mag2)) {
+    if (is_length_nearly_zero(x, y, &mag2)) {
+        this->set(0, 0);
         return false;
     }
 
@@ -168,20 +131,27 @@ bool SkPoint::setLength(float x, float y, float length) {
         // divide by inf. and return (0,0) vector.
         double xx = x;
         double yy = y;
+    #ifdef SK_CPU_FLUSH_TO_ZERO
+        // The iOS ARM processor discards small denormalized numbers to go faster.
+        // Casting this to a float would cause the scale to go to zero. Keeping it
+        // as a double for the multiply keeps the scale non-zero.
+        double dscale = length / sqrt(xx * xx + yy * yy);
+        fX = x * dscale;
+        fY = y * dscale;
+        return true;
+    #else
         scale = (float)(length / sqrt(xx * xx + yy * yy));
+    #endif
     }
     fX = x * scale;
     fY = y * scale;
     return true;
 }
 
-bool SkPoint::setLengthFast(float length) {
-    return this->setLengthFast(fX, fY, length);
-}
-
-bool SkPoint::setLengthFast(float x, float y, float length) {
+bool SkPointPriv::SetLengthFast(SkPoint* pt, float length) {
     float mag2;
-    if (isLengthNearlyZero(x, y, &mag2)) {
+    if (is_length_nearly_zero(pt->fX, pt->fY, &mag2)) {
+        pt->set(0, 0);
         return false;
     }
 
@@ -192,38 +162,40 @@ bool SkPoint::setLengthFast(float x, float y, float length) {
         // our mag2 step overflowed to infinity, so use doubles instead.
         // much slower, but needed when x or y are very large, other wise we
         // divide by inf. and return (0,0) vector.
-        double xx = x;
-        double yy = y;
+        double xx = pt->fX;
+        double yy = pt->fY;
         scale = (float)(length / sqrt(xx * xx + yy * yy));
     }
-    fX = x * scale;
-    fY = y * scale;
+    pt->fX *= scale;
+    pt->fY *= scale;
     return true;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 
-SkScalar SkPoint::distanceToLineBetweenSqd(const SkPoint& a,
+SkScalar SkPointPriv::DistanceToLineBetweenSqd(const SkPoint& pt, const SkPoint& a,
                                            const SkPoint& b,
-                                           Side* side) const {
+                                           Side* side) {
 
     SkVector u = b - a;
-    SkVector v = *this - a;
+    SkVector v = pt - a;
 
-    SkScalar uLengthSqd = u.lengthSqd();
+    SkScalar uLengthSqd = LengthSqd(u);
     SkScalar det = u.cross(v);
-    if (NULL != side) {
-        SkASSERT(-1 == SkPoint::kLeft_Side &&
-                  0 == SkPoint::kOn_Side &&
+    if (side) {
+        SkASSERT(-1 == kLeft_Side &&
+                  0 == kOn_Side &&
                   1 == kRight_Side);
         *side = (Side) SkScalarSignAsInt(det);
     }
-    return SkScalarMulDiv(det, det, uLengthSqd);
+    SkScalar temp = det / uLengthSqd;
+    temp *= det;
+    return temp;
 }
 
-SkScalar SkPoint::distanceToLineSegmentBetweenSqd(const SkPoint& a,
-                                                  const SkPoint& b) const {
+SkScalar SkPointPriv::DistanceToLineSegmentBetweenSqd(const SkPoint& pt, const SkPoint& a,
+                                                  const SkPoint& b) {
     // See comments to distanceToLineBetweenSqd. If the projection of c onto
     // u is between a and b then this returns the same result as that
     // function. Otherwise, it returns the distance to the closer of a and
@@ -241,17 +213,19 @@ SkScalar SkPoint::distanceToLineSegmentBetweenSqd(const SkPoint& a,
     // avoid a sqrt to compute |u|.
 
     SkVector u = b - a;
-    SkVector v = *this - a;
+    SkVector v = pt - a;
 
-    SkScalar uLengthSqd = u.lengthSqd();
+    SkScalar uLengthSqd = LengthSqd(u);
     SkScalar uDotV = SkPoint::DotProduct(u, v);
 
     if (uDotV <= 0) {
-        return v.lengthSqd();
+        return LengthSqd(v);
     } else if (uDotV > uLengthSqd) {
-        return b.distanceToSqd(*this);
+        return DistanceToSqd(b, pt);
     } else {
         SkScalar det = u.cross(v);
-        return SkScalarMulDiv(det, det, uLengthSqd);
+        SkScalar temp = det / uLengthSqd;
+        temp *= det;
+        return temp;
     }
 }

@@ -1,5 +1,17 @@
 # Pass this file to Valgrind with "--suppressions=tools/valgrind.supp"
 
+# Intentional thread / memory leak in DM and nanbench.
+{
+   nanobench_and_dm_keepalive_thread_leak
+   Memcheck:Leak
+   match-leak-kinds: possible,definite
+   ...
+   fun:start_keepalive
+   ...
+   fun:main
+   ...
+}
+
 # Third party lib, driver issues.
 {
     ati_driver_bug_1
@@ -67,12 +79,13 @@
     Memcheck:Param
     write(buf)
     ...
-    obj:/usr/lib/libnvidia-glcore.so*
+    obj:*/libnvidia-glcore.so*
 }
 {
     nv_driver_bug_2
     Memcheck:Cond
-    obj:/usr/lib/libnvidia-glcore.so*
+    ...
+    obj:*/libnvidia-glcore.so*
 }
 {
     nv_driver_bug_3
@@ -81,28 +94,65 @@
     obj:/usr/lib*/libGL.so*
 }
 {
+   nv_driver_bug_4
+   Memcheck:Param
+   sendmsg(msg.msg_iov[0])
+   fun:sendmsg
+   obj:*/libGLX_nvidia.so*
+}
+{
+    #Fixed by FontConfig 2.9.0
+    #http://cgit.freedesktop.org/fontconfig/commit/?id=1c475d5c8cb265ac939d6b9e097666e300162511
     font_config_bug_1
     Memcheck:Addr4
     fun:FcConfigFileExists
 }
 {
+    #https://bugs.freedesktop.org/show_bug.cgi?id=8215
+    #https://bugs.freedesktop.org/show_bug.cgi?id=8428
+    #FcPattern uses 'intptr_t elts_offset' instead of 'FcPatternEltPtr elts',
+    #which confuses valgrind.
     font_config_bug_2
     Memcheck:Leak
-    fun:malloc
-    fun:FcFontSetCreate
+    fun:*alloc
+    ...
+    fun:Fc*Add*
 }
 {
+    #Same root cause as font_config_bug_2.
+    #The 'leak' here is a copy of rule values, as opposed to new values.
     font_config_bug_3
     Memcheck:Leak
-    fun:realloc
-    fun:FcFontSetAdd
+    fun:*alloc
+    ...
+    fun:FcConfigValues
+    fun:FcConfigSubstituteWithPat
+    fun:FcFontRenderPrepare
 }
 {
+    #Same root cause as font_config_bug_2.
+    #The 'leak' is copies of font or pattern values into returned pattern values.
     font_config_bug_4
     Memcheck:Leak
-    fun:malloc
-    fun:FcPatternObjectInsertElt
-    fun:FcPatternObjectAddWithBinding
+    fun:*alloc
+    ...
+    fun:FcValue*
+    fun:FcFontRenderPrepare
+}
+{
+   font_config_bug_5
+   Memcheck:Leak
+   fun:malloc
+   obj:*/libfontconfig.so.1.8.0
+   fun:FcConfigSubstituteWithPat
+}
+{
+   font_config_bug_6
+   Memcheck:Leak
+   fun:*alloc
+   ...
+   obj:*/libfontconfig.so.1.8.0
+   fun:FcFont*
 }
 {
     zlib_bug_1
@@ -111,6 +161,14 @@
     fun:inflateInit2_
     fun:png_create_read_struct_2
     fun:png_create_read_struct
+}
+{
+    zlib_bug_2
+    Memcheck:Cond
+    fun:inflateReset2
+    fun:inflateInit2_
+    fun:_ZN12_GLOBAL__N_17doFlateEbP8SkStreamP9SkWStream
+    fun:_ZN7SkFlate7InflateEP8SkStreamP9SkWStream
 }
 
 # Why is it OK to suppress this?
@@ -199,4 +257,22 @@
     gpu_issue_15
     Memcheck:Addr2
     fun:_ZN22GrAAConvexPathRenderer10onDrawPathERK6SkPathRK11SkStrokeRecP12GrDrawTargetb
+}
+{
+    libjpeg_turbo_bug4550_1
+    Memcheck:Cond
+    fun:_Z26S32A_Opaque_BlitRow32_SSE4PjPKjij
+    fun:_ZN14Sprite_D32_S328blitRectEiiii
+}
+{
+    libjpeg_turbo_bug4550_2
+    Memcheck:Cond
+    fun:_ZL15S32A_D565_BlendPtPKjijii
+    fun:_ZN26Sprite_D16_S32_BlitRowProc8blitRectEiiii
+}
+{
+    libjpeg_turbo_bug4550_3
+    Memcheck:Cond
+    fun:_ZN12_GLOBAL__N_120ConvolveHorizontallyILb0EEEvPKhRK21SkConvolutionFilter1DPh
+    fun:_Z14BGRAConvolve2DPKhibRK21SkConvolutionFilter1DS3_iPhRK18SkConvolutionProcsb
 }

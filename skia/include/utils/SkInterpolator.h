@@ -12,7 +12,7 @@
 
 #include "SkScalar.h"
 
-class SkInterpolatorBase : SkNoncopyable {
+class SK_API SkInterpolatorBase : SkNoncopyable {
 public:
     enum Result {
         kNormal_Result,
@@ -59,7 +59,7 @@ public:
         fFlags = SkToU8((fFlags & ~kReset) | (int)reset);
     }
 
-    Result  timeToT(SkMSec time, SkScalar* T, int* index, SkBool* exact) const;
+    Result  timeToT(SkMSec time, SkScalar* T, int* index, bool* exact) const;
 
 protected:
     enum Flags {
@@ -67,8 +67,8 @@ protected:
         kReset = 2,
         kHasBlend = 4
     };
-    static SkScalar ComputeRelativeT(SkMSec time, SkMSec prevTime,
-                             SkMSec nextTime, const SkScalar blend[4] = NULL);
+    static SkScalar ComputeRelativeT(SkMSec time, SkMSec prevTime, SkMSec nextTime,
+                                     const SkScalar blend[4] = nullptr);
     int16_t fFrameCount;
     uint8_t fElemCount;
     uint8_t fFlags;
@@ -84,7 +84,7 @@ protected:
 #endif
 };
 
-class SkInterpolator : public SkInterpolatorBase {
+class SK_API SkInterpolator : public SkInterpolatorBase {
 public:
     SkInterpolator();
     SkInterpolator(int elemCount, int frameCount);
@@ -102,7 +102,7 @@ public:
                         1 is a linear blend (default)
     */
     bool setKeyFrame(int index, SkMSec time, const SkScalar values[],
-                     const SkScalar blend[4] = NULL);
+                     const SkScalar blend[4] = nullptr);
 
     /** Return the computed values given the specified time. Return whether
         those values are the result of pinning to either the first
@@ -111,9 +111,8 @@ public:
         @param time The time to sample (in milliseconds)
         @param (may be null) where to write the computed values.
     */
-    Result timeToValues(SkMSec time, SkScalar values[] = NULL) const;
+    Result timeToValues(SkMSec time, SkScalar values[] = nullptr) const;
 
-    SkDEBUGCODE(static void UnitTest();)
 private:
     SkScalar* fValues;  // pointer into fStorage
 #ifdef SK_DEBUG
@@ -122,8 +121,15 @@ private:
     typedef SkInterpolatorBase INHERITED;
 };
 
-/** Given all the parameters are [0...1], apply the cubic specified by (0,0)
-    (bx,by) (cx,cy) (1,1) to value, returning the answer, also [0...1].
+/** Interpolate a cubic curve, typically to provide an ease-in ease-out transition.
+    All the parameters are in the range of [0...1].
+    The input value is treated as the x-coordinate of the cubic.
+    The output value is the y-coordinate on the cubic at the x-coordinate.
+
+    @param value        The x-coordinate pinned between [0..1].
+    @param bx,by,cx,cy  The cubic control points where the cubic is specified
+                        as (0,0) (bx,by) (cx,cy) (1,1)
+    @return             the corresponding y-coordinate value, from [0..1].
 */
 SkScalar SkUnitCubicInterp(SkScalar value, SkScalar bx, SkScalar by,
                            SkScalar cx, SkScalar cy);

@@ -12,108 +12,8 @@
 
 #include <stdio.h>
 
-#if GR_GL_PER_GL_FUNC_CALLBACK
-namespace {
-void GrGLDefaultInterfaceCallback(const GrGLInterface*) {}
-}
-#endif
-
-const GrGLInterface* GrGLInterfaceAddTestDebugMarker(const GrGLInterface* interface,
-                                                     GrGLInsertEventMarkerProc insertEventMarkerFn,
-                                                     GrGLPushGroupMarkerProc pushGroupMarkerFn,
-                                                     GrGLPopGroupMarkerProc popGroupMarkerFn) {
-    GrGLInterface* newInterface = GrGLInterface::NewClone(interface);
-
-    if (!newInterface->fExtensions.has("GL_EXT_debug_marker")) {
-        newInterface->fExtensions.add("GL_EXT_debug_marker");
-    }
-
-    newInterface->fFunctions.fInsertEventMarker = insertEventMarkerFn;
-    newInterface->fFunctions.fPushGroupMarker = pushGroupMarkerFn;
-    newInterface->fFunctions.fPopGroupMarker = popGroupMarkerFn;
-
-    return newInterface;
-}
-
-const GrGLInterface* GrGLInterfaceRemoveNVPR(const GrGLInterface* interface) {
-    GrGLInterface* newInterface = GrGLInterface::NewClone(interface);
-
-    newInterface->fExtensions.remove("GL_NV_path_rendering");
-
-    newInterface->fFunctions.fPathCommands = NULL;
-    newInterface->fFunctions.fPathCoords = NULL;
-    newInterface->fFunctions.fPathSubCommands = NULL;
-    newInterface->fFunctions.fPathSubCoords = NULL;
-    newInterface->fFunctions.fPathString = NULL;
-    newInterface->fFunctions.fPathGlyphs = NULL;
-    newInterface->fFunctions.fPathGlyphRange = NULL;
-    newInterface->fFunctions.fWeightPaths = NULL;
-    newInterface->fFunctions.fCopyPath = NULL;
-    newInterface->fFunctions.fInterpolatePaths = NULL;
-    newInterface->fFunctions.fTransformPath = NULL;
-    newInterface->fFunctions.fPathParameteriv = NULL;
-    newInterface->fFunctions.fPathParameteri = NULL;
-    newInterface->fFunctions.fPathParameterfv = NULL;
-    newInterface->fFunctions.fPathParameterf = NULL;
-    newInterface->fFunctions.fPathDashArray = NULL;
-    newInterface->fFunctions.fGenPaths = NULL;
-    newInterface->fFunctions.fDeletePaths = NULL;
-    newInterface->fFunctions.fIsPath = NULL;
-    newInterface->fFunctions.fPathStencilFunc = NULL;
-    newInterface->fFunctions.fPathStencilDepthOffset = NULL;
-    newInterface->fFunctions.fStencilFillPath = NULL;
-    newInterface->fFunctions.fStencilStrokePath = NULL;
-    newInterface->fFunctions.fStencilFillPathInstanced = NULL;
-    newInterface->fFunctions.fStencilStrokePathInstanced = NULL;
-    newInterface->fFunctions.fPathCoverDepthFunc = NULL;
-    newInterface->fFunctions.fPathColorGen = NULL;
-    newInterface->fFunctions.fPathTexGen = NULL;
-    newInterface->fFunctions.fPathFogGen = NULL;
-    newInterface->fFunctions.fCoverFillPath = NULL;
-    newInterface->fFunctions.fCoverStrokePath = NULL;
-    newInterface->fFunctions.fCoverFillPathInstanced = NULL;
-    newInterface->fFunctions.fCoverStrokePathInstanced = NULL;
-    newInterface->fFunctions.fGetPathParameteriv = NULL;
-    newInterface->fFunctions.fGetPathParameterfv = NULL;
-    newInterface->fFunctions.fGetPathCommands = NULL;
-    newInterface->fFunctions.fGetPathCoords = NULL;
-    newInterface->fFunctions.fGetPathDashArray = NULL;
-    newInterface->fFunctions.fGetPathMetrics = NULL;
-    newInterface->fFunctions.fGetPathMetricRange = NULL;
-    newInterface->fFunctions.fGetPathSpacing = NULL;
-    newInterface->fFunctions.fGetPathColorGeniv = NULL;
-    newInterface->fFunctions.fGetPathColorGenfv = NULL;
-    newInterface->fFunctions.fGetPathTexGeniv = NULL;
-    newInterface->fFunctions.fGetPathTexGenfv = NULL;
-    newInterface->fFunctions.fIsPointInFillPath = NULL;
-    newInterface->fFunctions.fIsPointInStrokePath = NULL;
-    newInterface->fFunctions.fGetPathLength = NULL;
-    newInterface->fFunctions.fPointAlongPath = NULL;
-
-    return newInterface;
-}
-
 GrGLInterface::GrGLInterface() {
     fStandard = kNone_GrGLStandard;
-
-#if GR_GL_PER_GL_FUNC_CALLBACK
-    fCallback = GrGLDefaultInterfaceCallback;
-    fCallbackData = 0;
-#endif
-}
-
-GrGLInterface* GrGLInterface::NewClone(const GrGLInterface* interface) {
-    SkASSERT(NULL != interface);
-
-    GrGLInterface* clone = SkNEW(GrGLInterface);
-    clone->fStandard = interface->fStandard;
-    clone->fExtensions = interface->fExtensions;
-    clone->fFunctions = interface->fFunctions;
-#if GR_GL_PER_GL_FUNC_CALLBACK
-    clone->fCallback = interface->fCallback;
-    clone->fCallbackData = interface->fCallbackData;
-#endif
-    return clone;
 }
 
 #ifdef SK_DEBUG
@@ -123,12 +23,11 @@ GrGLInterface* GrGLInterface::NewClone(const GrGLInterface* interface) {
 #endif
 
 #define RETURN_FALSE_INTERFACE                                                                   \
-    if (kIsDebug) { SkDebugf("%s:%d GrGLInterface::validate() failed.\n", __FILENAME__, __LINE__); } \
+    if (kIsDebug) { SkDebugf("%s:%d GrGLInterface::validate() failed.\n", __FILE__, __LINE__); } \
     return false;
 
 bool GrGLInterface::validate() const {
 
-	//return true;
     if (kNone_GrGLStandard == fStandard) {
         RETURN_FALSE_INTERFACE
     }
@@ -138,103 +37,112 @@ bool GrGLInterface::validate() const {
     }
 
     // functions that are always required
-    if (NULL == fFunctions.fActiveTexture ||
-        NULL == fFunctions.fAttachShader ||
-        NULL == fFunctions.fBindAttribLocation ||
-        NULL == fFunctions.fBindBuffer ||
-        NULL == fFunctions.fBindTexture ||
-        NULL == fFunctions.fBlendFunc ||
-        NULL == fFunctions.fBlendColor ||      // -> GL >= 1.4, ES >= 2.0 or extension
-        NULL == fFunctions.fBufferData ||
-        NULL == fFunctions.fBufferSubData ||
-        NULL == fFunctions.fClear ||
-        NULL == fFunctions.fClearColor ||
-        NULL == fFunctions.fClearStencil ||
-        NULL == fFunctions.fColorMask ||
-        NULL == fFunctions.fCompileShader ||
-        NULL == fFunctions.fCopyTexSubImage2D ||
-        NULL == fFunctions.fCreateProgram ||
-        NULL == fFunctions.fCreateShader ||
-        NULL == fFunctions.fCullFace ||
-        NULL == fFunctions.fDeleteBuffers ||
-        NULL == fFunctions.fDeleteProgram ||
-        NULL == fFunctions.fDeleteShader ||
-        NULL == fFunctions.fDeleteTextures ||
-        NULL == fFunctions.fDepthMask ||
-        NULL == fFunctions.fDisable ||
-        NULL == fFunctions.fDisableVertexAttribArray ||
-        NULL == fFunctions.fDrawArrays ||
-        NULL == fFunctions.fDrawElements ||
-        NULL == fFunctions.fEnable ||
-        NULL == fFunctions.fEnableVertexAttribArray ||
-        NULL == fFunctions.fFrontFace ||
-        NULL == fFunctions.fGenBuffers ||
-        NULL == fFunctions.fGenTextures ||
-        NULL == fFunctions.fGetBufferParameteriv ||
-        NULL == fFunctions.fGenerateMipmap ||
-        NULL == fFunctions.fGetError ||
-        NULL == fFunctions.fGetIntegerv ||
-        NULL == fFunctions.fGetProgramInfoLog ||
-        NULL == fFunctions.fGetProgramiv ||
-        NULL == fFunctions.fGetShaderInfoLog ||
-        NULL == fFunctions.fGetShaderiv ||
-        NULL == fFunctions.fGetString ||
-        NULL == fFunctions.fGetUniformLocation ||
-        NULL == fFunctions.fLinkProgram ||
-        NULL == fFunctions.fLineWidth ||
-        NULL == fFunctions.fPixelStorei ||
-        NULL == fFunctions.fReadPixels ||
-        NULL == fFunctions.fScissor ||
-        NULL == fFunctions.fShaderSource ||
-        NULL == fFunctions.fStencilFunc ||
-        NULL == fFunctions.fStencilMask ||
-        NULL == fFunctions.fStencilOp ||
-        NULL == fFunctions.fTexImage2D ||
-        NULL == fFunctions.fTexParameteri ||
-        NULL == fFunctions.fTexParameteriv ||
-        NULL == fFunctions.fTexSubImage2D ||
-        NULL == fFunctions.fUniform1f ||
-        NULL == fFunctions.fUniform1i ||
-        NULL == fFunctions.fUniform1fv ||
-        NULL == fFunctions.fUniform1iv ||
-        NULL == fFunctions.fUniform2f ||
-        NULL == fFunctions.fUniform2i ||
-        NULL == fFunctions.fUniform2fv ||
-        NULL == fFunctions.fUniform2iv ||
-        NULL == fFunctions.fUniform3f ||
-        NULL == fFunctions.fUniform3i ||
-        NULL == fFunctions.fUniform3fv ||
-        NULL == fFunctions.fUniform3iv ||
-        NULL == fFunctions.fUniform4f ||
-        NULL == fFunctions.fUniform4i ||
-        NULL == fFunctions.fUniform4fv ||
-        NULL == fFunctions.fUniform4iv ||
-        NULL == fFunctions.fUniformMatrix2fv ||
-        NULL == fFunctions.fUniformMatrix3fv ||
-        NULL == fFunctions.fUniformMatrix4fv ||
-        NULL == fFunctions.fUseProgram ||
-        NULL == fFunctions.fVertexAttrib4fv ||
-        NULL == fFunctions.fVertexAttribPointer ||
-        NULL == fFunctions.fViewport ||
-        NULL == fFunctions.fBindFramebuffer ||
-        NULL == fFunctions.fBindRenderbuffer ||
-        NULL == fFunctions.fCheckFramebufferStatus ||
-        NULL == fFunctions.fDeleteFramebuffers ||
-        NULL == fFunctions.fDeleteRenderbuffers ||
-        NULL == fFunctions.fFinish ||
-        NULL == fFunctions.fFlush ||
-        NULL == fFunctions.fFramebufferRenderbuffer ||
-        NULL == fFunctions.fFramebufferTexture2D ||
-        NULL == fFunctions.fGetFramebufferAttachmentParameteriv ||
-        NULL == fFunctions.fGetRenderbufferParameteriv ||
-        NULL == fFunctions.fGenFramebuffers ||
-        NULL == fFunctions.fGenRenderbuffers ||
-        NULL == fFunctions.fRenderbufferStorage) {
+    if (!fFunctions.fActiveTexture ||
+        !fFunctions.fAttachShader ||
+        !fFunctions.fBindAttribLocation ||
+        !fFunctions.fBindBuffer ||
+        !fFunctions.fBindTexture ||
+        !fFunctions.fBlendColor ||      // -> GL >= 1.4 or extension, ES >= 2.0
+        !fFunctions.fBlendEquation ||   // -> GL >= 1.4 or extension, ES >= 2.0
+        !fFunctions.fBlendFunc ||
+        !fFunctions.fBufferData ||
+        !fFunctions.fBufferSubData ||
+        !fFunctions.fClear ||
+        !fFunctions.fClearColor ||
+        !fFunctions.fClearStencil ||
+        !fFunctions.fColorMask ||
+        !fFunctions.fCompileShader ||
+        !fFunctions.fCompressedTexImage2D ||
+        !fFunctions.fCompressedTexSubImage2D ||
+        !fFunctions.fCopyTexSubImage2D ||
+        !fFunctions.fCreateProgram ||
+        !fFunctions.fCreateShader ||
+        !fFunctions.fCullFace ||
+        !fFunctions.fDeleteBuffers ||
+        !fFunctions.fDeleteProgram ||
+        !fFunctions.fDeleteShader ||
+        !fFunctions.fDeleteTextures ||
+        !fFunctions.fDepthMask ||
+        !fFunctions.fDisable ||
+        !fFunctions.fDisableVertexAttribArray ||
+        !fFunctions.fDrawArrays ||
+        !fFunctions.fDrawElements ||
+        !fFunctions.fEnable ||
+        !fFunctions.fEnableVertexAttribArray ||
+        !fFunctions.fFrontFace ||
+        !fFunctions.fGenBuffers ||
+        !fFunctions.fGenTextures ||
+        !fFunctions.fGetBufferParameteriv ||
+        !fFunctions.fGenerateMipmap ||
+        !fFunctions.fGetError ||
+        !fFunctions.fGetIntegerv ||
+        !fFunctions.fGetProgramInfoLog ||
+        !fFunctions.fGetProgramiv ||
+        !fFunctions.fGetShaderInfoLog ||
+        !fFunctions.fGetShaderiv ||
+        !fFunctions.fGetString ||
+        !fFunctions.fGetUniformLocation ||
+        !fFunctions.fIsTexture ||
+        !fFunctions.fLinkProgram ||
+        !fFunctions.fLineWidth ||
+        !fFunctions.fPixelStorei ||
+        !fFunctions.fReadPixels ||
+        !fFunctions.fScissor ||
+        !fFunctions.fShaderSource ||
+        !fFunctions.fStencilFunc ||
+        !fFunctions.fStencilFuncSeparate ||
+        !fFunctions.fStencilMask ||
+        !fFunctions.fStencilMaskSeparate ||
+        !fFunctions.fStencilOp ||
+        !fFunctions.fStencilOpSeparate ||
+        !fFunctions.fTexImage2D ||
+        !fFunctions.fTexParameteri ||
+        !fFunctions.fTexParameteriv ||
+        !fFunctions.fTexSubImage2D ||
+        !fFunctions.fUniform1f ||
+        !fFunctions.fUniform1i ||
+        !fFunctions.fUniform1fv ||
+        !fFunctions.fUniform1iv ||
+        !fFunctions.fUniform2f ||
+        !fFunctions.fUniform2i ||
+        !fFunctions.fUniform2fv ||
+        !fFunctions.fUniform2iv ||
+        !fFunctions.fUniform3f ||
+        !fFunctions.fUniform3i ||
+        !fFunctions.fUniform3fv ||
+        !fFunctions.fUniform3iv ||
+        !fFunctions.fUniform4f ||
+        !fFunctions.fUniform4i ||
+        !fFunctions.fUniform4fv ||
+        !fFunctions.fUniform4iv ||
+        !fFunctions.fUniformMatrix2fv ||
+        !fFunctions.fUniformMatrix3fv ||
+        !fFunctions.fUniformMatrix4fv ||
+        !fFunctions.fUseProgram ||
+        !fFunctions.fVertexAttrib1f ||
+        !fFunctions.fVertexAttrib2fv ||
+        !fFunctions.fVertexAttrib3fv ||
+        !fFunctions.fVertexAttrib4fv ||
+        !fFunctions.fVertexAttribPointer ||
+        !fFunctions.fViewport ||
+        !fFunctions.fBindFramebuffer ||
+        !fFunctions.fBindRenderbuffer ||
+        !fFunctions.fCheckFramebufferStatus ||
+        !fFunctions.fDeleteFramebuffers ||
+        !fFunctions.fDeleteRenderbuffers ||
+        !fFunctions.fFinish ||
+        !fFunctions.fFlush ||
+        !fFunctions.fFramebufferRenderbuffer ||
+        !fFunctions.fFramebufferTexture2D ||
+        !fFunctions.fGetFramebufferAttachmentParameteriv ||
+        !fFunctions.fGetRenderbufferParameteriv ||
+        !fFunctions.fGenFramebuffers ||
+        !fFunctions.fGenRenderbuffers ||
+        !fFunctions.fRenderbufferStorage) {
         RETURN_FALSE_INTERFACE
     }
 
     GrGLVersion glVer = GrGLGetVersion(this);
-    SkDebugf( "%s, %d,%0x", __FUNCTION__, __LINE__, (int)glVer );
     if (GR_GL_INVALID_VER == glVer) {
         RETURN_FALSE_INTERFACE
     }
@@ -246,134 +154,51 @@ bool GrGLInterface::validate() const {
     // these functions are part of ES2, we assume they are available
     // On the desktop we assume they are available if the extension
     // is present or GL version is high enough.
-    if (kGLES_GrGLStandard == fStandard) {
-        if (NULL == fFunctions.fStencilFuncSeparate ||
-            NULL == fFunctions.fStencilMaskSeparate ||
-            NULL == fFunctions.fStencilOpSeparate) {
+    if (kGL_GrGLStandard == fStandard) {
+        if (glVer >= GR_GL_VER(3,0) && !fFunctions.fBindFragDataLocation) {
             RETURN_FALSE_INTERFACE
         }
-    } else if (kGL_GrGLStandard == fStandard) {
 
-        if (glVer >= GR_GL_VER(2,0)) {
-            if (NULL == fFunctions.fStencilFuncSeparate ||
-                NULL == fFunctions.fStencilMaskSeparate ||
-                NULL == fFunctions.fStencilOpSeparate) {
-                RETURN_FALSE_INTERFACE
-            }
-        }
-        if (glVer >= GR_GL_VER(3,0) && NULL == fFunctions.fBindFragDataLocation) {
-            RETURN_FALSE_INTERFACE
-        }
-        if (glVer >= GR_GL_VER(2,0) || fExtensions.has("GL_ARB_draw_buffers")) {
-            if (NULL == fFunctions.fDrawBuffers) {
-                RETURN_FALSE_INTERFACE
-            }
-        }
-
-        if (glVer >= GR_GL_VER(1,5) || fExtensions.has("GL_ARB_occlusion_query")) {
-            if (NULL == fFunctions.fGenQueries ||
-                NULL == fFunctions.fDeleteQueries ||
-                NULL == fFunctions.fBeginQuery ||
-                NULL == fFunctions.fEndQuery ||
-                NULL == fFunctions.fGetQueryiv ||
-                NULL == fFunctions.fGetQueryObjectiv ||
-                NULL == fFunctions.fGetQueryObjectuiv) {
-                RETURN_FALSE_INTERFACE
-            }
-        }
         if (glVer >= GR_GL_VER(3,3) ||
             fExtensions.has("GL_ARB_timer_query") ||
             fExtensions.has("GL_EXT_timer_query")) {
-            if (NULL == fFunctions.fGetQueryObjecti64v ||
-                NULL == fFunctions.fGetQueryObjectui64v) {
+            if (!fFunctions.fGetQueryObjecti64v ||
+                !fFunctions.fGetQueryObjectui64v) {
                 RETURN_FALSE_INTERFACE
             }
         }
         if (glVer >= GR_GL_VER(3,3) || fExtensions.has("GL_ARB_timer_query")) {
-            if (NULL == fFunctions.fQueryCounter) {
+            if (!fFunctions.fQueryCounter) {
                 RETURN_FALSE_INTERFACE
             }
-        }
-        if (fExtensions.has("GL_EXT_direct_state_access")) {
-            if (NULL == fFunctions.fMatrixLoadf ||
-                NULL == fFunctions.fMatrixLoadIdentity) {
-                RETURN_FALSE_INTERFACE
-            }
-        }
-        if (fExtensions.has("GL_NV_path_rendering")) {
-            if (NULL == fFunctions.fPathCommands ||
-                NULL == fFunctions.fPathCoords ||
-                NULL == fFunctions.fPathSubCommands ||
-                NULL == fFunctions.fPathSubCoords ||
-                NULL == fFunctions.fPathString ||
-                NULL == fFunctions.fPathGlyphs ||
-                NULL == fFunctions.fPathGlyphRange ||
-                NULL == fFunctions.fWeightPaths ||
-                NULL == fFunctions.fCopyPath ||
-                NULL == fFunctions.fInterpolatePaths ||
-                NULL == fFunctions.fTransformPath ||
-                NULL == fFunctions.fPathParameteriv ||
-                NULL == fFunctions.fPathParameteri ||
-                NULL == fFunctions.fPathParameterfv ||
-                NULL == fFunctions.fPathParameterf ||
-                NULL == fFunctions.fPathDashArray ||
-                NULL == fFunctions.fGenPaths ||
-                NULL == fFunctions.fDeletePaths ||
-                NULL == fFunctions.fIsPath ||
-                NULL == fFunctions.fPathStencilFunc ||
-                NULL == fFunctions.fPathStencilDepthOffset ||
-                NULL == fFunctions.fStencilFillPath ||
-                NULL == fFunctions.fStencilStrokePath ||
-                NULL == fFunctions.fStencilFillPathInstanced ||
-                NULL == fFunctions.fStencilStrokePathInstanced ||
-                NULL == fFunctions.fPathCoverDepthFunc ||
-                NULL == fFunctions.fPathColorGen ||
-                NULL == fFunctions.fPathTexGen ||
-                NULL == fFunctions.fPathFogGen ||
-                NULL == fFunctions.fCoverFillPath ||
-                NULL == fFunctions.fCoverStrokePath ||
-                NULL == fFunctions.fCoverFillPathInstanced ||
-                NULL == fFunctions.fCoverStrokePathInstanced ||
-                NULL == fFunctions.fGetPathParameteriv ||
-                NULL == fFunctions.fGetPathParameterfv ||
-                NULL == fFunctions.fGetPathCommands ||
-                NULL == fFunctions.fGetPathCoords ||
-                NULL == fFunctions.fGetPathDashArray ||
-                NULL == fFunctions.fGetPathMetrics ||
-                NULL == fFunctions.fGetPathMetricRange ||
-                NULL == fFunctions.fGetPathSpacing ||
-                NULL == fFunctions.fGetPathColorGeniv ||
-                NULL == fFunctions.fGetPathColorGenfv ||
-                NULL == fFunctions.fGetPathTexGeniv ||
-                NULL == fFunctions.fGetPathTexGenfv ||
-                NULL == fFunctions.fIsPointInFillPath ||
-                NULL == fFunctions.fIsPointInStrokePath ||
-                NULL == fFunctions.fGetPathLength ||
-                NULL == fFunctions.fPointAlongPath) {
-                RETURN_FALSE_INTERFACE
-            }
-        }
-    }
-
-    // optional function on desktop before 1.3
-    if (kGL_GrGLStandard != fStandard ||
-        (glVer >= GR_GL_VER(1,3)) ||
-        fExtensions.has("GL_ARB_texture_compression")) {
-        if (NULL == fFunctions.fCompressedTexImage2D
-#if 0
-            || NULL == fFunctions.fCompressedTexSubImage2D
-#endif
-            ) {
-            RETURN_FALSE_INTERFACE
         }
     }
 
     // part of desktop GL, but not ES
     if (kGL_GrGLStandard == fStandard &&
-        (NULL == fFunctions.fGetTexLevelParameteriv ||
-         NULL == fFunctions.fDrawBuffer ||
-         NULL == fFunctions.fReadBuffer)) {
+        (!fFunctions.fDrawBuffer ||
+         !fFunctions.fPolygonMode)) {
         RETURN_FALSE_INTERFACE
+    }
+
+    // ES 3.0 (or ES 2.0 extended) has glDrawBuffers but not glDrawBuffer
+    if (kGL_GrGLStandard == fStandard || glVer >= GR_GL_VER(3,0)) {
+        if (!fFunctions.fDrawBuffers) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    if (kGL_GrGLStandard == fStandard || glVer >= GR_GL_VER(3,0)) {
+        if (!fFunctions.fReadBuffer) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    // glGetTexLevelParameteriv was added to ES in 3.1.
+    if (kGL_GrGLStandard == fStandard || glVer >= GR_GL_VER(3,1)) {
+        if (!fFunctions.fGetTexLevelParameteriv) {
+            RETURN_FALSE_INTERFACE
+        }
     }
 
     // GL_EXT_texture_storage is part of desktop 4.2
@@ -382,60 +207,107 @@ bool GrGLInterface::validate() const {
         if (glVer >= GR_GL_VER(4,2) ||
             fExtensions.has("GL_ARB_texture_storage") ||
             fExtensions.has("GL_EXT_texture_storage")) {
-            if (NULL == fFunctions.fTexStorage2D) {
+            if (!fFunctions.fTexStorage2D) {
                 RETURN_FALSE_INTERFACE
             }
         }
     } else if (glVer >= GR_GL_VER(3,0) || fExtensions.has("GL_EXT_texture_storage")) {
-        if (NULL == fFunctions.fTexStorage2D) {
+        if (!fFunctions.fTexStorage2D) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    // glTextureBarrier is part of desktop 4.5. There are also ARB and NV extensions.
+    if (kGL_GrGLStandard == fStandard) {
+        if (glVer >= GR_GL_VER(4,5) ||
+            fExtensions.has("GL_ARB_texture_barrier") ||
+            fExtensions.has("GL_NV_texture_barrier")) {
+            if (!fFunctions.fTextureBarrier) {
+                RETURN_FALSE_INTERFACE
+            }
+        }
+    } else if (fExtensions.has("GL_NV_texture_barrier")) {
+        if (!fFunctions.fTextureBarrier) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    if (fExtensions.has("GL_KHR_blend_equation_advanced") ||
+        fExtensions.has("GL_NV_blend_equation_advanced")) {
+        if (!fFunctions.fBlendBarrier) {
             RETURN_FALSE_INTERFACE
         }
     }
 
     if (fExtensions.has("GL_EXT_discard_framebuffer")) {
-// FIXME: Remove this once Chromium is updated to provide this function
-#if 0
-        if (NULL == fFunctions.fDiscardFramebuffer) {
+        if (!fFunctions.fDiscardFramebuffer) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    // Required since OpenGL 1.5 and ES 3.0 or with GL_EXT_occlusion_query_boolean
+    if (kGL_GrGLStandard == fStandard || glVer >= GR_GL_VER(3,0) ||
+        fExtensions.has("GL_EXT_occlusion_query_boolean")) {
+#if 0 // Not yet added to chrome's bindings.
+        if (!fFunctions.fGenQueries ||
+            !fFunctions.fDeleteQueries ||
+            !fFunctions.fBeginQuery ||
+            !fFunctions.fEndQuery ||
+            !fFunctions.fGetQueryiv ||
+            !fFunctions.fGetQueryObjectuiv) {
             RETURN_FALSE_INTERFACE
         }
 #endif
+    }
+    // glGetQueryObjectiv doesn't exist in ES.
+    if (kGL_GrGLStandard == fStandard && !fFunctions.fGetQueryObjectiv) {
+        RETURN_FALSE_INTERFACE
     }
 
     // FBO MSAA
     if (kGL_GrGLStandard == fStandard) {
         // GL 3.0 and the ARB extension have multisample + blit
         if (glVer >= GR_GL_VER(3,0) || fExtensions.has("GL_ARB_framebuffer_object")) {
-            if (NULL == fFunctions.fRenderbufferStorageMultisample ||
-                NULL == fFunctions.fBlitFramebuffer) {
+            if (!fFunctions.fRenderbufferStorageMultisample ||
+                !fFunctions.fBlitFramebuffer) {
                 RETURN_FALSE_INTERFACE
             }
         } else {
             if (fExtensions.has("GL_EXT_framebuffer_blit") &&
-                NULL == fFunctions.fBlitFramebuffer) {
+                !fFunctions.fBlitFramebuffer) {
                 RETURN_FALSE_INTERFACE
             }
             if (fExtensions.has("GL_EXT_framebuffer_multisample") &&
-                NULL == fFunctions.fRenderbufferStorageMultisample) {
+                !fFunctions.fRenderbufferStorageMultisample) {
                 RETURN_FALSE_INTERFACE
             }
         }
     } else {
         if (glVer >= GR_GL_VER(3,0) || fExtensions.has("GL_CHROMIUM_framebuffer_multisample")) {
-            if (NULL == fFunctions.fRenderbufferStorageMultisample ||
-                NULL == fFunctions.fBlitFramebuffer) {
+            if (!fFunctions.fRenderbufferStorageMultisample ||
+                !fFunctions.fBlitFramebuffer) {
+                RETURN_FALSE_INTERFACE
+            }
+        } else {
+            if (fExtensions.has("GL_ANGLE_framebuffer_multisample") &&
+                !fFunctions.fRenderbufferStorageMultisample) {
+                RETURN_FALSE_INTERFACE
+            }
+            if (fExtensions.has("GL_ANGLE_framebuffer_blit") &&
+                !fFunctions.fBlitFramebuffer) {
                 RETURN_FALSE_INTERFACE
             }
         }
         if (fExtensions.has("GL_APPLE_framebuffer_multisample")) {
-            if (NULL == fFunctions.fRenderbufferStorageMultisampleES2APPLE ||
-                NULL == fFunctions.fResolveMultisampleFramebuffer) {
+            if (!fFunctions.fRenderbufferStorageMultisampleES2APPLE ||
+                !fFunctions.fResolveMultisampleFramebuffer) {
                 RETURN_FALSE_INTERFACE
             }
         }
         if (fExtensions.has("GL_IMG_multisampled_render_to_texture") ||
             fExtensions.has("GL_EXT_multisampled_render_to_texture")) {
-            if (NULL == fFunctions.fRenderbufferStorageMultisampleES2EXT ||
-                NULL == fFunctions.fFramebufferTexture2DMultisample) {
+            if (!fFunctions.fRenderbufferStorageMultisampleES2EXT ||
+                !fFunctions.fFramebufferTexture2DMultisample) {
                 RETURN_FALSE_INTERFACE
             }
         }
@@ -445,84 +317,113 @@ bool GrGLInterface::validate() const {
     // buffer mapping was part of original VBO extension
     // which we require.
     if (kGL_GrGLStandard == fStandard || fExtensions.has("GL_OES_mapbuffer")) {
-        if (NULL == fFunctions.fMapBuffer ||
-            NULL == fFunctions.fUnmapBuffer) {
+        if (!fFunctions.fMapBuffer ||
+            !fFunctions.fUnmapBuffer) {
             RETURN_FALSE_INTERFACE
         }
     }
 
     // Dual source blending
-    if (kGL_GrGLStandard == fStandard &&
-        (glVer >= GR_GL_VER(3,3) || fExtensions.has("GL_ARB_blend_func_extended"))) {
-        if (NULL == fFunctions.fBindFragDataLocationIndexed) {
+    if (kGL_GrGLStandard == fStandard) {
+        if (glVer >= GR_GL_VER(3,3) || fExtensions.has("GL_ARB_blend_func_extended")) {
+            if (!fFunctions.fBindFragDataLocationIndexed) {
+                RETURN_FALSE_INTERFACE
+            }
+        }
+    } else {
+        if (glVer >= GR_GL_VER(3,0) && fExtensions.has("GL_EXT_blend_func_extended")) {
+            if (!fFunctions.fBindFragDataLocation ||
+                !fFunctions.fBindFragDataLocationIndexed) {
+                RETURN_FALSE_INTERFACE
+            }
+        }
+    }
+
+
+    // glGetStringi was added in version 3.0 of both desktop and ES.
+    if (glVer >= GR_GL_VER(3, 0)) {
+        if (!fFunctions.fGetStringi) {
             RETURN_FALSE_INTERFACE
         }
     }
 
-    // glGetStringi was added in version 3.0 of both desktop and ES.
+    // glVertexAttribIPointer was added in version 3.0 of both desktop and ES.
     if (glVer >= GR_GL_VER(3, 0)) {
-        if (NULL == fFunctions.fGetStringi) {
+        if (!fFunctions.fVertexAttribIPointer) {
             RETURN_FALSE_INTERFACE
         }
     }
 
     if (kGL_GrGLStandard == fStandard) {
-        if (glVer >= GR_GL_VER(3, 0) || fExtensions.has("GL_ARB_vertex_array_object")) {
-            if (NULL == fFunctions.fBindVertexArray ||
-                NULL == fFunctions.fDeleteVertexArrays ||
-                NULL == fFunctions.fGenVertexArrays) {
-                RETURN_FALSE_INTERFACE
+        if (glVer >= GR_GL_VER(3,1)) {
+            if (!fFunctions.fTexBuffer) {
+                RETURN_FALSE_INTERFACE;
+            }
+        }
+        if (glVer >= GR_GL_VER(4,3)) {
+            if (!fFunctions.fTexBufferRange) {
+                RETURN_FALSE_INTERFACE;
+            }
+        }
+    } else {
+        if (glVer >= GR_GL_VER(3,2) || fExtensions.has("GL_OES_texture_buffer") ||
+            fExtensions.has("GL_EXT_texture_buffer")) {
+            if (!fFunctions.fTexBuffer ||
+                !fFunctions.fTexBufferRange) {
+                RETURN_FALSE_INTERFACE;
             }
         }
     }
-    else
-    {
-        if (glVer >= GR_GL_VER(3,0) || fExtensions.has("GL_OES_vertex_array_object"))
-        {
 
-            if (NULL == fFunctions.fBindVertexArray)
-            	SkDebugf("fFunctions.fBindVertexArray is null");
-           if( NULL == fFunctions.fDeleteVertexArrays)
-        	   SkDebugf("fFunctions.fDeleteVertexArrays is null");
-            if(    NULL == fFunctions.fGenVertexArrays)
-            {
-
+    if (kGL_GrGLStandard == fStandard) {
+        if (glVer >= GR_GL_VER(3, 0) || fExtensions.has("GL_ARB_vertex_array_object")) {
+            if (!fFunctions.fBindVertexArray ||
+                !fFunctions.fDeleteVertexArrays ||
+                !fFunctions.fGenVertexArrays) {
+                RETURN_FALSE_INTERFACE
+            }
+        }
+    } else {
+        if (glVer >= GR_GL_VER(3,0) || fExtensions.has("GL_OES_vertex_array_object")) {
+            if (!fFunctions.fBindVertexArray ||
+                !fFunctions.fDeleteVertexArrays ||
+                !fFunctions.fGenVertexArrays) {
                 RETURN_FALSE_INTERFACE
             }
         }
     }
 
     if (fExtensions.has("GL_EXT_debug_marker")) {
-        if (NULL == fFunctions.fInsertEventMarker ||
-            NULL == fFunctions.fPushGroupMarker ||
-            NULL == fFunctions.fPopGroupMarker) {
+        if (!fFunctions.fInsertEventMarker ||
+            !fFunctions.fPushGroupMarker ||
+            !fFunctions.fPopGroupMarker) {
             RETURN_FALSE_INTERFACE
         }
     }
 
     if ((kGL_GrGLStandard == fStandard && glVer >= GR_GL_VER(4,3)) ||
         fExtensions.has("GL_ARB_invalidate_subdata")) {
-        if (NULL == fFunctions.fInvalidateBufferData ||
-            NULL == fFunctions.fInvalidateBufferSubData ||
-            NULL == fFunctions.fInvalidateFramebuffer ||
-            NULL == fFunctions.fInvalidateSubFramebuffer ||
-            NULL == fFunctions.fInvalidateTexImage ||
-            NULL == fFunctions.fInvalidateTexSubImage) {
+        if (!fFunctions.fInvalidateBufferData ||
+            !fFunctions.fInvalidateBufferSubData ||
+            !fFunctions.fInvalidateFramebuffer ||
+            !fFunctions.fInvalidateSubFramebuffer ||
+            !fFunctions.fInvalidateTexImage ||
+            !fFunctions.fInvalidateTexSubImage) {
             RETURN_FALSE_INTERFACE;
         }
     } else if (kGLES_GrGLStandard == fStandard && glVer >= GR_GL_VER(3,0)) {
         // ES 3.0 adds the framebuffer functions but not the others.
-        if (NULL == fFunctions.fInvalidateFramebuffer ||
-            NULL == fFunctions.fInvalidateSubFramebuffer) {
+        if (!fFunctions.fInvalidateFramebuffer ||
+            !fFunctions.fInvalidateSubFramebuffer) {
             RETURN_FALSE_INTERFACE;
         }
     }
 
     if (kGLES_GrGLStandard == fStandard && fExtensions.has("GL_CHROMIUM_map_sub")) {
-        if (NULL == fFunctions.fMapBufferSubData ||
-            NULL == fFunctions.fMapTexSubImage2D ||
-            NULL == fFunctions.fUnmapBufferSubData ||
-            NULL == fFunctions.fUnmapTexSubImage2D) {
+        if (!fFunctions.fMapBufferSubData ||
+            !fFunctions.fMapTexSubImage2D ||
+            !fFunctions.fUnmapBufferSubData ||
+            !fFunctions.fUnmapTexSubImage2D) {
             RETURN_FALSE_INTERFACE;
         }
     }
@@ -531,10 +432,219 @@ bool GrGLInterface::validate() const {
     if (glVer >= GR_GL_VER(3,0) ||
         (kGLES_GrGLStandard == fStandard && fExtensions.has("GL_EXT_map_buffer_range")) ||
         (kGL_GrGLStandard == fStandard && fExtensions.has("GL_ARB_map_buffer_range"))) {
-        if (NULL == fFunctions.fMapBufferRange ||
-            NULL == fFunctions.fFlushMappedBufferRange) {
+        if (!fFunctions.fMapBufferRange ||
+            !fFunctions.fFlushMappedBufferRange) {
             RETURN_FALSE_INTERFACE;
         }
     }
+
+    if ((kGL_GrGLStandard == fStandard &&
+         (glVer >= GR_GL_VER(3,2) || fExtensions.has("GL_ARB_texture_multisample"))) ||
+        (kGLES_GrGLStandard == fStandard && glVer >= GR_GL_VER(3,1))) {
+        if (!fFunctions.fGetMultisamplefv) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    if ((kGL_GrGLStandard == fStandard &&
+         (glVer >= GR_GL_VER(4,3) || fExtensions.has("GL_ARB_program_interface_query"))) ||
+        (kGLES_GrGLStandard == fStandard && glVer >= GR_GL_VER(3,1))) {
+        if (!fFunctions.fGetProgramResourceLocation) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    if (kGLES_GrGLStandard == fStandard || glVer >= GR_GL_VER(4,1) ||
+        fExtensions.has("GL_ARB_ES2_compatibility")) {
+        if (!fFunctions.fGetShaderPrecisionFormat) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    if (fExtensions.has("GL_NV_path_rendering") || fExtensions.has("GL_CHROMIUM_path_rendering")) {
+        if (!fFunctions.fMatrixLoadf ||
+            !fFunctions.fMatrixLoadIdentity ||
+            !fFunctions.fPathCommands ||
+            !fFunctions.fPathParameteri ||
+            !fFunctions.fPathParameterf ||
+            !fFunctions.fGenPaths ||
+            !fFunctions.fDeletePaths ||
+            !fFunctions.fIsPath ||
+            !fFunctions.fPathStencilFunc ||
+            !fFunctions.fStencilFillPath ||
+            !fFunctions.fStencilStrokePath ||
+            !fFunctions.fStencilFillPathInstanced ||
+            !fFunctions.fStencilStrokePathInstanced ||
+            !fFunctions.fCoverFillPath ||
+            !fFunctions.fCoverStrokePath ||
+            !fFunctions.fCoverFillPathInstanced ||
+            !fFunctions.fCoverStrokePathInstanced
+#if 0
+            // List of functions that Skia uses, but which have been added since the initial release
+            // of NV_path_rendering driver. We do not want to fail interface validation due to
+            // missing features, we will just not use the extension.
+            // Update this list -> update GrGLCaps::hasPathRenderingSupport too.
+            || !fFunctions.fStencilThenCoverFillPath ||
+            !fFunctions.fStencilThenCoverStrokePath ||
+            !fFunctions.fStencilThenCoverFillPathInstanced ||
+            !fFunctions.fStencilThenCoverStrokePathInstanced ||
+            !fFunctions.fProgramPathFragmentInputGen
+#endif
+            ) {
+            RETURN_FALSE_INTERFACE
+        }
+        if (fExtensions.has("GL_CHROMIUM_path_rendering")) {
+            if (!fFunctions.fBindFragmentInputLocation) {
+                RETURN_FALSE_INTERFACE
+            }
+        }
+    }
+
+    if (fExtensions.has("GL_EXT_raster_multisample")) {
+        if (!fFunctions.fRasterSamples) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    if (fExtensions.has("GL_NV_framebuffer_mixed_samples") ||
+        fExtensions.has("GL_CHROMIUM_framebuffer_mixed_samples")) {
+        if (!fFunctions.fCoverageModulation) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    if (kGL_GrGLStandard == fStandard) {
+        if (glVer >= GR_GL_VER(3,1) ||
+            fExtensions.has("GL_EXT_draw_instanced") || fExtensions.has("GL_ARB_draw_instanced")) {
+            if (!fFunctions.fDrawArraysInstanced ||
+                !fFunctions.fDrawElementsInstanced) {
+                RETURN_FALSE_INTERFACE
+            }
+        }
+    } else if (kGLES_GrGLStandard == fStandard) {
+        if (glVer >= GR_GL_VER(3,0) || fExtensions.has("GL_EXT_draw_instanced")) {
+            if (!fFunctions.fDrawArraysInstanced ||
+                !fFunctions.fDrawElementsInstanced) {
+                RETURN_FALSE_INTERFACE
+            }
+        }
+    }
+
+    if (kGL_GrGLStandard == fStandard) {
+        if (glVer >= GR_GL_VER(3,2) || fExtensions.has("GL_ARB_instanced_arrays")) {
+            if (!fFunctions.fVertexAttribDivisor) {
+                RETURN_FALSE_INTERFACE
+            }
+        }
+    } else if (kGLES_GrGLStandard == fStandard) {
+        if (glVer >= GR_GL_VER(3,0) || fExtensions.has("GL_EXT_instanced_arrays")) {
+            if (!fFunctions.fVertexAttribDivisor) {
+                RETURN_FALSE_INTERFACE
+            }
+        }
+    }
+
+    if ((kGL_GrGLStandard == fStandard &&
+         (glVer >= GR_GL_VER(4,0) || fExtensions.has("GL_ARB_draw_indirect"))) ||
+        (kGLES_GrGLStandard == fStandard && glVer >= GR_GL_VER(3,1))) {
+        if (!fFunctions.fDrawArraysIndirect ||
+            !fFunctions.fDrawElementsIndirect) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    if ((kGL_GrGLStandard == fStandard &&
+         (glVer >= GR_GL_VER(4,3) || fExtensions.has("GL_ARB_multi_draw_indirect"))) ||
+        (kGLES_GrGLStandard == fStandard && fExtensions.has("GL_EXT_multi_draw_indirect"))) {
+        if (!fFunctions.fMultiDrawArraysIndirect ||
+            !fFunctions.fMultiDrawElementsIndirect) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    if ((kGL_GrGLStandard == fStandard && glVer >= GR_GL_VER(4,3)) ||
+        fExtensions.has("GL_KHR_debug")) {
+        if (!fFunctions.fDebugMessageControl ||
+            !fFunctions.fDebugMessageInsert ||
+            !fFunctions.fDebugMessageCallback ||
+            !fFunctions.fGetDebugMessageLog ||
+            !fFunctions.fPushDebugGroup ||
+            !fFunctions.fPopDebugGroup ||
+            !fFunctions.fObjectLabel) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    if (fExtensions.has("GL_EXT_window_rectangles")) {
+        if (!fFunctions.fWindowRectangles) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    if ((kGL_GrGLStandard == fStandard && glVer >= GR_GL_VER(4,0)) ||
+        fExtensions.has("GL_ARB_sample_shading")) {
+        if (!fFunctions.fMinSampleShading) {
+            RETURN_FALSE_INTERFACE
+        }
+    } else if (kGLES_GrGLStandard == fStandard && fExtensions.has("GL_OES_sample_shading")) {
+        if (!fFunctions.fMinSampleShading) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    if (kGL_GrGLStandard == fStandard) {
+        if (glVer >= GR_GL_VER(3, 2) || fExtensions.has("GL_ARB_sync")) {
+            if (!fFunctions.fFenceSync ||
+                !fFunctions.fIsSync ||
+                !fFunctions.fClientWaitSync ||
+                !fFunctions.fWaitSync ||
+                !fFunctions.fDeleteSync) {
+                RETURN_FALSE_INTERFACE
+            }
+        }
+    } else if (kGLES_GrGLStandard == fStandard) {
+        if (glVer >= GR_GL_VER(3, 0) || fExtensions.has("GL_APPLE_sync")) {
+            if (!fFunctions.fFenceSync ||
+                !fFunctions.fIsSync ||
+                !fFunctions.fClientWaitSync ||
+                !fFunctions.fWaitSync ||
+                !fFunctions.fDeleteSync) {
+                RETURN_FALSE_INTERFACE
+            }
+        }
+    }
+
+    if (fExtensions.has("EGL_KHR_image") || fExtensions.has("EGL_KHR_image_base")) {
+        if (!fFunctions.fEGLCreateImage ||
+            !fFunctions.fEGLDestroyImage) {
+            RETURN_FALSE_INTERFACE
+        }
+    }
+
+    // glDrawRangeElements was added to ES in 3.0.
+    if (kGL_GrGLStandard == fStandard || glVer >= GR_GL_VER(3,0)) {
+        if (!fFunctions.fDrawRangeElements) {
+            RETURN_FALSE_INTERFACE;
+        }
+    }
+
+    // getInternalformativ was added in GL 4.2, ES 3.0, and with extension ARB_internalformat_query
+    if ((kGL_GrGLStandard == fStandard &&
+         (glVer >= GR_GL_VER(4,2) || fExtensions.has("GL_ARB_internalformat_query"))) ||
+        (kGLES_GrGLStandard == fStandard && glVer >= GR_GL_VER(3,0))) {
+        if (!fFunctions.fGetInternalformativ) {
+            RETURN_FALSE_INTERFACE;
+        }
+    }
+
+    if ((kGL_GrGLStandard == fStandard && glVer >= GR_GL_VER(4,1)) ||
+        (kGLES_GrGLStandard == fStandard && glVer >= GR_GL_VER(3,0))) {
+        if (!fFunctions.fGetProgramBinary ||
+            !fFunctions.fProgramBinary ||
+            !fFunctions.fProgramParameteri) {
+            RETURN_FALSE_INTERFACE;
+        }
+    }
+
     return true;
 }

@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2011 Google Inc.
  *
@@ -7,9 +6,9 @@
  */
 #include "SampleCode.h"
 #include "SkView.h"
+#include "SkBitmap.h"
 #include "SkCanvas.h"
 #include "SkShader.h"
-#include "SkKey.h"
 
 static void make_bitmap(SkBitmap* bm) {
     const int W = 100;
@@ -37,8 +36,7 @@ static void make_paint(SkPaint* paint, SkShader::TileMode tm) {
     SkBitmap bm;
     make_bitmap(&bm);
 
-    SkShader* shader = SkShader::CreateBitmapShader(bm, tm, tm);
-    paint->setShader(shader)->unref();
+    paint->setShader(SkShader::MakeBitmapShader(bm, tm, tm));
 }
 
 class RepeatTileView : public SampleView {
@@ -49,7 +47,7 @@ public:
 
 protected:
     // overrides from SkEventSink
-    virtual bool onQuery(SkEvent* evt) {
+    bool onQuery(SkEvent* evt) override {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "RepeatTile");
             return true;
@@ -57,28 +55,13 @@ protected:
         return this->INHERITED::onQuery(evt);
     }
 
-    virtual void onDrawContent(SkCanvas* canvas) {
+    void onDrawContent(SkCanvas* canvas) override {
         SkPaint paint;
         make_paint(&paint, SkShader::kRepeat_TileMode);
 
 //        canvas->scale(SK_Scalar1*2, SK_Scalar1);
         canvas->translate(SkIntToScalar(100), SkIntToScalar(100));
         canvas->drawPaint(paint);
-    }
-
-    virtual SkView::Click* onFindClickHandler(SkScalar x, SkScalar y, unsigned modi) SK_OVERRIDE {
-        this->inval(NULL);
-
-        return this->INHERITED::onFindClickHandler(x, y, modi);
-    }
-
-    virtual bool onClick(Click* click) {
-        return this->INHERITED::onClick(click);
-    }
-
-    virtual bool handleKey(SkKey) {
-        this->inval(NULL);
-        return true;
     }
 
 private:

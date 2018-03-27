@@ -18,21 +18,23 @@
 
 #include "SkTypes.h"
 
-// This will mark the trace event as disabled by default. The user will need
-// to explicitly enable the event.
-#define TRACE_DISABLED_BY_DEFAULT(name) "disabled-by-default-" name
-
 class SK_API SkEventTracer {
 public:
 
     typedef uint64_t Handle;
 
-    static SkEventTracer* GetInstance();
+    /**
+     * If this is the first call to SetInstance or GetInstance then the passed instance is
+     * installed and true is returned. Otherwise, false is returned. In either case ownership of the
+     * tracer is transferred and it will be deleted when no longer needed.
+     */
+    static bool SetInstance(SkEventTracer*);
 
-    static void SetInstance(SkEventTracer* tracer) {
-        SkDELETE(SkEventTracer::gInstance);
-        SkEventTracer::gInstance = tracer;
-    }
+    /**
+     * Gets the event tracer. If this is the first call to SetInstance or GetIntance then a default
+     * event tracer is installed and returned.
+     */
+    static SkEventTracer* GetInstance();
 
     virtual ~SkEventTracer() { }
 
@@ -50,8 +52,7 @@ public:
     };
 
     virtual const uint8_t* getCategoryGroupEnabled(const char* name) = 0;
-    virtual const char* getCategoryGroupName(
-      const uint8_t* categoryEnabledFlag) = 0;
+    virtual const char* getCategoryGroupName(const uint8_t* categoryEnabledFlag) = 0;
 
     virtual SkEventTracer::Handle
         addTraceEvent(char phase,
@@ -68,8 +69,6 @@ public:
         updateTraceEventDuration(const uint8_t* categoryEnabledFlag,
                                  const char* name,
                                  SkEventTracer::Handle handle) = 0;
-private:
-    static SkEventTracer *gInstance;
 };
 
 #endif // SkEventTracer_DEFINED

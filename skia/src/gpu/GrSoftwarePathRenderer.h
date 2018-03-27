@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2012 Google Inc.
  *
@@ -11,8 +10,7 @@
 
 #include "GrPathRenderer.h"
 
-class GrContext;
-class GrAutoScratchTexture;
+class GrProxyProvider;
 
 /**
  * This class uses the software side to render a path to an SkBitmap and
@@ -20,26 +18,50 @@ class GrAutoScratchTexture;
  */
 class GrSoftwarePathRenderer : public GrPathRenderer {
 public:
-    GrSoftwarePathRenderer(GrContext* context)
-        : fContext(context) {
+    GrSoftwarePathRenderer(GrProxyProvider* proxyProvider, bool allowCaching)
+            : fProxyProvider(proxyProvider)
+            , fAllowCaching(allowCaching) {
     }
 
-    virtual bool canDrawPath(const SkPath&,
-                             const SkStrokeRec&,
-                             const GrDrawTarget*,
-                             bool antiAlias) const SK_OVERRIDE;
-protected:
-    virtual StencilSupport onGetStencilSupport(const SkPath&,
-                                               const SkStrokeRec&,
-                                               const GrDrawTarget*) const SK_OVERRIDE;
+private:
+    static void DrawNonAARect(GrRenderTargetContext* renderTargetContext,
+                              GrPaint&& paint,
+                              const GrUserStencilSettings& userStencilSettings,
+                              const GrClip& clip,
+                              const SkMatrix& viewMatrix,
+                              const SkRect& rect,
+                              const SkMatrix& localMatrix);
+    static void DrawAroundInvPath(GrRenderTargetContext* renderTargetContext,
+                                  GrPaint&& paint,
+                                  const GrUserStencilSettings& userStencilSettings,
+                                  const GrClip& clip,
+                                  const SkMatrix& viewMatrix,
+                                  const SkIRect& devClipBounds,
+                                  const SkIRect& devPathBounds);
 
-    virtual bool onDrawPath(const SkPath&,
-                            const SkStrokeRec&,
-                            GrDrawTarget*,
-                            bool antiAlias) SK_OVERRIDE;
+    // This utility draws a path mask using a provided paint. The rectangle is drawn in device
+    // space. The 'viewMatrix' will be used to ensure the correct local coords are provided to
+    // any fragment processors in the paint.
+    static void DrawToTargetWithShapeMask(sk_sp<GrTextureProxy> proxy,
+                                          GrRenderTargetContext* renderTargetContext,
+                                          GrPaint&& paint,
+                                          const GrUserStencilSettings& userStencilSettings,
+                                          const GrClip& clip,
+                                          const SkMatrix& viewMatrix,
+                                          const SkIPoint& textureOriginInDeviceSpace,
+                                          const SkIRect& deviceSpaceRectToDraw);
+
+    StencilSupport onGetStencilSupport(const GrShape&) const override {
+        return GrPathRenderer::kNoSupport_StencilSupport;
+    }
+
+    CanDrawPath onCanDrawPath(const CanDrawPathArgs&) const override;
+
+    bool onDrawPath(const DrawPathArgs&) override;
 
 private:
-    GrContext*     fContext;
+    GrProxyProvider*       fProxyProvider;
+    bool                   fAllowCaching;
 
     typedef GrPathRenderer INHERITED;
 };

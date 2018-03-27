@@ -10,7 +10,7 @@
 
 #include "SkTypes.h"
 #include "SkColor.h"
-#include "SkColorPriv.h"
+#include "SkColorData.h"
 #include "SkRefCnt.h"
 
 /**
@@ -92,7 +92,7 @@ void SkTMaskGamma_build_correcting_lut(uint8_t table[256], U8CPU srcI, SkScalar 
  * @param B The number of luminance bits to use [1, 8] from the blue channel.
  */
 template <int R_LUM_BITS, int G_LUM_BITS, int B_LUM_BITS> class SkTMaskGamma : public SkRefCnt {
-    SK_DECLARE_INST_COUNT(SkTMaskGamma)
+
 public:
 
     /** Creates a linear SkTMaskGamma. */
@@ -146,12 +146,13 @@ public:
 
     /**
      * Provides direct access to the full table set, so it can be uploaded
-     * into a texture.
+     * into a texture or analyzed in other ways.
+     * Returns nullptr if fGammaTables hasn't been initialized.
      */
     const uint8_t* getGammaTables() const {
-        return (const uint8_t*) fGammaTables;
+        return fIsLinear ? nullptr : (const uint8_t*) fGammaTables;
     }
-    
+
 private:
     static const int MAX_LUM_BITS =
           B_LUM_BITS > (R_LUM_BITS > G_LUM_BITS ? R_LUM_BITS : G_LUM_BITS)
@@ -168,35 +169,33 @@ private:
  * convert a linear alpha value for a given channel to a gamma correcting alpha
  * value for that channel. This class is immutable.
  *
- * If fR, fG, or fB is NULL, all of them will be. This indicates that no mask
+ * If fR, fG, or fB is nullptr, all of them will be. This indicates that no mask
  * pre blend should be applied. SkTMaskPreBlend::isApplicable() is provided as
  * a convenience function to test for the absence of this case.
  */
 template <int R_LUM_BITS, int G_LUM_BITS, int B_LUM_BITS> class SkTMaskPreBlend {
 private:
-    SkTMaskPreBlend(const SkTMaskGamma<R_LUM_BITS, G_LUM_BITS, B_LUM_BITS>* parent,
+    SkTMaskPreBlend(sk_sp<const SkTMaskGamma<R_LUM_BITS, G_LUM_BITS, B_LUM_BITS>> parent,
                     const uint8_t* r, const uint8_t* g, const uint8_t* b)
-    : fParent(SkSafeRef(parent)), fR(r), fG(g), fB(b) { }
+    : fParent(std::move(parent)), fR(r), fG(g), fB(b) { }
 
-    SkAutoTUnref<const SkTMaskGamma<R_LUM_BITS, G_LUM_BITS, B_LUM_BITS> > fParent;
+    sk_sp<const SkTMaskGamma<R_LUM_BITS, G_LUM_BITS, B_LUM_BITS>> fParent;
     friend class SkTMaskGamma<R_LUM_BITS, G_LUM_BITS, B_LUM_BITS>;
 public:
     /** Creates a non applicable SkTMaskPreBlend. */
-    SkTMaskPreBlend() : fParent(), fR(NULL), fG(NULL), fB(NULL) { }
+    SkTMaskPreBlend() : fParent(), fR(nullptr), fG(nullptr), fB(nullptr) { }
 
     /**
      * This copy contructor exists for correctness, but should never be called
      * when return value optimization is enabled.
      */
     SkTMaskPreBlend(const SkTMaskPreBlend<R_LUM_BITS, G_LUM_BITS, B_LUM_BITS>& that)
-    : fParent(SkSafeRef(that.fParent.get())), fR(that.fR), fG(that.fG), fB(that.fB) { }
+    : fParent(that.fParent), fR(that.fR), fG(that.fG), fB(that.fB) { }
 
     ~SkTMaskPreBlend() { }
 
-    /** True if this PreBlend should be applied. When false, fR, fG, and fB are NULL. */
-    bool isApplicable() const {
-        return NULL != this->fG;
-    }
+    /** True if this PreBlend should be applied. When false, fR, fG, and fB are nullptr. */
+    bool isApplicable() const { return SkToBool(this->fG); }
 
     const uint8_t* fR;
     const uint8_t* fG;
@@ -207,7 +206,7 @@ template <int R_LUM_BITS, int G_LUM_BITS, int B_LUM_BITS>
 SkTMaskPreBlend<R_LUM_BITS, G_LUM_BITS, B_LUM_BITS>
 SkTMaskGamma<R_LUM_BITS, G_LUM_BITS, B_LUM_BITS>::preBlend(SkColor color) const {
     return fIsLinear ? SkTMaskPreBlend<R_LUM_BITS, G_LUM_BITS, B_LUM_BITS>()
-                     : SkTMaskPreBlend<R_LUM_BITS, G_LUM_BITS, B_LUM_BITS>(this,
+                     : SkTMaskPreBlend<R_LUM_BITS, G_LUM_BITS, B_LUM_BITS>(sk_ref_sp(this),
                          fGammaTables[SkColorGetR(color) >> (8 - MAX_LUM_BITS)],
                          fGammaTables[SkColorGetG(color) >> (8 - MAX_LUM_BITS)],
                          fGammaTables[SkColorGetB(color) >> (8 - MAX_LUM_BITS)]);

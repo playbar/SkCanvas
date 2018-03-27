@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2011 Google Inc.
  *
@@ -7,9 +6,9 @@
  */
 #include "SampleCode.h"
 #include "SkView.h"
+#include "SkBitmap.h"
 #include "SkCanvas.h"
 #include "SkCornerPathEffect.h"
-#include "SkCullPoints.h"
 #include "SkGradientShader.h"
 #include "SkPath.h"
 #include "SkRegion.h"

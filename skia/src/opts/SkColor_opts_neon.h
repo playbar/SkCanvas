@@ -1,8 +1,15 @@
+/*
+ * Copyright 2015 Google Inc.
+ *
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
 #ifndef SkColor_opts_neon_DEFINED
 #define SkColor_opts_neon_DEFINED
 
 #include "SkTypes.h"
-#include "SkColorPriv.h"
+#include "SkColorData.h"
 
 #include <arm_neon.h>
 

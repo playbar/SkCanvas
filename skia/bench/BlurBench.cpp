@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2011 Google Inc.
  *
@@ -14,10 +13,13 @@
 #include "SkShader.h"
 #include "SkString.h"
 
+#define MINI   0.01f
 #define SMALL   SkIntToScalar(2)
-#define REAL    1.5f
+#define REAL    0.5f
 #define BIG     SkIntToScalar(10)
 #define REALBIG 100.5f
+// The value that produces a sigma of just over 2.
+#define CUTOVER 2.6f
 
 static const char* gStyleName[] = {
     "normal",
@@ -52,7 +54,7 @@ protected:
         return fName.c_str();
     }
 
-    virtual void onDraw(const int loops, SkCanvas* canvas) {
+    virtual void onDraw(int loops, SkCanvas* canvas) {
         SkPaint paint;
         this->setupPaint(&paint);
 
@@ -65,10 +67,9 @@ protected:
             r.offset(fRadius, fRadius);
 
             if (fRadius > 0) {
-                SkMaskFilter* mf = SkBlurMaskFilter::Create(fStyle,
-                                            SkBlurMask::ConvertRadiusToSigma(fRadius),
-                                            fFlags);
-                paint.setMaskFilter(mf)->unref();
+                paint.setMaskFilter(SkBlurMaskFilter::Make(fStyle,
+                                                          SkBlurMask::ConvertRadiusToSigma(fRadius),
+                                                          fFlags));
             }
             canvas->drawOval(r, paint);
         }
@@ -77,6 +78,11 @@ protected:
 private:
     typedef Benchmark INHERITED;
 };
+
+DEF_BENCH(return new BlurBench(MINI, kNormal_SkBlurStyle);)
+DEF_BENCH(return new BlurBench(MINI, kSolid_SkBlurStyle);)
+DEF_BENCH(return new BlurBench(MINI, kOuter_SkBlurStyle);)
+DEF_BENCH(return new BlurBench(MINI, kInner_SkBlurStyle);)
 
 DEF_BENCH(return new BlurBench(SMALL, kNormal_SkBlurStyle);)
 DEF_BENCH(return new BlurBench(SMALL, kSolid_SkBlurStyle);)
@@ -98,6 +104,8 @@ DEF_BENCH(return new BlurBench(REAL, kSolid_SkBlurStyle);)
 DEF_BENCH(return new BlurBench(REAL, kOuter_SkBlurStyle);)
 DEF_BENCH(return new BlurBench(REAL, kInner_SkBlurStyle);)
 
+DEF_BENCH(return new BlurBench(MINI, kNormal_SkBlurStyle, SkBlurMaskFilter::kHighQuality_BlurFlag);)
+
 DEF_BENCH(return new BlurBench(SMALL, kNormal_SkBlurStyle, SkBlurMaskFilter::kHighQuality_BlurFlag);)
 
 DEF_BENCH(return new BlurBench(BIG, kNormal_SkBlurStyle, SkBlurMaskFilter::kHighQuality_BlurFlag);)
@@ -105,5 +113,6 @@ DEF_BENCH(return new BlurBench(BIG, kNormal_SkBlurStyle, SkBlurMaskFilter::kHigh
 DEF_BENCH(return new BlurBench(REALBIG, kNormal_SkBlurStyle, SkBlurMaskFilter::kHighQuality_BlurFlag);)
 
 DEF_BENCH(return new BlurBench(REAL, kNormal_SkBlurStyle, SkBlurMaskFilter::kHighQuality_BlurFlag);)
+DEF_BENCH(return new BlurBench(CUTOVER, kNormal_SkBlurStyle, SkBlurMaskFilter::kHighQuality_BlurFlag);)
 
 DEF_BENCH(return new BlurBench(0, kNormal_SkBlurStyle);)

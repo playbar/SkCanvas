@@ -10,9 +10,11 @@
 #ifndef SkString_DEFINED
 #define SkString_DEFINED
 
+#include "../private/SkTArray.h"
 #include "SkScalar.h"
-#include "SkTArray.h"
+#include "SkRefCnt.h"
 
+#include <atomic>
 #include <stdarg.h>
 
 /*  Some helper functions for C strings
@@ -35,8 +37,14 @@ int SkStrStartsWithOneOf(const char string[], const char prefixes[]);
 
 static int SkStrFind(const char string[], const char substring[]) {
     const char *first = strstr(string, substring);
-    if (NULL == first) return -1;
-    return SkToS32(first - &string[0]);
+    if (nullptr == first) return -1;
+    return SkToInt(first - &string[0]);
+}
+
+static int SkStrFindLastOf(const char string[], const char subchar) {
+    const char* last = strrchr(string, subchar);
+    if (nullptr == last) return -1;
+    return SkToInt(last - &string[0]);
 }
 
 static bool SkStrContains(const char string[], const char substring[]) {
@@ -58,7 +66,23 @@ static inline char *SkStrDup(const char string[]) {
     return ret;
 }
 
-
+/*
+ *  The SkStrAppend... methods will write into the provided buffer, assuming it is large enough.
+ *  Each method has an associated const (e.g. SkStrAppendU32_MaxSize) which will be the largest
+ *  value needed for that method's buffer.
+ *
+ *  char storage[SkStrAppendU32_MaxSize];
+ *  SkStrAppendU32(storage, value);
+ *
+ *  Note : none of the SkStrAppend... methods write a terminating 0 to their buffers. Instead,
+ *  the methods return the ptr to the end of the written part of the buffer. This can be used
+ *  to compute the length, and/or know where to write a 0 if that is desired.
+ *
+ *  char storage[SkStrAppendU32_MaxSize + 1];
+ *  char* stop = SkStrAppendU32(storage, value);
+ *  size_t len = stop - storage;
+ *  *stop = 0;   // valid, since storage was 1 byte larger than the max.
+ */
 
 #define SkStrAppendU32_MaxSize  10
 char*   SkStrAppendU32(char buffer[], uint32_t);
@@ -89,7 +113,6 @@ char*   SkStrAppendS64(char buffer[], int64_t, int minDigits);
 #define SkStrAppendScalar SkStrAppendFloat
 
 char* SkStrAppendFloat(char buffer[], float);
-char* SkStrAppendFixed(char buffer[], SkFixed);
 
 /** \class SkString
 
@@ -104,6 +127,7 @@ public:
     explicit    SkString(const char text[]);
                 SkString(const char text[], size_t len);
                 SkString(const SkString&);
+                SkString(SkString&&);
                 ~SkString();
 
     bool        isEmpty() const { return 0 == fRec->fLength; }
@@ -136,6 +160,9 @@ public:
     int find(const char substring[]) const {
         return SkStrFind(fRec->data(), substring);
     }
+    int findLastOf(const char subchar) const {
+        return SkStrFindLastOf(fRec->data(), subchar);
+    }
 
     friend bool operator==(const SkString& a, const SkString& b) {
         return a.equals(b);
@@ -147,18 +174,18 @@ public:
     // these methods edit the string
 
     SkString& operator=(const SkString&);
+    SkString& operator=(SkString&&);
     SkString& operator=(const char text[]);
 
     char* writable_str();
     char& operator[](size_t n) { return this->writable_str()[n]; }
 
     void reset();
-    void resize(size_t len) { this->set(NULL, len); }
+    /** Destructive resize, does not preserve contents. */
+    void resize(size_t len) { this->set(nullptr, len); }
     void set(const SkString& src) { *this = src; }
     void set(const char text[]);
     void set(const char text[], size_t len);
-    void setUTF16(const uint16_t[]);
-    void setUTF16(const uint16_t[], size_t len);
 
     void insert(size_t offset, const SkString& src) { this->insert(offset, src.c_str(), src.size()); }
     void insert(size_t offset, const char text[]);
@@ -195,6 +222,7 @@ public:
     void appendf(const char format[], ...) SK_PRINTF_LIKE(2, 3);
     void appendVAList(const char format[], va_list);
     void prependf(const char format[], ...) SK_PRINTF_LIKE(2, 3);
+    void prependVAList(const char format[], va_list);
 
     void remove(size_t offset, size_t length);
 
@@ -211,29 +239,40 @@ public:
 private:
     struct Rec {
     public:
+        constexpr Rec(uint32_t len, int32_t refCnt)
+            : fLength(len), fRefCnt(refCnt), fBeginningOfData(0)
+        { }
+        static sk_sp<Rec> Make(const char text[], size_t len);
         uint32_t    fLength; // logically size_t, but we want it to stay 32bits
-        int32_t     fRefCnt;
+        mutable std::atomic<int32_t> fRefCnt;
         char        fBeginningOfData;
 
         char* data() { return &fBeginningOfData; }
         const char* data() const { return &fBeginningOfData; }
+
+        void ref() const;
+        void unref() const;
+        bool unique() const;
+    private:
+        // Ensure the unsized delete is called.
+        void operator delete(void* p) { ::operator delete(p); }
     };
-    Rec* fRec;
+    sk_sp<Rec> fRec;
 
 #ifdef SK_DEBUG
-    const char* fStr;
     void validate() const;
 #else
     void validate() const {}
 #endif
 
     static const Rec gEmptyRec;
-    static Rec* AllocRec(const char text[], size_t len);
-    static Rec* RefRec(Rec*);
 };
 
 /// Creates a new string and writes into it using a printf()-style format.
 SkString SkStringPrintf(const char* format, ...);
+/// This makes it easier to write a caller as a VAR_ARGS function where the format string is
+/// optional.
+static inline SkString SkStringPrintf() { return SkString(); }
 
 // Specialized to take advantage of SkString's fast swap path. The unspecialized function is
 // declared in SkTypes.h and called by SkTSort.
@@ -241,7 +280,22 @@ template <> inline void SkTSwap(SkString& a, SkString& b) {
     a.swap(b);
 }
 
+enum SkStrSplitMode {
+    // Strictly return all results. If the input is ",," and the separator is ',' this will return
+    // an array of three empty strings.
+    kStrict_SkStrSplitMode,
+
+    // Only nonempty results will be added to the results. Multiple separators will be
+    // coalesced. Separators at the beginning and end of the input will be ignored.  If the input is
+    // ",," and the separator is ',', this will return an empty vector.
+    kCoalesce_SkStrSplitMode
+};
+
 // Split str on any characters in delimiters into out.  (Think, strtok with a sane API.)
-void SkStrSplit(const char* str, const char* delimiters, SkTArray<SkString>* out);
+void SkStrSplit(const char* str, const char* delimiters, SkStrSplitMode splitMode,
+                SkTArray<SkString>* out);
+inline void SkStrSplit(const char* str, const char* delimiters, SkTArray<SkString>* out) {
+    SkStrSplit(str, delimiters, kCoalesce_SkStrSplitMode, out);
+}
 
 #endif

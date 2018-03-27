@@ -10,7 +10,6 @@
 
 #include "SkEndian.h"
 #include "SkOTTableTypes.h"
-#include "SkTypedEnum.h"
 
 #pragma pack(push, 1)
 
@@ -24,11 +23,10 @@ struct SkOTTableMaximumProfile_TT {
     SK_OT_USHORT maxCompositePoints;
     SK_OT_USHORT maxCompositeContours;
     struct MaxZones {
-        SK_TYPED_ENUM(Value, SK_OT_SHORT,
-            ((DoesNotUseTwilightZone, SkTEndian_SwapBE16(1)))
-            ((UsesTwilightZone, SkTEndian_SwapBE16(2)))
-            SK_SEQ_END,
-        (value)SK_SEQ_END)
+        enum Value : SK_OT_USHORT {
+            DoesNotUseTwilightZone = SkTEndian_SwapBE16(1),
+            UsesTwilightZone = SkTEndian_SwapBE16(2),
+        } value;
     } maxZones;
     SK_OT_USHORT maxTwilightPoints;
     SK_OT_USHORT maxStorage;
@@ -36,6 +34,7 @@ struct SkOTTableMaximumProfile_TT {
     SK_OT_USHORT maxInstructionDefs;
     SK_OT_USHORT maxStackElements;
     SK_OT_USHORT maxSizeOfInstructions;
+    SK_OT_USHORT maxComponentElements;
     SK_OT_USHORT maxComponentDepth;
 };
 
@@ -43,7 +42,7 @@ struct SkOTTableMaximumProfile_TT {
 
 
 #include <stddef.h>
-SK_COMPILE_ASSERT(offsetof(SkOTTableMaximumProfile_TT, maxComponentDepth) == 28, SkOTTableMaximumProfile_TT_maxComponentDepth_not_at_26);
-SK_COMPILE_ASSERT(sizeof(SkOTTableMaximumProfile_TT) == 30, sizeof_SkOTTableMaximumProfile_TT_not_28);
+static_assert(offsetof(SkOTTableMaximumProfile_TT, maxComponentDepth) == 30, "SkOTTableMaximumProfile_TT_maxComponentDepth_not_at_30");
+static_assert(sizeof(SkOTTableMaximumProfile_TT) == 32, "sizeof_SkOTTableMaximumProfile_TT_not_32");
 
 #endif

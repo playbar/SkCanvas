@@ -5,10 +5,10 @@
  * found in the LICENSE file.
  */
 
-#include "SkTypes.h"
+#ifndef SkFrontBufferedStream_DEFINED
+#define SkFrontBufferedStream_DEFINED
 
-class SkStream;
-class SkStreamRewindable;
+#include "SkStream.h"
 
 /**
  *  Specialized stream that buffers the first X bytes of a stream,
@@ -19,17 +19,21 @@ class SkStreamRewindable;
  *  X bytes (inclusive), and the wrapped stream is not necessarily
  *  able to rewind at all.
  */
-class SkFrontBufferedStream {
+class SK_API SkFrontBufferedStream {
 public:
     /**
      *  Creates a new stream that wraps and buffers an SkStream.
      *  @param stream SkStream to buffer. If stream is NULL, NULL is
      *      returned. When this call succeeds (i.e. returns non NULL),
      *      SkFrontBufferedStream is expected to be the only owner of
-     *      stream, so it should be unreffed and no longer used directly.
+     *      stream, so it should no be longer used directly.
+     *      SkFrontBufferedStream will delete stream upon deletion.
      *  @param minBufferSize Minimum size of buffer required.
      *  @return An SkStream that can buffer at least minBufferSize, or
-     *      NULL on failure.
+     *      NULL on failure. The caller is required to delete when finished with
+     *      this object.
      */
-    static SkStreamRewindable* Create(SkStream* stream, size_t minBufferSize);
+    static std::unique_ptr<SkStreamRewindable> Make(std::unique_ptr<SkStream> stream,
+                                                    size_t minBufferSize);
 };
+#endif  // SkFrontBufferedStream_DEFINED

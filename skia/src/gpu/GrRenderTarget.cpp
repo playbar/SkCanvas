@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2011 Google Inc.
  *
@@ -10,76 +9,32 @@
 #include "GrRenderTarget.h"
 
 #include "GrContext.h"
+#include "GrContextPriv.h"
+#include "GrRenderTargetContext.h"
 #include "GrGpu.h"
-#include "GrStencilBuffer.h"
+#include "GrRenderTargetOpList.h"
+#include "GrRenderTargetPriv.h"
+#include "GrStencilAttachment.h"
+#include "GrStencilSettings.h"
+#include "SkRectPriv.h"
 
-bool GrRenderTarget::readPixels(int left, int top, int width, int height,
-                                GrPixelConfig config,
-                                void* buffer,
-                                size_t rowBytes,
-                                uint32_t pixelOpsFlags) {
-    // go through context so that all necessary flushing occurs
-    GrContext* context = this->getContext();
-    if (NULL == context) {
-        return false;
-    }
-    return context->readRenderTargetPixels(this,
-                                           left, top, width, height,
-                                           config, buffer, rowBytes,
-                                           pixelOpsFlags);
-}
-
-void GrRenderTarget::writePixels(int left, int top, int width, int height,
-                                 GrPixelConfig config,
-                                 const void* buffer,
-                                 size_t rowBytes,
-                                 uint32_t pixelOpsFlags) {
-    // go through context so that all necessary flushing occurs
-    GrContext* context = this->getContext();
-    if (NULL == context) {
-        return;
-    }
-    context->writeRenderTargetPixels(this,
-                                     left, top, width, height,
-                                     config, buffer, rowBytes,
-                                     pixelOpsFlags);
-}
-
-void GrRenderTarget::resolve() {
-    // go through context so that all necessary flushing occurs
-    GrContext* context = this->getContext();
-    if (NULL == context) {
-        return;
-    }
-    context->resolveRenderTarget(this);
-}
-
-void GrRenderTarget::discard() {
-    // go through context so that all necessary flushing occurs
-    GrContext* context = this->getContext();
-    if (NULL == context) {
-        return;
-    }
-    context->discardRenderTarget(this);
-}
-
-size_t GrRenderTarget::gpuMemorySize() const {
-    size_t colorBits;
-    if (kUnknown_GrPixelConfig == fDesc.fConfig) {
-        colorBits = 32; // don't know, make a guess
-    } else {
-        colorBits = GrBytesPerPixel(fDesc.fConfig);
-    }
-    uint64_t size = fDesc.fWidth;
-    size *= fDesc.fHeight;
-    size *= colorBits;
-    size *= SkTMax(1, fDesc.fSampleCnt);
-    return (size_t)(size / 8);
+GrRenderTarget::GrRenderTarget(GrGpu* gpu, const GrSurfaceDesc& desc,
+                               GrRenderTargetFlags flags,
+                               GrStencilAttachment* stencil)
+        : INHERITED(gpu, desc)
+        , fSampleCnt(desc.fSampleCnt)
+        , fStencilAttachment(stencil)
+        , fFlags(flags) {
+    SkASSERT(desc.fFlags & kRenderTarget_GrSurfaceFlag);
+    SkASSERT(!(fFlags & GrRenderTargetFlags::kMixedSampled) || fSampleCnt > 1);
+    SkASSERT(!(fFlags & GrRenderTargetFlags::kWindowRectsSupport) ||
+             gpu->caps()->maxWindowRectangles() > 0);
+    fResolveRect = SkRectPriv::MakeILargestInverted();
 }
 
 void GrRenderTarget::flagAsNeedingResolve(const SkIRect* rect) {
     if (kCanResolve_ResolveType == getResolveType()) {
-        if (NULL != rect) {
+        if (rect) {
             fResolveRect.join(*rect);
             if (!fResolveRect.intersect(0, 0, this->width(), this->height())) {
                 fResolveRect.setEmpty();
@@ -93,26 +48,47 @@ void GrRenderTarget::flagAsNeedingResolve(const SkIRect* rect) {
 void GrRenderTarget::overrideResolveRect(const SkIRect rect) {
     fResolveRect = rect;
     if (fResolveRect.isEmpty()) {
-        fResolveRect.setLargestInverted();
+        fResolveRect = SkRectPriv::MakeILargestInverted();
     } else {
         if (!fResolveRect.intersect(0, 0, this->width(), this->height())) {
-            fResolveRect.setLargestInverted();
+            fResolveRect = SkRectPriv::MakeILargestInverted();
         }
     }
 }
 
-void GrRenderTarget::setStencilBuffer(GrStencilBuffer* stencilBuffer) {
-    SkRefCnt_SafeAssign(fStencilBuffer, stencilBuffer);
+void GrRenderTarget::flagAsResolved() {
+    fResolveRect = SkRectPriv::MakeILargestInverted();
 }
 
 void GrRenderTarget::onRelease() {
-    this->setStencilBuffer(NULL);
+    SkSafeSetNull(fStencilAttachment);
 
     INHERITED::onRelease();
 }
 
 void GrRenderTarget::onAbandon() {
-    this->setStencilBuffer(NULL);
+    SkSafeSetNull(fStencilAttachment);
 
     INHERITED::onAbandon();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool GrRenderTargetPriv::attachStencilAttachment(sk_sp<GrStencilAttachment> stencil) {
+    if (!stencil && !fRenderTarget->fStencilAttachment) {
+        // No need to do any work since we currently don't have a stencil attachment and
+        // we're not actually adding one.
+        return true;
+    }
+    fRenderTarget->fStencilAttachment = stencil.release();
+    if (!fRenderTarget->completeStencilAttachment()) {
+        SkSafeSetNull(fRenderTarget->fStencilAttachment);
+        return false;
+    }
+    return true;
+}
+
+int GrRenderTargetPriv::numStencilBits() const {
+    SkASSERT(this->getStencilAttachment());
+    return this->getStencilAttachment()->bits();
 }

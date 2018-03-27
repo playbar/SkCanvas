@@ -6,7 +6,9 @@
  */
 
 #include "gm.h"
-
+#include "sk_tool_utils.h"
+#include "SkShader.h"
+#include "SkTraceEvent.h"
 using namespace skiagm;
 
 GM::GM() {
@@ -14,17 +16,18 @@ GM::GM() {
     fBGColor = SK_ColorWHITE;
     fCanvasIsDeferred = false;
     fHaveCalledOnceBeforeDraw = false;
-    fStarterMatrix.reset();
 }
 
 GM::~GM() {}
 
 void GM::draw(SkCanvas* canvas) {
+    TRACE_EVENT1("GM", TRACE_FUNC, "name", TRACE_STR_COPY(this->getName()));
     this->drawBackground(canvas);
     this->drawContent(canvas);
 }
 
 void GM::drawContent(SkCanvas* canvas) {
+    TRACE_EVENT0("GM", TRACE_FUNC);
     if (!fHaveCalledOnceBeforeDraw) {
         fHaveCalledOnceBeforeDraw = true;
         this->onOnceBeforeDraw();
@@ -33,6 +36,7 @@ void GM::drawContent(SkCanvas* canvas) {
 }
 
 void GM::drawBackground(SkCanvas* canvas) {
+    TRACE_EVENT0("GM", TRACE_FUNC);
     if (!fHaveCalledOnceBeforeDraw) {
         fHaveCalledOnceBeforeDraw = true;
         this->onOnceBeforeDraw();
@@ -51,8 +55,14 @@ void GM::setBGColor(SkColor color) {
     fBGColor = color;
 }
 
+bool GM::animate(const SkAnimTimer& timer) {
+    return this->onAnimate(timer);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
 void GM::onDrawBackground(SkCanvas* canvas) {
-    canvas->drawColor(fBGColor, SkXfermode::kSrc_Mode);
+    canvas->drawColor(fBGColor, SkBlendMode::kSrc);
 }
 
 void GM::drawSizeBounds(SkCanvas* canvas, SkColor color) {
@@ -64,5 +74,40 @@ void GM::drawSizeBounds(SkCanvas* canvas, SkColor color) {
     canvas->drawRect(r, paint);
 }
 
+void GM::DrawGpuOnlyMessage(SkCanvas* canvas) {
+    SkBitmap bmp;
+    bmp.allocN32Pixels(128, 64);
+    SkCanvas bmpCanvas(bmp);
+    bmpCanvas.drawColor(SK_ColorWHITE);
+    SkPaint paint;
+    paint.setAntiAlias(true);
+    paint.setTextSize(20);
+    paint.setColor(SK_ColorRED);
+    sk_tool_utils::set_portable_typeface(&paint);
+    constexpr char kTxt[] = "GPU Only";
+    bmpCanvas.drawString(kTxt, 20, 40, paint);
+    SkMatrix localM;
+    localM.setRotate(35.f);
+    localM.postTranslate(10.f, 0.f);
+    paint.setShader(SkShader::MakeBitmapShader(bmp, SkShader::kMirror_TileMode,
+                                               SkShader::kMirror_TileMode,
+                                               &localM));
+    paint.setFilterQuality(kMedium_SkFilterQuality);
+    canvas->drawPaint(paint);
+    return;
+}
+
 // need to explicitly declare this, or we get some weird infinite loop llist
 template GMRegistry* GMRegistry::gHead;
+
+void skiagm::SimpleGM::onDraw(SkCanvas* canvas) {
+    fDrawProc(canvas);
+}
+
+SkISize skiagm::SimpleGM::onISize() {
+    return fSize;
+}
+
+SkString skiagm::SimpleGM::onShortName() {
+    return fName;
+}

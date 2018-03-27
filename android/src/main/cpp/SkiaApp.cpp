@@ -271,27 +271,27 @@ void SkiaApp::TestFillStyle( SkCanvas *canvas )
     canvas->drawRect(r, paint);
 
 
-//	SkPoint s = SkPoint::Make(100,100);
-//	SkShader* shader2 = SkGradientShader::CreateRadial(
-//					   s, 100, data.fColors, data.fPos, data.fCount,
-//					   SkShader::kMirror_TileMode);
-//	paint.setShader(shader2)->unref();
-//	canvas->translate(250, 0);
-//	canvas->drawRect(r, paint);
-//
-//	SkShader* shader3 = SkGradientShader::CreateTwoPointRadial(
-//					   p, 0, q, 100, data.fColors, data.fPos, data.fCount,
-//					   SkShader::kMirror_TileMode);
-//	paint.setShader(shader3)->unref();
-//	canvas->translate(0, 250);
-//	canvas->drawRect(r, paint);
-//
-//	SkShader* shader4 = SkGradientShader::CreateSweep(
-//						100, 100, data.fColors, data.fPos, data.fCount);
-//
-//	paint.setShader(shader4)->unref();
-//	canvas->translate(-250, 0);
-//	canvas->drawRect(r, paint);
+	SkPoint s = SkPoint::Make(100,100);
+	SkShader* shader2 = SkGradientShader::CreateRadial(
+					   s, 100, data.fColors, data.fPos, data.fCount,
+					   SkShader::kMirror_TileMode);
+	paint.setShader(shader2)->unref();
+	canvas->translate(250, 0);
+	canvas->drawRect(r, paint);
+
+	SkShader* shader3 = SkGradientShader::CreateTwoPointRadial(
+					   p, 0, q, 100, data.fColors, data.fPos, data.fCount,
+					   SkShader::kMirror_TileMode);
+	paint.setShader(shader3)->unref();
+	canvas->translate(0, 250);
+	canvas->drawRect(r, paint);
+
+	SkShader* shader4 = SkGradientShader::CreateSweep(
+						100, 100, data.fColors, data.fPos, data.fCount);
+
+	paint.setShader(shader4)->unref();
+	canvas->translate(-250, 0);
+	canvas->drawRect(r, paint);
 	canvas->restore();
 	return;
 }
@@ -389,55 +389,55 @@ void SkiaApp::TestShadow( SkCanvas *canvas )
 
 void SkiaApp::TestScale(SkCanvas *canvas )
 {
-	 canvas->scale(SkIntToScalar(3)/2, SkIntToScalar(3)/2);
+	canvas->scale(SkIntToScalar(3)/2, SkIntToScalar(3)/2);
 
-	        const SkScalar w = 480;
-	        const SkScalar h = SkIntToScalar(800);
-	        SkRect r = { -w, -h, w*2, h*2 };
+	const SkScalar w = 480;
+	const SkScalar h = SkIntToScalar(800);
+	SkRect r = { -w, -h, w*2, h*2 };
 
-	        static const SkShader::TileMode gModes[] = {
-	            SkShader::kClamp_TileMode, SkShader::kRepeat_TileMode, SkShader::kMirror_TileMode
-	        };
-	        static const char* gModeNames[] = {
-	            "Clamp", "Repeat", "Mirror"
-	        };
+	static const SkShader::TileMode gModes[] = {
+			SkShader::kClamp_TileMode, SkShader::kRepeat_TileMode, SkShader::kMirror_TileMode
+	};
+	static const char* gModeNames[] = {
+			"Clamp", "Repeat", "Mirror"
+	};
 
-	        SkScalar y = SkIntToScalar(24);
-	        SkScalar x = SkIntToScalar(66);
+	SkScalar y = SkIntToScalar(24);
+	SkScalar x = SkIntToScalar(66);
 
-	        SkPaint p;
-	        p.setAntiAlias(true);
-	        p.setTextAlign(SkPaint::kCenter_Align);
+	SkPaint p;
+	p.setAntiAlias(true);
+	p.setTextAlign(SkPaint::kCenter_Align);
 
-	        for (size_t kx = 0; kx < SK_ARRAY_COUNT(gModes); kx++) {
-	            SkString str(gModeNames[kx]);
-	            canvas->drawText(str.c_str(), str.size(), x + r.width()/2, y, p);
-	            x += r.width() * 4 / 3;
-	        }
+	for (size_t kx = 0; kx < SK_ARRAY_COUNT(gModes); kx++) {
+		SkString str(gModeNames[kx]);
+		canvas->drawText(str.c_str(), str.size(), x + r.width()/2, y, p);
+		x += r.width() * 4 / 3;
+	}
 
-	        y += SkIntToScalar(16) + h;
-	        p.setTextAlign(SkPaint::kRight_Align);
+	y += SkIntToScalar(16) + h;
+	p.setTextAlign(SkPaint::kRight_Align);
 
-	        for (size_t ky = 0; ky < SK_ARRAY_COUNT(gModes); ky++) {
-	            x = SkIntToScalar(16) + w;
+	for (size_t ky = 0; ky < SK_ARRAY_COUNT(gModes); ky++) {
+		x = SkIntToScalar(16) + w;
 
-	            SkString str(gModeNames[ky]);
-	            canvas->drawText(str.c_str(), str.size(), x, y + h/2, p);
+		SkString str(gModeNames[ky]);
+		canvas->drawText(str.c_str(), str.size(), x, y + h/2, p);
 
-	            x += SkIntToScalar(50);
-	            for (size_t kx = 0; kx < SK_ARRAY_COUNT(gModes); kx++) {
-	                SkPaint paint;
-	                //paint.setShader(fProc(gModes[kx], gModes[ky]))->unref();
+		x += SkIntToScalar(50);
+		for (size_t kx = 0; kx < SK_ARRAY_COUNT(gModes); kx++) {
+			SkPaint paint;
+			//paint.setShader(fProc(gModes[kx], gModes[ky]))->unref();
 
-	                canvas->save();
-	                canvas->translate(x, y);
-	                canvas->drawRect(r, paint);
-	                canvas->restore();
+			canvas->save();
+			canvas->translate(x, y);
+			canvas->drawRect(r, paint);
+			canvas->restore();
 
-	                x += r.width() * 4 / 3;
-	            }
-	            y += r.height() * 4 / 3;
-	        }
+			x += r.width() * 4 / 3;
+		}
+		y += r.height() * 4 / 3;
+	}
 
 }
 
@@ -654,7 +654,7 @@ void SkiaApp::TestDrawRect(SkCanvas *canvas)
 
 void SkiaApp::mainLoop(){
 	canvas->drawColor(0xffffffff);
-    TestShadowOffset(canvas);
+    TestFillStyle(canvas);
 //	canvas->drawCircle( 200, 200, 100, fillPaint);
 //    draw_checks(canvas, 640, 640);
 	fCurContext->flush();

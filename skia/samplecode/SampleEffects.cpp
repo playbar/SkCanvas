@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2011 Google Inc.
  *
@@ -11,6 +10,7 @@
 #include "SkCanvas.h"
 #include "SkColorMatrixFilter.h"
 #include "SkDiscretePathEffect.h"
+#include "SkEmbossMaskFilter.h"
 #include "SkGradientShader.h"
 #include "SkPaint.h"
 #include "SkView.h"
@@ -23,25 +23,22 @@ static void paint_proc0(SkPaint*) {
 }
 
 static void paint_proc1(SkPaint* paint) {
-    paint->setMaskFilter(SkBlurMaskFilter::Create(
+    paint->setMaskFilter(SkBlurMaskFilter::Make(
                                 kNormal_SkBlurStyle,
-                                SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(2))))->unref();
+                                SkBlurMask::ConvertRadiusToSigma(2)));
 }
 
 static void paint_proc2(SkPaint* paint) {
-    SkScalar dir[3] = { 1, 1, 1};
-    paint->setMaskFilter(
-            SkBlurMaskFilter::CreateEmboss(SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(1)),
-                                           dir,
-                                           0.1f,
-                                           0.05f))->unref();
+    paint->setMaskFilter(SkEmbossMaskFilter::Make(
+            SkBlurMask::ConvertRadiusToSigma(SkIntToScalar(1)),
+            { { SK_Scalar1, SK_Scalar1, SK_Scalar1 }, 0, 64, 16 }));
 }
 
 static void paint_proc3(SkPaint* paint) {
     SkColor colors[] = { SK_ColorRED, COLOR, SK_ColorBLUE };
     SkPoint pts[] = { { 3, 0 }, { 7, 5 } };
-    paint->setShader(SkGradientShader::CreateLinear(pts, colors, NULL, SK_ARRAY_COUNT(colors),
-                                        SkShader::kMirror_TileMode))->unref();
+    paint->setShader(SkGradientShader::MakeLinear(pts, colors, nullptr, SK_ARRAY_COUNT(colors),
+                                                  SkShader::kMirror_TileMode));
 }
 
 static void paint_proc5(SkPaint* paint) {

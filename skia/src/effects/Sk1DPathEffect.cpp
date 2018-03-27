@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2006 The Android Open Source Project
  *
@@ -11,14 +10,20 @@
 #include "SkReadBuffer.h"
 #include "SkWriteBuffer.h"
 #include "SkPathMeasure.h"
+#include "SkStrokeRec.h"
+
+// Since we are stepping by a float, the do/while loop might go on forever (or nearly so).
+// Put in a governor to limit crash values from looping too long (and allocating too much ram).
+#define MAX_REASONABLE_ITERATIONS   100000
 
 bool Sk1DPathEffect::filterPath(SkPath* dst, const SkPath& src,
                                 SkStrokeRec*, const SkRect*) const {
     SkPathMeasure   meas(src, false);
     do {
+        int governor = MAX_REASONABLE_ITERATIONS;
         SkScalar    length = meas.getLength();
         SkScalar    distance = this->begin(length);
-        while (distance < length) {
+        while (distance < length && --governor >= 0) {
             SkScalar delta = this->next(dst, distance, meas);
             if (delta <= 0) {
                 break;
@@ -31,51 +36,43 @@ bool Sk1DPathEffect::filterPath(SkPath* dst, const SkPath& src,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-SkPath1DPathEffect::SkPath1DPathEffect(const SkPath& path, SkScalar advance,
-    SkScalar phase, Style style) : fPath(path)
-{
-    if (advance <= 0 || path.isEmpty()) {
-        SkDEBUGF(("SkPath1DPathEffect can't use advance <= 0\n"));
-        fAdvance = 0;   // signals we can't draw anything
-        fInitialOffset = 0;
-        fStyle = kStyleCount;
+SkPath1DPathEffect::SkPath1DPathEffect(const SkPath& path, SkScalar advance, SkScalar phase,
+                                       Style style) : fPath(path) {
+    SkASSERT(advance > 0 && !path.isEmpty());
+    SkASSERT((unsigned)style <= kMorph_Style);
+
+    // cleanup their phase parameter, inverting it so that it becomes an
+    // offset along the path (to match the interpretation in PostScript)
+    if (phase < 0) {
+        phase = -phase;
+        if (phase > advance) {
+            phase = SkScalarMod(phase, advance);
+        }
     } else {
-        // cleanup their phase parameter, inverting it so that it becomes an
-        // offset along the path (to match the interpretation in PostScript)
-        if (phase < 0) {
-            phase = -phase;
-            if (phase > advance) {
-                phase = SkScalarMod(phase, advance);
-            }
-        } else {
-            if (phase > advance) {
-                phase = SkScalarMod(phase, advance);
-            }
-            phase = advance - phase;
+        if (phase > advance) {
+            phase = SkScalarMod(phase, advance);
         }
-        // now catch the edge case where phase == advance (within epsilon)
-        if (phase >= advance) {
-            phase = 0;
-        }
-        SkASSERT(phase >= 0);
-
-        fAdvance = advance;
-        fInitialOffset = phase;
-
-        if ((unsigned)style >= kStyleCount) {
-            SkDEBUGF(("SkPath1DPathEffect style enum out of range %d\n", style));
-        }
-        fStyle = style;
+        phase = advance - phase;
     }
+    // now catch the edge case where phase == advance (within epsilon)
+    if (phase >= advance) {
+        phase = 0;
+    }
+    SkASSERT(phase >= 0);
+
+    fAdvance = advance;
+    fInitialOffset = phase;
+
+    if ((unsigned)style > kMorph_Style) {
+        SkDEBUGF(("SkPath1DPathEffect style enum out of range %d\n", style));
+    }
+    fStyle = style;
 }
 
 bool SkPath1DPathEffect::filterPath(SkPath* dst, const SkPath& src,
                             SkStrokeRec* rec, const SkRect* cullRect) const {
-    if (fAdvance > 0) {
-        rec->setFillStyle();
-        return this->INHERITED::filterPath(dst, src, rec, cullRect);
-    }
-    return false;
+    rec->setFillStyle();
+    return this->INHERITED::filterPath(dst, src, rec, cullRect);
 }
 
 static bool morphpoints(SkPoint dst[], const SkPoint src[], int count,
@@ -132,6 +129,11 @@ static void morphpath(SkPath* dst, const SkPath& src, SkPathMeasure& meas,
                     dst->quadTo(dstP[0], dstP[1]);
                 }
                 break;
+            case SkPath::kConic_Verb:
+                if (morphpoints(dstP, &srcP[1], 2, meas, dist)) {
+                    dst->conicTo(dstP[0], dstP[1], iter.conicWeight());
+                }
+                break;
             case SkPath::kCubic_Verb:
                 if (morphpoints(dstP, &srcP[1], 3, meas, dist)) {
                     dst->cubicTo(dstP[0], dstP[1], dstP[2]);
@@ -147,32 +149,24 @@ static void morphpath(SkPath* dst, const SkPath& src, SkPathMeasure& meas,
     }
 }
 
-SkPath1DPathEffect::SkPath1DPathEffect(SkReadBuffer& buffer) {
-    fAdvance = buffer.readScalar();
-    if (fAdvance > 0) {
-        buffer.readPath(&fPath);
-        fInitialOffset = buffer.readScalar();
-        fStyle = (Style) buffer.readUInt();
-    } else {
-        SkDEBUGF(("SkPath1DPathEffect can't use advance <= 0\n"));
-        // Make Coverity happy.
-        fInitialOffset = 0;
-        fStyle = kStyleCount;
-    }
-}
-
 SkScalar SkPath1DPathEffect::begin(SkScalar contourLength) const {
     return fInitialOffset;
 }
 
+sk_sp<SkFlattenable> SkPath1DPathEffect::CreateProc(SkReadBuffer& buffer) {
+    SkScalar advance = buffer.readScalar();
+    SkPath path;
+    buffer.readPath(&path);
+    SkScalar phase = buffer.readScalar();
+    Style style = buffer.read32LE(kLastEnum_Style);
+    return buffer.isValid() ? SkPath1DPathEffect::Make(path, advance, phase, style) : nullptr;
+}
+
 void SkPath1DPathEffect::flatten(SkWriteBuffer& buffer) const {
-    this->INHERITED::flatten(buffer);
     buffer.writeScalar(fAdvance);
-    if (fAdvance > 0) {
-        buffer.writePath(fPath);
-        buffer.writeScalar(fInitialOffset);
-        buffer.writeUInt(fStyle);
-    }
+    buffer.writePath(fPath);
+    buffer.writeScalar(fInitialOffset);
+    buffer.writeUInt(fStyle);
 }
 
 SkScalar SkPath1DPathEffect::next(SkPath* dst, SkScalar distance,
@@ -180,7 +174,7 @@ SkScalar SkPath1DPathEffect::next(SkPath* dst, SkScalar distance,
     switch (fStyle) {
         case kTranslate_Style: {
             SkPoint pos;
-            if (meas.getPosTan(distance, &pos, NULL)) {
+            if (meas.getPosTan(distance, &pos, nullptr)) {
                 dst->addPath(fPath, pos.fX, pos.fY);
             }
         } break;
@@ -198,4 +192,24 @@ SkScalar SkPath1DPathEffect::next(SkPath* dst, SkScalar distance,
             break;
     }
     return fAdvance;
+}
+
+
+#ifndef SK_IGNORE_TO_STRING
+void SkPath1DPathEffect::toString(SkString* str) const {
+    str->appendf("SkPath1DPathEffect: (");
+    // TODO: add path and style
+    str->appendf("advance: %.2f phase %.2f", fAdvance, fInitialOffset);
+    str->appendf(")");
+}
+#endif
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+sk_sp<SkPathEffect> SkPath1DPathEffect::Make(const SkPath& path, SkScalar advance, SkScalar phase,
+                                             Style style) {
+    if (advance <= 0 || !SkScalarIsFinite(advance) || !SkScalarIsFinite(phase) || path.isEmpty()) {
+        return nullptr;
+    }
+    return sk_sp<SkPathEffect>(new SkPath1DPathEffect(path, advance, phase, style));
 }

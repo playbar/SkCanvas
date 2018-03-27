@@ -7,13 +7,14 @@
 
 #include "SkCommandLineFlags.h"
 #include "SkPicture.h"
-#include "SkPicturePlayback.h"
+#include "SkPictureData.h"
+#include "SkPictureCommon.h"
 #include "SkStream.h"
+#include "SkFontDescriptor.h"
 
 DEFINE_string2(input, i, "", "skp on which to report");
 DEFINE_bool2(version, v, true, "version");
-DEFINE_bool2(width, w, true, "width");
-DEFINE_bool2(height, h, true, "height");
+DEFINE_bool2(cullRect, c, true, "cullRect");
 DEFINE_bool2(flags, f, true, "flags");
 DEFINE_bool2(tags, t, true, "tags");
 DEFINE_bool2(quiet, q, false, "quiet");
@@ -29,8 +30,7 @@ static const int kInvalidTag = 3;
 static const int kMissingInput = 4;
 static const int kIOError = 5;
 
-int tool_main(int argc, char** argv);
-int tool_main(int argc, char** argv) {
+int main(int argc, char** argv) {
     SkCommandLineFlags::SetUsage("Prints information about an skp file");
     SkCommandLineFlags::Parse(argc, argv);
 
@@ -52,21 +52,17 @@ int tool_main(int argc, char** argv) {
     size_t totStreamSize = stream.getLength();
 
     SkPictInfo info;
-    if (!SkPicture::InternalOnly_StreamIsSKP(&stream, &info)) {
+    if (!SkPicture_StreamIsSKP(&stream, &info)) {
         return kNotAnSKP;
     }
 
     if (FLAGS_version && !FLAGS_quiet) {
-        SkDebugf("Version: %d\n", info.fVersion);
+        SkDebugf("Version: %d\n", info.getVersion());
     }
-    if (FLAGS_width && !FLAGS_quiet) {
-        SkDebugf("Width: %d\n", info.fWidth);
-    }
-    if (FLAGS_height && !FLAGS_quiet) {
-        SkDebugf("Height: %d\n", info.fHeight);
-    }
-    if (FLAGS_flags && !FLAGS_quiet) {
-        SkDebugf("Flags: 0x%x\n", info.fFlags);
+    if (FLAGS_cullRect && !FLAGS_quiet) {
+        SkDebugf("Cull Rect: %f,%f,%f,%f\n",
+                 info.fCullRect.fLeft, info.fCullRect.fTop,
+                 info.fCullRect.fRight, info.fCullRect.fBottom);
     }
 
     if (!stream.readBool()) {
@@ -108,23 +104,27 @@ int tool_main(int argc, char** argv) {
             if (FLAGS_tags && !FLAGS_quiet) {
                 SkDebugf("SK_PICT_FACTORY_TAG %d\n", chunkSize);
             }
-            // Remove this code when v21 and below are no longer supported
-#ifndef DISABLE_V21_COMPATIBILITY_CODE
-            if (info.fVersion < 22) {
-                if (!FLAGS_quiet) {
-                    SkDebugf("Exiting early due to format limitations\n");
-                }
-                return kSuccess;       // TODO: need to store size in bytes
-            }
-#endif
             break;
-        case SK_PICT_TYPEFACE_TAG:
+        case SK_PICT_TYPEFACE_TAG: {
             if (FLAGS_tags && !FLAGS_quiet) {
                 SkDebugf("SK_PICT_TYPEFACE_TAG %d\n", chunkSize);
-                SkDebugf("Exiting early due to format limitations\n");
             }
-            return kSuccess;       // TODO: need to store size in bytes
+
+            const int count = SkToInt(chunkSize);
+            for (int i = 0; i < count; i++) {
+                SkFontDescriptor desc;
+                if (!SkFontDescriptor::Deserialize(&stream, &desc)) {
+                    if (!FLAGS_quiet) {
+                        SkDebugf("File corruption in SkFontDescriptor\n");
+                    }
+                    return kInvalidTag;
+                }
+            }
+
+            // clear this since we've consumed all the typefaces
+            chunkSize = 0;
             break;
+        }
         case SK_PICT_PICTURE_TAG:
             if (FLAGS_tags && !FLAGS_quiet) {
                 SkDebugf("SK_PICT_PICTURE_TAG %d\n", chunkSize);
@@ -154,9 +154,3 @@ int tool_main(int argc, char** argv) {
 
     return kSuccess;
 }
-
-#if !defined SK_BUILD_FOR_IOS
-int main(int argc, char * const argv[]) {
-    return tool_main(argc, (char**) argv);
-}
-#endif

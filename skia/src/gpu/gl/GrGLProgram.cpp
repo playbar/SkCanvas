@@ -8,258 +8,179 @@
 #include "GrGLProgram.h"
 
 #include "GrAllocator.h"
-#include "GrEffect.h"
+#include "GrProcessor.h"
 #include "GrCoordTransform.h"
-#include "GrDrawEffect.h"
-#include "GrGLEffect.h"
-#include "GrGpuGL.h"
-#include "GrGLShaderVar.h"
-#include "GrGLSL.h"
-#include "SkXfermode.h"
+#include "GrGLGpu.h"
+#include "GrGLBuffer.h"
+#include "GrGLPathRendering.h"
+#include "GrPathProcessor.h"
+#include "GrPipeline.h"
+#include "GrXferProcessor.h"
+#include "glsl/GrGLSLFragmentProcessor.h"
+#include "glsl/GrGLSLGeometryProcessor.h"
+#include "glsl/GrGLSLXferProcessor.h"
 
 #define GL_CALL(X) GR_GL_CALL(fGpu->glInterface(), X)
 #define GL_CALL_RET(R, X) GR_GL_CALL_RET(fGpu->glInterface(), R, X)
 
-GrGLProgram* GrGLProgram::Create(GrGpuGL* gpu,
-                                 const GrGLProgramDesc& desc,
-                                 const GrEffectStage* colorStages[],
-                                 const GrEffectStage* coverageStages[]) {
-    GrGLShaderBuilder::GenProgramOutput output;
-    SkAutoTUnref<GrGLUniformManager> uman(SkNEW_ARGS(GrGLUniformManager, (gpu)));
-    if (GrGLShaderBuilder::GenProgram(gpu, uman, desc, colorStages, coverageStages,
-                                      &output)) {
-        SkASSERT(0 != output.fProgramID);
-        return SkNEW_ARGS(GrGLProgram, (gpu, desc, uman, output));
-    }
-    return NULL;
-}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
-GrGLProgram::GrGLProgram(GrGpuGL* gpu,
-                         const GrGLProgramDesc& desc,
-                         GrGLUniformManager* uman,
-                         const GrGLShaderBuilder::GenProgramOutput& builderOutput)
-    : fColor(GrColor_ILLEGAL)
-    , fCoverage(GrColor_ILLEGAL)
-    , fDstCopyTexUnit(-1)
-    , fBuilderOutput(builderOutput)
+GrGLProgram::GrGLProgram(GrGLGpu* gpu,
+                         const GrProgramDesc& desc,
+                         const BuiltinUniformHandles& builtinUniforms,
+                         GrGLuint programID,
+                         const UniformInfoArray& uniforms,
+                         const UniformInfoArray& textureSamplers,
+                         const UniformInfoArray& texelBuffers,
+                         const VaryingInfoArray& pathProcVaryings,
+                         std::unique_ptr<GrGLSLPrimitiveProcessor> geometryProcessor,
+                         std::unique_ptr<GrGLSLXferProcessor> xferProcessor,
+                         const GrGLSLFragProcs& fragmentProcessors)
+    : fBuiltinUniformHandles(builtinUniforms)
+    , fProgramID(programID)
+    , fGeometryProcessor(std::move(geometryProcessor))
+    , fXferProcessor(std::move(xferProcessor))
+    , fFragmentProcessors(fragmentProcessors)
     , fDesc(desc)
     , fGpu(gpu)
-    , fUniformManager(SkRef(uman)) {
-    this->initSamplerUniforms();
+    , fProgramDataManager(gpu, programID, uniforms, pathProcVaryings)
+    , fNumTextureSamplers(textureSamplers.count())
+    , fNumTexelBuffers(texelBuffers.count()) {
+    // Assign texture units to sampler uniforms one time up front.
+    GL_CALL(UseProgram(fProgramID));
+    fProgramDataManager.setSamplerUniforms(textureSamplers, 0);
+    fProgramDataManager.setSamplerUniforms(texelBuffers, fNumTextureSamplers);
 }
 
 GrGLProgram::~GrGLProgram() {
-    if (fBuilderOutput.fProgramID) {
-        GL_CALL(DeleteProgram(fBuilderOutput.fProgramID));
+    if (fProgramID) {
+        GL_CALL(DeleteProgram(fProgramID));
+    }
+    for (int i = 0; i < fFragmentProcessors.count(); ++i) {
+        delete fFragmentProcessors[i];
     }
 }
 
 void GrGLProgram::abandon() {
-    fBuilderOutput.fProgramID = 0;
-}
-
-void GrGLProgram::overrideBlend(GrBlendCoeff* srcCoeff,
-                                GrBlendCoeff* dstCoeff) const {
-    switch (fDesc.getHeader().fCoverageOutput) {
-        case GrGLProgramDesc::kModulate_CoverageOutput:
-            break;
-        // The prog will write a coverage value to the secondary
-        // output and the dst is blended by one minus that value.
-        case GrGLProgramDesc::kSecondaryCoverage_CoverageOutput:
-        case GrGLProgramDesc::kSecondaryCoverageISA_CoverageOutput:
-        case GrGLProgramDesc::kSecondaryCoverageISC_CoverageOutput:
-            *dstCoeff = (GrBlendCoeff)GrGpu::kIS2C_GrBlendCoeff;
-            break;
-        case GrGLProgramDesc::kCombineWithDst_CoverageOutput:
-            // We should only have set this if the blend was specified as (1, 0)
-            SkASSERT(kOne_GrBlendCoeff == *srcCoeff && kZero_GrBlendCoeff == *dstCoeff);
-            break;
-        default:
-            SkFAIL("Unexpected coverage output");
-            break;
-    }
-}
-
-void GrGLProgram::initSamplerUniforms() {
-    GL_CALL(UseProgram(fBuilderOutput.fProgramID));
-    GrGLint texUnitIdx = 0;
-    if (fBuilderOutput.fUniformHandles.fDstCopySamplerUni.isValid()) {
-        fUniformManager->setSampler(fBuilderOutput.fUniformHandles.fDstCopySamplerUni, texUnitIdx);
-        fDstCopyTexUnit = texUnitIdx++;
-    }
-    fBuilderOutput.fColorEffects->initSamplers(*fUniformManager, &texUnitIdx);
-    fBuilderOutput.fCoverageEffects->initSamplers(*fUniformManager, &texUnitIdx);
+    fProgramID = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void GrGLProgram::setData(GrDrawState::BlendOptFlags blendOpts,
-                          const GrEffectStage* colorStages[],
-                          const GrEffectStage* coverageStages[],
-                          const GrDeviceCoordTexture* dstCopy,
-                          SharedGLState* sharedState) {
-    const GrDrawState& drawState = fGpu->getDrawState();
+void GrGLProgram::setData(const GrPrimitiveProcessor& primProc, const GrPipeline& pipeline) {
+    this->setRenderTargetState(primProc, pipeline.proxy());
 
-    GrColor color;
-    GrColor coverage;
-    if (blendOpts & GrDrawState::kEmitTransBlack_BlendOptFlag) {
-        color = 0;
-        coverage = 0;
-    } else if (blendOpts & GrDrawState::kEmitCoverage_BlendOptFlag) {
-        color = 0xffffffff;
-        coverage = drawState.getCoverageColor();
-    } else {
-        color = drawState.getColor();
-        coverage = drawState.getCoverageColor();
+    // we set the textures, and uniforms for installed processors in a generic way, but subclasses
+    // of GLProgram determine how to set coord transforms
+
+    // We must bind to texture units in the same order in which we set the uniforms in
+    // GrGLProgramDataManager. That is first all texture samplers and then texel buffers.
+    // Within each group we will bind them in primProc, fragProcs, XP order.
+    int nextTexSamplerIdx = 0;
+    int nextTexelBufferIdx = fNumTextureSamplers;
+    fGeometryProcessor->setData(fProgramDataManager, primProc,
+                                GrFragmentProcessor::CoordTransformIter(pipeline));
+    this->bindTextures(primProc, pipeline.getAllowSRGBInputs(), &nextTexSamplerIdx,
+                       &nextTexelBufferIdx);
+
+    this->setFragmentData(primProc, pipeline, &nextTexSamplerIdx, &nextTexelBufferIdx);
+
+    const GrXferProcessor& xp = pipeline.getXferProcessor();
+    SkIPoint offset;
+    GrTexture* dstTexture = pipeline.peekDstTexture(&offset);
+
+    fXferProcessor->setData(fProgramDataManager, xp, dstTexture, offset);
+    if (dstTexture) {
+        fGpu->bindTexture(nextTexSamplerIdx++, GrSamplerState::ClampNearest(), true,
+                          static_cast<GrGLTexture*>(dstTexture),
+                          pipeline.dstTextureProxy()->origin());
     }
+    SkASSERT(nextTexSamplerIdx == fNumTextureSamplers);
+    SkASSERT(nextTexelBufferIdx == fNumTextureSamplers + fNumTexelBuffers);
+}
 
-    this->setColor(drawState, color, sharedState);
-    this->setCoverage(drawState, coverage, sharedState);
-    this->setMatrixAndRenderTargetHeight(drawState);
+void GrGLProgram::generateMipmaps(const GrPrimitiveProcessor& primProc,
+                                  const GrPipeline& pipeline) {
+    this->generateMipmaps(primProc, pipeline.getAllowSRGBInputs());
 
-    if (NULL != dstCopy) {
-        if (fBuilderOutput.fUniformHandles.fDstCopyTopLeftUni.isValid()) {
-            fUniformManager->set2f(fBuilderOutput.fUniformHandles.fDstCopyTopLeftUni,
-                                   static_cast<GrGLfloat>(dstCopy->offset().fX),
-                                   static_cast<GrGLfloat>(dstCopy->offset().fY));
-            fUniformManager->set2f(fBuilderOutput.fUniformHandles.fDstCopyScaleUni,
-                                   1.f / dstCopy->texture()->width(),
-                                   1.f / dstCopy->texture()->height());
-            GrGLTexture* texture = static_cast<GrGLTexture*>(dstCopy->texture());
-            static GrTextureParams kParams; // the default is clamp, nearest filtering.
-            fGpu->bindTexture(fDstCopyTexUnit, kParams, texture);
-        } else {
-            SkASSERT(!fBuilderOutput.fUniformHandles.fDstCopyScaleUni.isValid());
-            SkASSERT(!fBuilderOutput.fUniformHandles.fDstCopySamplerUni.isValid());
-        }
-    } else {
-        SkASSERT(!fBuilderOutput.fUniformHandles.fDstCopyTopLeftUni.isValid());
-        SkASSERT(!fBuilderOutput.fUniformHandles.fDstCopyScaleUni.isValid());
-        SkASSERT(!fBuilderOutput.fUniformHandles.fDstCopySamplerUni.isValid());
-    }
-
-    fBuilderOutput.fColorEffects->setData(fGpu, *fUniformManager, colorStages);
-    fBuilderOutput.fCoverageEffects->setData(fGpu, *fUniformManager, coverageStages);
-
-
-    // PathTexGen state applies to the the fixed function vertex shader. For
-    // custom shaders, it's ignored, so we don't need to change the texgen
-    // settings in that case.
-    if (!fBuilderOutput.fHasVertexShader) {
-        fGpu->flushPathTexGenSettings(fBuilderOutput.fTexCoordSetCnt);
+    GrFragmentProcessor::Iter iter(pipeline);
+    while (const GrFragmentProcessor* fp  = iter.next()) {
+        this->generateMipmaps(*fp, pipeline.getAllowSRGBInputs());
     }
 }
 
-void GrGLProgram::setColor(const GrDrawState& drawState,
-                           GrColor color,
-                           SharedGLState* sharedState) {
-    const GrGLProgramDesc::KeyHeader& header = fDesc.getHeader();
-    if (!drawState.hasColorVertexAttribute()) {
-        switch (header.fColorInput) {
-            case GrGLProgramDesc::kAttribute_ColorInput:
-                SkASSERT(-1 != header.fColorAttributeIndex);
-                if (sharedState->fConstAttribColor != color ||
-                    sharedState->fConstAttribColorIndex != header.fColorAttributeIndex) {
-                    // OpenGL ES only supports the float varieties of glVertexAttrib
-                    GrGLfloat c[4];
-                    GrColorToRGBAFloat(color, c);
-                    GL_CALL(VertexAttrib4fv(header.fColorAttributeIndex, c));
-                    sharedState->fConstAttribColor = color;
-                    sharedState->fConstAttribColorIndex = header.fColorAttributeIndex;
-                }
-                break;
-            case GrGLProgramDesc::kUniform_ColorInput:
-                if (fColor != color && fBuilderOutput.fUniformHandles.fColorUni.isValid()) {
-                    // OpenGL ES doesn't support unsigned byte varieties of glUniform
-                    GrGLfloat c[4];
-                    GrColorToRGBAFloat(color, c);
-                    fUniformManager->set4fv(fBuilderOutput.fUniformHandles.fColorUni, 1, c);
-                    fColor = color;
-                }
-                sharedState->fConstAttribColorIndex = -1;
-                break;
-            case GrGLProgramDesc::kSolidWhite_ColorInput:
-            case GrGLProgramDesc::kTransBlack_ColorInput:
-                sharedState->fConstAttribColorIndex = -1;
-                break;
-            default:
-                SkFAIL("Unknown color type.");
-        }
-    } else {
-        sharedState->fConstAttribColorIndex = -1;
+void GrGLProgram::setFragmentData(const GrPrimitiveProcessor& primProc,
+                                  const GrPipeline& pipeline,
+                                  int* nextTexSamplerIdx,
+                                  int* nextTexelBufferIdx) {
+    GrFragmentProcessor::Iter iter(pipeline);
+    GrGLSLFragmentProcessor::Iter glslIter(fFragmentProcessors.begin(),
+                                           fFragmentProcessors.count());
+    const GrFragmentProcessor* fp = iter.next();
+    GrGLSLFragmentProcessor* glslFP = glslIter.next();
+    while (fp && glslFP) {
+        glslFP->setData(fProgramDataManager, *fp);
+        this->bindTextures(*fp, pipeline.getAllowSRGBInputs(), nextTexSamplerIdx,
+                           nextTexelBufferIdx);
+        fp = iter.next();
+        glslFP = glslIter.next();
     }
+    SkASSERT(!fp && !glslFP);
 }
 
-void GrGLProgram::setCoverage(const GrDrawState& drawState,
-                              GrColor coverage,
-                              SharedGLState* sharedState) {
-    const GrGLProgramDesc::KeyHeader& header = fDesc.getHeader();
-    if (!drawState.hasCoverageVertexAttribute()) {
-        switch (header.fCoverageInput) {
-            case GrGLProgramDesc::kAttribute_ColorInput:
-                if (sharedState->fConstAttribCoverage != coverage ||
-                    sharedState->fConstAttribCoverageIndex != header.fCoverageAttributeIndex) {
-                    // OpenGL ES only supports the float varieties of  glVertexAttrib
-                    GrGLfloat c[4];
-                    GrColorToRGBAFloat(coverage, c);
-                    GL_CALL(VertexAttrib4fv(header.fCoverageAttributeIndex, c));
-                    sharedState->fConstAttribCoverage = coverage;
-                    sharedState->fConstAttribCoverageIndex = header.fCoverageAttributeIndex;
-                }
-                break;
-            case GrGLProgramDesc::kUniform_ColorInput:
-                if (fCoverage != coverage) {
-                    // OpenGL ES doesn't support unsigned byte varieties of glUniform
-                    GrGLfloat c[4];
-                    GrColorToRGBAFloat(coverage, c);
-                    fUniformManager->set4fv(fBuilderOutput.fUniformHandles.fCoverageUni, 1, c);
-                    fCoverage = coverage;
-                }
-                sharedState->fConstAttribCoverageIndex = -1;
-                break;
-            case GrGLProgramDesc::kSolidWhite_ColorInput:
-            case GrGLProgramDesc::kTransBlack_ColorInput:
-                sharedState->fConstAttribCoverageIndex = -1;
-                break;
-            default:
-                SkFAIL("Unknown coverage type.");
-        }
-    } else {
-        sharedState->fConstAttribCoverageIndex = -1;
-    }
-}
 
-void GrGLProgram::setMatrixAndRenderTargetHeight(const GrDrawState& drawState) {
-    const GrRenderTarget* rt = drawState.getRenderTarget();
+void GrGLProgram::setRenderTargetState(const GrPrimitiveProcessor& primProc,
+                                       const GrRenderTargetProxy* proxy) {
+    GrRenderTarget* rt = proxy->priv().peekRenderTarget();
+    // Load the RT height uniform if it is needed to y-flip gl_FragCoord.
+    if (fBuiltinUniformHandles.fRTHeightUni.isValid() &&
+        fRenderTargetState.fRenderTargetSize.fHeight != rt->height()) {
+        fProgramDataManager.set1f(fBuiltinUniformHandles.fRTHeightUni, SkIntToScalar(rt->height()));
+    }
+
+    // set RT adjustment
     SkISize size;
     size.set(rt->width(), rt->height());
+    if (!primProc.isPathRendering()) {
+        if (fRenderTargetState.fRenderTargetOrigin != proxy->origin() ||
+            fRenderTargetState.fRenderTargetSize != size) {
+            fRenderTargetState.fRenderTargetSize = size;
+            fRenderTargetState.fRenderTargetOrigin = proxy->origin();
 
-    // Load the RT height uniform if it is needed to y-flip gl_FragCoord.
-    if (fBuilderOutput.fUniformHandles.fRTHeightUni.isValid() &&
-        fMatrixState.fRenderTargetSize.fHeight != size.fHeight) {
-        fUniformManager->set1f(fBuilderOutput.fUniformHandles.fRTHeightUni,
-                               SkIntToScalar(size.fHeight));
+            float rtAdjustmentVec[4];
+            fRenderTargetState.getRTAdjustmentVec(rtAdjustmentVec);
+            fProgramDataManager.set4fv(fBuiltinUniformHandles.fRTAdjustmentUni, 1, rtAdjustmentVec);
+        }
+    } else {
+        SkASSERT(fGpu->glCaps().shaderCaps()->pathRenderingSupport());
+        const GrPathProcessor& pathProc = primProc.cast<GrPathProcessor>();
+        fGpu->glPathRendering()->setProjectionMatrix(pathProc.viewMatrix(),
+                                                     size, proxy->origin());
     }
+}
 
-    if (!fBuilderOutput.fHasVertexShader) {
-        SkASSERT(!fBuilderOutput.fUniformHandles.fViewMatrixUni.isValid());
-        SkASSERT(!fBuilderOutput.fUniformHandles.fRTAdjustmentUni.isValid());
-        fGpu->setProjectionMatrix(drawState.getViewMatrix(), size, rt->origin());
-    } else if (fMatrixState.fRenderTargetOrigin != rt->origin() ||
-               fMatrixState.fRenderTargetSize != size ||
-               !fMatrixState.fViewMatrix.cheapEqualTo(drawState.getViewMatrix())) {
-        SkASSERT(fBuilderOutput.fUniformHandles.fViewMatrixUni.isValid());
+void GrGLProgram::bindTextures(const GrResourceIOProcessor& processor,
+                               bool allowSRGBInputs,
+                               int* nextTexSamplerIdx,
+                               int* nextTexelBufferIdx) {
+    for (int i = 0; i < processor.numTextureSamplers(); ++i) {
+        const GrResourceIOProcessor::TextureSampler& sampler = processor.textureSampler(i);
+        fGpu->bindTexture((*nextTexSamplerIdx)++, sampler.samplerState(), allowSRGBInputs,
+                          static_cast<GrGLTexture*>(sampler.peekTexture()),
+                          sampler.proxy()->origin());
+    }
+    for (int i = 0; i < processor.numBuffers(); ++i) {
+        const GrResourceIOProcessor::BufferAccess& access = processor.bufferAccess(i);
+        fGpu->bindTexelBuffer((*nextTexelBufferIdx)++, access.texelConfig(),
+                              static_cast<GrGLBuffer*>(access.buffer()));
+    }
+}
 
-        fMatrixState.fViewMatrix = drawState.getViewMatrix();
-        fMatrixState.fRenderTargetSize = size;
-        fMatrixState.fRenderTargetOrigin = rt->origin();
-
-        GrGLfloat viewMatrix[3 * 3];
-        fMatrixState.getGLMatrix<3>(viewMatrix);
-        fUniformManager->setMatrix3f(fBuilderOutput.fUniformHandles.fViewMatrixUni, viewMatrix);
-
-        GrGLfloat rtAdjustmentVec[4];
-        fMatrixState.getRTAdjustmentVec(rtAdjustmentVec);
-        fUniformManager->set4fv(fBuilderOutput.fUniformHandles.fRTAdjustmentUni, 1, rtAdjustmentVec);
+void GrGLProgram::generateMipmaps(const GrResourceIOProcessor& processor, bool allowSRGBInputs) {
+    for (int i = 0; i < processor.numTextureSamplers(); ++i) {
+        const GrResourceIOProcessor::TextureSampler& sampler = processor.textureSampler(i);
+        fGpu->generateMipmaps(sampler.samplerState(), allowSRGBInputs,
+                              static_cast<GrGLTexture*>(sampler.peekTexture()),
+                              sampler.proxy()->origin());
     }
 }

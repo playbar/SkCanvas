@@ -6,6 +6,7 @@
  */
 
 #include "Benchmark.h"
+#include "SkBitmap.h"
 #include "SkCanvas.h"
 #include "SkString.h"
 
@@ -41,22 +42,20 @@ public:
     }
 
 protected:
-    virtual const char* onGetName() SK_OVERRIDE {
+    const char* onGetName() override {
         return fName.c_str();
     }
 
-    virtual void onDraw(const int loops, SkCanvas* canvas) SK_OVERRIDE {
-        SkISize size = canvas->getDeviceSize();
+    void onDraw(int loops, SkCanvas* canvas) override {
+        SkISize size = canvas->getBaseLayerSize();
 
         canvas->clear(0xFFFF0000);
 
         SkBitmap bmp;
         bmp.allocN32Pixels(size.width(), size.height());
-        canvas->readPixels(&bmp, 0, 0);
+        canvas->readPixels(bmp, 0, 0);
 
-        SkImageInfo info = bmp.info();
-        info.fColorType = fColorType;
-        info.fAlphaType = fAlphaType;
+        SkImageInfo info = SkImageInfo::Make(bmp.width(), bmp.height(), fColorType, fAlphaType);
 
         for (int loop = 0; loop < loops; ++loop) {
             canvas->writePixels(info, bmp.getPixels(), bmp.rowBytes(), 0, 0);
@@ -73,5 +72,5 @@ private:
 
 //////////////////////////////////////////////////////////////////////////////
 
-DEF_BENCH( return SkNEW_ARGS(WritePixelsBench, (kRGBA_8888_SkColorType, kPremul_SkAlphaType)); )
-DEF_BENCH( return SkNEW_ARGS(WritePixelsBench, (kRGBA_8888_SkColorType, kUnpremul_SkAlphaType)); )
+DEF_BENCH(return new WritePixelsBench(kRGBA_8888_SkColorType, kPremul_SkAlphaType);)
+DEF_BENCH(return new WritePixelsBench(kRGBA_8888_SkColorType, kUnpremul_SkAlphaType);)

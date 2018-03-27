@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2006 The Android Open Source Project
  *
@@ -10,6 +9,17 @@
 #include "SkScan.h"
 #include "SkBlitter.h"
 #include "SkRasterClip.h"
+
+std::atomic<bool> gSkUseAnalyticAA{true};
+std::atomic<bool> gSkForceAnalyticAA{false};
+
+#if defined(SK_SUPPORT_LEGACY_DELTA_AA)
+    std::atomic<bool> gSkUseDeltaAA{false};
+#else
+    std::atomic<bool> gSkUseDeltaAA{true};
+#endif
+
+std::atomic<bool> gSkForceDeltaAA{false};
 
 static inline void blitrect(SkBlitter* blitter, const SkIRect& r) {
     blitter->blitRect(r.fLeft, r.fTop, r.width(), r.height());

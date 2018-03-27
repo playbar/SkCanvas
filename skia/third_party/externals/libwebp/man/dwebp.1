@@ -1,5 +1,5 @@
 .\"                                      Hey, EMACS: -*- nroff -*-
-.TH DWEBP 1 "May 10, 2013"
+.TH DWEBP 1 "June 23, 2016"
 .SH NAME
 dwebp \- decompress a WebP file to an image file
 .SH SYNOPSIS
@@ -23,6 +23,13 @@ Print the version number (as major.minor.revision) and exit.
 .TP
 .BI \-o " string
 Specify the name of the output file (as PNG format by default).
+Using "-" as output name will direct output to 'stdout'.
+.TP
+.BI \-\- " string
+Explicitly specify the input file. This option is useful if the input
+file starts with an '\-' for instance. This option must appear \fBlast\fP.
+Any other options afterward will be ignored. If the input file is "\-",
+the data will be read from \fIstdin\fP instead of a file.
 .TP
 .B \-bmp
 Change the output format to uncompressed BMP.
@@ -38,7 +45,7 @@ Change the output format to PPM (discards alpha).
 .TP
 .B \-pgm
 Change the output format to PGM. The output consists of luma/chroma
-samples instead of RGB, using the ICM4 layout. This option is mainly
+samples instead of RGB, using the IMC4 layout. This option is mainly
 for verification and debugging purposes.
 .TP
 .B \-yuv
@@ -54,7 +61,20 @@ edges (especially the red ones), but should be faster.
 .B \-nofilter
 Don't use the in-loop filtering process even if it is required by
 the bitstream. This may produce visible blocks on the non-compliant output,
-but will make the decoding faster.
+but it will make the decoding faster.
+.TP
+.BI \-dither " strength
+Specify a dithering \fBstrength\fP between 0 and 100. Dithering is a
+post-processing effect applied to chroma components in lossy compression.
+It helps by smoothing gradients and avoiding banding artifacts.
+.TP
+.BI \-alpha_dither
+If the compressed file contains a transparency plane that was quantized
+during compression, this flag will allow dithering the reconstructed plane
+in order to generate smoother transparency gradients.
+.TP
+.B \-nodither
+Disable all dithering (default).
 .TP
 .B \-mt
 Use multi-threading for decoding, if possible.
@@ -67,11 +87,19 @@ The top-left corner will be snapped to even coordinates if needed.
 This option is meant to reduce the memory needed for cropping large images.
 Note: the cropping is applied \fIbefore\fP any scaling.
 .TP
-.BI \-scale " width height
+.B \-flip
+Flip decoded image vertically (can be useful for OpenGL textures for instance).
+.TP
+\fB\-resize\fR, \fB\-scale\fI width height\fR
 Rescale the decoded picture to dimension \fBwidth\fP x \fBheight\fP. This
 option is mostly intended to reducing the memory needed to decode large images,
-when only a small version is needed (thumbnail, preview, etc.).  Note: scaling
+when only a small version is needed (thumbnail, preview, etc.). Note: scaling
 is applied \fIafter\fP cropping.
+If either (but not both) of the \fBwidth\fP or \fBheight\fP parameters is 0,
+the value will be calculated preserving the aspect-ratio.
+.TP
+.B \-quiet
+Do not print anything.
 .TP
 .B \-v
 Print extra information (decoding time in particular).
@@ -80,8 +108,8 @@ Print extra information (decoding time in particular).
 Disable all assembly optimizations.
 
 .SH BUGS
-Please report all bugs to our issue tracker:
-http://code.google.com/p/webp/issues
+Please report all bugs to the issue tracker:
+https://bugs.chromium.org/p/webp
 .br
 Patches welcome! See this page to get started:
 http://www.webmproject.org/code/contribute/submitting-patches/
@@ -90,19 +118,24 @@ http://www.webmproject.org/code/contribute/submitting-patches/
 dwebp picture.webp \-o output.png
 .br
 dwebp picture.webp \-ppm \-o output.ppm
+.br
+dwebp \-o output.ppm \-\- \-\-\-picture.webp
+.br
+cat picture.webp | dwebp \-o \- \-\- \- > output.ppm
 
 .SH AUTHORS
-\fBdwebp\fP was written by the WebP team.
+\fBdwebp\fP is a part of libwebp and was written by the WebP team.
 .br
-The latest source tree is available at http://www.webmproject.org/code
+The latest source tree is available at
+https://chromium.googlesource.com/webm/libwebp
 .PP
 This manual page was written by Pascal Massimino <pascal.massimino@gmail.com>,
 for the Debian project (and may be used by others).
 
 .SH SEE ALSO
 .BR cwebp (1),
-.BR webpmux (1),
-.BR gif2webp (1).
+.BR gif2webp (1),
+.BR webpmux (1)
 .br
 Please refer to http://developers.google.com/speed/webp/ for additional
 information.

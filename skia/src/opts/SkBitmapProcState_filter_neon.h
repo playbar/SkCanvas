@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2012 The Android Open Source Project
  *
@@ -6,9 +5,8 @@
  * found in the LICENSE file.
  */
 
-
 #include <arm_neon.h>
-#include "SkColorPriv.h"
+#include "SkColorData.h"
 
 /*
  * Filter_32_opaque

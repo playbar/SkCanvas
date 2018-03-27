@@ -16,40 +16,40 @@ public:
     /**
      *  Refs the passed-in picture.
      */
-    static SkPictureImageFilter* Create(SkPicture* picture) {
-        return SkNEW_ARGS(SkPictureImageFilter, (picture));
-    }
+    static sk_sp<SkImageFilter> Make(sk_sp<SkPicture> picture);
 
     /**
      *  Refs the passed-in picture. cropRect can be used to crop or expand the destination rect when
      *  the picture is drawn. (No scaling is implied by the dest rect; only the CTM is applied.)
      */
-    static SkPictureImageFilter* Create(SkPicture* picture, const SkRect& cropRect) {
-        return SkNEW_ARGS(SkPictureImageFilter, (picture, cropRect));
-    }
+    static sk_sp<SkImageFilter> Make(sk_sp<SkPicture> picture, const SkRect& cropRect);
 
+    SK_TO_STRING_OVERRIDE()
     SK_DECLARE_PUBLIC_FLATTENABLE_DESERIALIZATION_PROCS(SkPictureImageFilter)
 
 protected:
-    explicit SkPictureImageFilter(SkPicture* picture);
-    SkPictureImageFilter(SkPicture* picture, const SkRect& cropRect);
-    virtual ~SkPictureImageFilter();
     /*  Constructs an SkPictureImageFilter object from an SkReadBuffer.
      *  Note: If the SkPictureImageFilter object construction requires bitmap
      *  decoding, the decoder must be set on the SkReadBuffer parameter by calling
      *  SkReadBuffer::setBitmapDecoder() before calling this constructor.
      *  @param SkReadBuffer Serialized picture data.
      */
-    explicit SkPictureImageFilter(SkReadBuffer&);
-    virtual void flatten(SkWriteBuffer&) const SK_OVERRIDE;
-    virtual bool onFilterImage(Proxy*, const SkBitmap& src, const Context&,
-                               SkBitmap* result, SkIPoint* offset) const SK_OVERRIDE;
-    virtual bool onFilterBounds(const SkIRect& src, const SkMatrix&,
-                                SkIRect* dst) const SK_OVERRIDE;
+    void flatten(SkWriteBuffer&) const override;
+    sk_sp<SkSpecialImage> onFilterImage(SkSpecialImage* source, const Context&,
+                                        SkIPoint* offset) const override;
+    sk_sp<SkImageFilter> onMakeColorSpace(SkColorSpaceXformer*) const override;
 
 private:
-    SkPicture* fPicture;
-    SkRect     fCropRect;
+    explicit SkPictureImageFilter(sk_sp<SkPicture> picture);
+    SkPictureImageFilter(sk_sp<SkPicture> picture, const SkRect& cropRect, sk_sp<SkColorSpace>);
+
+    sk_sp<SkPicture>    fPicture;
+    SkRect              fCropRect;
+
+    // Should never be set by a public constructor.  This is only used when onMakeColorSpace()
+    // forces a deferred color space xform.
+    sk_sp<SkColorSpace>   fColorSpace;
+
     typedef SkImageFilter INHERITED;
 };
 

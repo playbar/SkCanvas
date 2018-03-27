@@ -26,7 +26,7 @@ public:
         fIndex = index;
     }
     void draw(SkCanvas* canvas) {
-        if (fIndex > 0) {
+        if (fIndex >= 0) {
             fDebugCanvas->drawTo(canvas, fIndex);
         }
     }
@@ -44,12 +44,8 @@ public:
         fDebugCanvas->toggleCommand(index, isVisible);
     }
 
-    SkTArray<SkString>* getDrawCommandsAsStrings() {
-        return fDebugCanvas->getDrawCommandsAsStrings();
-    }
-
-    SkTDArray<size_t>* getDrawCommandOffsets() {
-        return fDebugCanvas->getDrawCommandOffsets();
+    SkDrawCommand* getDrawCommandAt(int index) {
+        return fDebugCanvas->getDrawCommandAt(index);
     }
 
     const SkTDArray<SkDrawCommand*>& getDrawCommands() const {
@@ -60,15 +56,11 @@ public:
         fDebugCanvas->toggleFilter(on);
     }
 
-    void resize(int width, int height) {
-        fDebugCanvas->setBounds(width, height);
-    }
-
     void loadPicture(SkPicture* picture);
 
-    SkPicture* copyPicture();
+    sk_sp<SkPicture> copyPicture();
 
-    int getSize() {
+    int getSize() const {
         return fDebugCanvas->getSize();
     }
 
@@ -81,7 +73,7 @@ public:
         return fDebugCanvas->getCommandAtPoint(x, y, index);
     }
 
-    SkTDArray<SkString*>* getCommandInfo(int index) {
+    const SkTDArray<SkString*>* getCommandInfo(int index) const {
         return fDebugCanvas->getCommandInfo(index);
     }
 
@@ -93,12 +85,8 @@ public:
         return fDebugCanvas->getCurrentClip();
     }
 
-    int pictureHeight() {
-        return fPictureHeight;
-    }
-
-    int pictureWidth() {
-        return fPictureWidth;
+    SkRect pictureCull() const   {
+        return fPicture ? fPicture->cullRect() : SkRect::MakeEmpty();
     }
 
     int index() {
@@ -106,26 +94,26 @@ public:
     }
 
     void setOverdrawViz(bool overDrawViz) {
-        if (NULL != fDebugCanvas) {
+        if (fDebugCanvas) {
             fDebugCanvas->setOverdrawViz(overDrawViz);
         }
     }
 
     void setPathOps(bool pathOps) {
-        if (NULL != fDebugCanvas) {
+        if (fDebugCanvas) {
             fDebugCanvas->setAllowSimplifyClip(pathOps);
         }
     }
 
     void setMegaViz(bool megaViz) {
-        if (NULL != fDebugCanvas) {
+        if (fDebugCanvas) {
             fDebugCanvas->setMegaVizMode(megaViz);
         }
     }
 
-    void setTexFilterOverride(bool texFilterOverride, SkPaint::FilterLevel level) {
-        if (NULL != fDebugCanvas) {
-            fDebugCanvas->overrideTexFiltering(texFilterOverride, level);
+    void setTexFilterOverride(bool texFilterOverride, SkFilterQuality quality) {
+        if (fDebugCanvas) {
+            fDebugCanvas->overrideTexFiltering(texFilterOverride, quality);
         }
     }
 
@@ -135,11 +123,9 @@ public:
     void getClipStackText(SkString* clipStack);
 
 private:
-    SkDebugCanvas* fDebugCanvas;
-    SkPicture* fPicture;
+    std::unique_ptr<SkDebugCanvas>  fDebugCanvas;
+    sk_sp<SkPicture>                fPicture;
 
-    int fPictureWidth;
-    int fPictureHeight;
     int fIndex;
 };
 

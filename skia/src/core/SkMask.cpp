@@ -6,6 +6,8 @@
  */
 
 #include "SkMask.h"
+#include "SkMalloc.h"
+#include "SkSafeMath.h"
 
 /** returns the product if it is positive and fits in 31 bits. Otherwise this
     returns 0.
@@ -33,8 +35,13 @@ size_t SkMask::computeTotalImageSize() const {
 /** We explicitly use this allocator for SkBimap pixels, so that we can
     freely assign memory allocated by one class to the other.
 */
-uint8_t* SkMask::AllocImage(size_t size) {
-    return (uint8_t*)sk_malloc_throw(SkAlign4(size));
+uint8_t* SkMask::AllocImage(size_t size, AllocType at) {
+    size_t aligned_size = SkSafeMath::Align4(size);
+    unsigned flags = SK_MALLOC_THROW;
+    if (at == kZeroInit_Alloc) {
+        flags |= SK_MALLOC_ZERO_INITIALIZE;
+    }
+    return static_cast<uint8_t*>(sk_malloc_flags(aligned_size, flags));
 }
 
 /** We explicitly use this allocator for SkBimap pixels, so that we can
@@ -52,7 +59,6 @@ static const int gMaskFormatToShift[] = {
     0,  // 3D
     2,  // ARGB32
     1,  // LCD16
-    2   // LCD32
 };
 
 static int maskFormatToShift(SkMask::Format format) {

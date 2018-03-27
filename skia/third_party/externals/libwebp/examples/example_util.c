@@ -1,77 +1,58 @@
 // Copyright 2012 Google Inc. All Rights Reserved.
 //
-// This code is licensed under the same terms as WebM:
-//  Software License Agreement:  http://www.webmproject.org/license/software/
-//  Additional IP Rights Grant:  http://www.webmproject.org/license/additional/
+// Use of this source code is governed by a BSD-style license
+// that can be found in the COPYING file in the root of the source
+// tree. An additional intellectual property rights grant can be found
+// in the file PATENTS. All contributing project authors may
+// be found in the AUTHORS file in the root of the source tree.
 // -----------------------------------------------------------------------------
 //
 //  Utility functions used by the example programs.
 //
 
 #include "./example_util.h"
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
+//------------------------------------------------------------------------------
+// String parsing
 
-// -----------------------------------------------------------------------------
-// File I/O
-
-int ExUtilReadFile(const char* const file_name,
-                   const uint8_t** data, size_t* data_size) {
-  int ok;
-  void* file_data;
-  size_t file_size;
-  FILE* in;
-
-  if (file_name == NULL || data == NULL || data_size == NULL) return 0;
-  *data = NULL;
-  *data_size = 0;
-
-  in = fopen(file_name, "rb");
-  if (in == NULL) {
-    fprintf(stderr, "cannot open input file '%s'\n", file_name);
-    return 0;
+uint32_t ExUtilGetUInt(const char* const v, int base, int* const error) {
+  char* end = NULL;
+  const uint32_t n = (v != NULL) ? (uint32_t)strtoul(v, &end, base) : 0u;
+  if (end == v && error != NULL && !*error) {
+    *error = 1;
+    fprintf(stderr, "Error! '%s' is not an integer.\n",
+            (v != NULL) ? v : "(null)");
   }
-  fseek(in, 0, SEEK_END);
-  file_size = ftell(in);
-  fseek(in, 0, SEEK_SET);
-  file_data = malloc(file_size);
-  if (file_data == NULL) return 0;
-  ok = (fread(file_data, file_size, 1, in) == 1);
-  fclose(in);
-
-  if (!ok) {
-    fprintf(stderr, "Could not read %d bytes of data from file %s\n",
-            (int)file_size, file_name);
-    free(file_data);
-    return 0;
-  }
-  *data = (uint8_t*)file_data;
-  *data_size = file_size;
-  return 1;
+  return n;
 }
 
-int ExUtilWriteFile(const char* const file_name,
-                    const uint8_t* data, size_t data_size) {
-  int ok;
-  FILE* out;
-
-  if (file_name == NULL || data == NULL) {
-    return 0;
-  }
-  out = fopen(file_name, "wb");
-  if (out == NULL) {
-    fprintf(stderr, "Error! Cannot open output file '%s'\n", file_name);
-    return 0;
-  }
-  ok = (fwrite(data, data_size, 1, out) == 1);
-  fclose(out);
-  return ok;
+int ExUtilGetInt(const char* const v, int base, int* const error) {
+  return (int)ExUtilGetUInt(v, base, error);
 }
 
-#if defined(__cplusplus) || defined(c_plusplus)
-}    // extern "C"
-#endif
+int ExUtilGetInts(const char* v, int base, int max_output, int output[]) {
+  int n, error = 0;
+  for (n = 0; v != NULL && n < max_output; ++n) {
+    const int value = ExUtilGetInt(v, base, &error);
+    if (error) return -1;
+    output[n] = value;
+    v = strchr(v, ',');
+    if (v != NULL) ++v;   // skip over the trailing ','
+  }
+  return n;
+}
+
+float ExUtilGetFloat(const char* const v, int* const error) {
+  char* end = NULL;
+  const float f = (v != NULL) ? (float)strtod(v, &end) : 0.f;
+  if (end == v && error != NULL && !*error) {
+    *error = 1;
+    fprintf(stderr, "Error! '%s' is not a floating point number.\n",
+            (v != NULL) ? v : "(null)");
+  }
+  return f;
+}

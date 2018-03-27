@@ -13,51 +13,48 @@
 namespace skiagm {
 
 #define TEXT_SIZE   48
-static const char gText[] = "Hello";
+constexpr char gText[] = "Hello";
 
 //Before shaping
-//static const char gText[] = "「テスト。」";
-//static const char gText[] = {0xE3,0x80,0x8C, 0xE3,0x83,0x86, 0xE3,0x82,0xB9, 0xE3,0x83,0x88, 0xE3,0x80,0x82, 0xE3,0x80,0x8D, 0x0};
+//constexpr char gText[] = "「テスト。」";
+//constexpr char gText[] = {0xE3,0x80,0x8C, 0xE3,0x83,0x86, 0xE3,0x82,0xB9, 0xE3,0x83,0x88, 0xE3,0x80,0x82, 0xE3,0x80,0x8D, 0x0};
 
 //After shaping
-//static const char gText[] = "﹁テスト︒﹂";
-//static const char gText[] = {0xEF,0xB9,0x81, 0xE3,0x83,0x86, 0xE3,0x82,0xB9, 0xE3,0x83,0x88, 0xEF,0xB8,0x92, 0xEF,0xB9,0x82, 0x0};
+//constexpr char gText[] = "﹁テスト︒﹂";
+//constexpr char gText[] = {0xEF,0xB9,0x81, 0xE3,0x83,0x86, 0xE3,0x82,0xB9, 0xE3,0x83,0x88, 0xEF,0xB8,0x92, 0xEF,0xB9,0x82, 0x0};
 
-static const size_t gLen = sizeof(gText) - sizeof(gText[0]);
+constexpr size_t gLen = sizeof(gText) - sizeof(gText[0]);
 
 class VertTextGM : public GM {
 public:
     VertTextGM()
-        // : fFace(SkTypeface::CreateFromName("unifont", SkTypeface::kNormal))
-        // : fFace(SkTypeface::CreateFromFile("MotoyaL04Mincho_3.ttf"))
+        // : fFace(SkTypeface::MakeFromName("unifont", SkFontStyle::Normal()))
+        // : fFace(SkTypeface::MakeFromFile("MotoyaL04Mincho_3.ttf"))
 
         // Bitmap fonts on OS X.
-        // : fFace(SkTypeface::CreateFromName("GB18030 Bitmap", SkTypeface::kNormal))
-        // : fFace(SkTypeface::CreateFromName("Apple Color Emoji", SkTypeface::kNormal))
+        // : fFace(SkTypeface::MakeFromName("GB18030 Bitmap", SkFontStyle::Normal()))
+        // : fFace(SkTypeface::MakeFromName("Apple Color Emoji", SkFontStyle::Normal()))
 
         // OTF CFF fonts on OS X.
-        // : fFace(SkTypeface::CreateFromName("Hiragino Mincho ProN", SkTypeface::kNormal))
-        // : fFace(SkTypeface::CreateFromName("Hiragino Kaku Gothic Pro", SkTypeface::kNormal))
-        // : fFace(SkTypeface::CreateFromName("Hiragino Sans GB", SkTypeface::kNormal))
-        // : fFace(SkTypeface::CreateFromName("STIXGeneral", SkTypeface::kNormal))
-        // : fFace(SkTypeface::CreateFromName("Yuppy SC", SkTypeface::kNormal))
-        // : fFace(SkTypeface::CreateFromName("Yuppy TC", SkTypeface::kNormal))
+        // : fFace(SkTypeface::MakeFromName("Hiragino Mincho ProN", SkFontStyle::Normal()))
+        // : fFace(SkTypeface::MakeFromName("Hiragino Kaku Gothic Pro", SkFontStyle::Normal()))
+        // : fFace(SkTypeface::MakeFromName("Hiragino Sans GB", SkFontStyle::Normal()))
+        // : fFace(SkTypeface::MakeFromName("STIXGeneral", SkFontStyle::Normal()))
+        // : fFace(SkTypeface::MakeFromName("Yuppy SC", SkFontStyle::Normal()))
+        // : fFace(SkTypeface::MakeFromName("Yuppy TC", SkFontStyle::Normal()))
 
     {
     }
 
-    //SkAutoTUnref<SkTypeface> fFace;
+    //sk_sp<SkTypeface> fFace;
 
 protected:
-    virtual uint32_t onGetFlags() const SK_OVERRIDE {
-        return kSkipTiled_Flag;
-    }
 
-    SkString onShortName() {
+    SkString onShortName() override {
         return SkString("verttext");
     }
 
-    SkISize onISize() { return SkISize::Make(640, 480); }
+    SkISize onISize() override { return SkISize::Make(640, 480); }
 
     static void drawBaseline(SkCanvas* canvas, const SkPaint& paint,
                              SkScalar x, SkScalar y) {
@@ -73,7 +70,7 @@ protected:
 
         p.setColor(0xFF0000FF);
         SkScalar adv[gLen];
-        int numChars = paint.getTextWidths(gText, gLen, adv, NULL);
+        int numChars = paint.getTextWidths(gText, gLen, adv, nullptr);
         for (int i = 0; i < numChars; ++i) {
             canvas->drawCircle(x, y, SK_Scalar1 * 3 / 2, p);
             if (paint.isVerticalText()) {
@@ -85,7 +82,7 @@ protected:
         canvas->drawCircle(x, y, SK_Scalar1 * 3 / 2, p);
     }
 
-    virtual void onDraw(SkCanvas* canvas) {
+    void onDraw(SkCanvas* canvas) override {
         SkScalar x = SkIntToScalar(100);
         SkScalar y = SkIntToScalar(50);
 

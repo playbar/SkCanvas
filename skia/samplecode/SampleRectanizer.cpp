@@ -13,7 +13,6 @@
 #include "GrRectanizer_pow2.h"
 #include "GrRectanizer_skyline.h"
 
-
 // This slide visualizes the various GrRectanizer-derived classes behavior
 // for various input sets
 //  'j' will cycle through the various rectanizers
@@ -26,7 +25,8 @@
 class RectanizerView : public SampleView {
 public:
     RectanizerView()
-        : fCurRandRect(0) {
+        : fCurRandRect(0)
+        , fCurRectanizer(0) {
         for (int i = 0; i < 3; ++i) {
            fRects[i].setReserve(kNumRandRects);
         }
@@ -45,13 +45,14 @@ public:
 
         fCurRects = &fRects[0];
 
-        fRectanizers[0] = new GrRectanizerPow2(kWidth, kHeight);
-        fRectanizers[1] = new GrRectanizerSkyline(kWidth, kHeight);
-        fCurRectanizer = fRectanizers[0];
+        fRectanizers.push_back(
+            std::unique_ptr<GrRectanizer>(new GrRectanizerPow2(kWidth, kHeight)));
+        fRectanizers.push_back(
+            std::unique_ptr<GrRectanizer>(new GrRectanizerSkyline(kWidth, kHeight)));
     }
 
 protected:
-    virtual bool onQuery(SkEvent* evt) SK_OVERRIDE {
+    bool onQuery(SkEvent* evt) override {
         if (SampleCode::TitleQ(*evt)) {
             SampleCode::TitleR(evt, "Rectanizer");
             return true;
@@ -77,11 +78,11 @@ protected:
         return this->INHERITED::onQuery(evt);
     }
 
-    virtual void onDrawContent(SkCanvas* canvas) SK_OVERRIDE {
+    void onDrawContent(SkCanvas* canvas) override {
         if (fCurRandRect < kNumRandRects) {
-            if (fCurRectanizer->addRect((*fCurRects)[fCurRandRect].fWidth,
-                                        (*fCurRects)[fCurRandRect].fHeight,
-                                        &fRectLocations[fCurRandRect])) {
+            if (fRectanizers[fCurRectanizer]->addRect((*fCurRects)[fCurRandRect].fWidth,
+                                                      (*fCurRects)[fCurRandRect].fHeight,
+                                                      &fRectLocations[fCurRandRect])) {
                 ++fCurRandRect;
             }
         }
@@ -100,7 +101,7 @@ protected:
 
         long totArea = 0;
         for (int i = 0; i < fCurRandRect; ++i) {
-            r = SkRect::MakeXYWH(SkIntToScalar(fRectLocations[i].fX), 
+            r = SkRect::MakeXYWH(SkIntToScalar(fRectLocations[i].fX),
                                  SkIntToScalar(fRectLocations[i].fY),
                                  SkIntToScalar((*fCurRects)[i].fWidth),
                                  SkIntToScalar((*fCurRects)[i].fHeight));
@@ -115,19 +116,17 @@ protected:
                    this->getRectanizerName(),
                    this->getRectsName(),
                    totArea,
-                   100.0f * fCurRectanizer->percentFull(),
+                   100.0f * fRectanizers[fCurRectanizer]->percentFull(),
                    100.0f * totArea / ((float)kWidth*kHeight),
                    fCurRandRect,
                    kNumRandRects);
-        canvas->drawText(str.c_str(), str.size(), 50, kHeight + 50, blackBigFont);
+        canvas->drawString(str, 50, kHeight + 50, blackBigFont);
 
         str.printf("Press \'j\' to toggle rectanizer");
-        canvas->drawText(str.c_str(), str.size(), 50, kHeight + 100, blackBigFont);
+        canvas->drawString(str, 50, kHeight + 100, blackBigFont);
 
         str.printf("Press \'h\' to toggle rects");
-        canvas->drawText(str.c_str(), str.size(), 50, kHeight + 150, blackBigFont);
-
-        this->inval(NULL);
+        canvas->drawString(str, 50, kHeight + 150, blackBigFont);
     }
 
 private:
@@ -139,15 +138,15 @@ private:
     static const int kMinRectSize = 2;
     static const int kMaxRectSize = 256;
 
-    int                   fCurRandRect;
-    SkTDArray<SkISize>    fRects[3];
-    SkTDArray<SkISize>*   fCurRects;
-    SkTDArray<SkIPoint16> fRectLocations;
-    GrRectanizer*         fRectanizers[2];
-    GrRectanizer*         fCurRectanizer;
+    int                                     fCurRandRect;
+    SkTDArray<SkISize>                      fRects[3];
+    SkTDArray<SkISize>*                     fCurRects;
+    SkTDArray<SkIPoint16>                   fRectLocations;
+    SkTArray<std::unique_ptr<GrRectanizer>> fRectanizers;
+    int                                     fCurRectanizer;
 
     const char* getRectanizerName() const {
-        if (fCurRectanizer == fRectanizers[0]) {
+        if (!fCurRectanizer) {
             return "Pow2";
         } else {
             return "Skyline";
@@ -155,13 +154,9 @@ private:
     }
 
     void cycleRectanizer() {
-        if (fCurRectanizer == fRectanizers[0]) {
-            fCurRectanizer = fRectanizers[1];
-        } else {
-            fCurRectanizer = fRectanizers[0];
-        }
+        fCurRectanizer = (fCurRectanizer + 1) % fRectanizers.count();
 
-        fCurRectanizer->reset();
+        fRectanizers[fCurRectanizer]->reset();
         fCurRandRect = 0;
     }
 
@@ -184,7 +179,7 @@ private:
             fCurRects = &fRects[0];
         }
 
-        fCurRectanizer->reset();
+        fRectanizers[fCurRectanizer]->reset();
         fCurRandRect = 0;
     }
 

@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2013 Google Inc.
  *
@@ -7,117 +6,74 @@
  */
 
 #include "GrPaint.h"
-
-#include "GrBlend.h"
+#include "GrXferProcessor.h"
+#include "effects/GrCoverageSetOpXP.h"
+#include "effects/GrPorterDuffXferProcessor.h"
 #include "effects/GrSimpleTextureEffect.h"
 
-void GrPaint::addColorTextureEffect(GrTexture* texture, const SkMatrix& matrix) {
-    GrEffectRef* effect = GrSimpleTextureEffect::Create(texture, matrix);
-    this->addColorEffect(effect)->unref();
-}
-
-void GrPaint::addCoverageTextureEffect(GrTexture* texture, const SkMatrix& matrix) {
-    GrEffectRef* effect = GrSimpleTextureEffect::Create(texture, matrix);
-    this->addCoverageEffect(effect)->unref();
-}
-
-void GrPaint::addColorTextureEffect(GrTexture* texture,
-                                    const SkMatrix& matrix,
-                                    const GrTextureParams& params) {
-    GrEffectRef* effect = GrSimpleTextureEffect::Create(texture, matrix, params);
-    this->addColorEffect(effect)->unref();
-}
-
-void GrPaint::addCoverageTextureEffect(GrTexture* texture,
-                                       const SkMatrix& matrix,
-                                       const GrTextureParams& params) {
-    GrEffectRef* effect = GrSimpleTextureEffect::Create(texture, matrix, params);
-    this->addCoverageEffect(effect)->unref();
-}
-
-bool GrPaint::isOpaque() const {
-    return this->getOpaqueAndKnownColor(NULL, NULL);
-}
-
-bool GrPaint::isOpaqueAndConstantColor(GrColor* color) const {
-    GrColor tempColor;
-    uint32_t colorComps;
-    if (this->getOpaqueAndKnownColor(&tempColor, &colorComps)) {
-        if (kRGBA_GrColorComponentFlags == colorComps) {
-            *color = tempColor;
-            return true;
-        }
+GrPaint::GrPaint(const GrPaint& that)
+        : fXPFactory(that.fXPFactory)
+        , fColorFragmentProcessors(that.fColorFragmentProcessors.count())
+        , fCoverageFragmentProcessors(that.fCoverageFragmentProcessors.count())
+        , fDisableOutputConversionToSRGB(that.fDisableOutputConversionToSRGB)
+        , fAllowSRGBInputs(that.fAllowSRGBInputs)
+        , fTrivial(that.fTrivial)
+        , fColor(that.fColor) {
+    for (int i = 0; i < that.fColorFragmentProcessors.count(); ++i) {
+        fColorFragmentProcessors.push_back(that.fColorFragmentProcessors[i]->clone());
+        SkASSERT(fColorFragmentProcessors[i]);
     }
-    return false;
+    for (int i = 0; i < that.fCoverageFragmentProcessors.count(); ++i) {
+        fCoverageFragmentProcessors.push_back(that.fCoverageFragmentProcessors[i]->clone());
+        SkASSERT(fCoverageFragmentProcessors[i]);
+    }
 }
 
-bool GrPaint::getOpaqueAndKnownColor(GrColor* solidColor,
-                                     uint32_t* solidColorKnownComponents) const {
+void GrPaint::setPorterDuffXPFactory(SkBlendMode mode) {
+    this->setXPFactory(GrPorterDuffXPFactory::Get(mode));
+}
 
-    // TODO: Share this implementation with GrDrawState
+void GrPaint::setCoverageSetOpXPFactory(SkRegion::Op regionOp, bool invertCoverage) {
+    this->setXPFactory(GrCoverageSetOpXPFactory::Get(regionOp, invertCoverage));
+}
 
-    GrColor coverage = GrColorPackRGBA(fCoverage, fCoverage, fCoverage, fCoverage);
-    uint32_t coverageComps = kRGBA_GrColorComponentFlags;
-    int count = fCoverageStages.count();
-    for (int i = 0; i < count; ++i) {
-        (*fCoverageStages[i].getEffect())->getConstantColorComponents(&coverage, &coverageComps);
+void GrPaint::addColorTextureProcessor(sk_sp<GrTextureProxy> proxy, const SkMatrix& matrix) {
+    this->addColorFragmentProcessor(GrSimpleTextureEffect::Make(std::move(proxy), matrix));
+}
+
+void GrPaint::addColorTextureProcessor(sk_sp<GrTextureProxy> proxy, const SkMatrix& matrix,
+                                       const GrSamplerState& samplerState) {
+    this->addColorFragmentProcessor(GrSimpleTextureEffect::Make(std::move(proxy), matrix,
+                                                                samplerState));
+}
+
+void GrPaint::addCoverageTextureProcessor(sk_sp<GrTextureProxy> proxy,
+                                          const SkMatrix& matrix) {
+    this->addCoverageFragmentProcessor(GrSimpleTextureEffect::Make(std::move(proxy), matrix));
+}
+
+void GrPaint::addCoverageTextureProcessor(sk_sp<GrTextureProxy> proxy,
+                                          const SkMatrix& matrix,
+                                          const GrSamplerState& params) {
+    this->addCoverageFragmentProcessor(GrSimpleTextureEffect::Make(std::move(proxy), matrix,
+                                                                   params));
+}
+
+bool GrPaint::isConstantBlendedColor(GrColor* constantColor) const {
+    // This used to do a more sophisticated analysis but now it just explicitly looks for common
+    // cases.
+    static const GrXPFactory* kSrc = GrPorterDuffXPFactory::Get(SkBlendMode::kSrc);
+    static const GrXPFactory* kClear = GrPorterDuffXPFactory::Get(SkBlendMode::kClear);
+    if (kClear == fXPFactory) {
+        *constantColor = GrColor_TRANSPARENT_BLACK;
+        return true;
     }
-    if (kRGBA_GrColorComponentFlags != coverageComps || 0xffffffff != coverage) {
+    if (this->numColorFragmentProcessors()) {
         return false;
     }
-
-    GrColor color = fColor;
-    uint32_t colorComps = kRGBA_GrColorComponentFlags;
-    count = fColorStages.count();
-    for (int i = 0; i < count; ++i) {
-        (*fColorStages[i].getEffect())->getConstantColorComponents(&color, &colorComps);
+    if (kSrc == fXPFactory || (!fXPFactory && fColor.isOpaque())) {
+        *constantColor = fColor.toGrColor();
+        return true;
     }
-
-    SkASSERT((NULL == solidColor) == (NULL == solidColorKnownComponents));
-
-    GrBlendCoeff srcCoeff = fSrcBlendCoeff;
-    GrBlendCoeff dstCoeff = fDstBlendCoeff;
-    GrSimplifyBlend(&srcCoeff, &dstCoeff, color, colorComps, 0, 0, 0);
-
-    bool opaque = kZero_GrBlendCoeff == dstCoeff && !GrBlendCoeffRefsDst(srcCoeff);
-    if (NULL != solidColor) {
-        if (opaque) {
-            switch (srcCoeff) {
-                case kZero_GrBlendCoeff:
-                    *solidColor = 0;
-                    *solidColorKnownComponents = kRGBA_GrColorComponentFlags;
-                    break;
-
-                case kOne_GrBlendCoeff:
-                    *solidColor = color;
-                    *solidColorKnownComponents = colorComps;
-                    break;
-
-                // The src coeff should never refer to the src and if it refers to dst then opaque
-                // should have been false.
-                case kSC_GrBlendCoeff:
-                case kISC_GrBlendCoeff:
-                case kDC_GrBlendCoeff:
-                case kIDC_GrBlendCoeff:
-                case kSA_GrBlendCoeff:
-                case kISA_GrBlendCoeff:
-                case kDA_GrBlendCoeff:
-                case kIDA_GrBlendCoeff:
-                default:
-                    SkFAIL("srcCoeff should not refer to src or dst.");
-                    break;
-
-                // TODO: update this once GrPaint actually has a const color.
-                case kConstC_GrBlendCoeff:
-                case kIConstC_GrBlendCoeff:
-                case kConstA_GrBlendCoeff:
-                case kIConstA_GrBlendCoeff:
-                    *solidColorKnownComponents = 0;
-                    break;
-            }
-        } else {
-            solidColorKnownComponents = 0;
-        }
-    }
-    return opaque;
+    return false;
 }

@@ -6,10 +6,10 @@
  */
 
 #include "gm.h"
+#include "sk_tool_utils.h"
 
-//#include "Resources.h"
+#include "Resources.h"
 #include "SkCanvas.h"
-#include "SkImageDecoder.h"
 #include "SkOSFile.h"
 
 namespace skiagm {
@@ -27,21 +27,20 @@ protected:
     }
 
     virtual SkISize onISize() {
-        return SkISize::Make(1024, 512);
+        return SkISize::Make(360, 180);
     }
 
     virtual void onDraw(SkCanvas* canvas) {
         SkBitmap bm, bm4444;
-        SkString resourcePath = GetResourcePath();
-        SkString filename = SkOSPath::SkPathJoin(resourcePath.c_str(), "mandrill_512.png");
-        if (!SkImageDecoder::DecodeFile(filename.c_str(), &bm, kN32_SkColorType,
-                                        SkImageDecoder::kDecodePixels_Mode)) {
+        if (!GetResourceAsBitmap("images/dog.jpg", &bm)) {
             SkDebugf("Could not decode the file. Did you forget to set the "
                      "resourcePath?\n");
             return;
         }
         canvas->drawBitmap(bm, 0, 0);
-        SkAssertResult(bm.copyTo(&bm4444, kARGB_4444_SkColorType));
+
+        // This should dither or we will see artifacts in the background of the image.
+        SkAssertResult(sk_tool_utils::copy_to(&bm4444, kARGB_4444_SkColorType, bm));
         canvas->drawBitmap(bm4444, SkIntToScalar(bm.width()), 0);
     }
 
@@ -54,4 +53,29 @@ private:
 static GM* MyFactory(void*) { return new CopyTo4444GM; }
 static GMRegistry reg(MyFactory);
 
+}
+
+DEF_SIMPLE_GM(format4444, canvas, 64, 64) {
+    canvas->scale(16, 16);
+    SkBitmap bitmap;
+    SkImageInfo imageInfo = SkImageInfo::Make(1, 1, kARGB_4444_SkColorType, kPremul_SkAlphaType);
+    bitmap.allocPixels(imageInfo);
+    SkCanvas offscreen(bitmap);
+    offscreen.clear(SK_ColorRED);
+    canvas->drawBitmap(bitmap, 0, 0);
+    offscreen.clear(SK_ColorBLUE);
+    canvas->drawBitmap(bitmap, 1, 1);
+    auto pack4444 = [](unsigned a, unsigned r, unsigned g, unsigned b) -> uint16_t {
+        return (a << 0) | (b << 4) | (g << 8) | (r << 12);
+    };
+    uint16_t red4444 = pack4444(0xF, 0xF, 0x0, 0x0);
+    uint16_t blue4444 = pack4444(0xF, 0x0, 0x0, 0x0F);
+    SkPixmap redPixmap(imageInfo, &red4444, 2);
+    if (bitmap.writePixels(redPixmap, 0, 0)) {
+        canvas->drawBitmap(bitmap, 2, 2);
+    }
+    SkPixmap bluePixmap(imageInfo, &blue4444, 2);
+    if (bitmap.writePixels(bluePixmap, 0, 0)) {
+        canvas->drawBitmap(bitmap, 3, 3);
+    }
 }

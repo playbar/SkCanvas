@@ -6,21 +6,66 @@
  */
 
 #include "SkOSFile.h"
+#include "SkTypes.h"
 
 #include <errno.h>
 #include <stdio.h>
 #include <sys/stat.h>
-#include <sys/types.h>
+
+#ifdef SK_BUILD_FOR_UNIX
+#include <unistd.h>
+#endif
 
 #ifdef _WIN32
 #include <direct.h>
 #include <io.h>
-#else
-#include <unistd.h>
+#include <vector>
+#include "SkUtils.h"
 #endif
 
-SkFILE* sk_fopen(const char path[], SkFILE_Flags flags) {
-    char    perm[4];
+#ifdef SK_BUILD_FOR_IOS
+#include "SkOSFile_ios.h"
+#endif
+
+#ifdef _WIN32
+static bool is_ascii(const char* s) {
+    while (char v = *s++) {
+        if ((v & 0x80) != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+static FILE* fopen_win(const char* utf8path, const char* perm) {
+    if (is_ascii(utf8path)) {
+        return fopen(utf8path, perm);
+    }
+
+    const char* ptr = utf8path;
+    const char* end = utf8path + strlen(utf8path);
+    size_t n = 0;
+    while (ptr < end) {
+        SkUnichar u = SkUTF8_NextUnicharWithError(&ptr, end);
+        if (u < 0) {
+            return nullptr;  // malformed UTF-8
+        }
+        n += SkUTF16_FromUnichar(u);
+    }
+    std::vector<uint16_t> wchars(n + 1);
+    uint16_t* out = wchars.data();
+    for (const char* ptr = utf8path; ptr < end;) {
+        out += SkUTF16_FromUnichar(SkUTF8_NextUnicharWithError(&ptr, end), out);
+    }
+    SkASSERT(out == &wchars[n]);
+    *out = 0; // final null
+    wchar_t wperms[4] = {(wchar_t)perm[0], (wchar_t)perm[1], (wchar_t)perm[2], (wchar_t)perm[3]};
+    return _wfopen((wchar_t*)wchars.data(), wperms);
+}
+#endif
+
+FILE* sk_fopen(const char path[], SkFILE_Flags flags) {
+    char    perm[4] = {0, 0, 0, 0};
     char*   p = perm;
 
     if (flags & kRead_SkFILE_Flag) {
@@ -29,112 +74,95 @@ SkFILE* sk_fopen(const char path[], SkFILE_Flags flags) {
     if (flags & kWrite_SkFILE_Flag) {
         *p++ = 'w';
     }
-    *p++ = 'b';
-    *p = 0;
+    *p = 'b';
 
-    //TODO: on Windows fopen is just ASCII or the current code page,
-    //convert to utf16 and use _wfopen
-    return (SkFILE*)::fopen(path, perm);
+    FILE* file = nullptr;
+#ifdef _WIN32
+    file = fopen_win(path, perm);
+#else
+    file = fopen(path, perm);
+#endif
+#ifdef SK_BUILD_FOR_IOS
+    // if not found in default path and read-only, try to open from bundle
+    if (!file && kRead_SkFILE_Flag == flags) {
+        SkString bundlePath;
+        if (ios_get_path_in_bundle(path, &bundlePath)) {
+            file = fopen(bundlePath.c_str(), perm);
+        }
+    }
+#endif
+
+    if (nullptr == file && (flags & kWrite_SkFILE_Flag)) {
+        SkDEBUGF(("sk_fopen: fopen(\"%s\", \"%s\") returned nullptr (errno:%d): %s\n",
+                  path, perm, errno, strerror(errno)));
+    }
+    return file;
 }
 
-char* sk_fgets(char* str, int size, SkFILE* f) {
-    return ::fgets(str, size, (FILE *)f);
-}
-
-int sk_feof(SkFILE *f) {
-    // no :: namespace qualifier because it breaks android
-    return feof((FILE *)f);
-}
-
-size_t sk_fgetsize(SkFILE* f) {
+size_t sk_fgetsize(FILE* f) {
     SkASSERT(f);
 
-    long curr = ::ftell((FILE*)f); // remember where we are
+    long curr = ftell(f); // remember where we are
     if (curr < 0) {
         return 0;
     }
 
-    ::fseek((FILE*)f, 0, SEEK_END); // go to the end
-    long size = ::ftell((FILE*)f); // record the size
+    fseek(f, 0, SEEK_END); // go to the end
+    long size = ftell(f); // record the size
     if (size < 0) {
         size = 0;
     }
 
-    ::fseek((FILE*)f, curr, SEEK_SET); // go back to our prev location
+    fseek(f, curr, SEEK_SET); // go back to our prev location
     return size;
 }
 
-bool sk_frewind(SkFILE* f) {
+size_t sk_fwrite(const void* buffer, size_t byteCount, FILE* f) {
     SkASSERT(f);
-    ::rewind((FILE*)f);
-    return true;
+    return fwrite(buffer, 1, byteCount, f);
 }
 
-size_t sk_fread(void* buffer, size_t byteCount, SkFILE* f) {
+void sk_fflush(FILE* f) {
     SkASSERT(f);
-    if (buffer == NULL) {
-        size_t curr = ::ftell((FILE*)f);
-        if ((long)curr == -1) {
-            SkDEBUGF(("sk_fread: ftell(%p) returned -1 feof:%d ferror:%d\n", f, feof((FILE*)f), ferror((FILE*)f)));
-            return 0;
-        }
-        int err = ::fseek((FILE*)f, (long)byteCount, SEEK_CUR);
-        if (err != 0) {
-            SkDEBUGF(("sk_fread: fseek(%d) tell:%d failed with feof:%d ferror:%d returned:%d\n",
-                        byteCount, curr, feof((FILE*)f), ferror((FILE*)f), err));
-            return 0;
-        }
-        return byteCount;
-    }
-    else
-        return ::fread(buffer, 1, byteCount, (FILE*)f);
+    fflush(f);
 }
 
-size_t sk_fwrite(const void* buffer, size_t byteCount, SkFILE* f) {
-    SkASSERT(f);
-    return ::fwrite(buffer, 1, byteCount, (FILE*)f);
+void sk_fsync(FILE* f) {
+#if !defined(_WIN32) && !defined(SK_BUILD_FOR_ANDROID) && !defined(__UCLIBC__) \
+        && !defined(_NEWLIB_VERSION)
+    int fd = fileno(f);
+    fsync(fd);
+#endif
 }
 
-void sk_fflush(SkFILE* f) {
-    SkASSERT(f);
-    ::fflush((FILE*)f);
-}
-
-bool sk_fseek(SkFILE* f, size_t byteCount) {
-    int err = ::fseek((FILE*)f, (long)byteCount, SEEK_SET);
-    return err == 0;
-}
-
-bool sk_fmove(SkFILE* f, long byteCount) {
-    int err = ::fseek((FILE*)f, byteCount, SEEK_CUR);
-    return err == 0;
-}
-
-size_t sk_ftell(SkFILE* f) {
-    long curr = ::ftell((FILE*)f);
+size_t sk_ftell(FILE* f) {
+    long curr = ftell(f);
     if (curr < 0) {
         return 0;
     }
     return curr;
 }
 
-void sk_fclose(SkFILE* f) {
-    SkASSERT(f);
-    ::fclose((FILE*)f);
-}
-
-bool sk_exists(const char *path) {
-#ifdef _WIN32
-    return (0 == _access(path, 0));
-#else
-    return (0 == access(path, 0));
-#endif
+void sk_fclose(FILE* f) {
+    if (f) {
+        fclose(f);
+    }
 }
 
 bool sk_isdir(const char *path) {
     struct stat status;
     if (0 != stat(path, &status)) {
+#ifdef SK_BUILD_FOR_IOS
+        // check the bundle directory if not in default path
+        SkString bundlePath;
+        if (ios_get_path_in_bundle(path, &bundlePath)) {
+            if (0 != stat(bundlePath.c_str(), &status)) {
+                return false;
+            }
+        }
+#else
         return false;
+#endif
     }
     return SkToBool(status.st_mode & S_IFDIR);
 }
@@ -156,10 +184,5 @@ bool sk_mkdir(const char* path) {
 #else
     retval = mkdir(path, 0777);
 #endif
-    if (0 == retval) {
-        return true;
-    } else {
-        fprintf(stderr, "sk_mkdir: error %d creating dir '%s'\n", errno, path);
-        return false;
-    }
+    return 0 == retval;
 }
