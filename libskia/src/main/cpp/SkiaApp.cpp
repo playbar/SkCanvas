@@ -117,9 +117,9 @@ bool SkiaApp::createBitmap(const std::string &src){
 
 SkCanvas* SkiaApp::createCanvas()
 {
-//	LOGD("%s:fCurContext=%d, fCurRenderTarget=%d",__func__,fCurContext, fCurRenderTarget);
+	LOGD("%s:fCurContext=%d, fCurRenderTarget=%d",__func__,fCurContext, fCurRenderTarget);
 //	SkAutoTUnref<SkBaseDevice> device(new SkGpuDevice(fCurContext, fCurRenderTarget));
-//	//SkAutoTUnref<SkBaseDevice> device( SkGpuDevice::Create(fCurRenderTarget));
+//	SkAutoTUnref<SkBaseDevice> device( SkGpuDevice::Create(fCurRenderTarget));
 //	return new SkCanvas(device);
     return NULL;
 }
@@ -143,14 +143,14 @@ static void draw_checks(SkCanvas* canvas, int width, int height) {
 void SkiaApp::initApp(int width , int height){
 	//width = 480;
 	//height = 800;
-//	windowChanged(width,height);
-//	//createBitmap(filesDir+IMG_NAME);
-//
-//	bitmap.allocN32Pixels(64, 64);
-//	SkCanvas canvasTmp(bitmap);
-//	draw_checks(&canvasTmp, 64, 64);
-//
-//	canvas = createCanvas();
+	windowChanged(width,height);
+	//createBitmap(filesDir+IMG_NAME);
+
+	bitmap.allocN32Pixels(64, 64);
+	SkCanvas canvasTmp(bitmap);
+	draw_checks(&canvasTmp, 64, 64);
+
+	canvas = createCanvas();
 }
 
 void SkiaApp::pauseApp(){
@@ -656,6 +656,7 @@ void SkiaApp::TestDrawRect(SkCanvas *canvas)
 
 
 void SkiaApp::mainLoop(){
+    LOGE("Fun:%s, Line:%d", __FUNCTION__, __LINE__ );
 //	canvas->drawColor(0xffffffff);
 //    TestFillStyle(canvas);
 //	canvas->drawCircle( 200, 200, 100, fillPaint);
