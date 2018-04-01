@@ -8,7 +8,9 @@
 #ifndef SKIAAPP_H_
 #define SKIAAPP_H_
 #include "GrContext.h"
+#include "SkBitmap.h"
 #include <string>
+#include <SkCanvas.h>
 
 
 class SkiaApp {
